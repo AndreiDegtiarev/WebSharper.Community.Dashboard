@@ -89,7 +89,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Community.Panel">
-      <HintPath>..\..\WebSharper.Community.Panel\WebSharper.Community.Panel\bin\Release\WebSharper.Community.Panel.dll</HintPath>
+      <HintPath>..\..\WebSharper.Community.Panel\WebSharper.Community.Panel\bin\Debug\WebSharper.Community.Panel.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Control">
       <HintPath>..\packages\Zafir.4.0.161.45-beta6\lib\net40\WebSharper.Control.dll</HintPath>

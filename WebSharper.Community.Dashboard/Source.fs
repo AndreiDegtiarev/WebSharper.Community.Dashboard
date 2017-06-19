@@ -7,34 +7,24 @@ open WebSharper.UI.Next
 
 [<JavaScript>]
 type ISource =
-    abstract member Number : Event<double>
-    abstract member String : Event<string>
+    abstract member OutPorts:List<IOutPort>
     abstract member Run:unit->unit
 
 [<JavaScript>]
-type RandomValueSource =
-    {
-        NumberEvent:Event<double>
-        StringEvent:Event<string>
-    }
-    static member Create =
-        {
-            NumberEvent=new Event<double>()
-            StringEvent=new Event<string>()
-        }
+module Sources = 
+    let RandomValueSource middleValue dispersion=
+        let outRandomNumber = IOutPortNumber("Random value")
 
-    interface ISource with 
-        member x.Number = x.NumberEvent
-        member x.String = x.StringEvent
-        member x.Run()=
-            let rnd = System.Random()
-            async {
-                while true do
-                    do! Async.Sleep 600
-                    let d = rnd.NextDouble() * 300.
-                    //Console.Log "Value generated"
-                    x.NumberEvent.Trigger d
-                    x.StringEvent.Trigger (((int)d).ToString())
-            }
-            |> Async.Start
-
+        {new ISource with 
+            override x.OutPorts = [outRandomNumber]
+            override x.Run()=
+                let rnd = System.Random()
+                async {
+                    while true do
+                        do! Async.Sleep 600
+                        let d = rnd.NextDouble() * dispersion + middleValue
+                        //Console.Log ("Value generated:"+d.ToString())
+                        outRandomNumber.Trigger d
+                }
+                |> Async.Start
+         }

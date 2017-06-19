@@ -48,8 +48,10 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Port.fs" />
     <Compile Include="Source.fs" />
     <Compile Include="Receiver.fs" />
+    <Compile Include="Widgets.fs" />
     <Compile Include="Dashboard.fs" />
     <Content Include="packages.config" />
   </ItemGroup>
@@ -86,7 +88,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Community.Panel">
-      <HintPath>..\..\WebSharper.Community.Panel\WebSharper.Community.Panel\bin\Release\WebSharper.Community.Panel.dll</HintPath>
+      <HintPath>..\..\WebSharper.Community.Panel\WebSharper.Community.Panel\bin\Debug\WebSharper.Community.Panel.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSharper.Community.PropertyGrid">
+      <HintPath>..\..\WebSharper.Community.PropertyGrid\WebSharper.Community.PropertyGrid\bin\Debug\WebSharper.Community.PropertyGrid.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Control">
       <HintPath>..\packages\Zafir.4.0.161.45-beta6\lib\net40\WebSharper.Control.dll</HintPath>

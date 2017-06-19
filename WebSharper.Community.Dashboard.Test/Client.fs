@@ -12,26 +12,34 @@ open WebSharper.Community.Dashboard
 module Client =
 
     let Main () =
+        let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
         let panelContainer=PanelContainer.Create
-                                         .WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager 5.0)
+                                         .WithLayoutManager(layoutManager)
                                          .WithWidth(800.0).WithHeight(400.0)
-                                         .WithAttributes([Attr.Style "border" "1px solid white"])
+                                         .WithAttributes([Attr.Style "border" "1px solid white"
+                                                          //Attr.Style "position" "absolute"
+                                                         ])
         let dashboard = Dashboard.Create panelContainer
-        let srcRandom = RandomValueSource.Create :> ISource
-        dashboard.AddSource srcRandom 
-
+        let srcRandom2 = Sources.RandomValueSource 50.0 5.0
+        let srcRandom1 = Sources.RandomValueSource 100.0 10.0
+        srcRandom1.Run()
+        srcRandom2.Run()
         div[
                 dashboard.Render
            ].OnAfterRender(fun (el) -> 
                                Console.Log "OnAfterRender"
                                let clientWidth = el.ClientWidth
                                let cx = 800.0 - 15.0
-                               let varText = Var.Create ""
-                               srcRandom.String.Publish.Add(fun str -> varText.Value <- str)
-                               let createPanel fnc =
-                                   let clientContainer = dashboard.CreatePanel(cx,fnc)
-                                   Receivers.receiverText varText.View |> dashboard.AddReceiver clientContainer 
-                                   let receiver = Receivers.receiverChart srcRandom.Number ((int)(cx - 270.0)) 120
-                                   receiver |> dashboard.AddReceiver clientContainer 
-                               createPanel(fun _ -> createPanel(fun _->()))
+                               let createPanel(name,(src:ISource),fnc) =
+                                   let clientContainer = dashboard.CreatePanel(name,cx,fnc)
+                                   [
+                                        Widgets.text()
+                                        Widgets.chart(((int)(cx - 270.0)),120,50)
+                                   ]|>List.iter (fun widget  ->  src.OutPorts.[0].Connect (widget.InPorts.[0])
+                                                                 dashboard.RegisterReceiver clientContainer widget
+                                                                          )
+                               createPanel("Panel1",srcRandom1,(fun panel -> layoutManager.Relayout panelContainer panel ))
+                               createPanel("Panel2",srcRandom2,(fun panel -> 
+                                            Console.Log "second create panel"
+                                            layoutManager.PlacePanel panelContainer panel))
                           )

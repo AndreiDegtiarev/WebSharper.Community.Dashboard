@@ -111,7 +111,7 @@
    {
     return List.map(m,l);
    }(this.TitleButtons)),Doc.Element("td",a$6,a$7)))],Doc.Element("tr",[],a$4))],Doc.Element("table",a$2,a$3)));
-   panelAttrsUpdated=Seq.concat([this.PannelAttrs,List.ofArray([AttrModule.Style("position","absolute"),AttrModule.DynamicStyle("left",(a$8=this.Left.v,View.Map(function(x)
+   panelAttrsUpdated=Seq.concat([this.PannelAttrs,List.ofArray([AttrModule.DynamicStyle("left",(a$8=this.Left.v,View.Map(function(x)
    {
     var f$1;
     f$1=function($1,$2)
@@ -178,47 +178,54 @@
    a$13=this.Element;
    a$14=resDiv.elt;
    Var.Set(a$13,a$14);
-   return resDiv.OnAfterRender(this.onAfterRender);
+   return resDiv.OnAfterRender(function()
+   {
+    $this.onAfterRender($this);
+   });
+  },
+  WithProperties:function(properties)
+  {
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,properties);
   },
   WithOnAfterRender:function(fnc)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,fnc);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,fnc,this.Properties);
   },
   WithInternalName:function(name)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,name,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,name,this.onAfterRender,this.Properties);
   },
   WithTitle:function(withTitle)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,withTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,withTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
   },
   WithChildPanelContainer:function(container)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,container,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,container,this.InternalName,this.onAfterRender,this.Properties);
   },
   WithRelayoutFnc:function(fnc)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,fnc,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,fnc,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
   },
   WithPanelContent:function(content)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,content,this.Children,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,content,this.Children,this.InternalName,this.onAfterRender,this.Properties);
   },
   WithTitleButtons:function(buttons)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,buttons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,buttons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
   },
   WithTitleContent:function(content)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,content,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,content,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
   },
   WithTitleAttrs:function(attrs)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,attrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,attrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
   },
   WithPannelAttrs:function(attrs)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,attrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Element,this.Relayout,attrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
   }
  },null,Panel$1);
  Panel$1.get_Create=function()
@@ -231,9 +238,11 @@
    $:0
   }),Doc.Element("div",[],[]),PanelContainer.get_Create(),"",function()
   {
-  });
+  },new List.T({
+   $:0
+  }));
  };
- Panel$1.New=function(Key$1,Left,Top,Element,Relayout,PannelAttrs,IsWithTitle,TitleAttrs,TitleContent,TitleButtons,PanelContent,Children,InternalName,onAfterRender)
+ Panel$1.New=function(Key$1,Left,Top,Element,Relayout,PannelAttrs,IsWithTitle,TitleAttrs,TitleContent,TitleButtons,PanelContent,Children,InternalName,onAfterRender,Properties)
  {
   return new Panel$1({
    Key:Key$1,
@@ -249,47 +258,44 @@
    PanelContent:PanelContent,
    Children:Children,
    InternalName:InternalName,
-   onAfterRender:onAfterRender
+   onAfterRender:onAfterRender,
+   Properties:Properties
   });
  };
  PanelContainer=Panel.PanelContainer=Runtime.Class({
   get_Render:function()
   {
-   var $this,attrsUpdated,a,a$1,a$2,a$3,a$4;
+   var $this,attrWidth,f,attrHeight,f$1,attrsUpdated,a,a$1,a$2;
    $this=this;
-   attrsUpdated=Seq.concat([this.ContainerAttributes,List.ofArray([AttrModule.DynamicStyle("width",(a=this.Width.v,View.Map(function(x)
+   attrWidth=this.Width>0?List.ofArray([AttrModule.Style("width",(f=function($1,$2)
    {
-    var f;
-    f=function($1,$2)
-    {
-     return $1($2.toFixed(6)+"px");
-    };
-    return(function($1)
-    {
-     return function($2)
-     {
-      return f($1,$2);
-     };
-    }(Global.id))(x);
-   },a))),AttrModule.DynamicStyle("height",(a$1=this.Height.v,View.Map(function(y)
+    return $1($2.toFixed(6)+"px");
+   },(function($1)
    {
-    var f;
-    f=function($1,$2)
+    return function($2)
     {
-     return $1($2.toFixed(6)+"px");
+     return f($1,$2);
     };
-    return(function($1)
+   }(Global.id))(this.Width)))]):new List.T({
+    $:0
+   });
+   attrHeight=this.Height>0?List.ofArray([AttrModule.Style("height",(f$1=function($1,$2)
+   {
+    return $1($2.toFixed(6)+"px");
+   },(function($1)
+   {
+    return function($2)
     {
-     return function($2)
-     {
-      return f($1,$2);
-     };
-    }(Global.id))(y);
-   },a$1))),AttrModule.Style("position","relative")])]);
-   a$2=[(a$3=function(m)
+     return f$1($1,$2);
+    };
+   }(Global.id))(this.Height)))]):new List.T({
+    $:0
+   });
+   attrsUpdated=Seq.concat([this.ContainerAttributes,attrWidth,attrHeight,List.ofArray([AttrModule.Style("position","relative")])]);
+   a=[(a$1=function(m)
    {
     return m.Key;
-   },(a$4=function(item)
+   },(a$2=function(item)
    {
     var _this;
     _this=item.get_Render();
@@ -297,11 +303,11 @@
     {
      $this.LayoutManager.WebSharper_Community_Panel_ILayoutManager$PlacePanel($this,item);
     });
-   },function(a$5)
+   },function(a$3)
    {
-    return Doc.ConvertBy(a$3,a$4,a$5);
+    return Doc.ConvertBy(a$1,a$2,a$3);
    })(this.PanelItems.v))];
-   return Doc.Element("div",attrsUpdated,a$2);
+   return Doc.Element("div",attrsUpdated,a);
   },
   AddPanel:function(panel)
   {
@@ -310,14 +316,6 @@
    {
     o.WebSharper_Community_Panel_ILayoutManager$Relayout(a,a$1);
    }))));
-  },
-  Resize:function(cx,cy)
-  {
-   var a,a$1;
-   a=this.Width;
-   Var.Set(a,cx);
-   a$1=this.Height;
-   Var.Set(a$1,cy);
   },
   FindPanelItem:function(panel)
   {
@@ -333,13 +331,11 @@
   },
   WithHeight:function(cy)
   {
-   var H;
-   H=Var.Create$1(cy);
-   return PanelContainer.New(this.Width,H,this.PanelItems,this.LayoutManager,this.ContainerAttributes);
+   return PanelContainer.New(this.Width,cy,this.PanelItems,this.LayoutManager,this.ContainerAttributes);
   },
   WithWidth:function(cx)
   {
-   return PanelContainer.New(Var.Create$1(cx),this.Height,this.PanelItems,this.LayoutManager,this.ContainerAttributes);
+   return PanelContainer.New(cx,this.Height,this.PanelItems,this.LayoutManager,this.ContainerAttributes);
   },
   WithLayoutManager:function(layoutManager)
   {
@@ -353,7 +349,7 @@
  PanelContainer.get_Create=function()
  {
   var a;
-  return PanelContainer.New(Var.Create$1(0),Var.Create$1(0),(a=new List.T({
+  return PanelContainer.New(0,0,(a=new List.T({
    $:0
   }),ListModel.Create(function(item)
   {
@@ -487,7 +483,7 @@
  {
   var rcPanel,rcContainer,a,a$1,foundCandidate,p,rc,a$2,a$3,a$4,a$5;
   rcPanel=Rect.fromPanel(panelItem);
-  rcContainer=(a=panelContainer.Width.c,(a$1=panelContainer.Height.c,Rect.Create(0,0,a,a$1)));
+  rcContainer=(a=panelContainer.Width,(a$1=panelContainer.Height,Rect.Create(0,0,a,a$1)));
   foundCandidate=(p=function(rc$1)
   {
    return rc$1.get_width()>=rcPanel.get_width()?rc$1.get_height()>=rcPanel.get_height():false;
@@ -534,7 +530,6 @@
     var p$1,m$1;
     p$1=function(accRect)
     {
-     Global.console.log("filter: "+Global.String(accRect));
      return!accRect.get_isEmpty();
     };
     return function(l)
@@ -556,7 +551,6 @@
  LayoutManagers.calcClientArea=function(panelItems,stopItem,margin)
  {
   var sublist,rects,m,x,$1,a,m$1,a$1,m$2,a$2,m$3,a$3,m$4;
-  Global.console.log("calcClientArea 1");
   sublist=function(acc,lst)
   {
    var rest,head;
@@ -595,7 +589,6 @@
   {
    return sublist($1,$2);
   }(x)))));
-  Global.console.log("calcClientArea 2");
   return rects.$==0?Rect.Create(0,0,0,0):(a=List.min((m$1=function(rc)
   {
    return rc.left;
@@ -629,23 +622,9 @@
  SC$1.$cctor=Runtime.Cctor(function()
  {
   SC$1.StackPanelLayoutManager={
-   WebSharper_Community_Panel_ILayoutManager$PlacePanel:function(panelContainer,panel)
+   WebSharper_Community_Panel_ILayoutManager$PlacePanel:function()
    {
-    var rc,rcItem,a,a$1,a$2,a$3,a$4,a$5;
-    Global.console.log("PlacePanel 1");
-    rc=LayoutManagers.calcClientArea(panelContainer.PanelItems,panel,0);
-    Global.console.log("PlacePanel 2");
-    rcItem=LayoutManagers.panelRect(panel,0);
-    a="PlacePanel "+Global.String(rc.right)+" "+Global.String(rcItem.right)+" "+Global.String(rc.bottom)+" "+Global.String(rcItem.bottom);
-    Global.console.log(a);
-    a$1=rc.right+rcItem.right+2;
-    panelContainer.Resize(a$1,Operators.Max(rc.bottom,rcItem.bottom)+2);
-    a$2=panel.Left;
-    a$3=rc.right;
-    Var.Set(a$2,a$3);
-    a$4=panel.Top;
-    a$5=rc.top;
-    return Var.Set(a$4,a$5);
+    return null;
    },
    WebSharper_Community_Panel_ILayoutManager$Relayout:function(panelContainer,exceptPanel)
    {

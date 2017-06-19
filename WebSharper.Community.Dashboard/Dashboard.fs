@@ -12,11 +12,13 @@ open WebSharper.Community.Panel
 type SourceItem =
     {
         Key:Key
+        Id:string
         Source : ISource
     }
-    static member Create src=
+    static member Create (id:string) src=
         {
-            Key=Key.Fresh();
+            Key=Key.Fresh()
+            Id=id
             Source = src
         }
 [<JavaScript>]
@@ -27,7 +29,7 @@ type ReceiverItem =
     }
     static member Create receiver=
         {
-            Key=Key.Fresh();
+            Key=Key.Fresh()
             Receiver = receiver
         }
 [<JavaScript>]
@@ -45,24 +47,28 @@ type Dashboard =
         }
     member x.Render=
         x.PanelContainer.Render 
-    member x.AddSource source = 
-        x.SourceItems.Add (SourceItem.Create source)
+    member x.RegisterSource key source = 
+        x.SourceItems.Add (SourceItem.Create key source)
         source.Run()
-    member x.AddReceiver (toPanelContainer:PanelContainer) receiver = 
+    member x.RegisterReceiver (toPanelContainer:PanelContainer) receiver = 
         x.ReceiverItems.Add (ReceiverItem.Create receiver)
         let panel = Panel.Create
                          .WithTitle(false)
                          .WithPanelContent(receiver.Render())
                          //.WithInternalName("text")
         toPanelContainer.AddPanel panel
-    member x.CreatePanel(cx,?afterRenderFnc) = 
+    member x.CreatePanel(name,cx,?afterRenderFnc) = 
         let afterRenderFncDef = defaultArg afterRenderFnc (fun _->())
         let childContainerContent = PanelContainer.Create
                                                   .WithLayoutManager(LayoutManagers.StackPanelLayoutManager)
-                                                  .WithAttributes([Attr.Style "border" "1px solid white"]) 
+                                                  .WithAttributes([Attr.Style "border" "1px solid white"
+                                                                   Attr.Style "display" "flex"
+                                                                  ]) 
         let panel = Panel.Create
-                         .WithPannelAttrs([Attr.Style "Width" (cx.ToString()+"px")])
-                         .WithTitleContent(text ("Panel"))
+                         .WithPannelAttrs([Attr.Style "Width" (cx.ToString()+"px")
+                                           Attr.Style "position" "absolute"
+                                          ])
+                         .WithTitleContent(text (name))
                          .WithTitleButtons(
                                       [
                                         {Icon="add";Action=(fun panel->())}

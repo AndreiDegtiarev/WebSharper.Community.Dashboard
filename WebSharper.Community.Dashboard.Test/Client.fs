@@ -15,13 +15,14 @@ module Client =
         let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
         let panelContainer=PanelContainer.Create
                                          .WithLayoutManager(layoutManager)
-                                         .WithWidth(800.0).WithHeight(400.0)
+                                         .WithWidth(800.0).WithHeight(420.0)
                                          .WithAttributes([Attr.Style "border" "1px solid white"
                                                           //Attr.Style "position" "absolute"
                                                          ])
         let dashboard = Dashboard.Create panelContainer
         let srcRandom2 = Sources.RandomValueSource 50.0 5.0
-        let srcRandom1 = Sources.RandomValueSource 100.0 10.0
+        //let srcRandom1 = Sources.RandomValueSource 100.0 10.0
+        let srcRandom1 = SrcOpenWeather.Create "London"
         srcRandom1.Run()
         srcRandom2.Run()
         div[

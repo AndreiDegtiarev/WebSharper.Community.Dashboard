@@ -7,6 +7,7 @@ open WebSharper.UI.Next
 open WebSharper.UI.Next.Client
 open WebSharper.UI.Next.Html
 open WebSharper.Community.Panel
+open WebSharper.Community.PropertyGrid
 
 [<JavaScript>]
 type SourceItem =
@@ -38,15 +39,40 @@ type Dashboard =
         SourceItems : ListModel<Key,SourceItem>
         ReceiverItems : ListModel<Key,ReceiverItem>
         PanelContainer:PanelContainer
+        PropertyGrid : PropertyGrid
     }
     static member Create panelContainer=
         {
            SourceItems = ListModel.Create (fun item ->item.Key) []
            ReceiverItems = ListModel.Create (fun item ->item.Key) []
            PanelContainer=panelContainer
+           PropertyGrid = PropertyGrid.Create
         }
     member x.Render=
-        x.PanelContainer.Render 
+        div [
+            table[
+                tr[
+                    tdAttr [Attr.Style "vertical-align" "top"][
+                        table
+                             [
+                                trAttr[Attr.Style "Height" "100%"]
+                                  [
+                                    tdAttr[Attr.Style "Height" "100%"]
+                                          [iAttr[Attr.Class "material-icons orange600"][text "dehaze"]]
+                                  ]
+                                tr[td[iAttr[Attr.Class "material-icons orange600"
+                                            Attr.Style "cursor" "pointer"][text "add"]
+                                      ]
+                                    ]
+                                tr[td[x.PropertyGrid.Render]]
+                             ]
+                      ]
+                    td[x.PanelContainer.Render]
+                  ]
+            ]
+        ]
+
+        //x.PanelContainer.Render 
     member x.RegisterSource key source = 
         x.SourceItems.Add (SourceItem.Create key source)
         source.Run()
@@ -72,7 +98,7 @@ type Dashboard =
                          .WithTitleButtons(
                                       [
                                         {Icon="add";Action=(fun panel->())}
-                                        {Icon="edit";Action=(fun panel->())}
+                                        {Icon="edit";Action=(fun panel->x.PropertyGrid.Edit (panel.Properties))}
                                         {Icon="clear";Action=(fun panel->x.PanelContainer.PanelItems.Remove(x.PanelContainer.FindPanelItem panel))}
                                       ])
                           .WithChildPanelContainer(childContainerContent)

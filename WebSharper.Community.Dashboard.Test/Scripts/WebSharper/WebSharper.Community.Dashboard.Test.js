@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,Client,Panel,LayoutManagers,PanelContainer,UI,Next,AttrModule,Dashboard$1,Sources,Doc,List,Widgets;
+ var Global,WebSharper,Community,Dashboard,Test,Client,Panel,LayoutManagers,PanelContainer,UI,Next,AttrModule,Dashboard$1,Sources,SrcOpenWeather,Doc,List,Widgets;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -16,6 +16,7 @@
  AttrModule=Next&&Next.AttrModule;
  Dashboard$1=Dashboard&&Dashboard.Dashboard;
  Sources=Dashboard&&Dashboard.Sources;
+ SrcOpenWeather=Dashboard&&Dashboard.SrcOpenWeather;
  Doc=Next&&Next.Doc;
  List=WebSharper&&WebSharper.List;
  Widgets=Dashboard&&Dashboard.Widgets;
@@ -23,10 +24,10 @@
  {
   var layoutManager,panelContainer,dashboard,srcRandom2,srcRandom1,_this,a;
   layoutManager=LayoutManagers.FloatingPanelLayoutManager(5);
-  panelContainer=PanelContainer.get_Create().WithLayoutManager(layoutManager).WithWidth(800).WithHeight(400).WithAttributes([AttrModule.Style("border","1px solid white")]);
+  panelContainer=PanelContainer.get_Create().WithLayoutManager(layoutManager).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")]);
   dashboard=Dashboard$1.Create(panelContainer);
   srcRandom2=Sources.RandomValueSource(50,5);
-  srcRandom1=Sources.RandomValueSource(100,10);
+  srcRandom1=SrcOpenWeather.Create("Herzogenaurach");
   srcRandom1.WebSharper_Community_Dashboard_ISource$Run();
   srcRandom2.WebSharper_Community_Dashboard_ISource$Run();
   _this=(a=[dashboard.get_Render()],Doc.Element("div",[],a));

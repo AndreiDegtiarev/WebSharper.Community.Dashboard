@@ -175,9 +175,7 @@
      $0:$1,
      $1:$2
     });
-   })))):Reactive$1.Return(new List.T({
-    $:0
-   }));
+   })))):Reactive$1.Return(List.T.Empty);
   }
   return Reactive$1.Select(sequence(List.ofSeq(ios)),Global.id);
  };

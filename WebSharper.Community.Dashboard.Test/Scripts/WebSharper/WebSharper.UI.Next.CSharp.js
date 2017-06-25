@@ -137,15 +137,9 @@
  },null,RouteMapBuilder);
  RouteMapBuilder.New=Runtime.Ctor(function()
  {
-  this.links=new List.T({
-   $:0
-  });
-  this.routes=new List.T({
-   $:0
-  });
-  this.renders=new List.T({
-   $:0
-  });
+  this.links=List.T.Empty;
+  this.routes=List.T.Empty;
+  this.renders=List.T.Empty;
  },RouteMapBuilder);
  RouteItemParsers["System.Double"]=function(a)
  {
@@ -185,13 +179,7 @@
     return Unchecked.Equals(queryItem,0)?(p=link(value[name$1]),(m$3=p[1],(l=p[0],(map[0]=Map.FoldBack(function($1,$2,$3)
     {
      return $3.Add($1,$2);
-    },m$3,map[0]),l)))):Unchecked.Equals(queryItem,1)?(x=List.head((link(value[name$1]))[0]),(map[0]=map[0].Add(name$1,x),new List.T({
-     $:0
-    }))):Unchecked.Equals(queryItem,2)?(m$4=value[name$1],(m$4!=null?m$4.$==1:false)?(x$1=m$4.$0,map[0]=map[0].Add(name$1,List.head((link(x$1))[0]))):void 0,new List.T({
-     $:0
-    })):Unchecked.Equals(queryItem,3)?(v=value[name$1],(v!=null?map[0]=map[0].Add(name$1,List.head((link(Nullable.get(v)))[0])):void 0,new List.T({
-     $:0
-    }))):Operators.FailWith("invalid QueryItem enum value");
+    },m$3,map[0]),l)))):Unchecked.Equals(queryItem,1)?(x=List.head((link(value[name$1]))[0]),(map[0]=map[0].Add(name$1,x),List.T.Empty)):Unchecked.Equals(queryItem,2)?(m$4=value[name$1],(m$4!=null?m$4.$==1:false)?(x$1=m$4.$0,map[0]=map[0].Add(name$1,List.head((link(x$1))[0]))):void 0,List.T.Empty):Unchecked.Equals(queryItem,3)?(v=value[name$1],(v!=null?map[0]=map[0].Add(name$1,List.head((link(Nullable.get(v)))[0])):void 0,List.T.Empty)):Operators.FailWith("invalid QueryItem enum value");
    },function(s)
    {
     return Seq.collect(function($1)

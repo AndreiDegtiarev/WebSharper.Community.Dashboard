@@ -1,11 +1,12 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Control,Observer,HotStream,HotStream$1,Observable,Microsoft,FSharp,Control$1,ObservableModule,Event,Event$1,DelegateEvent,DelegateEvent$1,FSharpEvent,FSharpDelegateEvent,EventModule,MailboxProcessor,IntelliFactory,Runtime,Util,List,Ref,Unchecked,Seq,Arrays,Collections,List$1,Concurrency,TimeoutException,Operators,LinkedList;
+ var Global,WebSharper,Control,Observer,Message,HotStream,HotStream$1,Observable,Microsoft,FSharp,Control$1,ObservableModule,Event,Event$1,DelegateEvent,DelegateEvent$1,FSharpEvent,FSharpDelegateEvent,EventModule,MailboxProcessor,IntelliFactory,Runtime,Util,List,Ref,Unchecked,Seq,Arrays,Collections,List$1,Concurrency,TimeoutException,Operators,LinkedList;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Control=WebSharper.Control=WebSharper.Control||{};
  Observer=Control.Observer=Control.Observer||{};
+ Message=Observer.Message=Observer.Message||{};
  HotStream=Control.HotStream=Control.HotStream||{};
  HotStream$1=HotStream.HotStream=HotStream.HotStream||{};
  Observable=Control.Observable=Control.Observable||{};
@@ -35,6 +36,9 @@
  TimeoutException=WebSharper&&WebSharper.TimeoutException;
  Operators=WebSharper&&WebSharper.Operators;
  LinkedList=Collections&&Collections.LinkedList;
+ Message.Completed={
+  $:2
+ };
  Observer.New=function(f,e,c)
  {
   return{
@@ -101,9 +105,7 @@
      $0:$1,
      $1:$2
     });
-   })))):Observable.Return(new List.T({
-    $:0
-   }));
+   })))):Observable.Return(List.T.Empty);
   }
   return sequence(List.ofSeq(ios));
  };
@@ -1167,8 +1169,7 @@
    $this=this;
    this.started?Operators.FailWith("The MailboxProcessor has already been started."):(this.started=true,$this.startAsync(Concurrency.Delay(function()
    {
-    var a;
-    a=Concurrency.Delay(function()
+    return Concurrency.TryWith(Concurrency.Delay(function()
     {
      var x;
      x=$this.initial($this);
@@ -1176,10 +1177,9 @@
      {
       return Concurrency.Return(null);
      });
-    });
-    return Concurrency.TryWith(a,function(a$1)
+    }),function(a)
     {
-     $this.errorEvent.event.Trigger(a$1);
+     $this.errorEvent.event.Trigger(a);
      return Concurrency.Return(null);
     });
    })));

@@ -160,9 +160,7 @@
   return Seq.unfold(function($1)
   {
    return gen($1[0],$1[1]);
-  },[t,new List$1.T({
-   $:0
-  })]);
+  },[t,List$1.T.Empty]);
  };
  BalancedTree.Branch=function(node,left,right)
  {
@@ -233,7 +231,7 @@
   },
   TryFind:function(k)
   {
-   var m,x,v;
+   var m,v;
    m=function(kv)
    {
     return kv.Value;
@@ -244,12 +242,18 @@
      $:1,
      $0:m(o.$0)
     };
-   }((x=this.tree,(v=Pair.New(k,void 0),BalancedTree.TryFind(v,x))));
+   }((v=Pair.New(k,void 0),function(t)
+   {
+    return BalancedTree.TryFind(v,t);
+   }(this.tree)));
   },
   Remove:function(k)
   {
-   var x,k$1;
-   return new FSharpMap.New$1((x=this.tree,(k$1=Pair.New(k,void 0),BalancedTree.Remove(k$1,x))));
+   var k$1;
+   return new FSharpMap.New$1((k$1=Pair.New(k,void 0),function(s)
+   {
+    return BalancedTree.Remove(k$1,s);
+   }(this.tree)));
   },
   get_Item:function(k)
   {
@@ -269,15 +273,20 @@
   },
   ContainsKey:function(k)
   {
-   var x,v;
-   x=this.tree;
+   var v;
    v=Pair.New(k,void 0);
-   return BalancedTree.Contains(v,x);
+   return function(t)
+   {
+    return BalancedTree.Contains(v,t);
+   }(this.tree);
   },
   Add:function(k,v)
   {
-   var x,x$1;
-   return new FSharpMap.New$1((x=this.tree,(x$1=Pair.New(k,v),BalancedTree.Add(x$1,x))));
+   var x;
+   return new FSharpMap.New$1((x=Pair.New(k,v),function(t)
+   {
+    return BalancedTree.Add(x,t);
+   }(this.tree)));
   },
   get_Tree:function()
   {
@@ -576,6 +585,17 @@
    return this.GetEnumerator$1();
   }
  },null,FSharpSet);
+ FSharpSet.op_Subtraction=function(x,y)
+ {
+  return Set.Filter(function(x$1)
+  {
+   return!y.Contains(x$1);
+  },x);
+ };
+ FSharpSet.op_Addition=function(x,y)
+ {
+  return new FSharpSet.New$1(BalancedTree.OfSeq(Seq.append(x,y)));
+ };
  FSharpSet.New=Runtime.Ctor(function(s)
  {
   FSharpSet.New$1.call(this,BalancedTree.OfSeq(s));

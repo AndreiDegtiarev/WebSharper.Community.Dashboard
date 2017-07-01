@@ -6,6 +6,7 @@ open WebSharper.UI.Next
 open WebSharper.UI.Next.Client
 open WebSharper.UI.Next.Html
 open FSharp.Data
+open WebSharper.Community.PropertyGrid
 
 [<JavaScript>]
 module SrcOpenWeather =
@@ -38,14 +39,17 @@ module SrcOpenWeather =
         }
     let Create city=
         let outTempearatur = IOutPortNumber("Temperature")
-        let key = "xxxx" //put here your api key
+        let apiKey = Var.Create ""
+        let city =  Var.Create "London"
         {new ISource with 
+            override x.Name=Var.Create "OpenWeatherMap"
             override x.OutPorts = [outTempearatur]
+            override x.Properties = [Properties.string "ApiKey" apiKey;Properties.string "City" city]
             override x.Run()=
                 let rnd = System.Random()
                 async {
                     while true do
-                        let! response = get key city
+                        let! response = get apiKey.Value city.Value
                         Console.Log ("Value generated:"+response.Value.Title)
                         outTempearatur.Trigger ((double)response.Value.Temperature)
                         do! Async.Sleep (1000*15)

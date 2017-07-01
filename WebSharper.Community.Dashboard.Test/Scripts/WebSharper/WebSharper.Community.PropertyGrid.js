@@ -63,14 +63,14 @@
    }
   };
  };
- Properties.select=function(name,selections,_var)
+ Properties.select=function(name,fncCnv,selections,_var)
  {
   return{
    WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
    {
     var a;
     a=[AttrModule.Class("form-control")];
-    return Doc.Select(a,Global.id,selections,_var);
+    return Doc.Select(a,fncCnv,selections,_var);
    },
    WebSharper_Community_PropertyGrid_IProperty$get_Name:function()
    {

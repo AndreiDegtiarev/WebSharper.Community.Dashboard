@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Panel,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,IntelliFactory,Runtime,UI,Next,AttrModule,Doc,Var,Input,Mouse,View,Operators,Seq,List,Unchecked,Key,ListModel;
+ var Global,WebSharper,Community,Panel,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,Dialog,IntelliFactory,Runtime,UI,Next,AttrModule,Doc,Var,Input,Mouse,View,Operators,Seq,List,Unchecked,Key,ListModel;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -12,6 +12,7 @@
  Rect=Panel.Rect=Panel.Rect||{};
  LayoutManagers=Panel.LayoutManagers=Panel.LayoutManagers||{};
  SC$1=Global.StartupCode$WebSharper_Community_Panel$LayoutManagers=Global.StartupCode$WebSharper_Community_Panel$LayoutManagers||{};
+ Dialog=Panel.Dialog=Panel.Dialog||{};
  IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  UI=WebSharper&&WebSharper.UI;
@@ -202,6 +203,17 @@
    {
     $this.onAfterRender($this);
    });
+  },
+  EditProperties:function(propGrid)
+  {
+   var m;
+   propGrid.Edit(List.concat([this.Properties,List.concat((m=function(childPanel)
+   {
+    return childPanel.Properties;
+   },function(l)
+   {
+    return List.map(m,l);
+   }(List.ofSeq(this.Children.PanelItems))))]));
   },
   WithHeight:function(cy)
   {
@@ -646,4 +658,64 @@
   };
   SC$1.$cctor=Global.ignore;
  });
+ Dialog=Panel.Dialog=Runtime.Class({
+  get_Render:function()
+  {
+   var $this,a,a$1,a$2,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15;
+   $this=this;
+   a=[AttrModule.Style("position","absolute"),AttrModule.Style("left","50%"),AttrModule.Style("top","50%"),AttrModule.Style("z-index","1"),AttrModule.Style("background-color","white"),AttrModule.Style("min-height","100px"),AttrModule.Style("min-width","200px"),AttrModule.DynamicStyle("display",(a$1=this.Visibility.v,View.Map(function(isVis)
+   {
+    return isVis?"block":"none";
+   },a$1)))];
+   a$2=[(a$3=[(a$4=[(a$5=[Doc.TextView(this.Title.v)],Doc.Element("td",[],a$5))],Doc.Element("tr",[],a$4)),(a$6=[(a$7=[(a$8=Global.id,function(a$16)
+   {
+    return Doc.BindView(a$8,a$16);
+   }(this.Content.v))],Doc.Element("td",[],a$7))],Doc.Element("tr",[],a$6)),(a$9=[(a$10=[(a$11=[AttrModule.Handler("click",function()
+   {
+    return function()
+    {
+     var a$16;
+     a$16=$this.Visibility;
+     Var.Set(a$16,false);
+     return $this.OKCallback.c();
+    };
+   })],(a$12=[Doc.TextNode("OK")],Doc.Element("button",a$11,a$12)))],Doc.Element("td",[],a$10)),(a$13=[(a$14=[AttrModule.Handler("click",function()
+   {
+    return function()
+    {
+     var a$16;
+     a$16=$this.Visibility;
+     return Var.Set(a$16,false);
+    };
+   })],(a$15=[Doc.TextNode("Cancel")],Doc.Element("button",a$14,a$15)))],Doc.Element("td",[],a$13))],Doc.Element("tr",[],a$9))],Doc.Element("table",[],a$3))];
+   return Doc.Element("div",a,a$2);
+  },
+  ShowDialog:function(title,content,okCallback)
+  {
+   var a,a$1,a$2,a$3;
+   a=this.Title;
+   Var.Set(a,title);
+   a$1=this.Content;
+   Var.Set(a$1,content);
+   a$2=this.Visibility;
+   Var.Set(a$2,true);
+   a$3=this.OKCallback;
+   Var.Set(a$3,okCallback);
+  }
+ },null,Dialog);
+ Dialog.get_Create=function()
+ {
+  return Dialog.New(Var.Create$1(""),Var.Create$1(Doc.Element("div",[],[])),Var.Create$1(false),Var.Create$1(function()
+  {
+  }));
+ };
+ Dialog.New=function(Title,Content,Visibility,OKCallback)
+ {
+  return new Dialog({
+   Title:Title,
+   Content:Content,
+   Visibility:Visibility,
+   OKCallback:OKCallback
+  });
+ };
 }());

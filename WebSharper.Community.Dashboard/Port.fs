@@ -22,6 +22,7 @@ type IInPortNumber(name,callback) =
     member x.Callback = callback
     member x.RegisterDisconnector (disconnector:(unit->unit)) = Disconnector <- disconnector
     member x.Disconnect() = Disconnector()
+                            Console.Log("Port "+ name + " disconnected")
                             Disconnector <- (fun _ ->())
 [<JavaScript>]
 type IOutPortNumber(name)=
@@ -29,7 +30,8 @@ type IOutPortNumber(name)=
     interface IOutPort with 
         override x.Name=name
         override x.IsCompatible port=port :? IInPortNumber
-        override x.Connect port =  let numPort = (port :?> IInPortNumber)
+        override x.Connect port =  Console.Log("Port "+ name + " connect")
+                                   let numPort = (port :?> IInPortNumber)
                                    numPort.Disconnect()
                                    let handler = Handler<double>(fun _ arg -> numPort.Callback(arg))
                                    event.Publish.AddHandler(handler)

@@ -12,17 +12,20 @@ type ISource =
     abstract member OutPorts:List<IOutPort>
     abstract member  Properties: List<IProperty>
     abstract member Run:unit->unit
+    abstract member Clone:unit -> ISource
 
 [<JavaScript>]
 module Sources = 
-    let RandomValueSource middleValue dispersion=
+    type RandomValueSource(middleValue,dispersion)=
         let outRandomNumber = IOutPortNumber("Random value")
-        let varMiddleValue=Var.Create 100.0
-        let varDispersion=Var.Create 0.1
-        {new ISource with 
-            override x.Name=Var.Create "Random"
+        let varMiddleValue=Var.Create middleValue
+        let varDispersion=Var.Create dispersion
+        let name = Var.Create "Random"
+        interface ISource with
+            override x.Name=name
             override x.OutPorts = [outRandomNumber;]
-            override x.Properties = [Properties.double "Middle value" varMiddleValue;Properties.double "Dispersion value" varDispersion ]
+            override x.Properties = [Properties.string "Name" name;Properties.double "Middle value" varMiddleValue;Properties.double "Dispersion value" varDispersion ]
+            override x.Clone() = RandomValueSource(middleValue,dispersion) :> ISource
             override x.Run()=
                 let rnd = System.Random()
                 async {
@@ -33,4 +36,3 @@ module Sources =
                         outRandomNumber.Trigger d
                 }
                 |> Async.Start
-         }

@@ -37,22 +37,23 @@ module SrcOpenWeather =
                           Temperature = weather.Main.Temp
                           TemparatureMinMax = weather.Main.TempMin, weather.Main.TempMax })
         }
-    let Create city=
+    type Create(city)=
         let outTempearatur = IOutPortNumber("Temperature")
         let apiKey = Var.Create ""
-        let city =  Var.Create "London"
-        {new ISource with 
-            override x.Name=Var.Create "OpenWeatherMap"
+        let cityVar =  Var.Create city
+        let name = Var.Create "OpenWeatherMap"
+        interface ISource with
+            override x.Name=name
             override x.OutPorts = [outTempearatur]
-            override x.Properties = [Properties.string "ApiKey" apiKey;Properties.string "City" city]
+            override x.Properties = [Properties.string "Name" name;Properties.string "ApiKey" apiKey;Properties.string "City" cityVar]
+            override x.Clone() = Create(city) :> ISource
             override x.Run()=
                 let rnd = System.Random()
                 async {
                     while true do
-                        let! response = get apiKey.Value city.Value
+                        let! response = get apiKey.Value cityVar.Value
                         Console.Log ("Value generated:"+response.Value.Title)
                         outTempearatur.Trigger ((double)response.Value.Temperature)
                         do! Async.Sleep (1000*15)
                 }
                 |> Async.Start
-         }

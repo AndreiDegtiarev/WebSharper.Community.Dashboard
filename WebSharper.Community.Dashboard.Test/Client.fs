@@ -23,10 +23,10 @@ module Client =
         //let srcRandom2 = Sources.RandomValueSource 50.0 5.0
         //let srcRandom1 = Sources.RandomValueSource 100.0 10.0
         //let srcRandom1 = SrcOpenWeather.Create "London"
-        dashboard.Factory.RegisterSource (SrcOpenWeather.Create "London")
-        dashboard.Factory.RegisterSource (Sources.RandomValueSource 50.0 5.0)
-        dashboard.Factory.RegisterReceiver (Widgets.text())
-        dashboard.Factory.RegisterReceiver (Widgets.chart(100,100,50))
+        dashboard.Factory.RegisterSource (SrcOpenWeather.Create("London"))
+        dashboard.Factory.RegisterSource (Sources.RandomValueSource(50.0,5.0))
+        dashboard.Factory.RegisterReceiver (Widgets.TextBox())
+        dashboard.Factory.RegisterReceiver (Widgets.Chart(100,100,50))
         //srcRandom1.Run
         //srcRandom2.Run()
         div[

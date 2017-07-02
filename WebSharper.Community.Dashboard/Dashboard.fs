@@ -40,7 +40,7 @@ type Dashboard =
                                           let selected=Var.Create (items.Head)
                                           let propSources = Properties.select "Source" (fun (item,port:IOutPort) -> item.Source.Name.Value + "\\"+(port.Name)) items selected
                                           let observe (src,port:IOutPort) =
-                                              Console.Log(src.Source.Name.Value)
+                                              Console.Log("RegisterReceiver observe"+ src.Source.Name.Value)
                                               port.Connect (receiver.InPorts.[0])
                                           View.Sink observe selected.View
                                           propSources::receiver.Properties) 
@@ -69,7 +69,7 @@ type Dashboard =
                                                                         x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Receiver.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 Console.Log("Dialog.IsOK")
-                                                                                                                x.RegisterReceiver panel.Children (selected.Value.Receiver)
+                                                                                                                x.RegisterReceiver panel.Children (selected.Value.Receiver.Clone())
                                                                                                              )
                                                                        ))}
                                         {Icon="edit"; Action=(fun panel->Console.Log("Edit")
@@ -88,7 +88,7 @@ type Dashboard =
             table[
                     ListModel.View x.SourceItems
                     |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [iAttr (attrsClick (fun _ ->item.Source.Properties |> x.PropertyGrid.Edit))
-                                                                                [text item.Source.Name.Value]])
+                                                                                [textView item.Source.Name.View]])
                   ]
         let icon id action = iAttr(Attr.Class "material-icons orange600"::attrsClick action)[text id]
 
@@ -123,7 +123,7 @@ type Dashboard =
                                                                     x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Source.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 selected.Value.Source.Run()
-                                                                                                                x.RegisterSource (selected.Value.Source))
+                                                                                                                x.RegisterSource (selected.Value.Source.Clone()))
                                                                 else if varBoolDash.Value then
                                                                     x.CreatePanel("Panel",700,(fun _->()))|>ignore
                                                              )]]
@@ -140,4 +140,7 @@ type Dashboard =
             div[x.Dialog.Render]
          ]
 
- 
+//and  SourceProperty= {new IProperty with 
+//                                                 override x.Name = name
+//                                                 override x.Render = Doc.Select [Attr.Class "form-control"] fncCnv selections var  :>Doc
+//                                         } 

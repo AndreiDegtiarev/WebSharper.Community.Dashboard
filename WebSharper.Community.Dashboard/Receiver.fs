@@ -12,3 +12,4 @@ type IReceiver=
         abstract member  InPorts:List<IInPortNumber>
         abstract member  Render : unit->Elt
         abstract member  Properties: List<IProperty>
+        abstract member Clone:unit -> IReceiver

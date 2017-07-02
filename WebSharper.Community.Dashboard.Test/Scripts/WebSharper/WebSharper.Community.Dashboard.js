@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,IInPortNumber,IOutPortNumber,Sources,SrcOpenWeather,Forecast,Widgets,SourceItem,ReceiverItem,Factory,Dashboard$1,IntelliFactory,Runtime,Control,FSharpEvent,UI,Next,Var,Random,Concurrency,List,PropertyGrid,Properties,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,Seq,Operators,Charting,Chart,Pervasives,Renderers,ChartJs,AttrProxy,Doc,Key,ListModel,AttrModule,View,Panel,PanelContainer,LayoutManagers,Panel$1,TitleButton,PropertyGrid$1,Dialog;
+ var Global,WebSharper,Community,Dashboard,IInPortNumber,IOutPortNumber,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widgets,TextBox,Chart,SourceItem,ReceiverItem,Factory,Dashboard$1,IntelliFactory,Runtime,Control,FSharpEvent,Random,Concurrency,List,PropertyGrid,Properties,UI,Next,Var,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,AttrProxy,Doc,Charting,Renderers,ChartJs,Seq,Operators,Chart$1,Pervasives,Key,ListModel,AttrModule,View,Panel,PanelContainer,LayoutManagers,Panel$1,TitleButton,PropertyGrid$1,Dialog;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -9,9 +9,13 @@
  IInPortNumber=Dashboard.IInPortNumber=Dashboard.IInPortNumber||{};
  IOutPortNumber=Dashboard.IOutPortNumber=Dashboard.IOutPortNumber||{};
  Sources=Dashboard.Sources=Dashboard.Sources||{};
+ RandomValueSource=Sources.RandomValueSource=Sources.RandomValueSource||{};
  SrcOpenWeather=Dashboard.SrcOpenWeather=Dashboard.SrcOpenWeather||{};
  Forecast=SrcOpenWeather.Forecast=SrcOpenWeather.Forecast||{};
+ Create=SrcOpenWeather.Create=SrcOpenWeather.Create||{};
  Widgets=Dashboard.Widgets=Dashboard.Widgets||{};
+ TextBox=Widgets.TextBox=Widgets.TextBox||{};
+ Chart=Widgets.Chart=Widgets.Chart||{};
  SourceItem=Dashboard.SourceItem=Dashboard.SourceItem||{};
  ReceiverItem=Dashboard.ReceiverItem=Dashboard.ReceiverItem||{};
  Factory=Dashboard.Factory=Dashboard.Factory||{};
@@ -20,14 +24,14 @@
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Control=WebSharper&&WebSharper.Control;
  FSharpEvent=Control&&Control.FSharpEvent;
- UI=WebSharper&&WebSharper.UI;
- Next=UI&&UI.Next;
- Var=Next&&Next.Var;
  Random=WebSharper&&WebSharper.Random;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  List=WebSharper&&WebSharper.List;
  PropertyGrid=Community&&Community.PropertyGrid;
  Properties=PropertyGrid&&PropertyGrid.Properties;
+ UI=WebSharper&&WebSharper.UI;
+ Next=UI&&UI.Next;
+ Var=Next&&Next.Var;
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  Data=WebSharper&&WebSharper.Data;
  TxtRuntime=Data&&Data.TxtRuntime;
@@ -37,15 +41,15 @@
  IO=Runtime$1&&Runtime$1.IO;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Arrays=WebSharper&&WebSharper.Arrays;
- Seq=WebSharper&&WebSharper.Seq;
- Operators=WebSharper&&WebSharper.Operators;
- Charting=WebSharper&&WebSharper.Charting;
- Chart=Charting&&Charting.Chart;
- Pervasives=Charting&&Charting.Pervasives;
- Renderers=Charting&&Charting.Renderers;
- ChartJs=Renderers&&Renderers.ChartJs;
  AttrProxy=Next&&Next.AttrProxy;
  Doc=Next&&Next.Doc;
+ Charting=WebSharper&&WebSharper.Charting;
+ Renderers=Charting&&Charting.Renderers;
+ ChartJs=Renderers&&Renderers.ChartJs;
+ Seq=WebSharper&&WebSharper.Seq;
+ Operators=WebSharper&&WebSharper.Operators;
+ Chart$1=Charting&&Charting.Chart;
+ Pervasives=Charting&&Charting.Pervasives;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
  AttrModule=Next&&Next.AttrModule;
@@ -60,7 +64,10 @@
  IInPortNumber=Dashboard.IInPortNumber=Runtime.Class({
   Disconnect:function()
   {
+   var a;
    this.Disconnector();
+   a="Port "+this.name+" disconnected";
+   Global.console.log(a);
    this.Disconnector=function()
    {
    };
@@ -93,10 +100,12 @@
   },
   WebSharper_Community_Dashboard_IOutPort$Connect:function(port)
   {
-   var $this,handler;
+   var $this,a,handler;
    $this=this;
+   a="Port "+this.name+" connect";
+   Global.console.log(a);
    port.Disconnect();
-   handler=function(a,arg)
+   handler=function(a$1,arg)
    {
     return(port.get_Callback())(arg);
    };
@@ -120,48 +129,55 @@
   this.name=name;
   this.event=new FSharpEvent.New();
  },IOutPortNumber);
- Sources.RandomValueSource=function(middleValue,dispersion)
- {
-  var outRandomNumber,varMiddleValue,varDispersion;
-  outRandomNumber=new IOutPortNumber.New("Random value");
-  varMiddleValue=Var.Create$1(100);
-  varDispersion=Var.Create$1(0.1);
-  return{
-   WebSharper_Community_Dashboard_ISource$Run:function()
+ RandomValueSource=Sources.RandomValueSource=Runtime.Class({
+  WebSharper_Community_Dashboard_ISource$Run:function()
+  {
+   var $this,rnd;
+   $this=this;
+   rnd=new Random.New();
+   Concurrency.Start(Concurrency.Delay(function()
    {
-    var rnd;
-    rnd=new Random.New();
-    return Concurrency.Start(Concurrency.Delay(function()
+    return Concurrency.While(function()
     {
-     return Concurrency.While(function()
+     return true;
+    },Concurrency.Delay(function()
+    {
+     return Concurrency.Bind(Concurrency.Sleep(600),function()
      {
-      return true;
-     },Concurrency.Delay(function()
-     {
-      return Concurrency.Bind(Concurrency.Sleep(600),function()
-      {
-       var d;
-       d=Global.Math.random()*varDispersion.c+varMiddleValue.c;
-       outRandomNumber.Trigger(d);
-       return Concurrency.Return(null);
-      });
-     }));
-    }),null);
-   },
-   WebSharper_Community_Dashboard_ISource$get_Properties:function()
-   {
-    return List.ofArray([Properties["double"]("Middle value",varMiddleValue),Properties["double"]("Dispersion value",varDispersion)]);
-   },
-   WebSharper_Community_Dashboard_ISource$get_OutPorts:function()
-   {
-    return List.ofArray([outRandomNumber]);
-   },
-   WebSharper_Community_Dashboard_ISource$get_Name:function()
-   {
-    return Var.Create$1("Random");
-   }
-  };
- };
+      var d;
+      d=Global.Math.random()*$this.varDispersion.c+$this.varMiddleValue.c;
+      $this.outRandomNumber.Trigger(d);
+      return Concurrency.Return(null);
+     });
+    }));
+   }),null);
+  },
+  WebSharper_Community_Dashboard_ISource$Clone:function()
+  {
+   return new RandomValueSource.New(this.middleValue,this.dispersion);
+  },
+  WebSharper_Community_Dashboard_ISource$get_Properties:function()
+  {
+   return List.ofArray([Properties.string("Name",this.name),Properties["double"]("Middle value",this.varMiddleValue),Properties["double"]("Dispersion value",this.varDispersion)]);
+  },
+  WebSharper_Community_Dashboard_ISource$get_OutPorts:function()
+  {
+   return List.ofArray([this.outRandomNumber]);
+  },
+  WebSharper_Community_Dashboard_ISource$get_Name:function()
+  {
+   return this.name;
+  }
+ },null,RandomValueSource);
+ RandomValueSource.New=Runtime.Ctor(function(middleValue,dispersion)
+ {
+  this.middleValue=middleValue;
+  this.dispersion=dispersion;
+  this.outRandomNumber=new IOutPortNumber.New("Random value");
+  this.varMiddleValue=Var.Create$1(this.middleValue);
+  this.varDispersion=Var.Create$1(this.dispersion);
+  this.name=Var.Create$1("Random");
+ },RandomValueSource);
  Forecast.New=function(Title,Description,ImageUrl,Temperature,TemparatureMinMax)
  {
   return{
@@ -172,54 +188,60 @@
    TemparatureMinMax:TemparatureMinMax
   };
  };
- SrcOpenWeather.Create=function(city)
- {
-  var outTempearatur,apiKey,city$1;
-  outTempearatur=new IOutPortNumber.New("Temperature");
-  apiKey=Var.Create$1("");
-  city$1=Var.Create$1("London");
-  return{
-   WebSharper_Community_Dashboard_ISource$Run:function()
+ Create=SrcOpenWeather.Create=Runtime.Class({
+  WebSharper_Community_Dashboard_ISource$Run:function()
+  {
+   var $this,rnd;
+   $this=this;
+   rnd=new Random.New();
+   Concurrency.Start(Concurrency.Delay(function()
    {
-    var rnd;
-    rnd=new Random.New();
-    return Concurrency.Start(Concurrency.Delay(function()
+    return Concurrency.While(function()
     {
-     return Concurrency.While(function()
+     return true;
+    },Concurrency.Delay(function()
+    {
+     var x;
+     x=SrcOpenWeather.get($this.apiKey.c,$this.cityVar.c);
+     return Concurrency.Bind(x,function(a)
      {
-      return true;
-     },Concurrency.Delay(function()
-     {
-      var x;
-      x=SrcOpenWeather.get(apiKey.c,city$1.c);
-      return Concurrency.Bind(x,function(a)
+      var a$1;
+      a$1="Value generated:"+a.$0.Title;
+      Global.console.log(a$1);
+      $this.outTempearatur.Trigger(+a.$0.Temperature);
+      return Concurrency.Bind(Concurrency.Sleep(1000*15),function()
       {
-       var a$1;
-       a$1="Value generated:"+a.$0.Title;
-       Global.console.log(a$1);
-       outTempearatur.Trigger(+a.$0.Temperature);
-       return Concurrency.Bind(Concurrency.Sleep(1000*15),function()
-       {
-        return Concurrency.Return(null);
-       });
+       return Concurrency.Return(null);
       });
-     }));
-    }),null);
-   },
-   WebSharper_Community_Dashboard_ISource$get_Properties:function()
-   {
-    return List.ofArray([Properties.string("ApiKey",apiKey),Properties.string("City",city$1)]);
-   },
-   WebSharper_Community_Dashboard_ISource$get_OutPorts:function()
-   {
-    return List.ofArray([outTempearatur]);
-   },
-   WebSharper_Community_Dashboard_ISource$get_Name:function()
-   {
-    return Var.Create$1("OpenWeatherMap");
-   }
-  };
- };
+     });
+    }));
+   }),null);
+  },
+  WebSharper_Community_Dashboard_ISource$Clone:function()
+  {
+   return new Create.New(this.city);
+  },
+  WebSharper_Community_Dashboard_ISource$get_Properties:function()
+  {
+   return List.ofArray([Properties.string("Name",this.name),Properties.string("ApiKey",this.apiKey),Properties.string("City",this.cityVar)]);
+  },
+  WebSharper_Community_Dashboard_ISource$get_OutPorts:function()
+  {
+   return List.ofArray([this.outTempearatur]);
+  },
+  WebSharper_Community_Dashboard_ISource$get_Name:function()
+  {
+   return this.name;
+  }
+ },null,Create);
+ Create.New=Runtime.Ctor(function(city)
+ {
+  this.city=city;
+  this.outTempearatur=new IOutPortNumber.New("Temperature");
+  this.apiKey=Var.Create$1("");
+  this.cityVar=Var.Create$1(this.city);
+  this.name=Var.Create$1("OpenWeatherMap");
+ },Create);
  SrcOpenWeather.get=function(key,city)
  {
   return Concurrency.Delay(function()
@@ -294,15 +316,86 @@
    });
   });
  };
- Widgets.chart=function(cx,cy,chartBufferSize)
+ TextBox=Widgets.TextBox=Runtime.Class({
+  WebSharper_Community_Dashboard_IReceiver$get_Properties:function()
+  {
+   return List.T.Empty;
+  },
+  WebSharper_Community_Dashboard_IReceiver$Clone:function()
+  {
+   return new TextBox.New();
+  },
+  WebSharper_Community_Dashboard_IReceiver$Render:function()
+  {
+   var a,a$1;
+   a=[AttrProxy.Create("class","bigvalue")];
+   a$1=[Doc.TextView(this.varText.v)];
+   return Doc.Element("div",a,a$1);
+  },
+  WebSharper_Community_Dashboard_IReceiver$get_InPorts:function()
+  {
+   return List.ofArray([this.inPortNumber]);
+  },
+  WebSharper_Community_Dashboard_IReceiver$get_Name:function()
+  {
+   return Var.Create$1("Text");
+  }
+ },null,TextBox);
+ TextBox.New=Runtime.Ctor(function()
  {
-  var data,values,queue,a,chart,inPortNumber;
+  var $this;
+  $this=this;
+  this.varText=Var.Create$1("");
+  this.inPortNumber=new IInPortNumber.New("in Value",function(value)
+  {
+   var a,a$1,c;
+   a=$this.varText;
+   a$1=(c=value<<0,Global.String(c));
+   Var.Set(a,a$1);
+  });
+ },TextBox);
+ Chart=Widgets.Chart=Runtime.Class({
+  WebSharper_Community_Dashboard_IReceiver$Clone:function()
+  {
+   return new Chart.New(this.cx,this.cy,this.chartBufferSize);
+  },
+  WebSharper_Community_Dashboard_IReceiver$get_Properties:function()
+  {
+   return List.T.Empty;
+  },
+  WebSharper_Community_Dashboard_IReceiver$Render:function()
+  {
+   return ChartJs.Render$8(this.chart,{
+    $:1,
+    $0:{
+     $:0,
+     $0:this.cx,
+     $1:this.cy
+    }
+   },null,null);
+  },
+  WebSharper_Community_Dashboard_IReceiver$get_InPorts:function()
+  {
+   return List.ofArray([this.inPortNumber]);
+  },
+  WebSharper_Community_Dashboard_IReceiver$get_Name:function()
+  {
+   return Var.Create$1("Chart");
+  }
+ },null,Chart);
+ Chart.New=Runtime.Ctor(function(cx,cy,chartBufferSize)
+ {
+  var $this,data,values,queue,a;
+  $this=this;
+  this.cx=cx;
+  this.cy=cy;
+  this.chartBufferSize=chartBufferSize;
   data=List.ofSeq(Seq.delay(function()
   {
    return Seq.map(function()
    {
     return 0;
-   },Operators.range(0,chartBufferSize-1));
+   },Operators.range(0,$this.chartBufferSize-1));
   }));
   values=(queue=[],(a=function(entry)
   {
@@ -311,18 +404,18 @@
   {
    Seq.iter(a,s);
   }(data),queue));
-  chart=Chart.Line(data).__WithFillColor(new Pervasives.Color({
+  this.chart=Chart$1.Line(data).__WithFillColor(new Pervasives.Color({
    $:2,
    $0:"white"
   }));
-  inPortNumber=new IInPortNumber.New("in Value",function(value)
+  this.inPortNumber=new IInPortNumber.New("in Value",function(value)
   {
    var v,a$1;
    values.push(value);
-   values.length>chartBufferSize?v=values.shift():void 0;
+   values.length>$this.chartBufferSize?v=values.shift():void 0;
    a$1=function(ind,entry)
    {
-    return chart.__UpdateData(ind,function()
+    return $this.chart.__UpdateData(ind,function()
     {
      return entry;
     });
@@ -332,64 +425,7 @@
     Seq.iteri(a$1,s);
    }(values));
   });
-  return{
-   WebSharper_Community_Dashboard_IReceiver$get_Properties:function()
-   {
-    return List.T.Empty;
-   },
-   WebSharper_Community_Dashboard_IReceiver$Render:function()
-   {
-    return ChartJs.Render$8(chart,{
-     $:1,
-     $0:{
-      $:0,
-      $0:cx,
-      $1:cy
-     }
-    },null,null);
-   },
-   WebSharper_Community_Dashboard_IReceiver$get_InPorts:function()
-   {
-    return List.ofArray([inPortNumber]);
-   },
-   WebSharper_Community_Dashboard_IReceiver$get_Name:function()
-   {
-    return Var.Create$1("Chart");
-   }
-  };
- };
- Widgets.text=function()
- {
-  var varText,inPortNumber;
-  varText=Var.Create$1("");
-  inPortNumber=new IInPortNumber.New("in Value",function(value)
-  {
-   var a,c;
-   a=(c=value<<0,Global.String(c));
-   Var.Set(varText,a);
-  });
-  return{
-   WebSharper_Community_Dashboard_IReceiver$get_Properties:function()
-   {
-    return List.T.Empty;
-   },
-   WebSharper_Community_Dashboard_IReceiver$Render:function()
-   {
-    var a,a$1;
-    a=[AttrProxy.Create("class","bigvalue")];
-    a$1=[Doc.TextView(varText.v)];
-    return Doc.Element("div",a,a$1);
-   },
-   WebSharper_Community_Dashboard_IReceiver$get_InPorts:function()
-   {
-    return List.ofArray([inPortNumber]);
-   },
-   WebSharper_Community_Dashboard_IReceiver$get_Name:function()
-   {
-    return Var.Create$1("Text");
-   }
-  };
- };
+ },Chart);
  SourceItem.Create=function(src)
  {
   return SourceItem.New(Key.Fresh(),src);
@@ -484,7 +520,7 @@
     a$17=[(a$18=attrsClick(function()
     {
      $this.PropertyGrid.Edit(item.Source.WebSharper_Community_Dashboard_ISource$get_Properties());
-    }),(a$19=[Doc.TextNode(item.Source.WebSharper_Community_Dashboard_ISource$get_Name().c)],Doc.Element("i",a$18,a$19)))];
+    }),(a$19=[Doc.TextView(item.Source.WebSharper_Community_Dashboard_ISource$get_Name().v)],Doc.Element("i",a$18,a$19)))];
     return Doc.Element("tr",[],a$17);
    },function(a$17)
    {
@@ -551,7 +587,7 @@
     },items,selected))],Doc.Element("div",[],a$18)),o.ShowDialog("Select source",a$17,function()
     {
      selected.c.Source.WebSharper_Community_Dashboard_ISource$Run();
-     $this.RegisterSource(selected.c.Source);
+     $this.RegisterSource(selected.c.Source.WebSharper_Community_Dashboard_ISource$Clone());
     })):varBoolDash.c?v=$this.CreatePanel("Panel",700,{
      $:1,
      $0:function()
@@ -585,7 +621,7 @@
     o.ShowDialog("Select widget",a$1,function()
     {
      Global.console.log("Dialog.IsOK");
-     $this.RegisterReceiver(panel.Children,selected.c.Receiver);
+     $this.RegisterReceiver(panel.Children,selected.c.Receiver.WebSharper_Community_Dashboard_IReceiver$Clone());
     });
    }),TitleButton.New("edit",function(panel)
    {
@@ -620,7 +656,7 @@
    }(List.ofSeq(this.SourceItems)))),(selected=Var.Create$1(List.head(items)),(observe=function(src,port)
    {
     var a$1;
-    a$1=src.Source.WebSharper_Community_Dashboard_ISource$get_Name().c;
+    a$1="RegisterReceiver observe"+src.Source.WebSharper_Community_Dashboard_ISource$get_Name().c;
     Global.console.log(a$1);
     port.WebSharper_Community_Dashboard_IOutPort$Connect(receiver.WebSharper_Community_Dashboard_IReceiver$get_InPorts().get_Item(0));
    },(a=selected.v,View.Sink(function($1)

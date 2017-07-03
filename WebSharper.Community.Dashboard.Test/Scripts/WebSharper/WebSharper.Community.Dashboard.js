@@ -1,11 +1,13 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,IInPortNumber,IOutPortNumber,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widgets,TextBox,Chart,SourceItem,ReceiverItem,Factory,Dashboard$1,IntelliFactory,Runtime,Control,FSharpEvent,Random,Concurrency,List,PropertyGrid,Properties,UI,Next,Var,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,AttrProxy,Doc,Charting,Renderers,ChartJs,Seq,Operators,Chart$1,Pervasives,Key,ListModel,AttrModule,View,Panel,PanelContainer,LayoutManagers,Panel$1,TitleButton,PropertyGrid$1,Dialog;
+ var Global,WebSharper,Community,Dashboard,IInPort,IOutPort,IInPortNumber,IOutPortNumber,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widgets,TextBox,Chart,SourceItem,ReceiverItem,Factory,Dashboard$1,SourceProperty,IntelliFactory,Runtime,Control,FSharpEvent,Random,Concurrency,List,PropertyGrid,Properties,UI,Next,Var,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,AttrProxy,Doc,Charting,Renderers,ChartJs,Seq,Operators,Chart$1,Pervasives,Key,ListModel,AttrModule,View,Panel,PanelContainer,LayoutManagers,Panel$1,TitleButton,PropertyGrid$1,Dialog;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
+ IInPort=Dashboard.IInPort=Dashboard.IInPort||{};
+ IOutPort=Dashboard.IOutPort=Dashboard.IOutPort||{};
  IInPortNumber=Dashboard.IInPortNumber=Dashboard.IInPortNumber||{};
  IOutPortNumber=Dashboard.IOutPortNumber=Dashboard.IOutPortNumber||{};
  Sources=Dashboard.Sources=Dashboard.Sources||{};
@@ -20,6 +22,7 @@
  ReceiverItem=Dashboard.ReceiverItem=Dashboard.ReceiverItem||{};
  Factory=Dashboard.Factory=Dashboard.Factory||{};
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
+ SourceProperty=Dashboard.SourceProperty=Dashboard.SourceProperty||{};
  IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Control=WebSharper&&WebSharper.Control;
@@ -61,7 +64,7 @@
  TitleButton=Panel&&Panel.TitleButton;
  PropertyGrid$1=PropertyGrid&&PropertyGrid.PropertyGrid;
  Dialog=Panel&&Panel.Dialog;
- IInPortNumber=Dashboard.IInPortNumber=Runtime.Class({
+ IInPort=Dashboard.IInPort=Runtime.Class({
   Disconnect:function()
   {
    var a;
@@ -72,37 +75,66 @@
    {
    };
   },
-  RegisterDisconnector:function(disconnector)
+  RegisterDisconnector:function(outPort,disconnector)
   {
+   this._outPort=outPort;
    this.Disconnector=disconnector;
   },
-  get_Callback:function()
+  get_OutPort:function()
   {
-   return this.callback;
+   return this._outPort;
   },
-  WebSharper_Community_Dashboard_IInPort$get_Name:function()
+  get_Name:function()
   {
    return this.name;
   }
- },null,IInPortNumber);
- IInPortNumber.New=Runtime.Ctor(function(name,callback)
+ },null,IInPort);
+ IInPort.New=Runtime.Ctor(function(name)
  {
   this.name=name;
-  this.callback=callback;
   this.Disconnector=function()
   {
   };
+  this._outPort=new IOutPort.New("No connection");
+ },IInPort);
+ IOutPort=Dashboard.IOutPort=Runtime.Class({
+  IsCompatible:function(port)
+  {
+   return false;
+  },
+  Connect:function(port)
+  {
+  },
+  get_Name:function()
+  {
+   return this.name;
+  }
+ },null,IOutPort);
+ IOutPort.New=Runtime.Ctor(function(name)
+ {
+  this.name=name;
+ },IOutPort);
+ IInPortNumber=Dashboard.IInPortNumber=Runtime.Class({
+  get_Callback:function()
+  {
+   return this.callback;
+  }
+ },IInPort,IInPortNumber);
+ IInPortNumber.New=Runtime.Ctor(function(name,callback)
+ {
+  IInPort.New.call(this,name);
+  this.callback=callback;
  },IInPortNumber);
  IOutPortNumber=Dashboard.IOutPortNumber=Runtime.Class({
   Trigger:function(value)
   {
    this.event.event.Trigger(value);
   },
-  WebSharper_Community_Dashboard_IOutPort$Connect:function(port)
+  Connect:function(port)
   {
    var $this,a,handler;
    $this=this;
-   a="Port "+this.name+" connect";
+   a="Port "+this.name$1+" connect";
    Global.console.log(a);
    port.Disconnect();
    handler=function(a$1,arg)
@@ -110,23 +142,20 @@
     return(port.get_Callback())(arg);
    };
    this.event.event.AddHandler(handler);
-   port.RegisterDisconnector(function()
+   port.RegisterDisconnector(this,function()
    {
     $this.event.event.RemoveHandler(handler);
    });
   },
-  WebSharper_Community_Dashboard_IOutPort$IsCompatible:function(port)
+  IsCompatible:function(port)
   {
    return port instanceof IInPortNumber;
-  },
-  WebSharper_Community_Dashboard_IOutPort$get_Name:function()
-  {
-   return this.name;
   }
- },null,IOutPortNumber);
+ },IOutPort,IOutPortNumber);
  IOutPortNumber.New=Runtime.Ctor(function(name)
  {
-  this.name=name;
+  IOutPort.New.call(this,name);
+  this.name$1=name;
   this.event=new FSharpEvent.New();
  },IOutPortNumber);
  RandomValueSource=Sources.RandomValueSource=Runtime.Class({
@@ -637,41 +666,12 @@
   },
   RegisterReceiver:function(toPanelContainer,receiver)
   {
-   var items,m,selected,observe,a;
    this.ReceiverItems.Append(ReceiverItem.Create(receiver));
-   toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(receiver.WebSharper_Community_Dashboard_IReceiver$Render()).WithProperties((items=List.concat((m=function(item)
-   {
-    var m$1;
-    m$1=function(port)
-    {
-     return[item,port];
-    };
-    return function(l)
-    {
-     return List.map(m$1,l);
-    }(item.Source.WebSharper_Community_Dashboard_ISource$get_OutPorts());
-   },function(l)
-   {
-    return List.map(m,l);
-   }(List.ofSeq(this.SourceItems)))),(selected=Var.Create$1(List.head(items)),(observe=function(src,port)
-   {
-    var a$1;
-    a$1="RegisterReceiver observe"+src.Source.WebSharper_Community_Dashboard_ISource$get_Name().c;
-    Global.console.log(a$1);
-    port.WebSharper_Community_Dashboard_IOutPort$Connect(receiver.WebSharper_Community_Dashboard_IReceiver$get_InPorts().get_Item(0));
-   },(a=selected.v,View.Sink(function($1)
-   {
-    return observe($1[0],$1[1]);
-   },a),new List.T({
+   toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(receiver.WebSharper_Community_Dashboard_IReceiver$Render()).WithProperties(new List.T({
     $:1,
-    $0:Properties.select("Source",function(t)
-    {
-     var port;
-     port=t[1];
-     return t[0].Source.WebSharper_Community_Dashboard_ISource$get_Name().c+"\\"+port.WebSharper_Community_Dashboard_IOutPort$get_Name();
-    },items,selected),
+    $0:new SourceProperty.New(this,receiver),
     $1:receiver.WebSharper_Community_Dashboard_IReceiver$get_Properties()
-   })))))));
+   })));
   },
   RegisterSource:function(source)
   {
@@ -701,4 +701,57 @@
    Dialog:Dialog$1
   });
  };
+ SourceProperty=Dashboard.SourceProperty=Runtime.Class({
+  WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
+  {
+   var $this,items,m,item,m$1,p,selected,observe,a,a$1,a$2;
+   $this=this;
+   items=List.concat((m=function(item$1)
+   {
+    var m$2;
+    m$2=function(port)
+    {
+     return[item$1,port];
+    };
+    return function(l)
+    {
+     return List.map(m$2,l);
+    }(item$1.Source.WebSharper_Community_Dashboard_ISource$get_OutPorts());
+   },function(l)
+   {
+    return List.map(m,l);
+   }(List.ofSeq(this.dashboard.SourceItems))));
+   return items.get_Length()>0?(item=(m$1=(p=function(srcItem,port)
+   {
+    return Unchecked.Equals(port,$this.receiver.WebSharper_Community_Dashboard_IReceiver$get_InPorts().get_Item(0).get_OutPort());
+   },function(l)
+   {
+    return Seq.tryFind(function($1)
+    {
+     return p($1[0],$1[1]);
+    },l);
+   }(items)),(m$1!=null?m$1.$==1:false)?m$1.$0:List.head(items)),(selected=Var.Create$1(item),(observe=function(src,port)
+   {
+    port.Connect($this.receiver.WebSharper_Community_Dashboard_IReceiver$get_InPorts().get_Item(0));
+   },(a=selected.v,View.Sink(function($1)
+   {
+    return observe($1[0],$1[1]);
+   },a),a$1=[AttrModule.Class("form-control")],a$2=function(item$1,port)
+   {
+    return item$1.Source.WebSharper_Community_Dashboard_ISource$get_Name().c+"\\"+port.get_Name();
+   },Doc.Select(a$1,function($1)
+   {
+    return a$2($1[0],$1[1]);
+   },items,selected))))):Doc.TextNode("No sources defined");
+  },
+  WebSharper_Community_PropertyGrid_IProperty$get_Name:function()
+  {
+   return"Source";
+  }
+ },null,SourceProperty);
+ SourceProperty.New=Runtime.Ctor(function(dashboard,receiver)
+ {
+  this.dashboard=dashboard;
+  this.receiver=receiver;
+ },SourceProperty);
 }());

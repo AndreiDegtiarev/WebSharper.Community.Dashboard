@@ -5,37 +5,40 @@ open WebSharper.JavaScript
 open WebSharper.UI.Next
 
 [<JavaScript>]
-type IInPort =
-    abstract Name:string 
-
-[<JavaScript>]
-type IOutPort =
-    abstract Name:string 
-    abstract IsCompatible : IInPort->bool
-    abstract Connect : IInPort->unit
-
-[<JavaScript>]
-type IInPortNumber(name,callback) =
+type IInPort(name) =
     let mutable Disconnector=(fun _ ->())
-    interface IInPort with
-        override x.Name = name
-    member x.Callback = callback
-    member x.RegisterDisconnector (disconnector:(unit->unit)) = Disconnector <- disconnector
+    let mutable _outPort:IOutPort=IOutPort("No connection")
+    member x.Name:string = name
+    member x.OutPort = _outPort
+    member x.RegisterDisconnector outPort (disconnector:(unit->unit)) = 
+                                            _outPort <- outPort
+                                            Disconnector <- disconnector
     member x.Disconnect() = Disconnector()
                             Console.Log("Port "+ name + " disconnected")
                             Disconnector <- (fun _ ->())
+
+and [<JavaScript>] IOutPort(name) =
+    member x.Name:string=name
+    abstract member IsCompatible : IInPort->bool
+    abstract member Connect : IInPort->unit
+    default x.IsCompatible port = false
+    default x.Connect port = ()
+[<JavaScript>]
+type IInPortNumber(name,callback) =
+    inherit IInPort(name)
+    member x.Callback = callback
+
 [<JavaScript>]
 type IOutPortNumber(name)=
+    inherit IOutPort(name)
     let event=new Event<double>()
-    interface IOutPort with 
-        override x.Name=name
-        override x.IsCompatible port=port :? IInPortNumber
-        override x.Connect port =  Console.Log("Port "+ name + " connect")
-                                   let numPort = (port :?> IInPortNumber)
-                                   numPort.Disconnect()
-                                   let handler = Handler<double>(fun _ arg -> numPort.Callback(arg))
-                                   event.Publish.AddHandler(handler)
-                                   numPort.RegisterDisconnector (fun _ -> event.Publish.RemoveHandler(handler))
-                                   //event.Publish.Add((port :?> IInPortNumber).Callback)
+    override x.IsCompatible port=port :? IInPortNumber
+    override x.Connect port =  Console.Log("Port "+ name + " connect")
+                               let numPort = (port :?> IInPortNumber)
+                               numPort.Disconnect()
+                               let handler = Handler<double>(fun _ arg -> numPort.Callback(arg))
+                               event.Publish.AddHandler(handler)
+                               numPort.RegisterDisconnector x (fun _ -> event.Publish.RemoveHandler(handler))
+                               //event.Publish.Add((port :?> IInPortNumber).Callback)
     member x.Trigger value=event.Trigger value
 

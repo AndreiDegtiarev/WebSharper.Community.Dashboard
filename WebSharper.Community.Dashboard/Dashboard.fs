@@ -36,14 +36,14 @@ type Dashboard =
         let panel = Panel.Create
                          .WithTitle(false)
                          .WithPanelContent(receiver.Render())
-                         .WithProperties (let items = x.SourceItems|>List.ofSeq|>List.map(fun item -> item.Source.OutPorts|>List.map(fun port -> item,port))|>List.concat
+                         .WithProperties ( (*let items = x.SourceItems|>List.ofSeq|>List.map(fun item -> item.Source.OutPorts|>List.map(fun port -> item,port))|>List.concat
                                           let selected=Var.Create (items.Head)
                                           let propSources = Properties.select "Source" (fun (item,port:IOutPort) -> item.Source.Name.Value + "\\"+(port.Name)) items selected
                                           let observe (src,port:IOutPort) =
                                               Console.Log("RegisterReceiver observe"+ src.Source.Name.Value)
                                               port.Connect (receiver.InPorts.[0])
-                                          View.Sink observe selected.View
-                                          propSources::receiver.Properties) 
+                                          View.Sink observe selected.View*)
+                                          (SourceProperty(x,receiver) :>IProperty)::receiver.Properties) 
                          //.WithInternalName("text")
         toPanelContainer.AddPanel panel
     member x.CreatePanel(name,cx,?afterRenderFnc) = 
@@ -140,7 +140,26 @@ type Dashboard =
             div[x.Dialog.Render]
          ]
 
-//and  SourceProperty= {new IProperty with 
-//                                                 override x.Name = name
-//                                                 override x.Render = Doc.Select [Attr.Class "form-control"] fncCnv selections var  :>Doc
-//                                         } 
+and  [<JavaScript>] SourceProperty(dashboard,receiver:IReceiver)= 
+    interface IProperty with 
+          override x.Name = "Source"
+          override x.Render = 
+              let items = dashboard.SourceItems|>List.ofSeq|>List.map(fun item -> item.Source.OutPorts|>List.map(fun port -> item,port))|>List.concat
+              if items.Length > 0 then
+                  let item = 
+                      match items |>List.tryFind (fun (srcItem,port) -> port = receiver.InPorts.[0].OutPort) with
+                      |None -> items.Head
+                      |Some(item) -> item
+                  let selected=Var.Create (item)
+                  let propSources = Properties.select "Source" (fun (item,port:IOutPort) -> item.Source.Name.Value + "\\"+(port.Name)) items selected
+                  let observe (src,port:IOutPort) =
+                      //Console.Log("RegisterReceiver observe"+ src.Source.Name.Value)
+                      port.Connect (receiver.InPorts.[0])
+                  View.Sink observe selected.View
+
+                  Doc.Select [Attr.Class "form-control"] 
+                        (fun (item,port:IOutPort) -> item.Source.Name.Value + "\\"+(port.Name)) 
+                        items
+                        selected  :>Doc
+              else 
+                text "No sources defined"

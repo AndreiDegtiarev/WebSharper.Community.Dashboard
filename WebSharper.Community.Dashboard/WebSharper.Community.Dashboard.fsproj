@@ -49,12 +49,15 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="DshBase.fs" />
     <Compile Include="Port.fs" />
+    <Compile Include="Worker.fs" />
     <Compile Include="Source.fs" />
     <Compile Include="SrcOpenWeather.fs" />
-    <Compile Include="Receiver.fs" />
     <Compile Include="Widgets.fs" />
     <Compile Include="Factory.fs" />
+    <Compile Include="DshData.fs" />
+    <Compile Include="DshEditor.fs" />
     <Compile Include="Dashboard.fs" />
     <Content Include="packages.config" />
   </ItemGroup>

@@ -13,42 +13,37 @@ open WebSharper.Community.PropertyGrid
 type Dashboard =
     {
         Factory : Factory
-        SourceItems : ListModel<Key,SourceItem>
-        ReceiverItems : ListModel<Key,ReceiverItem>
+        Data:DshData
         PanelContainer:PanelContainer
+        DshEditor: DshEditor
         PropertyGrid : PropertyGrid
         Dialog : Dialog
     }
     static member Create panelContainer=
         {
            Factory = Factory.Create
-           SourceItems = ListModel.Create (fun item ->item.Key) []
-           ReceiverItems = ListModel.Create (fun item ->item.Key) []
+           Data = DshData.Create
            PanelContainer=panelContainer
+           DshEditor = DshEditor.Create
            PropertyGrid = PropertyGrid.Create
            Dialog = Dialog.Create
         }
     member x.RegisterSource source = 
-        x.SourceItems.Add (SourceItem.Create source)
+        x.Data.WorkItems.Add (WorkerItem.Create source)
         source.Run()
-    member x.RegisterReceiver (toPanelContainer:PanelContainer) receiver = 
-        x.ReceiverItems.Add (ReceiverItem.Create receiver)
+    member x.RegisterWidget (toPanelContainer:PanelContainer) widget = 
+        x.Data.WidgetItems.Add (WorkerItem.Create widget)
         let panel = Panel.Create
                          .WithTitle(false)
-                         .WithPanelContent(receiver.Render())
-                         .WithProperties ( (*let items = x.SourceItems|>List.ofSeq|>List.map(fun item -> item.Source.OutPorts|>List.map(fun port -> item,port))|>List.concat
-                                          let selected=Var.Create (items.Head)
-                                          let propSources = Properties.select "Source" (fun (item,port:IOutPort) -> item.Source.Name.Value + "\\"+(port.Name)) items selected
-                                          let observe (src,port:IOutPort) =
-                                              Console.Log("RegisterReceiver observe"+ src.Source.Name.Value)
-                                              port.Connect (receiver.InPorts.[0])
-                                          View.Sink observe selected.View*)
-                                          (SourceProperty(x,receiver) :>IProperty)::receiver.Properties) 
-                         //.WithInternalName("text")
+                         .WithPanelContent(Widgets.render widget)
+                         .WithProperties ((SourceProperty(x,widget) :>IProperty)::widget.Properties) 
+
         toPanelContainer.AddPanel panel
     member x.CreatePanel(name,cx,?afterRenderFnc) = 
-        let renderReceivers=x.Factory.ReceiverItems.View
-                           |> Doc.BindSeqCachedBy x.ReceiverItems.Key (fun item-> div[textView item.Receiver.Name.View])           
+        let renderWidgets= x.Factory.WidgetItems.View
+                           |> Doc.BindSeqCachedBy x.Data.WidgetItems.Key (fun item-> 
+                                                let nameView = item.Worker.Name.View
+                                                div[textView nameView])           
 
         let afterRenderFncDef = defaultArg afterRenderFnc (fun _->())
         let childContainerContent = PanelContainer.Create
@@ -64,12 +59,12 @@ type Dashboard =
                          .WithTitleButtons(
                                       [
                                         {Icon="add";Action=(fun panel->(
-                                                                        let items = x.Factory.ReceiverItems|>List.ofSeq
+                                                                        let items = x.Factory.WidgetItems|>List.ofSeq
                                                                         let selected=Var.Create (items.Head)
-                                                                        x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Receiver.Name.Value) items selected])
+                                                                        x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 Console.Log("Dialog.IsOK")
-                                                                                                                x.RegisterReceiver panel.Children (selected.Value.Receiver.Clone())
+                                                                                                                x.RegisterWidget panel.Children (selected.Value.Worker.Clone())
                                                                                                              )
                                                                        ))}
                                         {Icon="edit"; Action=(fun panel->Console.Log("Edit")
@@ -81,22 +76,19 @@ type Dashboard =
         x.PanelContainer.AddPanel panel
         childContainerContent   
     member x.Render=
-        let attrsClick action =[Attr.Style "Color" "#FB8C00"
-                                Attr.Style "cursor" "pointer"
-                                on.click (fun elem _->action())]
         let srcRender =
             table[
-                    ListModel.View x.SourceItems
-                    |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [iAttr (attrsClick (fun _ ->item.Source.Properties |> x.PropertyGrid.Edit))
-                                                                                [textView item.Source.Name.View]])
+                    ListModel.View x.Data.WorkItems
+                    |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [iAttr (Helper.AttrsClick 
+                                                                                       (fun _ ->item.Worker.Properties |> x.PropertyGrid.Edit))
+                                                                            [textView item.Worker.Name.View]])
                   ]
-        let icon id action = iAttr(Attr.Class "material-icons orange600"::attrsClick action)[text id]
-
         let container varValue content = let varVis=Var.Create varValue 
                                          (varVis,divAttr[Attr.DynamicStyle "display" (View.Map (fun (isVisible) -> if isVisible then "initial" else "none")  varVis.View) ]
                                                         [content])
         let containers = ["Board",   container true x.PanelContainer.Render
                           "Sources", container false srcRender
+                          "Edit",    container false x.DshEditor.Render
                          ]
         let menu=containers |> List.map (fun (name,(varVis,targetDiv)) ->tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (isVisible) -> if isVisible then "#FB8C00" else "#7D4600")  varVis.View) 
                                                                                    Attr.Style "cursor" "pointer"
@@ -113,17 +105,17 @@ type Dashboard =
                                  (Seq.concat
                                     [
                                        [
-                                            tr[td[icon "dehaze" (fun _ -> ())]]
-                                            tr[td[icon "add" (fun _ -> 
+                                            tr[td[Helper.IconNormal "dehaze" (fun _ -> ())]]
+                                            tr[td[Helper.IconNormal "add" (fun _ -> 
                                                                 let (_,(varBoolDash,_)) = containers.[0]
                                                                 let (_,(varBoolSrc,_)) = containers.[1]
                                                                 if varBoolSrc.Value then
                                                                     let items = x.Factory.SourceItems|>List.ofSeq
                                                                     let selected=Var.Create (items.Head)
-                                                                    x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Source.Name.Value) items selected])
+                                                                    x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ -> 
-                                                                                                                selected.Value.Source.Run()
-                                                                                                                x.RegisterSource (selected.Value.Source.Clone()))
+                                                                                                                selected.Value.Worker.Run()
+                                                                                                                x.RegisterSource (selected.Value.Worker.Clone()))
                                                                 else if varBoolDash.Value then
                                                                     x.CreatePanel("Panel",700,(fun _->()))|>ignore
                                                              )]]
@@ -140,25 +132,24 @@ type Dashboard =
             div[x.Dialog.Render]
          ]
 
-and  [<JavaScript>] SourceProperty(dashboard,receiver:IReceiver)= 
+and  [<JavaScript>] SourceProperty(dashboard,receiver:Worker)= 
     interface IProperty with 
           override x.Name = "Source"
           override x.Render = 
-              let items = dashboard.SourceItems|>List.ofSeq|>List.map(fun item -> item.Source.OutPorts|>List.map(fun port -> item,port))|>List.concat
+              let items = dashboard.Data.WorkItems|>List.ofSeq|>List.map(fun item -> item.Worker.OutPorts|>List.map(fun port -> item,port))|>List.concat
               if items.Length > 0 then
                   let item = 
                       match items |>List.tryFind (fun (srcItem,port) -> port = receiver.InPorts.[0].OutPort) with
                       |None -> items.Head
                       |Some(item) -> item
                   let selected=Var.Create (item)
-                  let propSources = Properties.select "Source" (fun (item,port:IOutPort) -> item.Source.Name.Value + "\\"+(port.Name)) items selected
-                  let observe (src,port:IOutPort) =
-                      //Console.Log("RegisterReceiver observe"+ src.Source.Name.Value)
-                      port.Connect (receiver.InPorts.[0])
+                  let propSources = Properties.select "Source" (fun (item,port:OutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) items selected
+                  let observe (src,outPort:OutPort) =
+                      dashboard.Data.ConnectPorts outPort receiver.InPorts.[0]
                   View.Sink observe selected.View
 
                   Doc.Select [Attr.Class "form-control"] 
-                        (fun (item,port:IOutPort) -> item.Source.Name.Value + "\\"+(port.Name)) 
+                        (fun (item,port:OutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) 
                         items
                         selected  :>Doc
               else 

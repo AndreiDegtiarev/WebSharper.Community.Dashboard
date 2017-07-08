@@ -20,32 +20,9 @@ module Client =
                                                           //Attr.Style "position" "absolute"
                                                          ])
         let dashboard = Dashboard.Create panelContainer
-        //let srcRandom2 = Sources.RandomValueSource 50.0 5.0
-        //let srcRandom1 = Sources.RandomValueSource 100.0 10.0
-        //let srcRandom1 = SrcOpenWeather.Create "London"
         dashboard.Factory.RegisterSource (SrcOpenWeather.Create("London"))
         dashboard.Factory.RegisterSource (Sources.RandomValueSource(50.0,5.0))
-        dashboard.Factory.RegisterReceiver (Widgets.TextBox())
-        dashboard.Factory.RegisterReceiver (Widgets.Chart(100,100,50))
-        //srcRandom1.Run
-        //srcRandom2.Run()
-        div[
-                dashboard.Render
-           ].OnAfterRender(fun (el) -> ()
-             (*                  Console.Log "OnAfterRender"
-                               let clientWidth = el.ClientWidth
-                               let cx = 800.0 - 15.0
-                               let createPanel(name,(src:ISource),fnc) =
-                                   let clientContainer = dashboard.CreatePanel(name,cx,fnc)
-                                   [
-                                        Widgets.text()
-                                        Widgets.chart(((int)(cx - 270.0)),120,50)
-                                   ]|>List.iter (fun widget  ->  src.OutPorts.[0].Connect (widget.InPorts.[0])
-                                                                 dashboard.RegisterReceiver clientContainer widget
-                                                                          )
-                               createPanel("Panel1",srcRandom1,(fun panel -> layoutManager.Relayout panelContainer panel ))
-                               createPanel("Panel2",srcRandom2,(fun panel -> 
-                                            Console.Log "second create panel"
-                                            layoutManager.PlacePanel panelContainer panel))
-                                            *)
-                          )
+        dashboard.Factory.RegisterWidget (Widgets.TextBox())
+        dashboard.Factory.RegisterWidget (Widgets.Chart(100.0,100.0,50))
+
+        div[dashboard.Render]

@@ -1,11 +1,12 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Panel,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,Dialog,IntelliFactory,Runtime,UI,Next,AttrModule,Doc,Var,Input,Mouse,View,Operators,Seq,List,Unchecked,Key,ListModel;
+ var Global,WebSharper,Community,Panel,Helper,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,Dialog,List,UI,Next,AttrModule,Doc,IntelliFactory,Runtime,Var,Input,Mouse,View,Operators,Seq,Unchecked,Key,ListModel;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Panel=Community.Panel=Community.Panel||{};
+ Helper=Panel.Helper=Panel.Helper||{};
  TitleButton=Panel.TitleButton=Panel.TitleButton||{};
  Panel$1=Panel.Panel=Panel.Panel||{};
  PanelContainer=Panel.PanelContainer=Panel.PanelContainer||{};
@@ -13,36 +14,60 @@
  LayoutManagers=Panel.LayoutManagers=Panel.LayoutManagers||{};
  SC$1=Global.StartupCode$WebSharper_Community_Panel$LayoutManagers=Global.StartupCode$WebSharper_Community_Panel$LayoutManagers||{};
  Dialog=Panel.Dialog=Panel.Dialog||{};
- IntelliFactory=Global.IntelliFactory;
- Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ List=WebSharper&&WebSharper.List;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  AttrModule=Next&&Next.AttrModule;
  Doc=Next&&Next.Doc;
+ IntelliFactory=Global.IntelliFactory;
+ Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Var=Next&&Next.Var;
  Input=Next&&Next.Input;
  Mouse=Input&&Input.Mouse;
  View=Next&&Next.View;
  Operators=WebSharper&&WebSharper.Operators;
  Seq=WebSharper&&WebSharper.Seq;
- List=WebSharper&&WebSharper.List;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
+ Helper.IconSmall=function(id,action)
+ {
+  return Helper.Icon("material-icons orange600 small",id,action);
+ };
+ Helper.IconNormal=function(id,action)
+ {
+  return Helper.Icon("material-icons orange600",id,action);
+ };
+ Helper.Icon=function(className,id,action)
+ {
+  var a,a$1;
+  a=new List.T({
+   $:1,
+   $0:AttrModule.Class(className),
+   $1:Helper.AttrsClick(action)
+  });
+  a$1=[Doc.TextNode(id)];
+  return Doc.Element("i",a,a$1);
+ };
+ Helper.AttrsClick=function(action)
+ {
+  return List.ofArray([AttrModule.Style("Color","#FB8C00"),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+  {
+   return function()
+   {
+    return action();
+   };
+  })]);
+ };
  TitleButton=Panel.TitleButton=Runtime.Class({
   Render:function(panel)
   {
-   var $this,a,a$1;
+   var $this;
    $this=this;
-   a=[AttrModule.Class("material-icons orange600 small"),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+   return Helper.IconSmall(this.Icon,function()
    {
-    return function()
-    {
-     return $this.Action(panel);
-    };
-   })];
-   a$1=[Doc.TextNode(this.Icon)];
-   return Doc.Element("i",a,a$1);
+    $this.Action(panel);
+   });
   }
  },null,TitleButton);
  TitleButton.New=function(Icon,Action)
@@ -661,33 +686,33 @@
  Dialog=Panel.Dialog=Runtime.Class({
   get_Render:function()
   {
-   var $this,a,a$1,a$2,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15;
+   var $this,a,a$1,a$2,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15,a$16,a$17,a$18,a$19,a$20,a$21,a$22;
    $this=this;
    a=[AttrModule.Style("position","absolute"),AttrModule.Style("left","50%"),AttrModule.Style("top","50%"),AttrModule.Style("z-index","1"),AttrModule.Style("background-color","white"),AttrModule.Style("min-height","100px"),AttrModule.Style("min-width","200px"),AttrModule.DynamicStyle("display",(a$1=this.Visibility.v,View.Map(function(isVis)
    {
     return isVis?"block":"none";
    },a$1)))];
-   a$2=[(a$3=[(a$4=[(a$5=[Doc.TextView(this.Title.v)],Doc.Element("td",[],a$5))],Doc.Element("tr",[],a$4)),(a$6=[(a$7=[(a$8=Global.id,function(a$16)
+   a$2=[(a$3=[AttrModule.Style("background-color","grey"),AttrModule.Style("display","block"),AttrModule.Style("min-height","100px"),AttrModule.Style("min-width","200px")],(a$4=[(a$5=[(a$6=[(a$7=[AttrModule.Style("border-style","hidden"),AttrModule.Style("background","#404040"),AttrModule.Style("color","rgb(200,200,200)"),AttrModule.Style("padding","0px 2px 5px 2px"),AttrModule.Style("Width","200px"),AttrModule.Style("font-size","medium")],(a$8=[Doc.TextView(this.Title.v)],Doc.Element("td",a$7,a$8)))],Doc.Element("tr",[],a$6))],Doc.Element("table",[],a$5)),(a$9=[(a$10=[(a$11=[AttrModule.Style("padding","5px 0px 0px 2px")],(a$12=[(a$13=Global.id,function(a$23)
    {
-    return Doc.BindView(a$8,a$16);
-   }(this.Content.v))],Doc.Element("td",[],a$7))],Doc.Element("tr",[],a$6)),(a$9=[(a$10=[(a$11=[AttrModule.Handler("click",function()
+    return Doc.BindView(a$13,a$23);
+   }(this.Content.v))],Doc.Element("td",a$11,a$12)))],Doc.Element("tr",[],a$10)),(a$14=[(a$15=[AttrModule.Style("padding","20px 12px 2px 20px")],(a$16=[(a$17=[AttrModule.Style("border-radius","2px"),AttrModule.Handler("click",function()
    {
     return function()
     {
-     var a$16;
-     a$16=$this.Visibility;
-     Var.Set(a$16,false);
+     var a$23;
+     a$23=$this.Visibility;
+     Var.Set(a$23,false);
      return $this.OKCallback.c();
     };
-   })],(a$12=[Doc.TextNode("OK")],Doc.Element("button",a$11,a$12)))],Doc.Element("td",[],a$10)),(a$13=[(a$14=[AttrModule.Handler("click",function()
+   })],(a$18=[Doc.TextNode("OK")],Doc.Element("button",a$17,a$18)))],Doc.Element("td",a$15,a$16))),(a$19=[AttrModule.Style("padding","20px 12px 2px 50px")],(a$20=[(a$21=[AttrModule.Style("border-radius","2px"),AttrModule.Handler("click",function()
    {
     return function()
     {
-     var a$16;
-     a$16=$this.Visibility;
-     return Var.Set(a$16,false);
+     var a$23;
+     a$23=$this.Visibility;
+     return Var.Set(a$23,false);
     };
-   })],(a$15=[Doc.TextNode("Cancel")],Doc.Element("button",a$14,a$15)))],Doc.Element("td",[],a$13))],Doc.Element("tr",[],a$9))],Doc.Element("table",[],a$3))];
+   })],(a$22=[Doc.TextNode("Cancel")],Doc.Element("button",a$21,a$22)))],Doc.Element("td",a$19,a$20)))],Doc.Element("tr",[],a$14))],Doc.Element("table",[],a$9))],Doc.Element("table",a$3,a$4)))];
    return Doc.Element("div",a,a$2);
   },
   ShowDialog:function(title,content,okCallback)

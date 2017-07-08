@@ -25,16 +25,14 @@
  Doc=Next&&Next.Doc;
  Client.Main=function()
  {
-  var panelContainer,dashboard,_this,a;
+  var panelContainer,dashboard,a;
   panelContainer=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")]);
   dashboard=Dashboard$1.Create(panelContainer);
   dashboard.Factory.RegisterSource(new Create.New("London"));
   dashboard.Factory.RegisterSource(new RandomValueSource.New(50,5));
-  dashboard.Factory.RegisterReceiver(new TextBox.New());
-  dashboard.Factory.RegisterReceiver(new Chart.New(100,100,50));
-  _this=(a=[dashboard.get_Render()],Doc.Element("div",[],a));
-  return _this.OnAfterRender(function()
-  {
-  });
+  dashboard.Factory.RegisterWidget(new TextBox.New());
+  dashboard.Factory.RegisterWidget(new Chart.New(100,100,50));
+  a=[dashboard.get_Render()];
+  return Doc.Element("div",[],a);
  };
 }());

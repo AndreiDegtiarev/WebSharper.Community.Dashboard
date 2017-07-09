@@ -3,7 +3,7 @@
 open WebSharper
 open WebSharper.JavaScript
 open WebSharper.UI.Next
-open WebSharper.Community.PropertyGrid
+
 
 [<JavaScript>]
 type PortConnectorItem =

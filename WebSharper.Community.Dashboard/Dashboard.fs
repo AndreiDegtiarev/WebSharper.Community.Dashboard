@@ -20,13 +20,14 @@ type Dashboard =
         Dialog : Dialog
     }
     static member Create panelContainer=
+        let dialog = Dialog.Create
         {
            Factory = Factory.Create
            Data = DshData.Create
            PanelContainer=panelContainer
+           Dialog = dialog
            DshEditor = DshEditor.Create
            PropertyGrid = PropertyGrid.Create
-           Dialog = Dialog.Create
         }
     member x.RegisterSource source = 
         x.Data.WorkItems.Add (WorkerItem.Create source)
@@ -36,7 +37,7 @@ type Dashboard =
         let panel = Panel.Create
                          .WithTitle(false)
                          .WithPanelContent(Widgets.render widget)
-                         .WithProperties ((SourceProperty(x,widget) :>IProperty)::widget.Properties) 
+                         .WithProperties ((SourceProperty(x.Data,widget) :>IProperty)::widget.Properties) 
 
         toPanelContainer.AddPanel panel
     member x.CreatePanel(name,cx,?afterRenderFnc) = 
@@ -88,7 +89,7 @@ type Dashboard =
                                                         [content])
         let containers = ["Board",   container true x.PanelContainer.Render
                           "Sources", container false srcRender
-                          "Edit",    container false x.DshEditor.Render
+                          "Edit",    container false (x.DshEditor.Render x.Data)
                          ]
         let menu=containers |> List.map (fun (name,(varVis,targetDiv)) ->tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (isVisible) -> if isVisible then "#FB8C00" else "#7D4600")  varVis.View) 
                                                                                    Attr.Style "cursor" "pointer"
@@ -132,25 +133,3 @@ type Dashboard =
             div[x.Dialog.Render]
          ]
 
-and  [<JavaScript>] SourceProperty(dashboard,receiver:Worker)= 
-    interface IProperty with 
-          override x.Name = "Source"
-          override x.Render = 
-              let items = dashboard.Data.WorkItems|>List.ofSeq|>List.map(fun item -> item.Worker.OutPorts|>List.map(fun port -> item,port))|>List.concat
-              if items.Length > 0 then
-                  let item = 
-                      match items |>List.tryFind (fun (srcItem,port) -> port = receiver.InPorts.[0].OutPort) with
-                      |None -> items.Head
-                      |Some(item) -> item
-                  let selected=Var.Create (item)
-                  let propSources = Properties.select "Source" (fun (item,port:OutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) items selected
-                  let observe (src,outPort:OutPort) =
-                      dashboard.Data.ConnectPorts outPort receiver.InPorts.[0]
-                  View.Sink observe selected.View
-
-                  Doc.Select [Attr.Class "form-control"] 
-                        (fun (item,port:OutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) 
-                        items
-                        selected  :>Doc
-              else 
-                text "No sources defined"

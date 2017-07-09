@@ -29,15 +29,14 @@ type Dashboard =
            DshEditor = DshEditor.Create
            PropertyGrid = PropertyGrid.Create
         }
-    member x.RegisterSource source = 
-        x.Data.WorkItems.Add (WorkerItem.Create source)
-        source.Run()
-    member x.RegisterWidget (toPanelContainer:PanelContainer) widget = 
-        x.Data.WidgetItems.Add (WorkerItem.Create widget)
+    member x.RegisterWidget (toPanelContainer:PanelContainer) (worker:Worker) = 
+        x.Data.RegisterWidget worker
         let panel = Panel.Create
                          .WithTitle(false)
-                         .WithPanelContent(Widgets.render widget)
-                         .WithProperties ((SourceProperty(x.Data,widget) :>IProperty)::widget.Properties) 
+                         .WithPanelContent(match worker with
+                                           | :?  Widget as widget -> widget.Render()                                    
+                                           | _ ->div[] :> Doc)
+                         .WithProperties ((SourceProperty(x.Data,worker) :>IProperty)::worker.Properties) 
 
         toPanelContainer.AddPanel panel
     member x.CreatePanel(name,cx,?afterRenderFnc) = 
@@ -77,9 +76,9 @@ type Dashboard =
         x.PanelContainer.AddPanel panel
         childContainerContent   
     member x.Render=
-        let srcRender =
+        let eventsRender =
             table[
-                    ListModel.View x.Data.WorkItems
+                    ListModel.View x.Data.EventItems
                     |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [iAttr (Helper.AttrsClick 
                                                                                        (fun _ ->item.Worker.Properties |> x.PropertyGrid.Edit))
                                                                             [textView item.Worker.Name.View]])
@@ -87,9 +86,9 @@ type Dashboard =
         let container varValue content = let varVis=Var.Create varValue 
                                          (varVis,divAttr[Attr.DynamicStyle "display" (View.Map (fun (isVisible) -> if isVisible then "initial" else "none")  varVis.View) ]
                                                         [content])
-        let containers = ["Board",   container true x.PanelContainer.Render
-                          "Sources", container false srcRender
-                          "Edit",    container false (x.DshEditor.Render x.Data)
+        let containers = ["Board",  container true x.PanelContainer.Render
+                          "Events", container false eventsRender
+                          "Rules",  container false (x.DshEditor.Render x.Data)
                          ]
         let menu=containers |> List.map (fun (name,(varVis,targetDiv)) ->tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (isVisible) -> if isVisible then "#FB8C00" else "#7D4600")  varVis.View) 
                                                                                    Attr.Style "cursor" "pointer"
@@ -111,12 +110,12 @@ type Dashboard =
                                                                 let (_,(varBoolDash,_)) = containers.[0]
                                                                 let (_,(varBoolSrc,_)) = containers.[1]
                                                                 if varBoolSrc.Value then
-                                                                    let items = x.Factory.SourceItems|>List.ofSeq
+                                                                    let items = x.Factory.EventItems|>List.ofSeq
                                                                     let selected=Var.Create (items.Head)
                                                                     x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
-                                                                                                             (fun _ -> 
-                                                                                                                selected.Value.Worker.Run()
-                                                                                                                x.RegisterSource (selected.Value.Worker.Clone()))
+                                                                                                             (fun _ ->  let event = selected.Value.Worker.Clone()
+                                                                                                                        x.Data.RegisterEvent event
+                                                                                                                        event.Run())
                                                                 else if varBoolDash.Value then
                                                                     x.CreatePanel("Panel",700,(fun _->()))|>ignore
                                                              )]]

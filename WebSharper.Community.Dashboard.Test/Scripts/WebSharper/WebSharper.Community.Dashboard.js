@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,DshBase,DshBaseReact,InPort,OutPort,InPortNum,InPortStr,OutPortNum,PortConnector,Worker,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widgets,TextBox,Chart,WorkerItem,Factory,PortConnectorItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,SourceProperty,Dashboard$1,IntelliFactory,Runtime,UI,Next,Var,PropertyGrid,Properties,Control,FSharpEvent,List,Random,Concurrency,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,Seq,Operators,Charting,Chart$1,Pervasives,View,AttrModule,Doc,Renderers,ChartJs,Key,ListModel,Panel,Helper,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var Global,WebSharper,Community,Dashboard,DshBase,DshBaseReact,InPort,OutPort,InPortNum,InPortStr,OutPortNum,PortConnector,Worker,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widget,Widgets,TextBox,Chart,WorkerItem,Factory,PortConnectorItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,SourceProperty,Dashboard$1,IntelliFactory,Runtime,UI,Next,Var,PropertyGrid,Properties,Control,FSharpEvent,List,Random,Concurrency,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,View,AttrModule,Doc,Seq,Charting,Renderers,ChartJs,Operators,Chart$1,Pervasives,Key,ListModel,Option,Panel,Helper,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -20,6 +20,7 @@
  SrcOpenWeather=Dashboard.SrcOpenWeather=Dashboard.SrcOpenWeather||{};
  Forecast=SrcOpenWeather.Forecast=SrcOpenWeather.Forecast||{};
  Create=SrcOpenWeather.Create=SrcOpenWeather.Create||{};
+ Widget=Dashboard.Widget=Dashboard.Widget||{};
  Widgets=Dashboard.Widgets=Dashboard.Widgets||{};
  TextBox=Widgets.TextBox=Widgets.TextBox||{};
  Chart=Widgets.Chart=Widgets.Chart||{};
@@ -53,18 +54,19 @@
  IO=Runtime$1&&Runtime$1.IO;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Arrays=WebSharper&&WebSharper.Arrays;
- Seq=WebSharper&&WebSharper.Seq;
- Operators=WebSharper&&WebSharper.Operators;
- Charting=WebSharper&&WebSharper.Charting;
- Chart$1=Charting&&Charting.Chart;
- Pervasives=Charting&&Charting.Pervasives;
  View=Next&&Next.View;
  AttrModule=Next&&Next.AttrModule;
  Doc=Next&&Next.Doc;
+ Seq=WebSharper&&WebSharper.Seq;
+ Charting=WebSharper&&WebSharper.Charting;
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
+ Operators=WebSharper&&WebSharper.Operators;
+ Chart$1=Charting&&Charting.Chart;
+ Pervasives=Charting&&Charting.Pervasives;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
+ Option=WebSharper&&WebSharper.Option;
  Panel=Community&&Community.Panel;
  Helper=Panel&&Panel.Helper;
  PanelContainer=Panel&&Panel.PanelContainer;
@@ -440,10 +442,28 @@
    });
   });
  };
+ Widget=Dashboard.Widget=Runtime.Class({},Worker,Widget);
+ Widget.New=Runtime.Ctor(function(name)
+ {
+  Worker.New.call(this,name);
+ },Widget);
  TextBox=Widgets.TextBox=Runtime.Class({
   get_Number:function()
   {
    return this.inPortNumber;
+  },
+  Render:function()
+  {
+   var strView,a,a$1,a$2;
+   strView=(a=this.get_Number().get_Value().v,View.Map(function(value)
+   {
+    var c;
+    c=value<<0;
+    return Global.String(c);
+   },a));
+   a$1=[AttrModule.Class("bigvalue")];
+   a$2=[Doc.TextView(strView)];
+   return Doc.Element("div",a$1,a$2);
   },
   Clone:function()
   {
@@ -453,10 +473,10 @@
   {
    return List.ofArray([this.inPortNumber]);
   }
- },Worker,TextBox);
+ },Widget,TextBox);
  TextBox.New=Runtime.Ctor(function()
  {
-  Worker.New.call(this,"Text");
+  Widget.New.call(this,"Text");
   this.inPortNumber=new InPortNum.New("in Value",0);
  },TextBox);
  Chart=Widgets.Chart=Runtime.Class({
@@ -490,6 +510,17 @@
   {
    return this.chart;
   },
+  Render:function()
+  {
+   return ChartJs.Render$8(this.get_Chart(),{
+    $:1,
+    $0:{
+     $:0,
+     $0:this.get_Cx().get_Value().c<<0,
+     $1:this.get_Cy().get_Value().c<<0
+    }
+   },null,null);
+  },
   Clone:function()
   {
    return new Chart.New(this.cx,this.cy,this.chartBufferSize);
@@ -498,12 +529,12 @@
   {
    return List.ofArray([this.inPortNumber,this.inPortCx,this.inPortCy]);
   }
- },Worker,Chart);
+ },Widget,Chart);
  Chart.New=Runtime.Ctor(function(cx,cy,chartBufferSize)
  {
   var $this,data,queue,a,a$1;
   $this=this;
-  Worker.New.call(this,"Chart");
+  Widget.New.call(this,"Chart");
   this.cx=cx;
   this.cy=cy;
   this.chartBufferSize=chartBufferSize;
@@ -534,23 +565,6 @@
    $this.observe(v);
   },a$1);
  },Chart);
- Widgets.render=function(worker)
- {
-  var strView,a,a$1,a$2;
-  return worker instanceof TextBox?(strView=(a=worker.get_Number().get_Value().v,View.Map(function(value)
-  {
-   var c;
-   c=value<<0;
-   return Global.String(c);
-  },a)),(a$1=[AttrModule.Class("bigvalue")],(a$2=[Doc.TextView(strView)],Doc.Element("div",a$1,a$2)))):worker instanceof Chart?ChartJs.Render$8(worker.get_Chart(),{
-   $:1,
-   $0:{
-    $:0,
-    $0:worker.get_Cx().get_Value().c<<0,
-    $1:worker.get_Cy().get_Value().c<<0
-   }
-  },null,null):Doc.Element("div",[],[]);
- };
  WorkerItem.Create=function(worker)
  {
   return WorkerItem.New(Key.Fresh(),worker);
@@ -563,13 +577,13 @@
   };
  };
  Factory=Dashboard.Factory=Runtime.Class({
-  RegisterSource:function(source)
+  RegisterEvent:function(event)
   {
-   this.SourceItems.Append(WorkerItem.Create(source));
+   this.EventItems.Append(WorkerItem.Create(event));
   },
-  RegisterWidget:function(receiver)
+  RegisterWidget:function(widget)
   {
-   this.WidgetItems.Append(WorkerItem.Create(receiver));
+   this.WidgetItems.Append(WorkerItem.Create(widget));
   }
  },null,Factory);
  Factory.get_Create=function()
@@ -583,10 +597,10 @@
    return item.Key;
   },a$1)));
  };
- Factory.New=function(SourceItems,WidgetItems)
+ Factory.New=function(EventItems,WidgetItems)
  {
   return new Factory({
-   SourceItems:SourceItems,
+   EventItems:EventItems,
    WidgetItems:WidgetItems
   });
  };
@@ -607,11 +621,25 @@
    var connnector;
    connnector=new PortConnector.New(outPort,inPort);
    this.PortConnectorItems.Append(PortConnectorItem.Create(connnector));
+  },
+  RegisterWidget:function(widget)
+  {
+   var item;
+   item=WorkerItem.Create(widget);
+   this.WidgetItems.Append(item);
+   this.WorkItems.Append(item);
+  },
+  RegisterEvent:function(event)
+  {
+   var item;
+   item=WorkerItem.Create(event);
+   this.EventItems.Append(item);
+   this.WorkItems.Append(item);
   }
  },null,DshData);
  DshData.get_Create=function()
  {
-  var a,a$1,a$2;
+  var a,a$1,a$2,a$3;
   return DshData.New((a=List.T.Empty,ListModel.Create(function(item)
   {
    return item.Key;
@@ -621,32 +649,52 @@
   },a$1)),(a$2=List.T.Empty,ListModel.Create(function(item)
   {
    return item.Key;
-  },a$2)));
+  },a$2)),(a$3=List.T.Empty,ListModel.Create(function(item)
+  {
+   return item.Key;
+  },a$3)));
  };
- DshData.New=function(WorkItems,WidgetItems,PortConnectorItems)
+ DshData.New=function(WorkItems,WidgetItems,EventItems,PortConnectorItems)
  {
   return new DshData({
    WorkItems:WorkItems,
    WidgetItems:WidgetItems,
+   EventItems:EventItems,
    PortConnectorItems:PortConnectorItems
   });
  };
  DshEditorCellItem=Dashboard.DshEditorCellItem=Runtime.Class({
   Render:function(data)
   {
-   var workerSelector,items,m,a,a$1,a$2,a$3,a$4,a$5,a$6,a$7,a$8;
-   workerSelector=(items=(m=function(item)
+   var workerSelector,items,v,a,a$1,a$2,a$3,a$4,a$5,a$6,a$7,a$8;
+   workerSelector=(items=(v=data.WorkItems.v,View.Map(function(itemSeq)
    {
-    return{
+    var m;
+    return new List.T({
      $:1,
-     $0:item
+     $0:null,
+     $1:(m=function(item)
+     {
+      return{
+       $:1,
+       $0:item
+      };
+     },function(l)
+     {
+      return List.map(m,l);
+     }(List.ofSeq(itemSeq)))
+    });
+   },v)),(a=[AttrModule.Class("form-control")],(a$1=this.OptWorker,Doc.SelectDyn(a,function(item)
+   {
+    var f;
+    f=function(a$9,workerItem)
+    {
+     return workerItem.Worker.get_Name().c;
     };
-   },function(l)
-   {
-    return List.map(m,l);
-   }(List.ofSeq(data.WorkItems))),(a=[AttrModule.Class("form-control")],(a$1=this.OptWorker,Doc.Select(a,function(item)
-   {
-    return item==null?" ":item.$0.Worker.get_Name().c;
+    return function(o)
+    {
+     return Option.fold(f," ",o);
+    }(item);
    },items,a$1))));
    a$2=[AttrModule.Class("td DshEditorCell")];
    a$3=[(a$4=[AttrModule.Class("div DshEditorCell")],(a$5=[(a$6=[(a$7=[(a$8=[Helper.IconNormal("add",function()
@@ -797,7 +845,7 @@
  Dashboard$1=Dashboard.Dashboard=Runtime.Class({
   get_Render:function()
   {
-   var $this,srcRender,a,a$1,a$2,containers,menu,m,containerDivs,m$1,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15,a$16;
+   var $this,eventsRender,a,a$1,a$2,containers,menu,m,containerDivs,m$1,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15,a$16;
    function container(varValue,content)
    {
     var varVis,a$17,a$18;
@@ -808,7 +856,7 @@
     },a$18)))],Doc.Element("div",a$17,[content]))];
    }
    $this=this;
-   srcRender=(a=[(a$1=function(m$2)
+   eventsRender=(a=[(a$1=function(m$2)
    {
     return m$2.Key;
    },(a$2=function(item)
@@ -822,8 +870,8 @@
    },function(a$17)
    {
     return Doc.ConvertBy(a$1,a$2,a$17);
-   })(this.Data.WorkItems.v))],Doc.Element("table",[],a));
-   containers=List.ofArray([["Board",container(true,this.PanelContainer.get_Render())],["Sources",container(false,srcRender)],["Edit",container(false,this.DshEditor.Render(this.Data))]]);
+   })(this.Data.EventItems.v))],Doc.Element("table",[],a));
+   containers=List.ofArray([["Board",container(true,this.PanelContainer.get_Render())],["Events",container(false,eventsRender)],["Rules",container(false,this.DshEditor.Render(this.Data))]]);
    menu=(m=function(name,a$17)
    {
     var varVis,a$18,a$19,a$20,a$21;
@@ -878,13 +926,15 @@
     varBoolDash=p[1][0];
     p$1=containers.get_Item(1);
     varBoolSrc=p$1[1][0];
-    varBoolSrc.c?(items=List.ofSeq($this.Factory.SourceItems),selected=Var.Create$1(List.head(items)),o=$this.Dialog,a$17=(a$18=[(a$19=[AttrModule.Class("form-control")],Doc.Select(a$19,function(item)
+    varBoolSrc.c?(items=List.ofSeq($this.Factory.EventItems),selected=Var.Create$1(List.head(items)),o=$this.Dialog,a$17=(a$18=[(a$19=[AttrModule.Class("form-control")],Doc.Select(a$19,function(item)
     {
      return item.Worker.get_Name().c;
     },items,selected))],Doc.Element("div",[],a$18)),o.ShowDialog("Select source",a$17,function()
     {
-     selected.c.Worker.Run();
-     $this.RegisterSource(selected.c.Worker.Clone());
+     var event;
+     event=selected.c.Worker.Clone();
+     $this.Data.RegisterEvent(event);
+     event.Run();
     })):varBoolDash.c?v=$this.CreatePanel("Panel",700,{
      $:1,
      $0:function()
@@ -933,19 +983,14 @@
    })));
    return childContainerContent;
   },
-  RegisterWidget:function(toPanelContainer,widget)
+  RegisterWidget:function(toPanelContainer,worker)
   {
-   this.Data.WidgetItems.Append(WorkerItem.Create(widget));
-   toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(Widgets.render(widget)).WithProperties(new List.T({
+   this.Data.RegisterWidget(worker);
+   toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(worker instanceof Widget?worker.Render():Doc.Element("div",[],[])).WithProperties(new List.T({
     $:1,
-    $0:new SourceProperty.New(this.Data,widget),
-    $1:widget.get_Properties()
+    $0:new SourceProperty.New(this.Data,worker),
+    $1:worker.get_Properties()
    })));
-  },
-  RegisterSource:function(source)
-  {
-   this.Data.WorkItems.Append(WorkerItem.Create(source));
-   source.Run();
   }
  },null,Dashboard$1);
  Dashboard$1.Create=function(panelContainer)

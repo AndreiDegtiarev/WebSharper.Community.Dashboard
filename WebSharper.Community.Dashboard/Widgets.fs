@@ -11,17 +11,27 @@ open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
 open WebSharper.Charting
 
+
+[<JavaScript>]
+[<AbstractClass>]
+type Widget(name) =
+    inherit Worker(name)
+    abstract member Render:unit->Doc
 [<JavaScript>]
 module Widgets =
     type TextBox()= 
-        inherit Worker("Text")
+        inherit Widget("Text")
         let inPortNumber = new InPortNum("in Value",0.0)
         member x.Number = inPortNumber
         override x.InPorts=[inPortNumber]
-
         override x.Clone() = TextBox() :> Worker
+        override x.Render() = 
+            let strView = View.Map (fun value -> ((int)value).ToString()) (x.Number.Value.View)
+            divAttr [Attr.Class "bigvalue"] [
+                             textView strView
+            ] :> Doc
     type Chart(cx,cy,chartBufferSize)= 
-        inherit Worker("Chart")
+        inherit Widget("Chart")
         let data = [for x in 0 .. chartBufferSize-1 -> (0.0)]
         let values = let queue=Queue<double>()
                      data|>Seq.iter (fun entry -> queue.Enqueue(entry))
@@ -42,14 +52,4 @@ module Widgets =
         member x.Cy = inPortCy
         override x.InPorts=[inPortNumber;inPortCx;inPortCy]
         override x.Clone() = Chart(cx,cy,chartBufferSize) :> Worker 
-
-    let render (worker:Worker) = 
-        match worker with
-        | :? TextBox  as txt ->  
-                let strView = View.Map (fun value -> ((int)value).ToString()) (txt.Number.Value.View)
-                divAttr [Attr.Class "bigvalue"] [
-                                 textView strView
-                ]
-        | :? Chart  as chart ->  
-                Renderers.ChartJs.Render(chart.Chart , Size=Size((int) chart.Cx.Value.Value, (int) chart.Cy.Value.Value))
-        | _ -> div[]
+        override x.Render() = Renderers.ChartJs.Render(x.Chart , Size=Size((int) x.Cx.Value.Value, (int) x.Cy.Value.Value)) :> Doc

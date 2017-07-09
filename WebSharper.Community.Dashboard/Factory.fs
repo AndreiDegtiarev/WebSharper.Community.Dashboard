@@ -20,15 +20,15 @@ type WorkerItem =
 [<JavaScript>]
 type Factory =
     {
-        SourceItems : ListModel<Key,WorkerItem>
+        EventItems : ListModel<Key,WorkerItem>
         WidgetItems : ListModel<Key,WorkerItem>
     }
     static member Create =
         {
-           SourceItems = ListModel.Create (fun item ->item.Key) []
+           EventItems = ListModel.Create (fun item ->item.Key) []
            WidgetItems = ListModel.Create (fun item ->item.Key) []
         }
-    member x.RegisterWidget receiver = 
-        x.WidgetItems.Add (WorkerItem.Create receiver)
-    member x.RegisterSource source = 
-        x.SourceItems.Add (WorkerItem.Create source)
+    member x.RegisterWidget widget = 
+        x.WidgetItems.Add (WorkerItem.Create widget)
+    member x.RegisterEvent event = 
+        x.EventItems.Add (WorkerItem.Create event)

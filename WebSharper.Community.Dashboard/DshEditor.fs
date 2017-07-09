@@ -21,12 +21,9 @@ type DshEditorCellItem =
         }
     member x.Render data= 
          let workerSelector =
-           let items = data.WorkItems|>List.ofSeq|>List.map(fun item -> Some(item))
-           Doc.Select [Attr.Class "form-control"] 
-               (fun (item) -> 
-                               match item with
-                               |Some(workerItem) -> workerItem.Worker.Name.Value
-                               |None -> " ") 
+           let items = data.WorkItems.View.Map (fun itemSeq -> None::(itemSeq|>List.ofSeq|>List.map(fun item -> Some(item))))
+           Doc.SelectDyn [Attr.Class "form-control"] 
+               (fun (item) -> item |> Option.fold (fun _ workerItem ->  workerItem.Worker.Name.Value) " ")
                items
                x.OptWorker
 

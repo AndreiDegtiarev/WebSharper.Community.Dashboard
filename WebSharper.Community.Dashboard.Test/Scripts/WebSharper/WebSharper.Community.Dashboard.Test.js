@@ -28,8 +28,8 @@
   var panelContainer,dashboard,a;
   panelContainer=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")]);
   dashboard=Dashboard$1.Create(panelContainer);
-  dashboard.Factory.RegisterSource(new Create.New("London"));
-  dashboard.Factory.RegisterSource(new RandomValueSource.New(50,5));
+  dashboard.Factory.RegisterEvent(new Create.New("London"));
+  dashboard.Factory.RegisterEvent(new RandomValueSource.New(50,5));
   dashboard.Factory.RegisterWidget(new TextBox.New());
   dashboard.Factory.RegisterWidget(new Chart.New(100,100,50));
   a=[dashboard.get_Render()];

@@ -20,8 +20,8 @@ module Client =
                                                           //Attr.Style "position" "absolute"
                                                          ])
         let dashboard = Dashboard.Create panelContainer
-        dashboard.Factory.RegisterSource (SrcOpenWeather.Create("London"))
-        dashboard.Factory.RegisterSource (Sources.RandomValueSource(50.0,5.0))
+        dashboard.Factory.RegisterEvent (SrcOpenWeather.Create("London"))
+        dashboard.Factory.RegisterEvent (Sources.RandomValueSource(50.0,5.0))
         dashboard.Factory.RegisterWidget (Widgets.TextBox())
         dashboard.Factory.RegisterWidget (Widgets.Chart(100.0,100.0,50))
 

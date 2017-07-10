@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,DshBase,DshBaseReact,InPort,OutPort,InPortNum,InPortStr,OutPortNum,PortConnector,Worker,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widget,Widgets,TextBox,Chart,WorkerItem,Factory,PortConnectorItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,SourceProperty,Dashboard$1,IntelliFactory,Runtime,UI,Next,Var,PropertyGrid,Properties,Control,FSharpEvent,List,Random,Concurrency,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,View,AttrModule,Doc,Seq,Charting,Renderers,ChartJs,Operators,Chart$1,Pervasives,Key,ListModel,Option,Panel,Helper,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var Global,WebSharper,Community,Dashboard,DshBase,DshBaseReact,InPort,OutPort,InPortNum,InPortStr,OutPortNum,PortConnector,Worker,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widget,Widgets,TextBox,Chart,WorkerItem,Factory,PortConnectorItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,SourceProperty,Dashboard$1,IntelliFactory,Runtime,UI,Next,Var,PropertyGrid,Properties,Control,FSharpEvent,List,Random,Concurrency,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,View,AttrModule,Doc,Seq,Charting,Renderers,ChartJs,Operators,Chart$1,Pervasives,Key,ListModel,Option,Panel,Helper,Enumerator,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -69,6 +69,7 @@
  Option=WebSharper&&WebSharper.Option;
  Panel=Community&&Community.Panel;
  Helper=Panel&&Panel.Helper;
+ Enumerator=WebSharper&&WebSharper.Enumerator;
  PanelContainer=Panel&&Panel.PanelContainer;
  LayoutManagers=Panel&&Panel.LayoutManagers;
  Panel$1=Panel&&Panel.Panel;
@@ -664,10 +665,65 @@
   });
  };
  DshEditorCellItem=Dashboard.DshEditorCellItem=Runtime.Class({
-  Render:function(data)
+  Render:function(data,reconnectFnc)
   {
-   var workerSelector,items,v,a,a$1,a$2,a$3,a$4,a$5,a$6,a$7,a$8;
-   workerSelector=(items=(v=data.WorkItems.v,View.Map(function(itemSeq)
+   var $this,a,a$1,a$2,workerSelector,inPorts,v,outPorts,v$1,items,v$2,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15,a$16,a$17,a$18,a$19,a$20;
+   $this=this;
+   a=this.OptWorker.v;
+   View.Sink(function(optWorker)
+   {
+    var workerItem,a$21,a$22,a$23,a$24;
+    if(optWorker==null)
+     ;
+    else
+     {
+      workerItem=optWorker.$0;
+      a$21=$this.OptInPort;
+      a$22=List.tryHead(workerItem.Worker.get_InPorts());
+      Var.Set(a$21,a$22);
+      a$23=$this.OptOutPort;
+      a$24=List.tryHead(workerItem.Worker.get_OutPorts());
+      Var.Set(a$23,a$24);
+      reconnectFnc();
+     }
+   },a);
+   a$1=this.OptInPort.v;
+   View.Sink(function()
+   {
+    reconnectFnc();
+   },a$1);
+   a$2=this.OptOutPort.v;
+   View.Sink(function()
+   {
+    reconnectFnc();
+   },a$2);
+   workerSelector=(inPorts=(v=this.OptWorker.v,View.Map(function(workerItemOpt)
+   {
+    var workerItem,ports,m;
+    return workerItemOpt==null?List.ofArray([null]):(workerItem=workerItemOpt.$0,(ports=(m=function(item)
+    {
+     return{
+      $:1,
+      $0:item
+     };
+    },function(l)
+    {
+     return List.map(m,l);
+    }(workerItem.Worker.get_InPorts())),ports.get_Length()>0?ports:List.ofArray([null])));
+   },v)),(outPorts=(v$1=this.OptWorker.v,View.Map(function(workerItemOpt)
+   {
+    var workerItem,ports,m;
+    return workerItemOpt==null?List.ofArray([null]):(workerItem=workerItemOpt.$0,(ports=(m=function(item)
+    {
+     return{
+      $:1,
+      $0:item
+     };
+    },function(l)
+    {
+     return List.map(m,l);
+    }(workerItem.Worker.get_OutPorts())),ports.get_Length()>0?ports:List.ofArray([null])));
+   },v$1)),(items=(v$2=data.WorkItems.v,View.Map(function(itemSeq)
    {
     var m;
     return new List.T({
@@ -684,10 +740,21 @@
       return List.map(m,l);
      }(List.ofSeq(itemSeq)))
     });
-   },v)),(a=[AttrModule.Class("form-control")],(a$1=this.OptWorker,Doc.SelectDyn(a,function(item)
+   },v$2)),(a$3=[(a$4=[(a$5=[(a$6=[AttrModule.Class("form-control")],(a$7=this.OptInPort,Doc.SelectDyn(a$6,function(item)
    {
     var f;
-    f=function(a$9,workerItem)
+    f=function(a$21,port)
+    {
+     return port.get_Name();
+    };
+    return function(o)
+    {
+     return Option.fold(f," ",o);
+    }(item);
+   },inPorts,a$7)))],Doc.Element("td",[],a$5)),(a$8=[(a$9=[AttrModule.Class("form-control")],(a$10=this.OptWorker,Doc.SelectDyn(a$9,function(item)
+   {
+    var f;
+    f=function(a$21,workerItem)
     {
      return workerItem.Worker.get_Name().c;
     };
@@ -695,27 +762,40 @@
     {
      return Option.fold(f," ",o);
     }(item);
-   },items,a$1))));
-   a$2=[AttrModule.Class("td DshEditorCell")];
-   a$3=[(a$4=[AttrModule.Class("div DshEditorCell")],(a$5=[(a$6=[(a$7=[(a$8=[Helper.IconNormal("add",function()
+   },items,a$10)))],Doc.Element("td",[],a$8)),(a$11=[(a$12=[AttrModule.Class("form-control")],(a$13=this.OptOutPort,Doc.SelectDyn(a$12,function(item)
    {
-   })],Doc.Element("td",[],a$8)),Doc.Element("td",[],[workerSelector])],Doc.Element("tr",[],a$7))],Doc.Element("table",[],a$6))],Doc.Element("div",a$4,a$5)))];
-   return Doc.Element("td",a$2,a$3);
+    var f;
+    f=function(a$21,port)
+    {
+     return port.get_Name();
+    };
+    return function(o)
+    {
+     return Option.fold(f," ",o);
+    }(item);
+   },outPorts,a$13)))],Doc.Element("td",[],a$11))],Doc.Element("tr",[],a$4))],Doc.Element("table",[],a$3)))));
+   a$14=[AttrModule.Class("td DshEditorCell")];
+   a$15=[(a$16=[AttrModule.Class("div DshEditorCell")],(a$17=[(a$18=[(a$19=[(a$20=[Helper.IconNormal("add",function()
+   {
+   })],Doc.Element("td",[],a$20)),Doc.Element("td",[],[workerSelector])],Doc.Element("tr",[],a$19))],Doc.Element("table",[],a$18))],Doc.Element("div",a$16,a$17)))];
+   return Doc.Element("td",a$14,a$15);
   }
  },null,DshEditorCellItem);
  DshEditorCellItem.get_Create=function()
  {
-  return DshEditorCellItem.New(Key.Fresh(),Var.Create$1(null));
+  return DshEditorCellItem.New(Key.Fresh(),Var.Create$1(null),Var.Create$1(null),Var.Create$1(null));
  };
- DshEditorCellItem.New=function(Key$1,OptWorker)
+ DshEditorCellItem.New=function(Key$1,OptInPort,OptWorker,OptOutPort)
  {
   return new DshEditorCellItem({
    Key:Key$1,
-   OptWorker:OptWorker
+   OptInPort:OptInPort,
+   OptWorker:OptWorker,
+   OptOutPort:OptOutPort
   });
  };
  DshEditorRowItem=Dashboard.DshEditorRowItem=Runtime.Class({
-  Render:function(data)
+  Render:function(data,reconnectFnc)
   {
    var $this,renderExistentCells,a,a$1,a$2;
    $this=this;
@@ -724,7 +804,7 @@
     return m.Key;
    },(a$1=function(item)
    {
-    return item.Render(data);
+    return item.Render(data,reconnectFnc);
    },function(a$3)
    {
     return Doc.ConvertBy(a,a$1,a$3);
@@ -762,7 +842,10 @@
    },(a$1=function(item)
    {
     var a$5;
-    a$5=[item.Render(data)];
+    a$5=[item.Render(data,function()
+    {
+     $this.Reconnect(data,void 0);
+    })];
     return Doc.Element("tr",[],a$5);
    },function(a$5)
    {
@@ -773,6 +856,67 @@
     $this.RowItems.Append(DshEditorRowItem.get_Create());
    })],Doc.Element("td",[],a$4))],Doc.Element("tr",[],a$3))];
    return Doc.Element("table",[],a$2);
+  },
+  Reconnect:function(data,u)
+  {
+   var a,a$1;
+   a=function(item)
+   {
+    item.PortConnector.Disconnect();
+   };
+   (function(s)
+   {
+    Seq.iter(a,s);
+   }(data.PortConnectorItems));
+   data.PortConnectorItems.Clear();
+   a$1=function(row)
+   {
+    var cells,i,e;
+    cells=List.ofSeq(row.CellItems);
+    i=List.ofSeq(Operators.range(1,cells.get_Length()-1));
+    e=Enumerator.Get(i);
+    try
+    {
+     while(e.MoveNext())
+      (function()
+      {
+       var i$1,cell1,cell2,v,m;
+       i$1=e.Current();
+       cell1=cells.get_Item(i$1-1);
+       cell2=cells.get_Item(i$1);
+       v=(m=function(outPort)
+       {
+        var m$1;
+        m$1=function(inPort)
+        {
+         data.ConnectPorts(outPort,inPort);
+        };
+        return function(o)
+        {
+         return o==null?null:{
+          $:1,
+          $0:m$1(o.$0)
+         };
+        }(cell2.OptInPort.c);
+       },function(o)
+       {
+        return o==null?null:{
+         $:1,
+         $0:m(o.$0)
+        };
+       }(cell1.OptOutPort.c));
+      }());
+    }
+    finally
+    {
+     if("Dispose"in e)
+      e.Dispose();
+    }
+   };
+   (function(l)
+   {
+    List.iter(a$1,l);
+   }(List.ofSeq(this.RowItems)));
   }
  },null,DshEditor);
  DshEditor.get_Create=function()
@@ -884,6 +1028,7 @@
      return function()
      {
       var a$22;
+      $this.PropertyGrid.Edit(List.T.Empty);
       a$22=function(a$23,a$24)
       {
        var varBool;

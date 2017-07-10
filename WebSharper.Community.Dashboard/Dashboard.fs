@@ -92,7 +92,8 @@ type Dashboard =
                          ]
         let menu=containers |> List.map (fun (name,(varVis,targetDiv)) ->tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (isVisible) -> if isVisible then "#FB8C00" else "#7D4600")  varVis.View) 
                                                                                    Attr.Style "cursor" "pointer"
-                                                                                   on.click (fun elem _->containers
+                                                                                   on.click (fun elem _->[] |> x.PropertyGrid.Edit
+                                                                                                         containers
                                                                                                          |>List.iter (fun (_,(varBool,_)) -> if varBool<> varVis then varBool.Value <- false else varBool.Value <- true)
                                                                                             )
                                                                                  ][text name]]  :> Doc )

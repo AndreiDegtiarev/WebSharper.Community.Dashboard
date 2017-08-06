@@ -48,34 +48,43 @@ type ChartRunnerContext =
 [<JavaScript>]
 type ChartRenderer =
   {
-    Cx:double
-    Cy:double
-    ChartBufferSize:int
+    Number:NumberValue
+    Cx:NumberValue
+    Cy:NumberValue
+    ChartBufferSize:NumberValue
   }
   static member Create cx cy bufferSize = {
-                                            Cx=cx;Cy=cy;ChartBufferSize=bufferSize
+                                            Number=NumberValue.Create 0.0
+                                            Cx=NumberValue.Create cx
+                                            Cy=NumberValue.Create cy
+                                            ChartBufferSize=NumberValue.Create bufferSize
                                           }
 
-  static member FromInPorts = (fun worker -> ChartRenderer.Create (Ports.NumberVar worker.InPorts.[1]).Value (Ports.NumberVar worker.InPorts.[2]).Value  ((int)(Ports.NumberVar worker.InPorts.[3]).Value))
+  static member FromPorts = (fun worker -> {
+                                                 Number=worker.InPorts.[1].NumberValue
+                                                 Cx=worker.InPorts.[1].NumberValue
+                                                 Cy=worker.InPorts.[2].NumberValue
+                                                 ChartBufferSize=worker.InPorts.[3].NumberValue
+                                           })
   interface IWorkerContext with
     override x.Name = "Chart"
     override x.InPorts =  [
-                             Ports.InPortNum "in Value" 0.0
+                             Ports.InPortNum "in Value" (NumberValue.Create 0.0)
                              Ports.InPortNum "cx" x.Cx
                              Ports.InPortNum "cy" x.Cy
-                             Ports.InPortNum "BufferSize" ((double)x.ChartBufferSize)
+                             Ports.InPortNum "BufferSize" x.ChartBufferSize
                           ]
     override x.OutPorts = []
   interface IRunner with
     override x.Run = (fun worker ->
-                                    let chartBufferSize = (int) (Ports.NumberVar worker.InPorts.[3]).Value
+                                    let chartBufferSize = (int) worker.InPorts.[3].Number
                                     let data = [for x in 0 .. chartBufferSize-1 -> (0.0)]
                                     let values = let queue=Queue<double>()
                                                  data|>Seq.iter (fun entry -> queue.Enqueue(entry))
                                                  queue
                                     let chart = Charting.Chart.Line(data).WithFillColor(Color.Name "white")
 
-                                    let inPortNumber = Ports.NumberVar worker.InPorts.[0]
+                                    let inPortNumber = worker.InPorts.[0].NumberVar
                                     let observe value =
                                         values.Enqueue(value)
                                         if values.Count > chartBufferSize then
@@ -86,18 +95,18 @@ type ChartRenderer =
                         )
   interface IRenderer with
     override x.Render  = (fun worker -> 
-                            let cx = Ports.NumberVar worker.InPorts.[1]
-                            let cy = Ports.NumberVar worker.InPorts.[2]
+                            let cx = worker.InPorts.[1].Number
+                            let cy = worker.InPorts.[2].Number
                             let chart = worker.RunnerContext.Value :?> ChartRunnerContext
-                            Renderers.ChartJs.Render(chart.LineChart, Size=Size((int) cx.Value, (int) cy.Value)) :> Doc
+                            Renderers.ChartJs.Render(chart.LineChart, Size=Size((int) cx, (int) cy)) :> Doc
                              )
 
 
 [<JavaScript>]
 type TextBoxRenderer =
-  {TextBoxValue:double}
-  static member Create = {TextBoxValue=0.0}
-  static member FromInPorts = (fun worker -> {TextBoxValue=(Ports.NumberVar worker.InPorts.[0]).Value})
+  {TextBoxValue:NumberValue}
+  static member Create = {TextBoxValue=NumberValue.Create 0.0}
+  static member FromPorts = (fun worker -> {TextBoxValue=worker.InPorts.[0].NumberValue})
   interface IWorkerContext with
     override x.Name = "Text"
     override x.InPorts =  [Ports.InPortNum "in Value" x.TextBoxValue]
@@ -105,7 +114,7 @@ type TextBoxRenderer =
 
   interface IRenderer with
     override x.Render  = (fun worker -> 
-                            let numValue = Ports.NumberVar worker.InPorts.[0]
+                            let numValue = worker.InPorts.[0].NumberVar
                             let strView = View.Map (fun value -> ((int)value).ToString()) (numValue.View)
                             divAttr [Attr.Class "bigvalue"] [
                                              textView strView

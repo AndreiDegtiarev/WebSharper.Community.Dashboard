@@ -27,13 +27,13 @@ module Client =
         let registerEvent  data = register data dashboard.Factory.RegisterEvent
         let registerWidget data = register data dashboard.Factory.RegisterWidget
 
-        OpenWeatherRunner.Create "London" ""|> registerEvent
-        RandomRunner.Create 50.0 5.0        |> registerEvent
-        TextBoxRenderer.Create              |> registerWidget
-        ChartRenderer.Create 100.0 100.0 50 |> registerWidget
+        OpenWeatherRunner.Create "London" ""  |> registerEvent
+        RandomRunner.Create 50.0 5.0          |> registerEvent
+        TextBoxRenderer.Create                |> registerWidget
+        ChartRenderer.Create 300.0 100.0 50.0 |> registerWidget
 
         div[dashboard.Render
-            Helper.IconNormal "add" (fun _ ->  let elems =  dashboard.Data.EventItems |>List.ofSeq |> List.map (fun item -> AppModel.FromWorker item.Worker)
-                                               Console.Log(Server.Serialize elems))
+            Helper.IconNormal "add" (fun _ ->  let data =  dashboard.Data |> AppData.Create 
+                                               Console.Log(Server.Serialize data))
 
         ]

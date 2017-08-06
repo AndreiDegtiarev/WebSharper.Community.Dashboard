@@ -11,6 +11,5 @@ module Server =
             return R input
         }
     [<Rpc>]
-    let Serialize (input:AppModel list) =
-        
-            Json.Serialize<AppModel list> input        
+    let Serialize (data:AppData) =
+            Json.Serialize<AppData> data        

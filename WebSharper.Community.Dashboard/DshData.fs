@@ -18,10 +18,24 @@ type PortConnectorItem =
             PortConnector = connector
         }
 [<JavaScript>]
+type WidgetItem = 
+    {
+      Key:Key
+      Panel:string;
+      Widget:Worker
+    }
+    static member Create  panel widget=
+        {
+            Key=Key.Fresh()
+            Panel = panel
+            Widget = widget
+        }
+
+[<JavaScript>]
 type DshData =
     {
         WorkItems : ListModel<Key,WorkerItem>
-        WidgetItems : ListModel<Key,WorkerItem>
+        WidgetItems : ListModel<Key,WidgetItem>
         EventItems : ListModel<Key,WorkerItem>
         PortConnectorItems : ListModel<Key,PortConnectorItem>
     }
@@ -37,10 +51,10 @@ type DshData =
         let item = WorkerItem.Create event
         x.EventItems.Add item
         x.WorkItems.Add item
-    member x.RegisterWidget widget = 
-        let item = WorkerItem.Create widget
+    member x.RegisterWidget panel widget = 
+        let item = WidgetItem.Create panel widget
         x.WidgetItems.Add item
-        x.WorkItems.Add item
+        x.WorkItems.Add (WorkerItem.Create widget)
     member x.ConnectPorts (outPort:OutPort) (inPort:InPort) = 
         Console.Log("Connect ports:"+outPort.Name+" "+inPort.Name)
         let connnector = PortConnector.Create outPort inPort 

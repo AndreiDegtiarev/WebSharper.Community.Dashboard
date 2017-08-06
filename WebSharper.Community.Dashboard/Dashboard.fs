@@ -29,8 +29,8 @@ type Dashboard =
            DshEditor = DshEditor.Create
            PropertyGrid = PropertyGrid.Create
         }
-    member x.RegisterWidget (toPanelContainer:PanelContainer) worker = 
-        x.Data.RegisterWidget worker
+    member x.RegisterWidget panelKey (toPanelContainer:PanelContainer) worker = 
+        x.Data.RegisterWidget panelKey worker
         let panel = Panel.Create
                          .WithTitle(false)
                          .WithPanelContent(worker.Render)
@@ -38,10 +38,10 @@ type Dashboard =
 
         toPanelContainer.AddPanel panel
     member x.CreatePanel(name,cx,?afterRenderFnc) = 
-        let renderWidgets= x.Factory.WidgetItems.View
+        let renderWidgets= x.Data.WidgetItems.View
                            |> Doc.BindSeqCachedBy x.Data.WidgetItems.Key (fun item-> 
-                                                let nameView = item.Worker.Name.View
-                                                div[textView nameView])           
+                                                                                let nameView = item.Widget.Name.View
+                                                                                div[textView nameView])           
 
         let afterRenderFncDef = defaultArg afterRenderFnc (fun _->())
         let childContainerContent = PanelContainer.Create
@@ -62,9 +62,7 @@ type Dashboard =
                                                                         x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 Console.Log("Dialog.IsOK")
-                                                                                                                //let worker = selected.Value.Worker
-                                                                                                                //let copy = MakeWorker.Clone worker
-                                                                                                                x.RegisterWidget panel.Children selected.Value.Worker.CloneAndRun
+                                                                                                                x.RegisterWidget panel.Key panel.Children selected.Value.Worker.CloneAndRun
                                                                                                              )
                                                                        ))}
                                         {Icon="edit"; Action=(fun panel->Console.Log("Edit")

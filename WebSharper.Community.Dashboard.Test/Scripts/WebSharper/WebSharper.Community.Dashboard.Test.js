@@ -1,12 +1,13 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,Test,AppModel,Client,IntelliFactory,Runtime,Worker,RandomRunner,OpenWeatherRunner,TextBoxRenderer,ChartRenderer,Operators,Dashboard$1,Panel,PanelContainer,LayoutManagers,UI,Next,AttrModule,Doc,Helper,console,Remoting,AjaxRemotingProvider,List;
+ var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,Worker,RandomRunner,OpenWeatherRunner,TextBoxRenderer,ChartRenderer,Operators,List,Dashboard$1,Panel,PanelContainer,LayoutManagers,UI,Next,AttrModule,Doc,Helper,console,Remoting,AjaxRemotingProvider;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
  Test=Dashboard.Test=Dashboard.Test||{};
  AppModel=Test.AppModel=Test.AppModel||{};
+ AppData=Test.AppData=Test.AppData||{};
  Client=Test.Client=Test.Client||{};
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
@@ -16,6 +17,7 @@
  TextBoxRenderer=Dashboard&&Dashboard.TextBoxRenderer;
  ChartRenderer=Dashboard&&Dashboard.ChartRenderer;
  Operators=WebSharper&&WebSharper.Operators;
+ List=WebSharper&&WebSharper.List;
  Dashboard$1=Dashboard&&Dashboard.Dashboard;
  Panel=Community&&Community.Panel;
  PanelContainer=Panel&&Panel.PanelContainer;
@@ -28,7 +30,6 @@
  console=window.console;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
- List=WebSharper&&WebSharper.List;
  AppModel=Test.AppModel=Runtime.Class({
   get_Worker:function()
   {
@@ -45,16 +46,16 @@
   m=worker.DataContext;
   return m instanceof Dashboard.RandomRunner?new AppModel({
    $:0,
-   $0:(RandomRunner.get_FromInPorts())(worker)
+   $0:(RandomRunner.get_FromPorts())(worker)
   }):m instanceof Dashboard.OpenWeatherRunner?new AppModel({
    $:1,
-   $0:(OpenWeatherRunner.get_FromInPorts())(worker)
+   $0:(OpenWeatherRunner.get_FromPorts())(worker)
   }):m instanceof Dashboard.TextBoxRenderer?new AppModel({
    $:2,
-   $0:(TextBoxRenderer.get_FromInPorts())(worker)
+   $0:(TextBoxRenderer.get_FromPorts())(worker)
   }):m instanceof Dashboard.ChartRenderer?new AppModel({
    $:3,
-   $0:(ChartRenderer.get_FromInPorts())(worker)
+   $0:(ChartRenderer.get_FromPorts())(worker)
   }):Operators.FailWith("AllTypes FromDataContext unknown type");
  };
  AppModel.FromDataContext=function(data)
@@ -72,6 +73,27 @@
    $:3,
    $0:data
   }):Operators.FailWith("AllTypes FromDataContext unknown type");
+ };
+ AppData.Create=function(dschData)
+ {
+  return AppData.New(List.map(function(item)
+  {
+   return AppModel.FromWorker(item.Worker);
+  },List.ofSeq(dschData.EventItems)),List.map(function(item)
+  {
+   return AppModel.FromWorker(item.Worker);
+  },List.ofSeq(dschData.WidgetItems)),List.map(function(item)
+  {
+   return item.PortConnector.get_Data();
+  },List.ofSeq(dschData.PortConnectorItems)));
+ };
+ AppData.New=function(Events,Widgets,PortConnectors)
+ {
+  return{
+   Events:Events,
+   Widgets:Widgets,
+   PortConnectors:PortConnectors
+  };
  };
  Client.Main=function()
  {
@@ -100,13 +122,10 @@
   registerEvent(OpenWeatherRunner.Create("London",""));
   registerEvent(RandomRunner.Create(50,5));
   registerWidget(TextBoxRenderer.get_Create());
-  registerWidget(ChartRenderer.Create(100,100,50));
+  registerWidget(ChartRenderer.Create(300,100,50));
   return Doc.Element("div",[],[dashboard.get_Render(),Helper.IconNormal("add",function()
   {
-   console.log((new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.Serialize:232010747",[List.map(function(item)
-   {
-    return AppModel.FromWorker(item.Worker);
-   },List.ofSeq(dashboard.Data.EventItems))]));
+   console.log((new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.Serialize:1132126697",[AppData.Create(dashboard.Data)]));
   })]);
  };
 }());

@@ -46,15 +46,26 @@ module OpenWeather =
 [<JavaScript>]
 type OpenWeatherRunner =
  {
-        OpenWeatherCity:string
-        OpenWeatherApiKey:string
+        OpenWeatherCity:StringValue
+        OpenWeatherApiKey:StringValue
+        OutPortKey:string
  }
- static member Create city apikey = {OpenWeatherCity=city;OpenWeatherApiKey=apikey}
- static member FromInPorts = (fun worker -> OpenWeatherRunner.Create (Ports.StringVar worker.InPorts.[0]).Value (Ports.StringVar worker.InPorts.[1]).Value)
+ static member Create city apikey = {
+                                        OpenWeatherCity = StringValue.Create city;
+                                        OpenWeatherApiKey= StringValue.Create apikey
+                                        OutPortKey = System.Guid.NewGuid().ToString()
+                                     }
+ static member FromPorts = (fun worker -> {
+                                             OpenWeatherCity=worker.InPorts.[0].StringValue 
+                                             OpenWeatherApiKey=worker.InPorts.[1].StringValue 
+                                             OutPortKey=worker.OutPorts.[0].Key
+                                          }
+                           )
+ 
  interface IWorkerContext with
     override x.Name = "OpenWeatherMap"
     override x.InPorts = [Ports.InPortStr "City" x.OpenWeatherCity;Ports.InPortStr "ApiKey" x.OpenWeatherApiKey]
-    override x.OutPorts = [Ports.OutPortNum "Temperature"]
+    override x.OutPorts = [Ports.OutPortNum x.OutPortKey "Temperature"]
  interface IRunner with
     override x.Run= (fun worker -> 
                      async {
@@ -62,9 +73,9 @@ type OpenWeatherRunner =
                              let inCity=worker.InPorts.[0]
                              let inApiKey=worker.InPorts.[1]
                              let outTempearatur=worker.OutPorts.[0]
-                             let api = Ports.StringVar inApiKey
-                             let crCity = Ports.StringVar inCity
-                             let! response = OpenWeather.get api.Value crCity.Value
+                             let api = inApiKey.String
+                             let crCity = inCity.String
+                             let! response = OpenWeather.get api crCity
                              match response with
                              |Some(res) -> 
                                  Console.Log ("Value generated:"+response.Value.Title)

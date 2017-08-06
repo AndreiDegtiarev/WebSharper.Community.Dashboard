@@ -7,11 +7,14 @@ open WebSharper.UI.Next.Client
 open WebSharper.UI.Next.Html
 open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
+open FSharp.Data
+
 
 [<JavaScript>]
 module Client =
 
     let Main () =
+        
         let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
         let panelContainer=PanelContainer.Create
                                          .WithLayoutManager(layoutManager)
@@ -20,9 +23,17 @@ module Client =
                                                           //Attr.Style "position" "absolute"
                                                          ])
         let dashboard = Dashboard.Create panelContainer
-        dashboard.Factory.RegisterEvent (SrcOpenWeather.Create("London"))
-        dashboard.Factory.RegisterEvent (Sources.RandomValueSource(50.0,5.0))
-        dashboard.Factory.RegisterWidget (Widgets.TextBox())
-        dashboard.Factory.RegisterWidget (Widgets.Chart(100.0,100.0,50))
+        let register data fnc = data |> AppModel.ToIWorker |> fnc
+        let registerEvent  data = register data dashboard.Factory.RegisterEvent
+        let registerWidget data = register data dashboard.Factory.RegisterWidget
 
-        div[dashboard.Render]
+        OpenWeatherRunner.Create "London" ""|> registerEvent
+        RandomRunner.Create 50.0 5.0        |> registerEvent
+        TextBoxRenderer.Create              |> registerWidget
+        ChartRenderer.Create 100.0 100.0 50 |> registerWidget
+
+        div[dashboard.Render
+            Helper.IconNormal "add" (fun _ ->  let elems =  dashboard.Data.EventItems |>List.ofSeq |> List.map (fun item -> AppModel.FromIWorker item.Worker)
+                                               Console.Log(Json.Serialize<AppModel list> elems))
+
+        ]

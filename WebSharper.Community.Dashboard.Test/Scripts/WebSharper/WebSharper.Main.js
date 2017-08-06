@@ -1,9 +1,8 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,JavaScript,JSModule,Collections,EqualityComparer,MacroModule,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Pervasives,Json,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,PrintfHelpers,Concurrency,Scheduler,SC$2,Enumerator,T,HtmlContentExtensions,SingleNode,Activator,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,Guid,HashSetUtil,HashSet,Lazy,T$1,Nullable,Ref,Operators,Slice,Option,Queue,Random,Microsoft,FSharp,Core,FSharpRef,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,N,Byte,SByte,Int16,Int32,UInt16,UInt32,Int64,UInt64,IntelliFactory,Runtime,String;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,JavaScript,JSModule,Collections,EqualityComparer,MacroModule,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Pervasives,Json,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,PrintfHelpers,Concurrency,Scheduler,SC$2,Enumerator,T,HtmlContentExtensions,SingleNode,Activator,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,Guid,HashSetUtil,HashSet,Lazy,T$1,Nullable,Operators,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,Date,console,String,Math;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  JavaScript=WebSharper.JavaScript=WebSharper.JavaScript||{};
  JSModule=JavaScript.JSModule=JavaScript.JSModule||{};
  Collections=WebSharper.Collections=WebSharper.Collections||{};
@@ -19,11 +18,11 @@
  Remoting=WebSharper.Remoting=WebSharper.Remoting||{};
  XhrProvider=Remoting.XhrProvider=Remoting.XhrProvider||{};
  AjaxRemotingProvider=Remoting.AjaxRemotingProvider=Remoting.AjaxRemotingProvider||{};
- SC$1=Global.StartupCode$WebSharper_Main$Remoting=Global.StartupCode$WebSharper_Main$Remoting||{};
+ SC$1=window.StartupCode$WebSharper_Main$Remoting=window.StartupCode$WebSharper_Main$Remoting||{};
  PrintfHelpers=WebSharper.PrintfHelpers=WebSharper.PrintfHelpers||{};
  Concurrency=WebSharper.Concurrency=WebSharper.Concurrency||{};
  Scheduler=Concurrency.Scheduler=Concurrency.Scheduler||{};
- SC$2=Global.StartupCode$WebSharper_Main$Concurrency=Global.StartupCode$WebSharper_Main$Concurrency||{};
+ SC$2=window.StartupCode$WebSharper_Main$Concurrency=window.StartupCode$WebSharper_Main$Concurrency||{};
  Enumerator=WebSharper.Enumerator=WebSharper.Enumerator||{};
  T=Enumerator.T=Enumerator.T||{};
  HtmlContentExtensions=WebSharper.HtmlContentExtensions=WebSharper.HtmlContentExtensions||{};
@@ -60,16 +59,12 @@
  Lazy=WebSharper.Lazy=WebSharper.Lazy||{};
  T$1=List.T=List.T||{};
  Nullable=WebSharper.Nullable=WebSharper.Nullable||{};
- Ref=WebSharper.Ref=WebSharper.Ref||{};
  Operators=WebSharper.Operators=WebSharper.Operators||{};
  Slice=WebSharper.Slice=WebSharper.Slice||{};
  Option=WebSharper.Option=WebSharper.Option||{};
  Queue=WebSharper.Queue=WebSharper.Queue||{};
  Random=WebSharper.Random=WebSharper.Random||{};
- Microsoft=Global.Microsoft=Global.Microsoft||{};
- FSharp=Microsoft.FSharp=Microsoft.FSharp||{};
- Core=FSharp.Core=FSharp.Core||{};
- FSharpRef=Core.FSharpRef=Core.FSharpRef||{};
+ Ref=WebSharper.Ref=WebSharper.Ref||{};
  Result=WebSharper.Result=WebSharper.Result||{};
  Control=WebSharper.Control=WebSharper.Control||{};
  Stack=WebSharper.Stack=WebSharper.Stack||{};
@@ -78,28 +73,14 @@
  Task1=WebSharper.Task1=WebSharper.Task1||{};
  TaskCompletionSource=WebSharper.TaskCompletionSource=WebSharper.TaskCompletionSource||{};
  Unchecked=WebSharper.Unchecked=WebSharper.Unchecked||{};
- N=WebSharper.N=WebSharper.N||{};
- Byte=WebSharper.Byte=WebSharper.Byte||{};
- SByte=WebSharper.SByte=WebSharper.SByte||{};
- Int16=WebSharper.Int16=WebSharper.Int16||{};
- Int32=WebSharper.Int32=WebSharper.Int32||{};
- UInt16=WebSharper.UInt16=WebSharper.UInt16||{};
- UInt32=WebSharper.UInt32=WebSharper.UInt32||{};
- Int64=WebSharper.Int64=WebSharper.Int64||{};
- UInt64=WebSharper.UInt64=WebSharper.UInt64||{};
- IntelliFactory=Global.IntelliFactory;
+ Numeric=WebSharper.Numeric=WebSharper.Numeric||{};
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
- String=Global.String;
- JSModule.LogMore=function(args)
- {
-  if(Global.console)
-   Global.console.log.apply(Global.console,args);
- };
- JSModule.Log=function(x)
- {
-  if(Global.console)
-   Global.console.log(x);
- };
+ JSON=window.JSON;
+ Date=window.Date;
+ console=window.console;
+ String=window.String;
+ Math=window.Math;
  JSModule.GetFieldValues=function(o)
  {
   var r,k;
@@ -196,7 +177,7 @@
  BaseComparer=MacroModule.BaseComparer=Runtime.Class({
   Compare$1:function(x,y)
   {
-   return Operators.Compare(x,y);
+   return Unchecked.Compare(x,y);
   }
  },Comparer,BaseComparer);
  BaseComparer.New=Runtime.Ctor(function()
@@ -245,13 +226,13 @@
   var types,i,$1;
   function decode(x)
   {
-   var x$1,o,ti,t,r,k;
+   var o,ti,t,r,k;
    if(Unchecked.Equals(x,null))
     return x;
    else
     if(typeof x=="object")
     {
-     if(x instanceof Global.Array)
+     if(x instanceof window.Array)
       return Json.shallowMap(decode,x);
      else
       {
@@ -262,11 +243,11 @@
        else
         {
          t=Arrays.get(types,ti);
-         if(t===Global.WebSharper.List.T)
+         if(t===window.WebSharper.List.T)
           return List.ofArray(o);
          else
           {
-           r=(x$1=Arrays.get(types,ti),new x$1());
+           r=new(Arrays.get(types,ti))();
            for(var k$1 in o)if(function(k$2)
            {
             r[k$2]=o[k$2];
@@ -288,7 +269,7 @@
  Json.shallowMap=function(f,x)
  {
   var r,k;
-  if(x instanceof Global.Array)
+  if(x instanceof window.Array)
    return Arrays.map(f,x);
   else
    if(typeof x=="object")
@@ -309,7 +290,7 @@
  {
   var r,i,k,n,rn;
   k=Arrays.length(x);
-  r=Global;
+  r=window;
   i=0;
   while(i<k)
    {
@@ -360,8 +341,9 @@
   },
   AsyncBase:function(m,data)
   {
-   var $this;
+   var $this,b;
    $this=this;
+   b=null;
    return Concurrency.Delay(function()
    {
     var headers,payload;
@@ -387,7 +369,7 @@
         {
          waiting[0]=false;
          reg.Dispose();
-         ok(Json.Activate(Global.JSON.parse(x)));
+         ok(Json.Activate(JSON.parse(x)));
         }
       },function(e)
       {
@@ -404,15 +386,11 @@
   },
   Send:function(m,data)
   {
-   var computation;
-   computation=this.AsyncBase(m,data);
-   Concurrency.Start(computation,null);
+   Concurrency.Start(this.AsyncBase(m,data),null);
   },
   Task:function(m,data)
   {
-   var a;
-   a=this.AsyncBase(m,data);
-   return Concurrency.StartAsTask(a,null);
+   return Concurrency.StartAsTask(this.AsyncBase(m,data),null);
   },
   Async:function(m,data)
   {
@@ -420,9 +398,8 @@
   },
   Sync:function(m,data)
   {
-   var data$1,a,a$1,a$2;
-   data$1=(a=this.get_EndPoint(),(a$1=Remoting.makeHeaders(m),(a$2=Remoting.makePayload(data),Remoting.AjaxProvider().Sync(a,a$1,a$2))));
-   return Json.Activate(Global.JSON.parse(data$1));
+   var a,a$1,a$2;
+   return Json.Activate(JSON.parse((a=this.get_EndPoint(),(a$1=Remoting.makeHeaders(m),(a$2=Remoting.makePayload(data),Remoting.AjaxProvider().Sync(a,a$1,a$2))))));
   }
  },null,AjaxRemotingProvider);
  AjaxRemotingProvider.New=Runtime.Ctor(function()
@@ -431,8 +408,8 @@
  Remoting.ajax=function(async,url,headers,data,ok,err,csrf)
  {
   var xhr,csrf$1,h;
-  xhr=new Global.XMLHttpRequest();
-  csrf$1=Global.document.cookie.replace(new Global.RegExp("(?:(?:^|.*;)\\s*csrftoken\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1");
+  xhr=new window.XMLHttpRequest();
+  csrf$1=window.document.cookie.replace(new window.RegExp("(?:(?:^|.*;)\\s*csrftoken\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1");
   xhr.open("POST",url,async);
   if(async==true)
    xhr.withCredentials=true;
@@ -450,7 +427,7 @@
     else
      {
       msg="Response status is not 200: ";
-      err(new Global.Error(msg+xhr.status));
+      err(new window.Error(msg+xhr.status));
      }
   }
   if("onload"in xhr)
@@ -465,13 +442,13 @@
  };
  Remoting.makePayload=function(data)
  {
-  return Global.JSON.stringify(data);
+  return JSON.stringify(data);
  };
  Remoting.makeHeaders=function(m)
  {
   return{
-   "x-websharper-rpc":m,
-   "content-type":"application/json"
+   "content-type":"application/json",
+   "x-websharper-rpc":m
   };
  };
  Remoting.AjaxProvider=function()
@@ -486,10 +463,9 @@
  };
  Remoting.UseHttps=function()
  {
-  var _this,_this$1;
   try
   {
-   return!(_this=Global.window.location.href,Strings.StartsWith(_this,"https://"))?(Remoting.set_EndPoint((_this$1=Global.window.location.href,Strings.Replace(_this$1,"http://","https://"))),true):false;
+   return!Strings.StartsWith(window.location.href,"https://")&&(Remoting.set_EndPoint(Strings.Replace(window.location.href,"http://","https://")),true);
   }
   catch(m)
   {
@@ -510,21 +486,18 @@
  {
   SC$1.EndPoint="?";
   SC$1.AjaxProvider=new XhrProvider.New();
-  SC$1.$cctor=Global.ignore;
+  SC$1.$cctor=window.ignore;
  });
  PrintfHelpers.prettyPrint=function(o)
  {
-  var t,s,s$1,s$2,m;
-  return o===null?"null":(t=typeof o,t=="string"?"\""+o+"\"":t=="object"?o instanceof Global.Array?"[|"+(s=Arrays.map(PrintfHelpers.prettyPrint,o),Strings.concat("; ",s))+"|]":(s$1=Global.String(o),s$1==="[object Object]"?"{"+(s$2=(m=function(k,v)
+  var t,s,m;
+  return o===null?"null":(t=typeof o,t=="string"?"\""+o+"\"":t=="object"?o instanceof window.Array?"[|"+Strings.concat("; ",Arrays.map(PrintfHelpers.prettyPrint,o))+"|]":(s=window.String(o),s==="[object Object]"?"{"+Strings.concat("; ",(m=function(k,v)
   {
    return k+" = "+PrintfHelpers.prettyPrint(v);
-  },function(a)
+  },Arrays.map(function($1)
   {
-   return Arrays.map(function($1)
-   {
-    return m($1[0],$1[1]);
-   },a);
-  }(JSModule.GetFields(o))),Strings.concat("; ",s$2))+"}":s$1):Global.String(o));
+   return m($1[0],$1[1]);
+  },JSModule.GetFields(o))))+"}":s):window.String(o));
  };
  PrintfHelpers.printArray2D=function(p,o)
  {
@@ -546,8 +519,7 @@
  };
  PrintfHelpers.printArray=function(p,o)
  {
-  var s;
-  return o===null?"null":"[|"+(s=Arrays.map(p,o),Strings.concat("; ",s))+"|]";
+  return o===null?"null":"[|"+Strings.concat("; ",Arrays.map(p,o))+"|]";
  };
  PrintfHelpers.printList=function(p,o)
  {
@@ -555,9 +527,9 @@
  };
  PrintfHelpers.padNumLeft=function(s,l)
  {
-  var f,_this;
+  var f;
   f=Arrays.get(s,0);
-  return((f===" "?true:f==="+")?true:f==="-")?f+(_this=s.substr(1),Strings.PadLeftWith(_this,l-1,48)):Strings.PadLeftWith(s,l,48);
+  return f===" "||f==="+"||f==="-"?f+Strings.PadLeftWith(s.substr(1),l-1,48):Strings.PadLeftWith(s,l,48);
  };
  PrintfHelpers.spaceForPos=function(n,s)
  {
@@ -574,25 +546,31 @@
  Scheduler=Concurrency.Scheduler=Runtime.Class({
   tick:function()
   {
-   var loop,$this,t,m,v;
+   var loop,$this,t;
    $this=this;
-   t=Global.Date.now();
+   t=Date.now();
    loop=true;
    while(loop)
-    {
-     m=this.robin.length;
-     m===0?(this.idle=true,loop=false):((this.robin.shift())(),Global.Date.now()-t>40?(v=Global.setTimeout(function()
+    if(this.robin.length===0)
      {
-      $this.tick();
-     },0),loop=false):void 0);
-    }
+      this.idle=true;
+      loop=false;
+     }
+    else
+     {
+      (this.robin.shift())();
+      Date.now()-t>40?(window.setTimeout(function()
+      {
+       $this.tick();
+      },0),loop=false):void 0;
+     }
   },
   Fork:function(action)
   {
-   var $this,v;
+   var $this;
    $this=this;
    this.robin.push(action);
-   this.idle?(this.idle=false,v=Global.setTimeout(function()
+   this.idle?(this.idle=false,window.setTimeout(function()
    {
     $this.tick();
    },0)):void 0;
@@ -663,13 +641,13 @@
  {
   return function(c)
   {
-   var inTime,cached,queue,tReg,timeout;
+   var inTime,cached,queue,tReg;
    inTime=[true];
    cached=[null];
    queue=[];
-   tReg=(t!=null?t.$==1:false)?(timeout=t.$0,{
+   tReg=t!=null&&t.$==1?{
     $:1,
-    $0:Global.setTimeout(function()
+    $0:window.setTimeout(function()
     {
      var err;
      inTime[0]=false;
@@ -679,22 +657,21 @@
      };
      while(queue.length>0)
       (queue.shift())(err);
-    },timeout)
-   }):null;
+    },t.$0)
+   }:null;
    Concurrency.scheduler().Fork(function()
    {
     if(!c.ct.c)
      r({
       k:function(res)
       {
-       var r$1;
        if(inTime[0])
         {
          cached[0]={
           $:1,
           $0:res
          };
-         (tReg!=null?tReg.$==1:false)?(r$1=tReg.$0,Global.clearTimeout(r$1)):void 0;
+         tReg!=null&&tReg.$==1?window.clearTimeout(tReg.$0):void 0;
          while(queue.length>0)
           (queue.shift())(res);
         }
@@ -730,10 +707,10 @@
    var n,o,a,accept;
    n=cs$1.length;
    o=[n];
-   a=new Global.Array(n);
+   a=new window.Array(n);
    accept=function(i,x)
    {
-    var $1,$2,x$1,x$2,res;
+    var $1,$2;
     $2=o[0];
     switch($2===0?0:$2===1?x.$==0?1:($1=[$2,x],3):x.$==0?2:($1=[$2,x],3))
     {
@@ -741,8 +718,7 @@
       return null;
       break;
      case 1:
-      x$1=x.$0;
-      Arrays.set(a,i,x$1);
+      Arrays.set(a,i,x.$0);
       o[0]=0;
       return c.k({
        $:0,
@@ -750,14 +726,12 @@
       });
       break;
      case 2:
-      x$2=x.$0;
-      Arrays.set(a,i,x$2);
+      Arrays.set(a,i,x.$0);
       o[0]=$2-1;
       break;
      case 3:
-      res=$1[1];
       o[0]=0;
-      return c.k(res);
+      return c.k($1[1]);
       break;
     }
    };
@@ -780,38 +754,28 @@
  {
   return function(c)
   {
-   var p,c$1,pending,creg;
-   function p$1()
+   var pending,creg;
+   pending=void 0;
+   creg=void 0;
+   pending=window.setTimeout(function()
    {
-    return Global.setTimeout(function()
+    creg.Dispose();
+    Concurrency.scheduler().Fork(function()
     {
-     Lazy.Force(c$1).Dispose();
-     Concurrency.scheduler().Fork(function()
-     {
-      c.k({
-       $:0,
-       $0:null
-      });
-     });
-    },ms);
-   }
-   function c$2()
-   {
-    return Concurrency.Register(c.ct,function()
-    {
-     var handle;
-     handle=Lazy.Force(p);
-     Global.clearTimeout(handle);
-     Concurrency.scheduler().Fork(function()
-     {
-      Concurrency.cancel(c);
+     c.k({
+      $:0,
+      $0:null
      });
     });
-   }
-   p=Lazy.Create(p$1);
-   c$1=Lazy.Create(c$2);
-   pending=Lazy.Force(p);
-   creg=Lazy.Force(c$1);
+   },ms);
+   creg=Concurrency.Register(c.ct,function()
+   {
+    window.clearTimeout(pending);
+    Concurrency.scheduler().Fork(function()
+    {
+     Concurrency.cancel(c);
+    });
+   });
   };
  };
  Concurrency.StartAsTask=function(c,ctOpt)
@@ -834,9 +798,8 @@
  {
   return Concurrency.FromContinuations(function(ok,err,cc)
   {
-   var v;
    Unchecked.Equals(t.get_Status(),0)?t.Start():void 0;
-   return v=t.ContinueWith$2(function(t$1)
+   t.ContinueWith$2(function(t$1)
    {
     return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok(t$1.get_Result());
    });
@@ -846,9 +809,8 @@
  {
   return Concurrency.FromContinuations(function(ok,err,cc)
   {
-   var v;
    Unchecked.Equals(t.get_Status(),0)?t.Start():void 0;
-   return v=t.ContinueWith$2(function(t$1)
+   t.ContinueWith$2(function(t$1)
    {
     return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok();
    });
@@ -858,48 +820,40 @@
  {
   return function(c)
   {
-   var s,c$1,sub,creg;
-   function s$1()
+   var sub,creg;
+   sub=void 0;
+   creg=void 0;
+   sub=e.Subscribe(Util.observer(function(x)
    {
-    return Util.subscribeTo(e,function(x)
+    sub.Dispose();
+    creg.Dispose();
+    Concurrency.scheduler().Fork(function()
     {
-     Lazy.Force(s).Dispose();
-     Lazy.Force(c$1).Dispose();
-     Concurrency.scheduler().Fork(function()
-     {
-      c.k({
-       $:0,
-       $0:x
-      });
+     c.k({
+      $:0,
+      $0:x
      });
     });
-   }
-   function c$2()
+   }));
+   creg=Concurrency.Register(c.ct,function()
    {
-    return Concurrency.Register(c.ct,function()
-    {
-     if(ca!=null?ca.$==1:false)
-      ca.$0();
-     else
+    if(ca!=null&&ca.$==1)
+     ca.$0();
+    else
+     {
+      sub.Dispose();
+      Concurrency.scheduler().Fork(function()
       {
-       Lazy.Force(s).Dispose();
-       Concurrency.scheduler().Fork(function()
-       {
-        Concurrency.cancel(c);
-       });
-      }
-    });
-   }
-   s=Lazy.Create(s$1);
-   c$1=Lazy.Create(c$2);
-   sub=Lazy.Force(s);
-   creg=Lazy.Force(c$1);
+       Concurrency.cancel(c);
+      });
+     }
+   });
   };
  };
  Concurrency.StartImmediate=function(c,ctOpt)
  {
-  var ct;
-  ct=Operators.DefaultArg(ctOpt,(Concurrency.defCTS())[0]);
+  var ct,d;
+  ct=(d=(Concurrency.defCTS())[0],ctOpt==null?d:ctOpt.$0);
   !ct.c?c({
    k:function(a)
    {
@@ -911,8 +865,8 @@
  };
  Concurrency.Start=function(c,ctOpt)
  {
-  var ct;
-  ct=Operators.DefaultArg(ctOpt,(Concurrency.defCTS())[0]);
+  var ct,d;
+  ct=(d=(Concurrency.defCTS())[0],ctOpt==null?d:ctOpt.$0);
   Concurrency.scheduler().Fork(function()
   {
    if(!ct.c)
@@ -928,12 +882,12 @@
  };
  Concurrency.UncaughtAsyncError=function(e)
  {
-  Global.console.log.apply(Global.console,["WebSharper: Uncaught asynchronous exception"].concat([e]));
+  console.log("WebSharper: Uncaught asynchronous exception",e);
  };
  Concurrency.StartWithContinuations=function(c,s,f,cc,ctOpt)
  {
-  var ct;
-  ct=Operators.DefaultArg(ctOpt,(Concurrency.defCTS())[0]);
+  var ct,d;
+  ct=(d=(Concurrency.defCTS())[0],ctOpt==null?d:ctOpt.$0);
   !ct.c?c({
    k:function(a)
    {
@@ -1050,7 +1004,6 @@
    r({
     k:function(a)
     {
-     var e;
      if(a.$==0)
       c.k({
        $:0,
@@ -1058,16 +1011,13 @@
       });
      else
       if(a.$==1)
+       try
        {
-        e=a.$0;
-        try
-        {
-         (f(e))(c);
-        }
-        catch(e$1)
-        {
-         c.k(a);
-        }
+        (f(a.$0))(c);
+       }
+       catch(e)
+       {
+        c.k(a);
        }
       else
        c.k(a);
@@ -1160,6 +1110,11 @@
    });
   });
  };
+ Concurrency.Zero=function()
+ {
+  SC$2.$cctor();
+  return SC$2.Zero;
+ };
  Concurrency.Return=function(x)
  {
   return function(c)
@@ -1227,6 +1182,7 @@
   };
   SC$2.scheduler=new Scheduler.New();
   SC$2.defCTS=[new CancellationTokenSource.New()];
+  SC$2.Zero=Concurrency.Return();
   SC$2.GetCT=function(c)
   {
    c.k({
@@ -1234,7 +1190,7 @@
     $0:c.ct
    });
   };
-  SC$2.$cctor=Global.ignore;
+  SC$2.$cctor=window.ignore;
  });
  T=Enumerator.T=Runtime.Class({
   Dispose:function()
@@ -1264,11 +1220,11 @@
  },T);
  Enumerator.Get0=function(x)
  {
-  return x instanceof Global.Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):"GetEnumerator0"in x?x.GetEnumerator0():x.GetEnumerator();
+  return x instanceof window.Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):"GetEnumerator0"in x?x.GetEnumerator0():x.GetEnumerator();
  };
  Enumerator.Get=function(x)
  {
-  return x instanceof Global.Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):x.GetEnumerator();
+  return x instanceof window.Array?Enumerator.ArrayEnumerator(x):Unchecked.Equals(typeof x,"string")?Enumerator.StringEnumerator(x):x.GetEnumerator();
  };
  Enumerator.StringEnumerator=function(s)
  {
@@ -1276,7 +1232,7 @@
   {
    var i;
    i=e.s;
-   return i<s.length?(e.c=s.charCodeAt(i),e.s=i+1,true):false;
+   return i<s.length&&(e.c=s.charCodeAt(i),e.s=i+1,true);
   },void 0);
  };
  Enumerator.ArrayEnumerator=function(s)
@@ -1285,14 +1241,13 @@
   {
    var i;
    i=e.s;
-   return i<Arrays.length(s)?(e.c=Arrays.get(s,i),e.s=i+1,true):false;
+   return i<Arrays.length(s)&&(e.c=Arrays.get(s,i),e.s=i+1,true);
   },void 0);
  };
  SingleNode=HtmlContentExtensions.SingleNode=Runtime.Class({
   ReplaceInDom:function(old)
   {
-   var v;
-   v=this.node.parentNode.replaceChild(this.node,old);
+   this.node.parentNode.replaceChild(this.node,old);
   }
  },null,SingleNode);
  SingleNode.New=Runtime.Ctor(function(node)
@@ -1301,32 +1256,25 @@
  },SingleNode);
  Activator.hasDocument=function()
  {
-  return typeof Global.document!=="undefined";
+  return typeof window.document!=="undefined";
  };
  Activator.Activate=function()
  {
-  var meta,element;
+  var meta;
   if(Activator.hasDocument())
    {
-    meta=Global.document.getElementById("websharper-data");
-    meta?(element=Global.document,Global.jQuery(element)).ready(function()
+    meta=window.document.getElementById("websharper-data");
+    meta?window.jQuery(window.document).ready(function()
     {
-     var text,obj,a;
-     text=meta.getAttribute("content");
-     obj=Json.Activate(Global.JSON.parse(text));
+     var a;
      a=function(k,v)
      {
-      var p;
-      p=v.Body();
-      p.ReplaceInDom(Global.document.getElementById(k));
+      v.Body().ReplaceInDom(window.document.getElementById(k));
      };
-     return function(a$1)
+     return Arrays.iter(function($1)
      {
-      Arrays.iter(function($1)
-      {
-       return a($1[0],$1[1]);
-      },a$1);
-     }(JSModule.GetFields(obj));
+      return a($1[0],$1[1]);
+     },JSModule.GetFields(Json.Activate(JSON.parse(meta.getAttribute("content")))));
     }):void 0;
    }
  };
@@ -1343,7 +1291,7 @@
    return[];
   else
    {
-    count$1=Operators.Min(count,len);
+    count$1=Unchecked.Compare(count,len)===-1?count:len;
     res=Arrays.create(count$1,null);
     minChunkSize=len/count$1>>0;
     startIndex=0;
@@ -1364,7 +1312,7 @@
   c=true;
   i=0;
   l=Arrays.length(arr);
-  while(c?i<l:false)
+  while(c&&i<l)
    if(Unchecked.Equals(arr[i],item))
     c=false;
    else
@@ -1376,7 +1324,7 @@
   var res,i,r;
   res=null;
   i=arr.length-1;
-  while(i>=0?res==null:false)
+  while(i>=0&&res==null)
    {
     r=arr[i];
     f(r)?res={
@@ -1392,7 +1340,7 @@
   var res,i;
   res=null;
   i=arr.length-1;
-  while(i>=0?res==null:false)
+  while(i>=0&&res==null)
    {
     f(Arrays.get(arr,i))?res={
      $:1,
@@ -1404,29 +1352,27 @@
  };
  Arrays.mapFold=function(f,zero,arr)
  {
-  var a,acc,r,i,$1,p,b;
-  r=(a=arr.length,new Global.Array(a));
+  var acc,r,i,$1,p;
+  r=new window.Array(arr.length);
   acc=zero;
   for(i=0,$1=arr.length-1;i<=$1;i++){
    p=f(acc,arr[i]);
-   b=p[1];
    r[i]=p[0];
-   acc=b;
+   acc=p[1];
   }
   return[r,acc];
  };
  Arrays.mapFoldBack=function(f,arr,zero)
  {
-  var a,acc,$1,r,len,j,$2,i,p,b;
-  r=(a=arr.length,new Global.Array(a));
+  var acc,$1,r,len,j,$2,i,p;
+  r=new window.Array(arr.length);
   acc=zero;
   len=arr.length;
   for(j=1,$2=len;j<=$2;j++){
    i=len-j;
    p=f(arr[i],acc);
-   b=p[1];
    r[i]=p[0];
-   acc=b;
+   acc=p[1];
   }
   return[r,acc];
  };
@@ -1443,21 +1389,16 @@
  };
  Arrays.sortInPlaceByDescending=function(f,arr)
  {
-  var f$1,_this;
-  f$1=function(t)
+  Arrays.mapInPlace(function(t)
   {
    return t[0];
-  };
-  (function(a)
-  {
-   Arrays.mapInPlace(f$1,a);
-  }((_this=Arrays.mapiInPlace(function($1,$2)
+  },Arrays.mapiInPlace(function($1,$2)
   {
    return[$2,[f($2),$1]];
-  },arr),_this.sort(function(x,y)
+  },arr).sort(function($1,$2)
   {
-   return-Operators.Compare(x[1],y[1]);
-  }))));
+   return-Unchecked.Compare($1[1],$2[1]);
+  }));
  };
  Seq.tryHead=function(s)
  {
@@ -1488,7 +1429,7 @@
     try
     {
      go=true;
-     while(go?j<=i:false)
+     while(go&&j<=i)
       if(e.MoveNext())
        j=j+1;
       else
@@ -1540,14 +1481,12 @@
     o=Enumerator.Get(s);
     return new T.New(null,null,function(e)
     {
-     var res,v;
+     var res;
      if(o.MoveNext())
       {
        res=[o.Current()];
-       while(Arrays.length(res)<size?o.MoveNext():false)
-        {
-         v=res.push(o.Current());
-        }
+       while(Arrays.length(res)<size&&o.MoveNext())
+        res.push(o.Current());
        e.c=res;
        return true;
       }
@@ -1562,21 +1501,17 @@
  };
  Arrays.countBy=function(f,a)
  {
-  var f$1,d,keys,i,$1,k,v;
+  var d,keys,i,$1,k;
   d=new Dictionary.New$5();
-  keys=Global.Array.prototype.constructor.apply(Global.Array,[]);
+  keys=[];
   for(i=0,$1=Arrays.length(a)-1;i<=$1;i++){
    k=f(a[i]);
-   d.ContainsKey(k)?d.set_Item(k,d.get_Item(k)+1):(v=keys.push(k),d.Add(k,1));
+   d.ContainsKey(k)?d.set_Item(k,d.get_Item(k)+1):(keys.push(k),d.Add(k,1));
   }
-  f$1=function(k$1)
+  Arrays.mapInPlace(function(k$1)
   {
    return[k$1,d.get_Item(k$1)];
-  };
-  (function(a$1)
-  {
-   Arrays.mapInPlace(f$1,a$1);
-  }(keys));
+  },keys);
   return keys;
  };
  Seq.except=function(itemsToExclude,s)
@@ -1594,12 +1529,12 @@
       {
        cur=o.Current();
        has=seen.Add(cur);
-       while(!has?o.MoveNext():false)
+       while(!has&&o.MoveNext())
         {
          cur=o.Current();
          has=seen.Add(cur);
         }
-       return has?(e.c=cur,true):false;
+       return has&&(e.c=cur,true);
       }
      else
       return false;
@@ -1622,22 +1557,18 @@
  };
  Arrays.groupBy=function(f,a)
  {
-  var f$1,d,keys,i,$1,c,k,v,v$1;
+  var d,keys,i,$1,c,k;
   d=new Dictionary.New$5();
-  keys=Global.Array.prototype.constructor.apply(Global.Array,[]);
+  keys=[];
   for(i=0,$1=Arrays.length(a)-1;i<=$1;i++){
    c=a[i];
    k=f(c);
-   d.ContainsKey(k)?v=d.get_Item(k).push(c):(v$1=keys.push(k),d.Add(k,[c]));
+   d.ContainsKey(k)?d.get_Item(k).push(c):(keys.push(k),d.Add(k,[c]));
   }
-  f$1=function(k$1)
+  Arrays.mapInPlace(function(k$1)
   {
    return[k$1,d.get_Item(k$1)];
-  };
-  (function(a$1)
-  {
-   Arrays.mapInPlace(f$1,a$1);
-  }(keys));
+  },keys);
   return keys;
  };
  Seq.insufficient=function()
@@ -1673,7 +1604,7 @@
   try
   {
    r=false;
-   while(!r?e.MoveNext():false)
+   while(!r&&e.MoveNext())
     r=Unchecked.Equals(e.Current(),el);
    return r;
   }
@@ -1687,7 +1618,7 @@
  {
   var rest;
   rest=list;
-  while(!(rest.$==0)?predicate(List.head(rest)):false)
+  while(!(rest.$==0)&&predicate(List.head(rest)))
    rest=List.tail(rest);
   return rest;
  };
@@ -1697,17 +1628,17 @@
  };
  Arrays.checkBounds=function(arr,n)
  {
-  if(n<0?true:n>=arr.length)
+  if(n<0||n>=arr.length)
    Operators.FailWith("Index was outside the bounds of the array.");
  };
  Arrays.checkBounds2D=function(arr,n1,n2)
  {
-  if(((n1<0?true:n2<0)?true:n1>=arr.length)?true:n2>=(arr.length?arr[0].length:0))
+  if(n1<0||n2<0||n1>=arr.length||n2>=(arr.length?arr[0].length:0))
    throw new IndexOutOfRangeException.New();
  };
  Arrays.checkRange=function(arr,start,size)
  {
-  if((size<0?true:start<0)?true:arr.length<start+size)
+  if(size<0||start<0||arr.length<start+size)
    Operators.FailWith("Index was outside the bounds of the array.");
  };
  Arrays.set=function(arr,n,x)
@@ -1800,13 +1731,11 @@
  };
  Arrays.average=function(arr)
  {
-  var x,x$1;
-  return(x=Arrays.sum(arr),Global.Number(x))/(x$1=arr.length,Global.Number(x$1));
+  return window.Number(Arrays.sum(arr))/window.Number(arr.length);
  };
  Arrays.averageBy=function(f,arr)
  {
-  var x,x$1;
-  return(x=Arrays.sumBy(f,arr),Global.Number(x))/(x$1=arr.length,Global.Number(x$1));
+  return window.Number(Arrays.sumBy(f,arr))/window.Number(arr.length);
  };
  Arrays.blit=function(arr1,start1,arr2,start2,length)
  {
@@ -1827,20 +1756,16 @@
  };
  Arrays.collect=function(f,x)
  {
-  var x$1;
-  x$1=Arrays.map(f,x);
-  return Global.Array.prototype.concat.apply([],x$1);
+  return window.Array.prototype.concat.apply([],Arrays.map(f,x));
  };
  Arrays.concat=function(xs)
  {
-  var x;
-  x=Arrays.ofSeq(xs);
-  return Global.Array.prototype.concat.apply([],x);
+  return window.Array.prototype.concat.apply([],Arrays.ofSeq(xs));
  };
  Arrays.create=function(size,value)
  {
   var r,i,$1;
-  r=new Global.Array(size);
+  r=new window.Array(size);
   for(i=0,$1=size-1;i<=$1;i++)r[i]=value;
   return r;
  };
@@ -1850,7 +1775,7 @@
   e=false;
   i=0;
   l=Arrays.length(x);
-  while(!e?i<l:false)
+  while(!e&&i<l)
    if(f(x[i]))
     e=true;
    else
@@ -1864,7 +1789,7 @@
   e=false;
   i=0;
   l=Arrays.length(x1);
-  while(!e?i<l:false)
+  while(!e&&i<l)
    if(f(x1[i],x2[i]))
     e=true;
    else
@@ -1935,7 +1860,7 @@
   a=true;
   i=0;
   l=Arrays.length(x);
-  while(a?i<l:false)
+  while(a&&i<l)
    if(f(x[i]))
     i=i+1;
    else
@@ -1949,7 +1874,7 @@
   a=true;
   i=0;
   l=Arrays.length(x1);
-  while(a?i<l:false)
+  while(a&&i<l)
    if(f(x1[i],x2[i]))
     i=i+1;
    else
@@ -1960,7 +1885,7 @@
  {
   var r,i,$1;
   size<0?Operators.FailWith("Negative size given."):null;
-  r=new Global.Array(size);
+  r=new window.Array(size);
   for(i=0,$1=size-1;i<=$1;i++)r[i]=f(i);
   return r;
  };
@@ -1988,37 +1913,40 @@
  };
  Arrays.map=function(f,arr)
  {
-  var a,r,i,$1;
-  r=(a=arr.length,new Global.Array(a));
+  var r,i,$1;
+  r=new window.Array(arr.length);
   for(i=0,$1=arr.length-1;i<=$1;i++)r[i]=f(arr[i]);
   return r;
  };
  Arrays.map2=function(f,arr1,arr2)
  {
-  var a,r,i,$1;
+  var r,i,$1;
   Arrays.checkLength(arr1,arr2);
-  r=(a=arr2.length,new Global.Array(a));
+  r=new window.Array(arr2.length);
   for(i=0,$1=arr2.length-1;i<=$1;i++)r[i]=f(arr1[i],arr2[i]);
   return r;
  };
  Arrays.mapi=function(f,arr)
  {
-  var a,y,i,$1;
-  y=(a=arr.length,new Global.Array(a));
+  var y,i,$1;
+  y=new window.Array(arr.length);
   for(i=0,$1=arr.length-1;i<=$1;i++)y[i]=f(i,arr[i]);
   return y;
  };
  Arrays.mapi2=function(f,arr1,arr2)
  {
-  var a,res,i,$1;
+  var res,i,$1;
   Arrays.checkLength(arr1,arr2);
-  res=(a=arr1.length,new Global.Array(a));
+  res=new window.Array(arr1.length);
   for(i=0,$1=arr1.length-1;i<=$1;i++)res[i]=f(i,arr1[i],arr2[i]);
   return res;
  };
  Arrays.max=function(x)
  {
-  return Arrays.reduce(Operators.Max,x);
+  return Arrays.reduce(function($1,$2)
+  {
+   return Unchecked.Compare($1,$2)===1?$1:$2;
+  },x);
  };
  Arrays.maxBy=function(f,arr)
  {
@@ -2029,7 +1957,10 @@
  };
  Arrays.min=function(x)
  {
-  return Arrays.reduce(Operators.Min,x);
+  return Arrays.reduce(function($1,$2)
+  {
+   return Unchecked.Compare($1,$2)===-1?$1:$2;
+  },x);
  };
  Arrays.minBy=function(f,arr)
  {
@@ -2053,7 +1984,7 @@
  Arrays.ofSeq=function(xs)
  {
   var q,o;
-  if(xs instanceof Global.Array)
+  if(xs instanceof window.Array)
    return xs.slice();
   else
    if(xs instanceof T$1)
@@ -2088,8 +2019,8 @@
  };
  Arrays.permute=function(f,arr)
  {
-  var a,ret,i,$1;
-  ret=(a=arr.length,new Global.Array(a));
+  var ret,i,$1;
+  ret=new window.Array(arr.length);
   for(i=0,$1=arr.length-1;i<=$1;i++)ret[f(i)]=arr[i];
   return ret;
  };
@@ -2118,8 +2049,8 @@
  };
  Arrays.scan=function(f,zero,arr)
  {
-  var a,ret,i,$1;
-  ret=(a=1+arr.length,new Global.Array(a));
+  var ret,i,$1;
+  ret=new window.Array(1+arr.length);
   ret[0]=zero;
   for(i=0,$1=arr.length-1;i<=$1;i++)ret[i+1]=f(ret[i],arr[i]);
   return ret;
@@ -2128,81 +2059,60 @@
  {
   var len,ret,i,$1;
   len=arr.length;
-  ret=new Global.Array(1+len);
+  ret=new window.Array(1+len);
   ret[len]=zero;
   for(i=0,$1=len-1;i<=$1;i++)ret[len-i-1]=f(arr[len-i-1],ret[len-i]);
   return ret;
  };
  Arrays.sort=function(arr)
  {
-  var m,_this;
-  m=function(t)
+  return Arrays.map(function(t)
   {
    return t[0];
-  };
-  return function(a)
-  {
-   return Arrays.map(m,a);
-  }((_this=Arrays.mapi(function($1,$2)
+  },Arrays.mapi(function($1,$2)
   {
    return[$2,$1];
-  },arr),_this.sort(Operators.Compare)));
+  },arr).sort(Unchecked.Compare));
  };
  Arrays.sortBy=function(f,arr)
  {
-  var m,_this;
-  m=function(t)
+  return Arrays.map(function(t)
   {
    return t[0];
-  };
-  return function(a)
-  {
-   return Arrays.map(m,a);
-  }((_this=Arrays.mapi(function($1,$2)
+  },Arrays.mapi(function($1,$2)
   {
    return[$2,[f($2),$1]];
-  },arr),_this.sort(function(x,y)
+  },arr).sort(function($1,$2)
   {
-   return Operators.Compare(x[1],y[1]);
-  })));
+   return Unchecked.Compare($1[1],$2[1]);
+  }));
  };
  Arrays.sortInPlace=function(arr)
  {
-  var f,_this;
-  f=function(t)
+  Arrays.mapInPlace(function(t)
   {
    return t[0];
-  };
-  (function(a)
-  {
-   Arrays.mapInPlace(f,a);
-  }((_this=Arrays.mapiInPlace(function($1,$2)
+  },Arrays.mapiInPlace(function($1,$2)
   {
    return[$2,$1];
-  },arr),_this.sort(Operators.Compare))));
+  },arr).sort(Unchecked.Compare));
  };
  Arrays.sortInPlaceBy=function(f,arr)
  {
-  var f$1,_this;
-  f$1=function(t)
+  Arrays.mapInPlace(function(t)
   {
    return t[0];
-  };
-  (function(a)
-  {
-   Arrays.mapInPlace(f$1,a);
-  }((_this=Arrays.mapiInPlace(function($1,$2)
+  },Arrays.mapiInPlace(function($1,$2)
   {
    return[$2,[f($2),$1]];
-  },arr),_this.sort(function(x,y)
+  },arr).sort(function($1,$2)
   {
-   return Operators.Compare(x[1],y[1]);
-  }))));
+   return Unchecked.Compare($1[1],$2[1]);
+  }));
  };
  Arrays.sortInPlaceWith=function(comparer,arr)
  {
-  var v;
-  v=arr.sort(comparer);
+  arr.sort(comparer);
  };
  Arrays.sortWith=function(comparer,arr)
  {
@@ -2210,46 +2120,36 @@
  };
  Arrays.sortByDescending=function(f,arr)
  {
-  var m,_this;
-  m=function(t)
+  return Arrays.map(function(t)
   {
    return t[0];
-  };
-  return function(a)
-  {
-   return Arrays.map(m,a);
-  }((_this=Arrays.mapi(function($1,$2)
+  },Arrays.mapi(function($1,$2)
   {
    return[$2,[f($2),$1]];
-  },arr),_this.sort(function(x,y)
+  },arr).sort(function($1,$2)
   {
-   return-Operators.Compare(x[1],y[1]);
-  })));
+   return-Unchecked.Compare($1[1],$2[1]);
+  }));
  };
  Arrays.sortDescending=function(arr)
  {
-  var m,_this;
-  m=function(t)
+  return Arrays.map(function(t)
   {
    return t[0];
-  };
-  return function(a)
-  {
-   return Arrays.map(m,a);
-  }((_this=Arrays.mapi(function($1,$2)
+  },Arrays.mapi(function($1,$2)
   {
    return[$2,$1];
-  },arr),_this.sort(function(x,y)
+  },arr).sort(function($1,$2)
   {
-   return-Operators.Compare(x,y);
-  })));
+   return-Unchecked.Compare($1,$2);
+  }));
  };
  Arrays.tryFind=function(f,arr)
  {
   var res,i;
   res=null;
   i=0;
-  while(i<arr.length?res==null:false)
+  while(i<arr.length&&res==null)
    {
     f(arr[i])?res={
      $:1,
@@ -2264,7 +2164,7 @@
   var res,i;
   res=null;
   i=0;
-  while(i<arr.length?res==null:false)
+  while(i<arr.length&&res==null)
    {
     f(arr[i])?res={
      $:1,
@@ -2283,7 +2183,7 @@
  };
  Arrays.tryItem=function(i,arr)
  {
-  return(arr.length<=i?true:i<0)?null:{
+  return arr.length<=i||i<0?null:{
    $:1,
    $0:arr[i]
   };
@@ -2302,40 +2202,37 @@
   var res,i,m;
   res=null;
   i=0;
-  while(i<arr.length?res==null:false)
+  while(i<arr.length&&res==null)
    {
     m=f(arr[i]);
-    (m!=null?m.$==1:false)?res=m:void 0;
+    m!=null&&m.$==1?res=m:void 0;
     i=i+1;
    }
   return res;
  };
  Arrays.unzip=function(arr)
  {
-  var x,y,i,$1,p,b;
+  var x,y,i,$1,p;
   x=[];
   y=[];
   for(i=0,$1=arr.length-1;i<=$1;i++){
    p=arr[i];
-   b=p[1];
    x.push(p[0]);
-   y.push(b);
+   y.push(p[1]);
   }
   return[x,y];
  };
  Arrays.unzip3=function(arr)
  {
-  var x,y,z,i,$1,m,c,b;
+  var x,y,z,i,$1,m;
   x=[];
   y=[];
   z=[];
   for(i=0,$1=arr.length-1;i<=$1;i++){
    m=arr[i];
-   c=m[2];
-   b=m[1];
    x.push(m[0]);
-   y.push(b);
-   z.push(c);
+   y.push(m[1]);
+   z.push(m[2]);
   }
   return[x,y,z];
  };
@@ -2400,10 +2297,10 @@
  };
  Arrays.map3=function(f,arr1,arr2,arr3)
  {
-  var a,r,i,$1;
+  var r,i,$1;
   Arrays.checkLength(arr1,arr2);
   Arrays.checkLength(arr1,arr3);
-  r=(a=arr3.length,new Global.Array(a));
+  r=new window.Array(arr3.length);
   for(i=0,$1=arr3.length-1;i<=$1;i++)r[i]=f(arr1[i],arr2[i],arr3[i]);
   return r;
  };
@@ -2431,7 +2328,7 @@
   var i,len;
   len=ar.length;
   i=0;
-  while(i<len?predicate(ar[i]):false)
+  while(i<len&&predicate(ar[i]))
    i=i+1;
   return ar.slice(i);
  };
@@ -2448,7 +2345,7 @@
   var i,len;
   len=ar.length;
   i=0;
-  while(i<len?predicate(ar[i]):false)
+  while(i<len&&predicate(ar[i]))
    i=i+1;
   return ar.slice(0,i);
  };
@@ -2529,11 +2426,11 @@
  CancellationTokenSource=WebSharper.CancellationTokenSource=Runtime.Class({
   CancelAfter:function(delay)
   {
-   var $this,o,h;
+   var $this,o;
    $this=this;
-   !this.c?(o=this.pending,o==null?void 0:(h=o.$0,Global.clearTimeout(h)),this.pending={
+   !this.c?(o=this.pending,o==null?void 0:window.clearTimeout(o.$0),this.pending={
     $:1,
-    $0:Global.setTimeout(function()
+    $0:window.setTimeout(function()
     {
      $this.Cancel$1();
     },delay)
@@ -2541,30 +2438,25 @@
   },
   Cancel:function(throwOnFirstException)
   {
-   var a;
    if(!throwOnFirstException)
     this.Cancel$1();
    else
     if(!this.c)
      {
       this.c=true;
-      a=function(a$1)
+      Arrays.iter(function(a)
       {
-       a$1();
-      };
-      (function(a$1)
-      {
-       Arrays.iter(a,a$1);
-      }(this.r));
+       a();
+      },this.r);
      }
   },
   Cancel$1:function()
   {
-   var c,errors;
+   var errors;
    if(!this.c)
     {
      this.c=true;
-     errors=(c=function(a)
+     errors=Arrays.choose(function(a)
      {
       try
       {
@@ -2578,10 +2470,7 @@
         $0:e
        };
       }
-     },function(a)
-     {
-      return Arrays.choose(c,a);
-     }(this.r));
+     },this.r);
      if(Arrays.length(errors)>0)
       throw new AggregateException.New$3(errors);
      else
@@ -2595,23 +2484,20 @@
  };
  CancellationTokenSource.CreateLinkedTokenSource$1=function(tokens)
  {
-  var cts,a;
+  var cts;
   cts=new CancellationTokenSource.New();
-  a=function(t)
+  Arrays.iter(function(t)
   {
-   var v,callback;
-   v=(callback=function()
+   var callback;
+   callback=function()
    {
     return cts.Cancel$1();
-   },Concurrency.Register(t,function()
+   };
+   Concurrency.Register(t,function()
    {
     callback();
-   }));
-  };
-  (function(a$1)
-  {
-   Arrays.iter(a,a$1);
-  }(tokens));
+   });
+  },tokens);
   return cts;
  };
  CancellationTokenSource.New=Runtime.Ctor(function()
@@ -2623,7 +2509,7 @@
  },CancellationTokenSource);
  Char.IsWhiteSpace=function(c)
  {
-  return Global.String.fromCharCode(c).match(new Global.RegExp("\\s"))!==null;
+  return String.fromCharCode(c).match(new window.RegExp("\\s"))!==null;
  };
  Char.Parse=function(s)
  {
@@ -2631,58 +2517,49 @@
  };
  Char.IsUpper=function(c)
  {
-  return c>=65?c<=90:false;
+  return c>=65&&c<=90;
  };
  Char.IsLower=function(c)
  {
-  return c>=97?c<=122:false;
+  return c>=97&&c<=122;
  };
  Char.IsLetterOrDigit=function(c)
  {
-  return Char.IsLetter(c)?true:Char.IsDigit(c);
+  return Char.IsLetter(c)||Char.IsDigit(c);
  };
  Char.IsLetter=function(c)
  {
-  return(c>=65?c<=90:false)?true:c>=97?c<=122:false;
+  return c>=65&&c<=90||c>=97&&c<=122;
  };
  Char.IsDigit=function(c)
  {
-  return c>=48?c<=57:false;
+  return c>=48&&c<=57;
  };
  Char.IsControl=function(c)
  {
-  return(c>=0?c<=31:false)?true:c>=128?c<=159:false;
+  return c>=0&&c<=31||c>=128&&c<=159;
  };
  Char.GetNumericValue=function(c)
  {
-  return(c>=48?c<=57:false)?Global.Number(c)-Global.Number(48):-1;
- };
- Util.addListener=function(event,h)
- {
-  var v;
-  v=event.Subscribe(Util.observer(h));
- };
- Util.subscribeTo=function(event,h)
- {
-  return event.Subscribe(Util.observer(h));
+  return c>=48&&c<=57?window.Number(c)-window.Number(48):-1;
  };
  Util.observer=function(h)
  {
   return{
-   OnNext:h,
+   OnCompleted:function()
+   {
+    return null;
+   },
    OnError:function()
    {
     return null;
    },
-   OnCompleted:function()
-   {
-    return null;
-   }
+   OnNext:h
   };
  };
  DateUtil.LongTime=function(d)
  {
-  return(new Global.Date(d)).toLocaleTimeString({},{
+  return(new Date(d)).toLocaleTimeString({},{
    hour:"2-digit",
    minute:"2-digit",
    second:"2-digit",
@@ -2691,7 +2568,7 @@
  };
  DateUtil.ShortTime=function(d)
  {
-  return(new Global.Date(d)).toLocaleTimeString({},{
+  return(new Date(d)).toLocaleTimeString({},{
    hour:"2-digit",
    minute:"2-digit",
    hour12:false
@@ -2699,7 +2576,7 @@
  };
  DateUtil.LongDate=function(d)
  {
-  return(new Global.Date(d)).toLocaleDateString({},{
+  return(new Date(d)).toLocaleDateString({},{
    year:"numeric",
    month:"long",
    day:"numeric",
@@ -2710,40 +2587,40 @@
  {
   var m;
   m=DateUtil.TryParse(s);
-  return(m!=null?m.$==1:false)?m.$0:Operators.FailWith("Failed to parse date string.");
+  return m!=null&&m.$==1?m.$0:Operators.FailWith("Failed to parse date string.");
  };
  DateUtil.TryParse=function(s)
  {
   var d;
-  d=Global.Date.parse(s);
-  return Global.isNaN(d)?null:{
+  d=Date.parse(s);
+  return window.isNaN(d)?null:{
    $:1,
    $0:d
   };
  };
  DateUtil.AddMonths=function(d,months)
  {
-  var e,a,b,c,d$1,e$1,f,g;
-  e=new Global.Date(d);
-  return(a=e.getFullYear(),(b=e.getMonth()+months,(c=e.getDate(),(d$1=e.getHours(),(e$1=e.getMinutes(),(f=e.getSeconds(),(g=e.getMilliseconds(),new Global.Date(a,b,c,d$1,e$1,f,g)))))))).getTime();
+  var e;
+  e=new Date(d);
+  return(new Date(e.getFullYear(),e.getMonth()+months,e.getDate(),e.getHours(),e.getMinutes(),e.getSeconds(),e.getMilliseconds())).getTime();
  };
  DateUtil.AddYears=function(d,years)
  {
-  var e,a,b,c,d$1,e$1,f,g;
-  e=new Global.Date(d);
-  return(a=e.getFullYear()+years,(b=e.getMonth(),(c=e.getDate(),(d$1=e.getHours(),(e$1=e.getMinutes(),(f=e.getSeconds(),(g=e.getMilliseconds(),new Global.Date(a,b,c,d$1,e$1,f,g)))))))).getTime();
+  var e;
+  e=new Date(d);
+  return(new Date(e.getFullYear()+years,e.getMonth(),e.getDate(),e.getHours(),e.getMinutes(),e.getSeconds(),e.getMilliseconds())).getTime();
  };
  DateUtil.TimePortion=function(d)
  {
   var e;
-  e=new Global.Date(d);
+  e=new Date(d);
   return(((24*0+e.getHours())*60+e.getMinutes())*60+e.getSeconds())*1000+e.getMilliseconds();
  };
  DateUtil.DatePortion=function(d)
  {
-  var e,a,b,c;
-  e=new Global.Date(d);
-  return(a=e.getFullYear(),(b=e.getMonth(),(c=e.getDate(),new Global.Date(a,b,c)))).getTime();
+  var e;
+  e=new Date(d);
+  return(new Date(e.getFullYear(),e.getMonth(),e.getDate())).getTime();
  };
  DateTimeOffset=WebSharper.DateTimeOffset=Runtime.Class({
   ToUniversalTime:function()
@@ -2752,7 +2629,7 @@
   },
   ToLocalTime:function()
   {
-   return new DateTimeOffset.New(this.d,(new Global.Date()).getTimezoneOffset());
+   return new DateTimeOffset.New(this.d,(new Date()).getTimezoneOffset());
   }
  },null,DateTimeOffset);
  DateTimeOffset.New=Runtime.Ctor(function(d,o)
@@ -2765,20 +2642,17 @@
  };
  Delegate.RemoveAll=function(source,value)
  {
-  var sourceInv,p;
+  var sourceInv;
   sourceInv=Delegate.InvocationList(source);
   Arrays.length(Delegate.InvocationList(value))>1?Operators.FailWith("TODO: Remove multicast delegates"):void 0;
-  return Runtime.CreateDelegate((p=function(i)
+  return Runtime.CreateDelegate(Arrays.filter(function(i)
   {
    return!Unchecked.Equals(i,value);
-  },function(a)
-  {
-   return Arrays.filter(p,a);
-  }(sourceInv)));
+  },sourceInv));
  };
  Delegate.Remove=function(source,value)
  {
-  var $1,found,sourceInv,resInv,i,$2,it,v;
+  var $1,found,sourceInv,resInv,i,$2,it;
   sourceInv=Delegate.InvocationList(source);
   if(Arrays.length(Delegate.InvocationList(value))>1)
    Operators.FailWith("TODO: Remove multicast delegates");
@@ -2786,7 +2660,7 @@
   found=false;
   for(i=Arrays.length(sourceInv)-1,$2=0;i>=$2;i--){
    it=Arrays.get(sourceInv,i);
-   (!found?Runtime.DelegateEqual(it,value):false)?found=true:v=resInv.unshift(it);
+   !found&&Runtime.DelegateEqual(it,value)?found=true:resInv.unshift(it);
   }
   return Runtime.CreateDelegate(resInv);
  };
@@ -2801,9 +2675,9 @@
  };
  DictionaryUtil.equals=function(c)
  {
-  return function(x,y)
+  return function($1,$2)
   {
-   return c.CEquals(x,y);
+   return c.CEquals($1,$2);
   };
  };
  DictionaryUtil.alreadyAdded=function()
@@ -2817,14 +2691,10 @@
  KeyCollection=Collections.KeyCollection=Runtime.Class({
   GetEnumerator$1:function()
   {
-   var m;
-   return Enumerator.Get((m=function(kvp)
+   return Enumerator.Get(Seq.map(function(kvp)
    {
     return kvp.K;
-   },function(s)
-   {
-    return Seq.map(m,s);
-   }(this.d)));
+   },this.d));
   },
   get_Count:function()
   {
@@ -2846,14 +2716,10 @@
  ValueCollection=Collections.ValueCollection=Runtime.Class({
   GetEnumerator$1:function()
   {
-   var m;
-   return Enumerator.Get((m=function(kvp)
+   return Enumerator.Get(Seq.map(function(kvp)
    {
     return kvp.V;
-   },function(s)
-   {
-    return Seq.map(m,s);
-   }(this.d)));
+   },this.d));
   },
   get_Count:function()
   {
@@ -2875,80 +2741,66 @@
  Dictionary=Collections.Dictionary=Runtime.Class({
   remove:function(k)
   {
-   var $this,h,d,r,p;
+   var $this,h,d,r;
    $this=this;
    h=this.hash(k);
    d=this.data[h];
-   return d?(r=(p=function(a)
+   return d&&(r=Arrays.filter(function(a)
    {
     return!$this.equals.apply(null,[(Operators.KeyValue(a))[0],k]);
-   },function(a)
-   {
-    return Arrays.filter(p,a);
-   }(d)),Arrays.length(r)<d.length?(this.count=this.count-1,this.data[h]=r,true):false):false;
+   },d),Arrays.length(r)<d.length&&(this.count=this.count-1,this.data[h]=r,true));
   },
   add:function(k,v)
   {
-   var $this,h,d,p,v$1;
+   var $this,h,d;
    $this=this;
    h=this.hash(k);
    d=this.data[h];
-   d?((p=function(a)
+   d?(Arrays.exists(function(a)
    {
     return $this.equals.apply(null,[(Operators.KeyValue(a))[0],k]);
-   },function(a)
-   {
-    return Arrays.exists(p,a);
-   }(d))?DictionaryUtil.alreadyAdded():void 0,this.count=this.count+1,v$1=d.push({
+   },d)?DictionaryUtil.alreadyAdded():void 0,this.count=this.count+1,d.push({
     K:k,
     V:v
-   })):(this.count=this.count+1,this.data[h]=new Global.Array({
+   })):(this.count=this.count+1,this.data[h]=new window.Array({
     K:k,
     V:v
    }));
   },
   set:function(k,v)
   {
-   var $this,h,d,m,p,v$1;
+   var $this,h,d,m;
    $this=this;
    h=this.hash(k);
    d=this.data[h];
-   d?(m=(p=function(a)
+   d?(m=Arrays.tryFindIndex(function(a)
    {
     return $this.equals.apply(null,[(Operators.KeyValue(a))[0],k]);
-   },function(a)
-   {
-    return Arrays.tryFindIndex(p,a);
-   }(d)),m==null?(this.count=this.count+1,v$1=d.push({
+   },d),m==null?(this.count=this.count+1,d.push({
     K:k,
     V:v
    })):d[m.$0]={
     K:k,
     V:v
-   }):(this.count=this.count+1,this.data[h]=new Global.Array({
+   }):(this.count=this.count+1,this.data[h]=new window.Array({
     K:k,
     V:v
    }));
   },
   get:function(k)
   {
-   var $this,h,d,c;
+   var $this,d;
    $this=this;
-   h=this.hash(k);
-   d=this.data[h];
-   return d?(c=function(a)
+   d=this.data[this.hash(k)];
+   return d?Arrays.pick(function(a)
    {
-    var a$1,v;
+    var a$1;
     a$1=Operators.KeyValue(a);
-    v=a$1[1];
     return $this.equals.apply(null,[a$1[0],k])?{
      $:1,
-     $0:v
+     $0:a$1[1]
     }:null;
-   },function(a)
-   {
-    return Arrays.pick(c,a);
-   }(d)):DictionaryUtil.notPresent();
+   },d):DictionaryUtil.notPresent();
   },
   get_Keys:function()
   {
@@ -2960,23 +2812,18 @@
   },
   TryGetValue:function(k,res)
   {
-   var $this,h,d,v,c;
+   var $this,d,v;
    $this=this;
-   h=this.hash(k);
-   d=this.data[h];
-   return d?(v=(c=function(a)
+   d=this.data[this.hash(k)];
+   return d&&(v=Arrays.tryPick(function(a)
    {
-    var a$1,v$1;
+    var a$1;
     a$1=Operators.KeyValue(a);
-    v$1=a$1[1];
     return $this.equals.apply(null,[a$1[0],k])?{
      $:1,
-     $0:v$1
+     $0:a$1[1]
     }:null;
-   },function(a)
-   {
-    return Arrays.tryPick(c,a);
-   }(d)),(v!=null?v.$==1:false)?(res.set(v.$0),true):false):false;
+   },d),v!=null&&v.$==1&&(res.set(v.$0),true));
   },
   Remove:function(k)
   {
@@ -2996,21 +2843,17 @@
   },
   ContainsKey:function(k)
   {
-   var $this,h,d,p;
+   var $this,d;
    $this=this;
-   h=this.hash(k);
-   d=this.data[h];
-   return d?(p=function(a)
+   d=this.data[this.hash(k)];
+   return d&&Arrays.exists(function(a)
    {
     return $this.equals.apply(null,[(Operators.KeyValue(a))[0],k]);
-   },function(a)
-   {
-    return Arrays.exists(p,a);
-   }(d)):false;
+   },d);
   },
   Clear:function()
   {
-   this.data=Global.Array.prototype.constructor.apply(Global.Array,[]);
+   this.data=[];
    this.count=0;
   },
   Add:function(k,v)
@@ -3023,9 +2866,7 @@
   },
   GetEnumerator0:function()
   {
-   var s;
-   s=JSModule.GetFieldValues(this.data);
-   return Enumerator.Get0(Arrays.concat(s));
+   return Enumerator.Get0(Arrays.concat(JSModule.GetFieldValues(this.data)));
   }
  },null,Dictionary);
  Dictionary.New=Runtime.Ctor(function(dictionary,comparer)
@@ -3083,7 +2924,7 @@
  MatchFailureException=WebSharper.MatchFailureException=Runtime.Class({},null,MatchFailureException);
  MatchFailureException.New=Runtime.Ctor(function(message,line,column)
  {
-  this.message=message+" at "+Global.String(line)+":"+Global.String(column);
+  this.message=message+" at "+String(line)+":"+String(column);
  },MatchFailureException);
  IndexOutOfRangeException=WebSharper.IndexOutOfRangeException=Runtime.Class({},null,IndexOutOfRangeException);
  IndexOutOfRangeException.New=Runtime.Ctor(function()
@@ -3194,10 +3035,10 @@
  };
  Guid.NewGuid=function()
  {
-  return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(new Global.RegExp("[xy]","g"),function(c)
+  return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(new window.RegExp("[xy]","g"),function(c)
   {
    var r,v;
-   r=Global.Math.random()*16|0;
+   r=Math.random()*16|0;
    v=c=="x"?r:r&3|8;
    return v.toString(16);
   });
@@ -3212,21 +3053,21 @@
  HashSet=Collections.HashSet=Runtime.Class({
   add:function(item)
   {
-   var h,arr,v;
+   var h,arr;
    h=this.hash(item);
    arr=this.data[h];
-   return arr==null?(this.data[h]=[item],this.count=this.count+1,true):this.arrContains(item,arr)?false:(v=arr.push(item),this.count=this.count+1,true);
+   return arr==null?(this.data[h]=[item],this.count=this.count+1,true):this.arrContains(item,arr)?false:(arr.push(item),this.count=this.count+1,true);
   },
   arrRemove:function(item,arr)
   {
-   var c,i,$1,l,v;
+   var c,i,$1,l;
    c=true;
    i=0;
    l=arr.length;
-   while(c?i<l:false)
+   while(c&&i<l)
     if(this.equals.apply(null,[arr[i],item]))
      {
-      v=arr.splice.apply(arr,[i,1].concat([]));
+      arr.splice.apply(arr,[i,1]);
       c=false;
      }
     else
@@ -3239,7 +3080,7 @@
    c=true;
    i=0;
    l=arr.length;
-   while(c?i<l:false)
+   while(c&&i<l)
     if(this.equals.apply(null,[arr[i],item]))
      c=false;
     else
@@ -3248,14 +3089,12 @@
   },
   UnionWith:function(xs)
   {
-   var e,v;
+   var e;
    e=Enumerator.Get(xs);
    try
    {
     while(e.MoveNext())
-     {
-      v=this.Add(e.Current());
-     }
+     this.Add(e.Current());
    }
    finally
    {
@@ -3265,14 +3104,14 @@
   },
   SymmetricExceptWith:function(xs)
   {
-   var e,item,v,v$1;
+   var e,item;
    e=Enumerator.Get(xs);
    try
    {
     while(e.MoveNext())
      {
       item=e.Current();
-      this.Contains(item)?v=this.Remove(item):v$1=this.Add(item);
+      this.Contains(item)?this.Remove(item):this.Add(item);
      }
    }
    finally
@@ -3285,7 +3124,7 @@
   {
    var other;
    other=new HashSet.New$4(xs,this.equals,this.hash);
-   return this.get_Count()===other.get_Count()?this.IsSupersetOf(other):false;
+   return this.get_Count()===other.get_Count()&&this.IsSupersetOf(other);
   },
   RemoveWhere:function(cond)
   {
@@ -3302,79 +3141,65 @@
   {
    var arr;
    arr=this.data[this.hash(item)];
-   return arr==null?false:this.arrRemove(item,arr)?(this.count=this.count-1,true):false;
+   return arr==null?false:this.arrRemove(item,arr)&&(this.count=this.count-1,true);
   },
   Overlaps:function(xs)
   {
-   var $this,p;
+   var $this;
    $this=this;
-   p=function(a)
+   return Seq.exists(function(a)
    {
     return $this.Contains(a);
-   };
-   return function(s)
-   {
-    return Seq.exists(p,s);
-   }(xs);
+   },xs);
   },
   IsSupersetOf:function(xs)
   {
-   var $this,p;
+   var $this;
    $this=this;
-   p=function(a)
+   return Seq.forall(function(a)
    {
     return $this.Contains(a);
-   };
-   return function(s)
-   {
-    return Seq.forall(p,s);
-   }(xs);
+   },xs);
   },
   IsSubsetOf:function(xs)
   {
-   var other,p;
+   var other;
    other=new HashSet.New$4(xs,this.equals,this.hash);
-   p=function(a)
+   return Arrays.forall(function(a)
    {
     return other.Contains(a);
-   };
-   return function(a)
-   {
-    return Arrays.forall(p,a);
-   }(HashSetUtil.concat(this.data));
+   },HashSetUtil.concat(this.data));
   },
   IsProperSupersetOf:function(xs)
   {
    var other;
    other=Arrays.ofSeq(xs);
-   return this.count>Arrays.length(other)?this.IsSupersetOf(other):false;
+   return this.count>Arrays.length(other)&&this.IsSupersetOf(other);
   },
   IsProperSubsetOf:function(xs)
   {
    var other;
    other=Arrays.ofSeq(xs);
-   return this.count<Arrays.length(other)?this.IsSubsetOf(other):false;
+   return this.count<Arrays.length(other)&&this.IsSubsetOf(other);
   },
   IntersectWith:function(xs)
   {
-   var other,all,i,$1,item,v;
+   var other,all,i,$1,item;
    other=new HashSet.New$4(xs,this.equals,this.hash);
    all=HashSetUtil.concat(this.data);
    for(i=0,$1=all.length-1;i<=$1;i++){
     item=all[i];
-    !other.Contains(item)?v=this.Remove(item):void 0;
+    !other.Contains(item)?this.Remove(item):void 0;
    }
   },
   ExceptWith:function(xs)
   {
-   var e,v;
+   var e;
    e=Enumerator.Get(xs);
    try
    {
     while(e.MoveNext())
-     {
-      v=this.Remove(e.Current());
-     }
+     this.Remove(e.Current());
    }
    finally
    {
@@ -3401,7 +3226,7 @@
   },
   Clear:function()
   {
-   this.data=Global.Array.prototype.constructor.apply(Global.Array,[]);
+   this.data=[];
    this.count=0;
   },
   Add:function(item)
@@ -3441,18 +3266,16 @@
  },HashSet);
  HashSet.New$4=Runtime.Ctor(function(init,equals,hash)
  {
-  var e,v;
+  var e;
   this.equals=equals;
   this.hash=hash;
-  this.data=Global.Array.prototype.constructor.apply(Global.Array,[]);
+  this.data=[];
   this.count=0;
   e=Enumerator.Get(init);
   try
   {
    while(e.MoveNext())
-    {
-     v=this.add(e.Current());
-    }
+    this.add(e.Current());
   }
   finally
   {
@@ -3496,14 +3319,8 @@
  T$1=List.T=Runtime.Class({
   GetSlice:function(start,finish)
   {
-   var i,j,c,i$1,j$1,c$1;
-   return(start!=null?start.$==1:false)?(finish!=null?finish.$==1:false)?(i=start.$0,(j=finish.$0,List.ofSeq((c=j-i+1,function(s)
-   {
-    return Seq.take(c,s);
-   }(List.skip(i,this)))))):(i$1=start.$0,List.skip(i$1,this)):(finish!=null?finish.$==1:false)?(j$1=finish.$0,List.ofSeq((c$1=j$1+1,function(s)
-   {
-    return Seq.take(c$1,s);
-   }(this)))):this;
+   var i;
+   return start!=null&&start.$==1?finish!=null&&finish.$==1?(i=start.$0,List.ofSeq(Seq.take(finish.$0-i+1,List.skip(i,this)))):List.skip(start.$0,this):finish!=null&&finish.$==1?List.ofSeq(Seq.take(finish.$0+1,this)):this;
   },
   get_Item:function(x)
   {
@@ -3517,9 +3334,9 @@
   {
    return new T.New(this,null,function(e)
    {
-    var m,xs;
+    var m;
     m=e.s;
-    return m.$==0?false:(xs=m.$1,(e.c=m.$0,e.s=xs,true));
+    return m.$==0?false:(e.c=m.$0,e.s=m.$1,true);
    },void 0);
   },
   GetEnumerator0:function()
@@ -3554,9 +3371,7 @@
         $:1
        }),r.$1=t,t);
       }
-     (function()
-     {
-     }(void(r.$1=y)));
+     r.$1=y;
      return res;
     }
  };
@@ -3577,7 +3392,7 @@
   var e,l;
   e=false;
   l=x;
-  while(!e?l.$==1:false)
+  while(!e&&l.$==1)
    {
     e=p(l.$0);
     l=l.$1;
@@ -3590,13 +3405,13 @@
   e=false;
   l1=x1;
   l2=x2;
-  while((!e?l1.$==1:false)?l2.$==1:false)
+  while(!e&&l1.$==1&&l2.$==1)
    {
     e=p(l1.$0,l2.$0);
     l1=l1.$1;
     l2=l2.$1;
    }
-  (!e?l1.$==1?true:l2.$==1:false)?List.badLengths():void 0;
+  !e&&(l1.$==1||l2.$==1)?List.badLengths():void 0;
   return e;
  };
  List.filter=function(p,l)
@@ -3620,7 +3435,7 @@
   var a,l;
   a=true;
   l=x;
-  while(a?l.$==1:false)
+  while(a&&l.$==1)
    {
     a=p(l.$0);
     l=l.$1;
@@ -3633,13 +3448,13 @@
   a=true;
   l1=x1;
   l2=x2;
-  while((a?l1.$==1:false)?l2.$==1:false)
+  while(a&&l1.$==1&&l2.$==1)
    {
     a=p(l1.$0,l2.$0);
     l1=l1.$1;
     l2=l2.$1;
    }
-  (a?l1.$==1?true:l2.$==1:false)?List.badLengths():void 0;
+  a&&(l1.$==1||l2.$==1)?List.badLengths():void 0;
   return a;
  };
  List.head=function(l)
@@ -3742,9 +3557,9 @@
  List.map2=function(f,x1,x2)
  {
   var go,r,l1,l2,res,t;
-  go=x1.$==1?x2.$==1:false;
+  go=x1.$==1&&x2.$==1;
   if(!go)
-   return(x1.$==1?true:x2.$==1)?List.badLengths():x1;
+   return x1.$==1||x2.$==1?List.badLengths():x1;
   else
    {
     res=new T$1({
@@ -3758,11 +3573,11 @@
       r.$0=f(l1.$0,l2.$0);
       l1=l1.$1;
       l2=l2.$1;
-      (l1.$==1?l2.$==1:false)?r=(t=new T$1({
+      l1.$==1&&l2.$==1?r=(t=new T$1({
        $:1
       }),r.$1=t,t):go=false;
      }
-    if(l1.$==1?true:l2.$==1)
+    if(l1.$==1||l2.$==1)
      List.badLengths();
     r.$1=T$1.Empty;
     return res;
@@ -3771,9 +3586,9 @@
  List.map3=function(f,x1,x2,x3)
  {
   var go,r,l1,l2,l3,res,t;
-  go=(x1.$==1?x2.$==1:false)?x3.$==1:false;
+  go=x1.$==1&&x2.$==1&&x3.$==1;
   if(!go)
-   return((x1.$==1?true:x2.$==1)?true:x3.$==1)?List.badLengths():x1;
+   return x1.$==1||x2.$==1||x3.$==1?List.badLengths():x1;
   else
    {
     res=new T$1({
@@ -3789,11 +3604,11 @@
       l1=l1.$1;
       l2=l2.$1;
       l3=l3.$1;
-      ((l1.$==1?l2.$==1:false)?l3.$==1:false)?r=(t=new T$1({
+      l1.$==1&&l2.$==1&&l3.$==1?r=(t=new T$1({
        $:1
       }),r.$1=t,t):go=false;
      }
-    if((l1.$==1?true:l2.$==1)?true:l3.$==1)
+    if(l1.$==1||l2.$==1||l3.$==1)
      List.badLengths();
     r.$1=T$1.Empty;
     return res;
@@ -3828,9 +3643,9 @@
  List.mapi2=function(f,x1,x2)
  {
   var go,r,l1,l2,i,res,t;
-  go=x1.$==1?x2.$==1:false;
+  go=x1.$==1&&x2.$==1;
   if(!go)
-   return(x1.$==1?true:x2.$==1)?List.badLengths():x1;
+   return x1.$==1||x2.$==1?List.badLengths():x1;
   else
    {
     res=new T$1({
@@ -3845,11 +3660,11 @@
       r.$0=f(i,l1.$0,l2.$0);
       l1=l1.$1;
       l2=l2.$1;
-      (l1.$==1?l2.$==1:false)?(r=(t=new T$1({
+      l1.$==1&&l2.$==1?(r=(t=new T$1({
        $:1
       }),r.$1=t,t),i=i+1):go=false;
      }
-    if(l1.$==1?true:l2.$==1)
+    if(l1.$==1||l2.$==1)
      List.badLengths();
     r.$1=T$1.Empty;
     return res;
@@ -3857,7 +3672,10 @@
  };
  List.max=function(l)
  {
-  return Seq.reduce(Operators.Max,l);
+  return Seq.reduce(function($1,$2)
+  {
+   return Unchecked.Compare($1,$2)===1?$1:$2;
+  },l);
  };
  List.maxBy=function(f,l)
  {
@@ -3868,7 +3686,10 @@
  };
  List.min=function(l)
  {
-  return Seq.reduce(Operators.Min,l);
+  return Seq.reduce(function($1,$2)
+  {
+   return Unchecked.Compare($1,$2)===-1?$1:$2;
+  },l);
  };
  List.minBy=function(f,l)
  {
@@ -3894,7 +3715,7 @@
   if(s instanceof T$1)
    return s;
   else
-   if(s instanceof Global.Array)
+   if(s instanceof window.Array)
     return List.ofArray(s);
    else
     {
@@ -3931,11 +3752,9 @@
  };
  List.partition=function(p,l)
  {
-  var p$1,b,a;
+  var p$1;
   p$1=Arrays.partition(p,Arrays.ofList(l));
-  b=p$1[1];
-  a=p$1[0];
-  return[List.ofArray(a),List.ofArray(b)];
+  return[List.ofArray(p$1[0]),List.ofArray(p$1[1])];
  };
  List.permute=function(f,l)
  {
@@ -3984,21 +3803,21 @@
  {
   return List.sortWith(function($1,$2)
   {
-   return Operators.Compare(f($1),f($2));
+   return Unchecked.Compare(f($1),f($2));
   },l);
  };
  List.sortByDescending=function(f,l)
  {
   return List.sortWith(function($1,$2)
   {
-   return-Operators.Compare(f($1),f($2));
+   return-Unchecked.Compare(f($1),f($2));
   },l);
  };
  List.sortDescending=function(l)
  {
   var a;
   a=Arrays.ofList(l);
-  Arrays.sortInPlaceByDescending(Global.id,a);
+  Arrays.sortInPlaceByDescending(window.id,a);
   return List.ofArray(a);
  };
  List.sortWith=function(f,l)
@@ -4014,7 +3833,7 @@
  };
  List.unzip=function(l)
  {
-  var x,y,e,f,b;
+  var x,y,e,f;
   x=[];
   y=[];
   e=Enumerator.Get(l);
@@ -4023,9 +3842,8 @@
    while(e.MoveNext())
     {
      f=e.Current();
-     b=f[1];
      x.push(f[0]);
-     y.push(b);
+     y.push(f[1]);
     }
   }
   finally
@@ -4037,7 +3855,7 @@
  };
  List.unzip3=function(l)
  {
-  var x,y,z,e,f,c,b;
+  var x,y,z,e,f;
   x=[];
   y=[];
   z=[];
@@ -4047,11 +3865,9 @@
    while(e.MoveNext())
     {
      f=e.Current();
-     c=f[2];
-     b=f[1];
      x.push(f[0]);
-     y.push(b);
-     z.push(c);
+     y.push(f[1]);
+     z.push(f[2]);
     }
   }
   finally
@@ -4077,9 +3893,7 @@
  };
  List.chunkBySize=function(size,list)
  {
-  var l;
-  l=List.ofSeq(Seq.chunkBySize(size,list));
-  return List.map(List.ofArray,l);
+  return List.map(List.ofArray,List.ofSeq(Seq.chunkBySize(size,list)));
  };
  List.compareWith=function(f,l1,l2)
  {
@@ -4099,9 +3913,7 @@
  };
  List.splitInto=function(count,list)
  {
-  var l;
-  l=List.ofArray(Arrays.splitInto(count,Arrays.ofList(list)));
-  return List.map(List.ofArray,l);
+  return List.map(List.ofArray,List.ofArray(Arrays.splitInto(count,Arrays.ofList(list))));
  };
  List.except=function(itemsToExclude,l)
  {
@@ -4131,13 +3943,10 @@
   {
    return[k,List.ofArray(s)];
   };
-  (function(a)
+  Arrays.mapInPlace(function($1)
   {
-   Arrays.mapInPlace(function($1)
-   {
-    return f$1($1[0],$1[1]);
-   },a);
-  }(arr));
+   return f$1($1[0],$1[1]);
+  },arr);
   return List.ofArray(arr);
  };
  List.last=function(list)
@@ -4158,7 +3967,7 @@
   var c,l;
   c=false;
   l=x;
-  while(!c?l.$==1:false)
+  while(!c&&l.$==1)
    {
     c=Unchecked.Equals(el,l.$0);
     l=l.$1;
@@ -4167,19 +3976,15 @@
  };
  List.mapFold=function(f,zero,list)
  {
-  var t,x,y;
+  var t;
   t=Arrays.mapFold(f,zero,Arrays.ofList(list));
-  x=t[0];
-  y=t[1];
-  return[List.ofArray(x),y];
+  return[List.ofArray(t[0]),t[1]];
  };
  List.mapFoldBack=function(f,list,zero)
  {
-  var t,x,y;
+  var t;
   t=Arrays.mapFoldBack(f,Arrays.ofList(list),zero);
-  x=t[0];
-  y=t[1];
-  return[List.ofArray(x),y];
+  return[List.ofArray(t[0]),t[1]];
  };
  List.pairwise=function(l)
  {
@@ -4202,7 +4007,7 @@
  List.exactlyOne=function(list)
  {
   var $1;
-  return(list.$==1?list.$1.$==0?($1=list.$0,true):false:false)?$1:Operators.FailWith("The input does not have precisely one element.");
+  return list.$==1&&(list.$1.$==0&&($1=list.$0,true))?$1:Operators.FailWith("The input does not have precisely one element.");
  };
  List.unfold=function(f,s)
  {
@@ -4210,8 +4015,7 @@
  };
  List.windowed=function(windowSize,s)
  {
-  var s$1;
-  return List.ofSeq((s$1=Seq.windowed(windowSize,s),Seq.map(List.ofArray,s$1)));
+  return List.ofSeq(Seq.map(List.ofArray,Seq.windowed(windowSize,s)));
  };
  List.splitAt=function(n,list)
  {
@@ -4233,14 +4037,6 @@
  {
   return x==null?Operators.FailWith("Nullable object must have a value."):x;
  };
- Ref.decr=function(x)
- {
-  x[0]--;
- };
- Ref.incr=function(x)
- {
-  x[0]++;
- };
  Operators.range=function(min,max)
  {
   var count;
@@ -4252,16 +4048,12 @@
  };
  Operators.step=function(min,step,max)
  {
-  var s,p;
+  var s;
   s=Operators.Sign(step);
-  p=function(k)
+  return Seq.takeWhile(function(k)
   {
    return s*(max-k)>=0;
-  };
-  return function(s$1)
-  {
-   return Seq.takeWhile(p,s$1);
-  }(Seq.initInfinite(function(k)
+  },Seq.initInfinite(function(k)
   {
    return min+k*step;
   }));
@@ -4270,20 +4062,9 @@
  {
   return[kvp.K,kvp.V];
  };
- Operators.Using=function(t,f)
- {
-  try
-  {
-   return f(t);
-  }
-  finally
-  {
-   t.Dispose();
-  }
- };
  Operators.Truncate=function(x)
  {
-  return x<0?Global.Math.ceil(x):Global.Math.floor(x);
+  return x<0?Math.ceil(x):Math.floor(x);
  };
  Operators.Sign=function(x)
  {
@@ -4298,14 +4079,6 @@
   }
   return p(n);
  };
- Operators.Min=function(a,b)
- {
-  return Unchecked.Compare(a,b)===-1?a:b;
- };
- Operators.Max=function(a,b)
- {
-  return Unchecked.Compare(a,b)===1?a:b;
- };
  Operators.InvalidArg=function(arg,msg)
  {
   throw new ArgumentException.New(arg,msg);
@@ -4316,87 +4089,74 @@
  };
  Operators.FailWith=function(msg)
  {
-  throw Global.Error(msg);
- };
- Operators.DefaultArg=function(x,d)
- {
-  return x==null?d:x.$0;
- };
- Operators.Compare=function(a,b)
- {
-  return Unchecked.Compare(a,b);
+  throw window.Error(msg);
  };
  Slice.string=function(source,start,finish)
  {
-  return start==null?(finish!=null?finish.$==1:false)?source.slice(0,finish.$0+1):"":finish==null?source.slice(start.$0):source.slice(start.$0,finish.$0+1);
+  return start==null?finish!=null&&finish.$==1?source.slice(0,finish.$0+1):"":finish==null?source.slice(start.$0):source.slice(start.$0,finish.$0+1);
  };
  Slice.array=function(source,start,finish)
  {
-  return start==null?(finish!=null?finish.$==1:false)?source.slice(0,finish.$0+1):[]:finish==null?source.slice(start.$0):source.slice(start.$0,finish.$0+1);
+  return start==null?finish!=null&&finish.$==1?source.slice(0,finish.$0+1):[]:finish==null?source.slice(start.$0):source.slice(start.$0,finish.$0+1);
  };
  Slice.setArray=function(dst,start,finish,src)
  {
-  var start$1,finish$1;
-  start$1=(start!=null?start.$==1:false)?start.$0:0;
-  finish$1=(finish!=null?finish.$==1:false)?finish.$0:dst.length-1;
-  Arrays.setSub(dst,start$1,finish$1-start$1+1,src);
+  var start$1;
+  start$1=start!=null&&start.$==1?start.$0:0;
+  Arrays.setSub(dst,start$1,(finish!=null&&finish.$==1?finish.$0:dst.length-1)-start$1+1,src);
  };
  Slice.array2D=function(arr,start1,finish1,start2,finish2)
  {
-  var start1$1,start2$1,finish1$1,finish2$1;
-  start1$1=(start1!=null?start1.$==1:false)?start1.$0:0;
-  start2$1=(start2!=null?start2.$==1:false)?start2.$0:0;
-  finish1$1=(finish1!=null?finish1.$==1:false)?finish1.$0:arr.length-1;
-  finish2$1=(finish2!=null?finish2.$==1:false)?finish2.$0:(arr.length?arr[0].length:0)-1;
-  return Arrays.sub2D(arr,start1$1,start2$1,finish1$1-start1$1+1,finish2$1-start2$1+1);
+  var start1$1,start2$1;
+  start1$1=start1!=null&&start1.$==1?start1.$0:0;
+  start2$1=start2!=null&&start2.$==1?start2.$0:0;
+  return Arrays.sub2D(arr,start1$1,start2$1,(finish1!=null&&finish1.$==1?finish1.$0:arr.length-1)-start1$1+1,(finish2!=null&&finish2.$==1?finish2.$0:(arr.length?arr[0].length:0)-1)-start2$1+1);
  };
  Slice.array2Dfix1=function(arr,fixed1,start2,finish2)
  {
   var start2$1,finish2$1,len2,dst,j,$1;
-  start2$1=(start2!=null?start2.$==1:false)?start2.$0:0;
-  finish2$1=(finish2!=null?finish2.$==1:false)?finish2.$0:(arr.length?arr[0].length:0)-1;
+  start2$1=start2!=null&&start2.$==1?start2.$0:0;
+  finish2$1=finish2!=null&&finish2.$==1?finish2.$0:(arr.length?arr[0].length:0)-1;
   len2=finish2$1-start2$1+1;
-  dst=new Global.Array(len2);
+  dst=new window.Array(len2);
   for(j=0,$1=len2-1;j<=$1;j++)Arrays.set(dst,j,Arrays.get2D(arr,fixed1,start2$1+j));
   return dst;
  };
  Slice.array2Dfix2=function(arr,start1,finish1,fixed2)
  {
   var start1$1,finish1$1,len1,dst,i,$1;
-  start1$1=(start1!=null?start1.$==1:false)?start1.$0:0;
-  finish1$1=(finish1!=null?finish1.$==1:false)?finish1.$0:arr.length-1;
+  start1$1=start1!=null&&start1.$==1?start1.$0:0;
+  finish1$1=finish1!=null&&finish1.$==1?finish1.$0:arr.length-1;
   len1=finish1$1-start1$1+1;
-  dst=new Global.Array(len1);
+  dst=new window.Array(len1);
   for(i=0,$1=len1-1;i<=$1;i++)Arrays.set(dst,i,Arrays.get2D(arr,start1$1+i,fixed2));
   return dst;
  };
  Slice.setArray2Dfix1=function(dst,fixed1,start2,finish2,src)
  {
   var start2$1,finish2$1,j,$1;
-  start2$1=(start2!=null?start2.$==1:false)?start2.$0:0;
-  finish2$1=(finish2!=null?finish2.$==1:false)?finish2.$0:(dst.length?dst[0].length:0)-1;
+  start2$1=start2!=null&&start2.$==1?start2.$0:0;
+  finish2$1=finish2!=null&&finish2.$==1?finish2.$0:(dst.length?dst[0].length:0)-1;
   for(j=0,$1=finish2$1-start2$1+1-1;j<=$1;j++)Arrays.set2D(dst,fixed1,start2$1+j,Arrays.get(src,j));
  };
  Slice.setArray2Dfix2=function(dst,start1,finish1,fixed2,src)
  {
   var start1$1,finish1$1,i,$1;
-  start1$1=(start1!=null?start1.$==1:false)?start1.$0:0;
-  finish1$1=(finish1!=null?finish1.$==1:false)?finish1.$0:dst.length-1;
+  start1$1=start1!=null&&start1.$==1?start1.$0:0;
+  finish1$1=finish1!=null&&finish1.$==1?finish1.$0:dst.length-1;
   for(i=0,$1=finish1$1-start1$1+1-1;i<=$1;i++)Arrays.set2D(dst,start1$1+i,fixed2,Arrays.get(src,i));
  };
  Slice.setArray2D=function(dst,start1,finish1,start2,finish2,src)
  {
-  var start1$1,start2$1,finish1$1,finish2$1;
-  start1$1=(start1!=null?start1.$==1:false)?start1.$0:0;
-  start2$1=(start2!=null?start2.$==1:false)?start2.$0:0;
-  finish1$1=(finish1!=null?finish1.$==1:false)?finish1.$0:dst.length-1;
-  finish2$1=(finish2!=null?finish2.$==1:false)?finish2.$0:(dst.length?dst[0].length:0)-1;
-  Arrays.setSub2D(dst,start1$1,start2$1,finish1$1-start1$1+1,finish2$1-start2$1+1,src);
+  var start1$1,start2$1;
+  start1$1=start1!=null&&start1.$==1?start1.$0:0;
+  start2$1=start2!=null&&start2.$==1?start2.$0:0;
+  Arrays.setSub2D(dst,start1$1,start2$1,(finish1!=null&&finish1.$==1?finish1.$0:dst.length-1)-start1$1+1,(finish2!=null&&finish2.$==1?finish2.$0:(dst.length?dst[0].length:0)-1)-start2$1+1,src);
  };
  Option.filter=function(f,o)
  {
   var $1;
-  return((o!=null?o.$==1:false)?f(o.$0)?($1=o.$0,true):false:false)?o:null;
+  return o!=null&&o.$==1&&(f(o.$0)&&($1=o.$0,true))?o:null;
  };
  Option.fold=function(f,s,x)
  {
@@ -4426,12 +4186,11 @@
  };
  Option.toList=function(x)
  {
-  var x$1;
-  return x==null?T$1.Empty:(x$1=x.$0,List.ofArray([x$1]));
+  return x==null?T$1.Empty:List.ofArray([x.$0]);
  };
  Option.toNullable=function(o)
  {
-  return(o!=null?o.$==1:false)?o.$0:null;
+  return o!=null&&o.$==1?o.$0:null;
  };
  Option.toObj=function(o)
  {
@@ -4456,29 +4215,27 @@
   NextBytes:function(buffer)
   {
    var i,$1;
-   for(i=0,$1=Arrays.length(buffer)-1;i<=$1;i++)Arrays.set(buffer,i,Global.Math.floor(Global.Math.random()*256));
+   for(i=0,$1=Arrays.length(buffer)-1;i<=$1;i++)Arrays.set(buffer,i,Math.floor(Math.random()*256));
   },
   Next:function(minValue,maxValue)
   {
-   return minValue>maxValue?Operators.FailWith("'minValue' cannot be greater than maxValue."):minValue+Global.Math.floor(Global.Math.random()*(maxValue-minValue));
+   return minValue>maxValue?Operators.FailWith("'minValue' cannot be greater than maxValue."):minValue+Math.floor(Math.random()*(maxValue-minValue));
   },
   Next$1:function(maxValue)
   {
-   return maxValue<0?Operators.FailWith("'maxValue' must be greater than zero."):Global.Math.floor(Global.Math.random()*maxValue);
+   return maxValue<0?Operators.FailWith("'maxValue' must be greater than zero."):Math.floor(Math.random()*maxValue);
   },
   Next$2:function()
   {
-   return Global.Math.floor(Global.Math.random()*2147483648);
+   return Math.floor(Math.random()*2147483648);
   }
  },null,Random);
  Random.New=Runtime.Ctor(function()
  {
  },Random);
- FSharpRef.New=function(contents)
+ Ref.New=function(contents)
  {
-  return{
-   "0":contents
-  };
+  return[contents];
  };
  Result.MapError=function(f,r)
  {
@@ -4524,7 +4281,7 @@
     }
     return new T.New(null,null,function(e$1)
     {
-     return _enum.MoveNext()?(e$1.c=_enum.Current(),true):false;
+     return _enum.MoveNext()&&(e$1.c=_enum.Current(),true);
     },function()
     {
      _enum.Dispose();
@@ -4550,7 +4307,7 @@
     }
     return new T.New(null,null,function(e$1)
     {
-     return _enum.MoveNext()?(e$1.c=_enum.Current(),true):false;
+     return _enum.MoveNext()&&(e$1.c=_enum.Current(),true);
     },function()
     {
      _enum.Dispose();
@@ -4607,6 +4364,8 @@
  Control.createEvent=function(add,remove,create)
  {
   return{
+   AddHandler:add,
+   RemoveHandler:remove,
    Subscribe:function(r)
    {
     var h;
@@ -4624,9 +4383,7 @@
       return remove(h);
      }
     };
-   },
-   RemoveHandler:remove,
-   AddHandler:add
+   }
   };
  };
  Seq.append=function(s1,s2)
@@ -4634,13 +4391,12 @@
   return{
    GetEnumerator:function()
    {
-    var e1,first;
-    e1=Enumerator.Get(s1);
+    var first;
     first=[true];
-    return new T.New(e1,null,function(x)
+    return new T.New(Enumerator.Get(s1),null,function(x)
     {
      var x$1;
-     return x.s.MoveNext()?(x.c=x.s.Current(),true):(x$1=x.s,!Unchecked.Equals(x$1,null)?x$1.Dispose():void 0,x.s=null,first[0]?(first[0]=false,x.s=Enumerator.Get(s2),x.s.MoveNext()?(x.c=x.s.Current(),true):(x.s.Dispose(),x.s=null,false)):false);
+     return x.s.MoveNext()?(x.c=x.s.Current(),true):(x$1=x.s,!Unchecked.Equals(x$1,null)?x$1.Dispose():void 0,x.s=null,first[0]&&(first[0]=false,x.s=Enumerator.Get(s2),x.s.MoveNext()?(x.c=x.s.Current(),true):(x.s.Dispose(),x.s=null,false)));
     },function(x)
     {
      var x$1;
@@ -4652,7 +4408,7 @@
  };
  Seq.average=function(s)
  {
-  var p,sum,count;
+  var p,count;
   p=Seq.fold(function($1,$2)
   {
    return(function(t)
@@ -4666,13 +4422,12 @@
     };
    }($1))($2);
   },[0,0],s);
-  sum=p[1];
   count=p[0];
-  return count===0?Operators.InvalidArg("source","The input sequence was empty."):sum/count;
+  return count===0?Operators.InvalidArg("source","The input sequence was empty."):p[1]/count;
  };
  Seq.averageBy=function(f,s)
  {
-  var p,sum,count;
+  var p,count;
   p=Seq.fold(function($1,$2)
   {
    return(function(t)
@@ -4686,9 +4441,8 @@
     };
    }($1))($2);
   },[0,0],s);
-  sum=p[1];
   count=p[0];
-  return count===0?Operators.InvalidArg("source","The input sequence was empty."):sum/count;
+  return count===0?Operators.InvalidArg("source","The input sequence was empty."):p[1]/count;
  };
  Seq.cache=function(s)
  {
@@ -4708,17 +4462,12 @@
  };
  Seq.choose=function(f,s)
  {
-  var m;
-  m=function(x)
+  return Seq.collect(function(x)
   {
-   var m$1,v;
-   m$1=f(x);
-   return m$1==null?T$1.Empty:(v=m$1.$0,List.ofArray([v]));
-  };
-  return function(s$1)
-  {
-   return Seq.collect(m,s$1);
-  }(s);
+   var m;
+   m=f(x);
+   return m==null?T$1.Empty:List.ofArray([m.$0]);
+  },s);
  };
  Seq.collect=function(f,s)
  {
@@ -4735,7 +4484,7 @@
    {
     r=0;
     loop=true;
-    while(loop?r===0:false)
+    while(loop&&r===0)
      if(e1.MoveNext())
       r=e2.MoveNext()?f(e1.Current(),e2.Current()):1;
      else
@@ -4827,7 +4576,7 @@
  };
  Seq.distinct=function(s)
  {
-  return Seq.distinctBy(Global.id,s);
+  return Seq.distinctBy(window.id,s);
  };
  Seq.distinctBy=function(f,s)
  {
@@ -4844,12 +4593,12 @@
       {
        cur=o.Current();
        has=seen.Add(f(cur));
-       while(!has?o.MoveNext():false)
+       while(!has&&o.MoveNext())
         {
          cur=o.Current();
          has=seen.Add(f(cur));
         }
-       return has?(e.c=cur,true):false;
+       return has&&(e.c=cur,true);
       }
      else
       return false;
@@ -4889,7 +4638,7 @@
   try
   {
    r=false;
-   while(!r?e.MoveNext():false)
+   while(!r&&e.MoveNext())
     r=p(e.Current());
    return r;
   }
@@ -4909,7 +4658,7 @@
    try
    {
     r=false;
-    while((!r?e1.MoveNext():false)?e2.MoveNext():false)
+    while(!r&&e1.MoveNext()&&e2.MoveNext())
      r=p(e1.Current(),e2.Current());
     $1=r;
    }
@@ -5079,7 +4828,7 @@
    e2=Enumerator.Get(s2);
    try
    {
-    while(e1.MoveNext()?e2.MoveNext():false)
+    while(e1.MoveNext()&&e2.MoveNext())
      p(e1.Current(),e2.Current());
     $1=void 0;
    }
@@ -5141,7 +4890,7 @@
     en=Enumerator.Get(s);
     return new T.New(null,null,function(e)
     {
-     return en.MoveNext()?(e.c=f(en.Current()),true):false;
+     return en.MoveNext()&&(e.c=f(en.Current()),true);
     },function()
     {
      en.Dispose();
@@ -5151,7 +4900,7 @@
  };
  Seq.mapi=function(f,s)
  {
-  return Seq.map2(f,Seq.initInfinite(Global.id),s);
+  return Seq.map2(f,Seq.initInfinite(window.id),s);
  };
  Seq.map2=function(f,s1,s2)
  {
@@ -5163,7 +4912,7 @@
     e2=Enumerator.Get(s2);
     return new T.New(null,null,function(e)
     {
-     return(e1.MoveNext()?e2.MoveNext():false)?(e.c=f(e1.Current(),e2.Current()),true):false;
+     return e1.MoveNext()&&e2.MoveNext()&&(e.c=f(e1.Current(),e2.Current()),true);
     },function()
     {
      e1.Dispose();
@@ -5224,15 +4973,10 @@
  };
  Seq.pairwise=function(s)
  {
-  var m;
-  m=function(x)
+  return Seq.map(function(x)
   {
    return[Arrays.get(x,0),Arrays.get(x,1)];
-  };
-  return function(s$1)
-  {
-   return Seq.map(m,s$1);
-  }(Seq.windowed(2,s));
+  },Seq.windowed(2,s));
  };
  Seq.pick=function(p,s)
  {
@@ -5273,18 +5017,14 @@
   return{
    GetEnumerator:function()
    {
-    var en,d;
+    var en;
     en=Enumerator.Get(s);
-    d=function()
+    return new T.New(false,null,function(e)
+    {
+     return e.s?en.MoveNext()&&(e.c=f(e.c,en.Current()),true):(e.c=x,e.s=true,true);
+    },function()
     {
      en.Dispose();
-    };
-    return function(n)
-    {
-     return new T.New(false,null,n,d);
-    }(function(e)
-    {
-     return e.s?en.MoveNext()?(e.c=f(e.c,en.Current()),true):false:(e.c=x,e.s=true,true);
     });
    }
   };
@@ -5307,7 +5047,7 @@
       }
      else
       null;
-     return o.MoveNext()?(e.c=o.Current(),true):false;
+     return o.MoveNext()&&(e.c=o.Current(),true);
     },function()
     {
      o.Dispose();
@@ -5344,7 +5084,7 @@
        return empty?false:(e.c=o.Current(),true);
       }
      else
-      return o.MoveNext()?(e.c=o.Current(),true):false;
+      return o.MoveNext()&&(e.c=o.Current(),true);
     },function()
     {
      o.Dispose();
@@ -5354,7 +5094,7 @@
  };
  Seq.sort=function(s)
  {
-  return Seq.sortBy(Global.id,s);
+  return Seq.sortBy(window.id,s);
  };
  Seq.sortBy=function(f,s)
  {
@@ -5378,7 +5118,7 @@
  };
  Seq.sortDescending=function(s)
  {
-  return Seq.sortByDescending(Global.id,s);
+  return Seq.sortByDescending(window.id,s);
  };
  Seq.sum=function(s)
  {
@@ -5424,7 +5164,7 @@
    {
     return Seq.enumWhile(function()
     {
-     return e.MoveNext()?f(e.Current()):false;
+     return e.MoveNext()&&f(e.Current());
     },Seq.delay(function()
     {
      return[e.Current()];
@@ -5442,10 +5182,10 @@
     i=[0];
     return Seq.enumWhile(function()
     {
-     return e.MoveNext()?i[0]<n:false;
+     return e.MoveNext()&&i[0]<n;
     },Seq.delay(function()
     {
-     Ref.incr(i);
+     i[0]++;
      return[e.Current()];
     }));
    });
@@ -5458,7 +5198,7 @@
   try
   {
    r=null;
-   while(r==null?e.MoveNext():false)
+   while(r==null&&e.MoveNext())
     {
      x=e.Current();
      ok(x)?r={
@@ -5488,7 +5228,7 @@
   {
    loop=true;
    i=0;
-   while(loop?e.MoveNext():false)
+   while(loop&&e.MoveNext())
     if(ok(e.Current()))
      loop=false;
     else
@@ -5517,7 +5257,7 @@
   try
   {
    r=null;
-   while(Unchecked.Equals(r,null)?e.MoveNext():false)
+   while(Unchecked.Equals(r,null)&&e.MoveNext())
     r=f(e.Current());
    return r;
   }
@@ -5534,9 +5274,9 @@
    {
     return new T.New(s,null,function(e)
     {
-     var m,s$1;
+     var m;
      m=f(e.s);
-     return m==null?false:(s$1=m.$0[1],(e.c=m.$0[0],e.s=s$1,true));
+     return m==null?false:(e.c=m.$0[0],e.s=m.$0[1],true);
     },void 0);
    }
   };
@@ -5552,7 +5292,7 @@
     q=[];
     return Seq.append(Seq.enumWhile(function()
     {
-     return q.length<windowSize?e.MoveNext():false;
+     return q.length<windowSize&&e.MoveNext();
     },Seq.delay(function()
     {
      q.push(e.Current());
@@ -5593,7 +5333,7 @@
     e3=Enumerator.Get(s3);
     return new T.New(null,null,function(e)
     {
-     return((e1.MoveNext()?e2.MoveNext():false)?e3.MoveNext():false)?(e.c=f(e1.Current(),e2.Current(),e3.Current()),true):false;
+     return e1.MoveNext()&&e2.MoveNext()&&e3.MoveNext()&&(e.c=f(e1.Current(),e2.Current(),e3.Current()),true);
     },function()
     {
      e1.Dispose();
@@ -5632,7 +5372,7 @@
    e2=Enumerator.Get(s2);
    try
    {
-    while(e1.MoveNext()?e2.MoveNext():false)
+    while(e1.MoveNext()&&e2.MoveNext())
      {
       f(i,e1.Current(),e2.Current());
       i=i+1;
@@ -5657,7 +5397,7 @@
   return Seq.map3(function($1,$2,$3)
   {
    return((f($1))($2))($3);
-  },Seq.initInfinite(Global.id),s1,s2);
+  },Seq.initInfinite(window.id),s1,s2);
  };
  Seq.mapFold=function(f,zero,s)
  {
@@ -5741,7 +5481,7 @@
  };
  Strings.RegexEscape=function(s)
  {
-  return s.replace(new Global.RegExp("[-\\/\\\\^$*+?.()|[\\]{}]","g"),"\\$&");
+  return s.replace(new window.RegExp("[-\\/\\\\^$*+?.()|[\\]{}]","g"),"\\$&");
  };
  Strings.SplitWith=function(str,pat)
  {
@@ -5753,15 +5493,15 @@
  };
  Strings.TrimEndWS=function(s)
  {
-  return s.replace(new Global.RegExp("\\s+$"),"");
+  return s.replace(new window.RegExp("\\s+$"),"");
  };
  Strings.TrimStartWS=function(s)
  {
-  return s.replace(new Global.RegExp("^\\s+"),"");
+  return s.replace(new window.RegExp("^\\s+"),"");
  };
  Strings.Trim=function(s)
  {
-  return s.replace(new Global.RegExp("^\\s+"),"").replace(new Global.RegExp("\\s+$"),"");
+  return s.replace(new window.RegExp("^\\s+"),"").replace(new window.RegExp("\\s+$"),"");
  };
  Strings.StartsWith=function(t,s)
  {
@@ -5781,19 +5521,19 @@
  };
  Strings.PadRightWith=function(s,n,c)
  {
-  return n>s.length?s+Global.Array(n-s.length+1).join(Global.String.fromCharCode(c)):s;
+  return n>s.length?s+window.Array(n-s.length+1).join(String.fromCharCode(c)):s;
  };
  Strings.PadLeftWith=function(s,n,c)
  {
-  return n>s.length?Global.Array(n-s.length+1).join(Global.String.fromCharCode(c))+s:s;
+  return n>s.length?window.Array(n-s.length+1).join(String.fromCharCode(c))+s:s;
  };
  Strings.LastIndexOf=function(s,c,i)
  {
-  return s.lastIndexOf(Global.String.fromCharCode(c),i);
+  return s.lastIndexOf(String.fromCharCode(c),i);
  };
  Strings.IsNullOrWhiteSpace=function(x)
  {
-  return x==null||(new Global.RegExp("^\\s*$")).test(x);
+  return x==null||(new window.RegExp("^\\s*$")).test(x);
  };
  Strings.IsNullOrEmpty=function(x)
  {
@@ -5805,7 +5545,7 @@
  };
  Strings.IndexOf=function(s,c,i)
  {
-  return s.indexOf(Global.String.fromCharCode(c),i);
+  return s.indexOf(String.fromCharCode(c),i);
  };
  Strings.EndsWith=function(x,s)
  {
@@ -5873,101 +5613,78 @@
  };
  Strings.SFormat=function(format,args)
  {
-  var pattern,r;
-  pattern=new Global.RegExp("{(0|[1-9]\\d*)(?:,(-?[1-9]\\d*|0))?(?::(.*?))?}","g");
-  r=function($1,i,w)
+  return format.replace(new window.RegExp("{(0|[1-9]\\d*)(?:,(-?[1-9]\\d*|0))?(?::(.*?))?}","g"),function($1,$2,w)
   {
-   var r$1,w1,w2;
-   r$1=String(Arrays.get(args,+i));
-   return!Unchecked.Equals(w,void 0)?(w1=+w,(w2=Global.Math.abs(w1),w2>r$1.length?w1>0?Strings.PadLeft(r$1,w2):Strings.PadRight(r$1,w2):r$1)):r$1;
-  };
-  return function(t)
-  {
-   return t.replace(pattern,r);
-  }(format);
+   var r,w1,w2;
+   r=String(Arrays.get(args,+$2));
+   return!Unchecked.Equals(w,void 0)?(w1=+w,(w2=Math.abs(w1),w2>r.length?w1>0?Strings.PadLeft(r,w2):Strings.PadRight(r,w2):r)):r;
+  });
  };
  Strings.Filter=function(f,s)
  {
-  var c;
-  return Arrays.ofSeq((c=function(c$1)
+  return Arrays.ofSeq(Seq.choose(function(c)
   {
-   return f(c$1)?{
+   return f(c)?{
     $:1,
-    $0:String.fromCharCode(c$1)
+    $0:String.fromCharCode(c)
    }:null;
-  },function(s$1)
-  {
-   return Seq.choose(c,s$1);
-  }(s))).join("");
+  },s)).join("");
  };
  Strings.SplitStrings=function(s,sep,opts)
  {
-  var re;
-  re=Strings.concat("|",Arrays.map(Strings.RegexEscape,sep));
-  return Strings.Split(s,new Global.RegExp(re),opts);
+  return Strings.Split(s,new window.RegExp(Strings.concat("|",Arrays.map(Strings.RegexEscape,sep))),opts);
  };
  Strings.SplitChars=function(s,sep,opts)
  {
-  var re;
-  re="["+Strings.RegexEscape(Global.String.fromCharCode.apply(void 0,sep))+"]";
-  return Strings.Split(s,new Global.RegExp(re),opts);
+  return Strings.Split(s,new window.RegExp("["+Strings.RegexEscape(String.fromCharCode.apply(void 0,sep))+"]"),opts);
  };
  Strings.Split=function(s,pat,opts)
  {
-  var res;
-  res=Strings.SplitWith(s,pat);
   return opts===1?Arrays.filter(function(x)
   {
    return x!=="";
-  },res):res;
+  },Strings.SplitWith(s,pat)):Strings.SplitWith(s,pat);
  };
  Strings.TrimEnd=function(s,t)
  {
-  var i,go,ct;
-  if(Unchecked.Equals(t,null)?true:t.length==0)
+  var i,go;
+  if(Unchecked.Equals(t,null)||t.length==0)
    return Strings.TrimEndWS(s);
   else
    {
     i=s.length-1;
     go=true;
-    while(i>=0?go:false)
+    while(i>=0&&go)
      (function()
      {
-      var c,p;
+      var c;
       c=s.charCodeAt(i);
-      return(p=function(y)
+      return Arrays.exists(function(y)
       {
        return c===y;
-      },function(a)
-      {
-       return Arrays.exists(p,a);
-      }(t))?void(i=i-1):void(go=false);
+      },t)?void(i=i-1):void(go=false);
      }());
-    ct=i+1;
-    return Strings.Substring(s,0,ct);
+    return Strings.Substring(s,0,i+1);
    }
  };
  Strings.TrimStart=function(s,t)
  {
   var i,go;
-  if(Unchecked.Equals(t,null)?true:t.length==0)
+  if(Unchecked.Equals(t,null)||t.length==0)
    return Strings.TrimStartWS(s);
   else
    {
     i=0;
     go=true;
-    while(i<s.length?go:false)
+    while(i<s.length&&go)
      (function()
      {
-      var c,p;
+      var c;
       c=s.charCodeAt(i);
-      return(p=function(y)
+      return Arrays.exists(function(y)
       {
        return c===y;
-      },function(a)
-      {
-       return Arrays.exists(p,a);
-      }(t))?void(i=i+1):void(go=false);
+      },t)?void(i=i+1):void(go=false);
      }());
     return s.substring(i);
    }
@@ -5994,9 +5711,9 @@
  {
   function replaceLoop(subj)
   {
-   var index,replaced,nextStartIndex,ct;
+   var index,replaced,nextStartIndex;
    index=subj.indexOf(search);
-   return index!==-1?(replaced=Strings.ReplaceOnce(subj,search,replace),(nextStartIndex=index+replace.length,(ct=index+replace.length,Strings.Substring(replaced,0,ct))+replaceLoop(replaced.substring(nextStartIndex)))):subj;
+   return index!==-1?(replaced=Strings.ReplaceOnce(subj,search,replace),(nextStartIndex=index+replace.length,Strings.Substring(replaced,0,index+replace.length)+replaceLoop(replaced.substring(nextStartIndex)))):subj;
   }
   return replaceLoop(subject);
  };
@@ -6014,7 +5731,7 @@
  };
  Strings.Compare=function(x,y)
  {
-  return Operators.Compare(x,y);
+  return Unchecked.Compare(x,y);
  };
  Task=WebSharper.Task=Runtime.Class({
   Execute:function()
@@ -6036,7 +5753,7 @@
     }
     catch(m)
     {
-     (m instanceof OperationCanceledException?Unchecked.Equals(m.ct,$this.token)?($1=m,true):false:false)?(Global.console.log.apply(Global.console,["Task cancellation caught:"].concat([$1])),$this.exc=new AggregateException.New$3([$1]),$this.status=6):(Global.console.log.apply(Global.console,["Task error caught:"].concat([m])),$this.exc=new AggregateException.New$3([m]),$this.status=7);
+     m instanceof OperationCanceledException&&(Unchecked.Equals(m.ct,$this.token)&&($1=m,true))?(console.log("Task cancellation caught:",$1),$this.exc=new AggregateException.New$3([$1]),$this.status=6):(console.log("Task error caught:",m),$this.exc=new AggregateException.New$3([m]),$this.status=7);
     }
     $this.RunContinuations();
    })):Operators.InvalidOp("Task not in initial state");
@@ -6066,24 +5783,24 @@
   },
   ContinueWith:function(func,ct)
   {
-   var $this,res,v;
+   var $this,res;
    $this=this;
    res=new Task1.New(function()
    {
     return func($this);
    },ct,1,null,void 0);
-   this.get_IsCompleted()?res.StartContinuation():v=this.continuations.push(res);
+   this.get_IsCompleted()?res.StartContinuation():this.continuations.push(res);
    return res;
   },
   ContinueWith$1:function(action,ct)
   {
-   var $this,res,v;
+   var $this,res;
    $this=this;
    res=new Task.New$2(function()
    {
     return action($this);
    },ct,1,null);
-   this.get_IsCompleted()?res.StartContinuation():v=this.continuations.push(res);
+   this.get_IsCompleted()?res.StartContinuation():this.continuations.push(res);
    return res;
   },
   ContinueWith$2:function(action)
@@ -6098,13 +5815,12 @@
   },
   OnCompleted:function(cont)
   {
-   var v;
    if(this.get_IsCompleted())
     cont();
    else
     {
      Unchecked.Equals(this.get_Status(),0)?this.Start():void 0;
-     v=this.ContinueWith$2(function()
+     this.ContinueWith$2(function()
      {
       return cont();
      });
@@ -6120,7 +5836,7 @@
   },
   get_IsCompleted:function()
   {
-   return(Unchecked.Equals(this.status,5)?true:Unchecked.Equals(this.status,7))?true:Unchecked.Equals(this.status,6);
+   return Unchecked.Equals(this.status,5)||Unchecked.Equals(this.status,7)||Unchecked.Equals(this.status,6);
   },
   get_IsCanceled:function()
   {
@@ -6136,60 +5852,47 @@
   var target,completed,results,tcs,i,$1;
   target=Arrays.length(tasks);
   completed=[0];
-  results=new Global.Array(target);
+  results=new window.Array(target);
   tcs=new TaskCompletionSource.New();
   for(i=0,$1=target-1;i<=$1;i++)(function(i$1)
   {
-   var v;
-   v=Arrays.get(tasks,i).ContinueWith$2(function(t)
+   Arrays.get(tasks,i).ContinueWith$2(function(t)
    {
-    var v$1,v$2;
-    return t.get_IsFaulted()?(v$1=tcs.TrySetException$1(t.get_Exception()),void 0):t.get_IsCanceled()?(v$2=tcs.TrySetCanceled$1(),void 0):(Ref.incr(completed),results[i$1]=t.get_Result(),completed[0]===target?tcs.SetResult(results):null);
+    return t.get_IsFaulted()?void tcs.TrySetException$1(t.get_Exception()):t.get_IsCanceled()?void tcs.TrySetCanceled$1():(completed[0]++,results[i$1]=t.get_Result(),completed[0]===target?tcs.SetResult(results):null);
    });
   }(i));
   return tcs.get_Task();
  };
  Task.WhenAll$1=function(tasks)
  {
-  var target,completed,tcs,i,$1,v;
+  var target,completed,tcs,i,$1;
   target=Arrays.length(tasks);
   completed=[0];
   tcs=new TaskCompletionSource.New();
-  for(i=0,$1=target-1;i<=$1;i++){
-   v=Arrays.get(tasks,i).ContinueWith$2(function(t)
-   {
-    var v$1,v$2,v$3;
-    return t.get_IsFaulted()?(v$1=tcs.TrySetException$1(t.get_Exception()),void 0):t.get_IsCanceled()?(v$2=tcs.TrySetCanceled$1(),void 0):(Ref.incr(completed),completed[0]===target?(v$3=tcs.TrySetResult(),void 0):null);
-   });
-  }
+  for(i=0,$1=target-1;i<=$1;i++)Arrays.get(tasks,i).ContinueWith$2(function(t)
+  {
+   return t.get_IsFaulted()?void tcs.TrySetException$1(t.get_Exception()):t.get_IsCanceled()?void tcs.TrySetCanceled$1():(completed[0]++,completed[0]===target?void tcs.TrySetResult():null);
+  });
   return tcs.get_Task();
  };
  Task.WhenAny=function(tasks)
  {
-  var tcs,i,$1,t,v;
+  var tcs,i,$1;
   tcs=new TaskCompletionSource.New();
-  for(i=0,$1=tasks.length-1;i<=$1;i++){
-   t=Arrays.get(tasks,i);
-   v=t.ContinueWith(function(t$1)
-   {
-    var v$1;
-    v$1=tcs.TrySetResult(t$1);
-   },Concurrency.noneCT());
-  }
+  for(i=0,$1=tasks.length-1;i<=$1;i++)Arrays.get(tasks,i).ContinueWith(function(t)
+  {
+   tcs.TrySetResult(t);
+  },Concurrency.noneCT());
   return tcs.get_Task();
  };
  Task.WhenAny$1=function(tasks)
  {
-  var tcs,i,$1,t,v;
+  var tcs,i,$1;
   tcs=new TaskCompletionSource.New();
-  for(i=0,$1=tasks.length-1;i<=$1;i++){
-   t=Arrays.get(tasks,i);
-   v=t.ContinueWith$2(function(t$1)
-   {
-    var v$1;
-    v$1=tcs.TrySetResult(t$1);
-   });
-  }
+  for(i=0,$1=tasks.length-1;i<=$1;i++)Arrays.get(tasks,i).ContinueWith$2(function(t)
+  {
+   tcs.TrySetResult(t);
+  });
   return tcs.get_Task();
  };
  Task.Delay=function(time,ct)
@@ -6284,7 +5987,7 @@
  TaskCompletionSource=WebSharper.TaskCompletionSource=Runtime.Class({
   TrySetResult:function(res)
   {
-   return!this.task.get_IsCompleted()?(this.task.status=5,this.task.result=res,this.task.RunContinuations(),true):false;
+   return!this.task.get_IsCompleted()&&(this.task.status=5,this.task.result=res,this.task.RunContinuations(),true);
   },
   TrySetException:function(exs)
   {
@@ -6292,15 +5995,15 @@
   },
   TrySetException$1:function(exc)
   {
-   return!this.task.get_IsCompleted()?(this.task.status=7,this.task.exc=new AggregateException.New$3([exc]),this.task.RunContinuations(),true):false;
+   return!this.task.get_IsCompleted()&&(this.task.status=7,this.task.exc=new AggregateException.New$3([exc]),this.task.RunContinuations(),true);
   },
   TrySetCanceled:function(ct)
   {
-   return!this.task.get_IsCompleted()?(this.task.status=6,this.task.RunContinuations(),true):false;
+   return!this.task.get_IsCompleted()&&(this.task.status=6,this.task.RunContinuations(),true);
   },
   TrySetCanceled$1:function()
   {
-   return!this.task.get_IsCompleted()?(this.task.status=6,this.task.RunContinuations(),true):false;
+   return!this.task.get_IsCompleted()&&(this.task.status=6,this.task.RunContinuations(),true);
   },
   SetResult:function(res)
   {
@@ -6339,20 +6042,19 @@
  {
   var m;
   m=typeof o;
-  return m=="function"?0:m=="boolean"?o?1:0:m=="number"?o:m=="string"?Unchecked.hashString(o):m=="object"?o==null?0:o instanceof Global.Array?Unchecked.hashArray(o):Unchecked.hashObject(o):0;
+  return m=="function"?0:m=="boolean"?o?1:0:m=="number"?o:m=="string"?Unchecked.hashString(o):m=="object"?o==null?0:o instanceof window.Array?Unchecked.hashArray(o):Unchecked.hashObject(o):0;
  };
  Unchecked.hashObject=function(o)
  {
-  var _,h,k;
+  var h,k;
   if("GetHashCode"in o)
    return o.GetHashCode();
   else
    {
-    _=Unchecked.hashMix;
     h=[0];
     for(var k$1 in o)if(function(key)
     {
-     h[0]=_(_(h[0],Unchecked.hashString(key)),Unchecked.Hash(o[key]));
+     h[0]=Unchecked.hashMix(Unchecked.hashMix(h[0],Unchecked.hashString(key)),Unchecked.Hash(o[key]));
      return false;
     }(k$1))
      break;
@@ -6392,23 +6094,23 @@
     m=typeof a;
     if(m=="object")
     {
-     if(((a===null?true:a===void 0)?true:b===null)?true:b===void 0)
+     if(a===null||a===void 0||b===null||b===void 0)
       return false;
      else
       if("Equals"in a)
        return a.Equals(b);
       else
-       if(a instanceof Global.Array?b instanceof Global.Array:false)
+       if(a instanceof window.Array&&b instanceof window.Array)
         return Unchecked.arrayEquals(a,b);
        else
-        if(a instanceof Global.Date?b instanceof Global.Date:false)
+        if(a instanceof Date&&b instanceof Date)
          return Unchecked.dateEquals(a,b);
         else
          {
           eqR=[true];
           for(var k$2 in a)if(function(k$3)
           {
-           eqR[0]=!a.hasOwnProperty(k$3)?true:b.hasOwnProperty(k$3)?Unchecked.Equals(a[k$3],b[k$3]):false;
+           eqR[0]=!a.hasOwnProperty(k$3)||b.hasOwnProperty(k$3)&&Unchecked.Equals(a[k$3],b[k$3]);
            return!eqR[0];
           }(k$2))
            break;
@@ -6416,7 +6118,7 @@
            {
             for(var k$3 in b)if(function(k$4)
             {
-             eqR[0]=!b.hasOwnProperty(k$4)?true:a.hasOwnProperty(k$4);
+             eqR[0]=!b.hasOwnProperty(k$4)||a.hasOwnProperty(k$4);
              return!eqR[0];
             }(k$3))
              break;
@@ -6425,7 +6127,7 @@
          }
     }
     else
-     return m=="function"?"$Func"in a?a.$Func===b.$Func?a.$Target===b.$Target:false:("$Invokes"in a?"$Invokes"in b:false)?Unchecked.arrayEquals(a.$Invokes,b.$Invokes):false:false;
+     return m=="function"&&("$Func"in a?a.$Func===b.$Func&&a.$Target===b.$Target:"$Invokes"in a&&"$Invokes"in b&&Unchecked.arrayEquals(a.$Invokes,b.$Invokes));
    }
  };
  Unchecked.dateEquals=function(a,b)
@@ -6439,7 +6141,7 @@
    {
     eq=true;
     i=0;
-    while(eq?i<Arrays.length(a):false)
+    while(eq&&i<Arrays.length(a))
      {
       !Unchecked.Equals(Arrays.get(a,i),Arrays.get(b,i))?eq=false:void 0;
       i=i+1;
@@ -6481,10 +6183,10 @@
          if("CompareTo0"in a)
           $2=a.CompareTo0(b);
          else
-          if(a instanceof Global.Array?b instanceof Global.Array:false)
+          if(a instanceof window.Array&&b instanceof window.Array)
            $2=Unchecked.compareArrays(a,b);
           else
-           if(a instanceof Global.Date?b instanceof Global.Date:false)
+           if(a instanceof Date&&b instanceof Date)
             $2=Unchecked.compareDates(a,b);
            else
             {
@@ -6498,7 +6200,7 @@
               {
                for(var k$3 in b)if(function(k$4)
                {
-                return!b.hasOwnProperty(k$4)?false:!a.hasOwnProperty(k$4)?(cmp[0]=-1,true):false;
+                return!b.hasOwnProperty(k$4)?false:!a.hasOwnProperty(k$4)&&(cmp[0]=-1,true);
                }(k$3))
                 break;
               }
@@ -6511,7 +6213,7 @@
  };
  Unchecked.compareDates=function(a,b)
  {
-  return Operators.Compare(a.getTime(),b.getTime());
+  return Unchecked.Compare(a.getTime(),b.getTime());
  };
  Unchecked.compareArrays=function(a,b)
  {
@@ -6525,7 +6227,7 @@
     {
      cmp=0;
      i=0;
-     while(cmp===0?i<Arrays.length(a):false)
+     while(cmp===0&&i<Arrays.length(a))
       {
        cmp=Unchecked.Compare(Arrays.get(a,i),Arrays.get(b,i));
        i=i+1;
@@ -6533,88 +6235,88 @@
      return cmp;
     }
  };
- N.TryParse=function(s,min,max,r)
+ Numeric.TryParse=function(s,min,max,r)
  {
   var x,ok;
   x=+s;
-  ok=(x===x-x%1?x>=min:false)?x<=max:false;
+  ok=x===x-x%1&&x>=min&&x<=max;
   ok?r.set(x):void 0;
   return ok;
  };
- N.Parse=function(s,min,max,overflowMsg)
+ Numeric.Parse=function(s,min,max,overflowMsg)
  {
   var x;
   x=+s;
   if(x!==x-x%1)
    throw new FormatException.New$1("Input string was not in a correct format.");
   else
-   if(x<min?true:x>max)
+   if(x<min||x>max)
     throw new OverflowException.New$1(overflowMsg);
    else
     return x;
  };
- Byte.TryParse=function(s,r)
+ Numeric.ParseByte=function(s)
  {
-  return N.TryParse(s,0,255,r);
+  return Numeric.Parse(s,0,255,"Value was either too large or too small for an unsigned byte.");
  };
- Byte.Parse=function(s)
+ Numeric.TryParseByte=function(s,r)
  {
-  return N.Parse(s,0,255,"Value was either too large or too small for an unsigned byte.");
+  return Numeric.TryParse(s,0,255,r);
  };
- SByte.TryParse=function(s,r)
+ Numeric.ParseSByte=function(s)
  {
-  return N.TryParse(s,-128,127,r);
+  return Numeric.Parse(s,-128,127,"Value was either too large or too small for a signed byte.");
  };
- SByte.Parse=function(s)
+ Numeric.TryParseSByte=function(s,r)
  {
-  return N.Parse(s,-128,127,"Value was either too large or too small for a signed byte.");
+  return Numeric.TryParse(s,-128,127,r);
  };
- Int16.TryParse=function(s,r)
+ Numeric.ParseInt16=function(s)
  {
-  return N.TryParse(s,-32768,32767,r);
+  return Numeric.Parse(s,-32768,32767,"Value was either too large or too small for an Int16.");
  };
- Int16.Parse=function(s)
+ Numeric.TryParseInt16=function(s,r)
  {
-  return N.Parse(s,-32768,32767,"Value was either too large or too small for an Int16.");
+  return Numeric.TryParse(s,-32768,32767,r);
  };
- Int32.TryParse=function(s,r)
+ Numeric.ParseInt32=function(s)
  {
-  return N.TryParse(s,-2147483648,2147483647,r);
+  return Numeric.Parse(s,-2147483648,2147483647,"Value was either too large or too small for an Int32.");
  };
- Int32.Parse=function(s)
+ Numeric.TryParseInt32=function(s,r)
  {
-  return N.Parse(s,-2147483648,2147483647,"Value was either too large or too small for an Int32.");
+  return Numeric.TryParse(s,-2147483648,2147483647,r);
  };
- UInt16.TryParse=function(s,r)
+ Numeric.ParseUInt16=function(s)
  {
-  return N.TryParse(s,0,65535,r);
+  return Numeric.Parse(s,0,65535,"Value was either too large or too small for an UInt16.");
  };
- UInt16.Parse=function(s)
+ Numeric.TryParseUInt16=function(s,r)
  {
-  return N.Parse(s,0,65535,"Value was either too large or too small for an UInt16.");
+  return Numeric.TryParse(s,0,65535,r);
  };
- UInt32.TryParse=function(s,r)
+ Numeric.ParseUInt32=function(s)
  {
-  return N.TryParse(s,0,4294967295,r);
+  return Numeric.Parse(s,0,4294967295,"Value was either too large or too small for an UInt32.");
  };
- UInt32.Parse=function(s)
+ Numeric.TryParseUInt32=function(s,r)
  {
-  return N.Parse(s,0,4294967295,"Value was either too large or too small for an UInt32.");
+  return Numeric.TryParse(s,0,4294967295,r);
  };
- Int64.TryParse=function(s,r)
+ Numeric.ParseInt64=function(s)
  {
-  return N.TryParse(s,-9223372036854775808,9223372036854775807,r);
+  return Numeric.Parse(s,-9223372036854775808,9223372036854775807,"Value was either too large or too small for an Int64.");
  };
- Int64.Parse=function(s)
+ Numeric.TryParseInt64=function(s,r)
  {
-  return N.Parse(s,-9223372036854775808,9223372036854775807,"Value was either too large or too small for an Int64.");
+  return Numeric.TryParse(s,-9223372036854775808,9223372036854775807,r);
  };
- UInt64.TryParse=function(s,r)
+ Numeric.ParseUInt64=function(s)
  {
-  return N.TryParse(s,0,18446744073709551615,r);
+  return Numeric.Parse(s,0,18446744073709551615,"Value was either too large or too small for an UInt64.");
  };
- UInt64.Parse=function(s)
+ Numeric.TryParseUInt64=function(s,r)
  {
-  return N.Parse(s,0,18446744073709551615,"Value was either too large or too small for an UInt64.");
+  return Numeric.TryParse(s,0,18446744073709551615,r);
  };
 }());

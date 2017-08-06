@@ -1,9 +1,8 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Collections,BalancedTree,Tree,Pair,MapUtil,FSharpMap,Map,FSharpSet,Set,ListEnumerator,List,ResizeArray,LinkedListEnumerator,LinkedList,Grouping,FsComparer,ProjectionComparer,CompoundComparer,ReverseComparer,OrderedEnumerable,Linq,Arrays,Seq,Operators,List$1,IntelliFactory,Runtime,Unchecked,Enumerator,HashSet,Dictionary,Nullable;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,Collections,BalancedTree,Tree,Pair,MapUtil,FSharpMap,Map,FSharpSet,Set,ListEnumerator,List,ResizeArray,LinkedListEnumerator,LinkedList,Grouping,FsComparer,ProjectionComparer,CompoundComparer,ReverseComparer,OrderedEnumerable,Linq,Arrays,Seq,Unchecked,List$1,IntelliFactory,Runtime,Enumerator,Operators,HashSet,Dictionary,Nullable;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  Collections=WebSharper.Collections=WebSharper.Collections||{};
  BalancedTree=Collections.BalancedTree=Collections.BalancedTree||{};
  Tree=BalancedTree.Tree=BalancedTree.Tree||{};
@@ -27,12 +26,12 @@
  Linq=WebSharper.Linq=WebSharper.Linq||{};
  Arrays=WebSharper&&WebSharper.Arrays;
  Seq=WebSharper&&WebSharper.Seq;
- Operators=WebSharper&&WebSharper.Operators;
- List$1=WebSharper&&WebSharper.List;
- IntelliFactory=Global.IntelliFactory;
- Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Unchecked=WebSharper&&WebSharper.Unchecked;
+ List$1=WebSharper&&WebSharper.List;
+ IntelliFactory=window.IntelliFactory;
+ Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Enumerator=WebSharper&&WebSharper.Enumerator;
+ Operators=WebSharper&&WebSharper.Operators;
  HashSet=Collections&&Collections.HashSet;
  Dictionary=Collections&&Collections.Dictionary;
  Nullable=WebSharper&&WebSharper.Nullable;
@@ -68,19 +67,18 @@
  };
  BalancedTree.Remove=function(k,src)
  {
-  var p,t,spine,t$1,d;
+  var p,t,spine,d;
   p=BalancedTree.Lookup(k,src);
   t=p[0];
   spine=p[1];
-  return t==null?src:t.Right==null?BalancedTree.Rebuild(spine,t.Left):t.Left==null?BalancedTree.Rebuild(spine,t.Right):(t$1=(d=Arrays.ofSeq(Seq.append(BalancedTree.Enumerate(false,t.Left),BalancedTree.Enumerate(false,t.Right))),BalancedTree.Build(d,0,d.length-1)),BalancedTree.Rebuild(spine,t$1));
+  return t==null?src:t.Right==null?BalancedTree.Rebuild(spine,t.Left):t.Left==null?BalancedTree.Rebuild(spine,t.Right):BalancedTree.Rebuild(spine,(d=Arrays.ofSeq(Seq.append(BalancedTree.Enumerate(false,t.Left),BalancedTree.Enumerate(false,t.Right))),BalancedTree.Build(d,0,d.length-1)));
  };
  BalancedTree.Put=function(combine,k,t)
  {
-  var p,t$1,spine;
+  var p,t$1;
   p=BalancedTree.Lookup(k,t);
   t$1=p[0];
-  spine=p[1];
-  return t$1==null?BalancedTree.Rebuild(spine,BalancedTree.Branch(k,null,null)):BalancedTree.Rebuild(spine,BalancedTree.Branch(combine(t$1.Node,k),t$1.Left,t$1.Right));
+  return t$1==null?BalancedTree.Rebuild(p[1],BalancedTree.Branch(k,null,null)):BalancedTree.Rebuild(p[1],BalancedTree.Branch(combine(t$1.Node,k),t$1.Left,t$1.Right));
  };
  BalancedTree.Rebuild=function(spine,t)
  {
@@ -106,7 +104,7 @@
     loop=false;
    else
     {
-     m=Operators.Compare(k,t$1.Node);
+     m=Unchecked.Compare(k,t$1.Node);
      m===0?loop=false:m===1?(spine.unshift([true,t$1.Node,t$1.Left]),t$1=t$1.Right):(spine.unshift([false,t$1.Node,t$1.Right]),t$1=t$1.Left);
     }
   return[t$1,spine];
@@ -164,7 +162,8 @@
  };
  BalancedTree.Branch=function(node,left,right)
  {
-  return Tree.New(node,left,right,1+Operators.Max(left==null?0:left.Height,right==null?0:right.Height),1+(left==null?0:left.Count)+(right==null?0:right.Count));
+  var a,b;
+  return Tree.New(node,left,right,1+(a=left==null?0:left.Height,(b=right==null?0:right.Height,Unchecked.Compare(a,b)===1?a:b)),1+(left==null?0:left.Count)+(right==null?0:right.Count));
  };
  Pair=Collections.Pair=Runtime.Class({
   Equals:function(other)
@@ -177,7 +176,7 @@
   },
   CompareTo0:function(other)
   {
-   return Operators.Compare(this.Key,other.Key);
+   return Unchecked.Compare(this.Key,other.Key);
   }
  },null,Pair);
  Pair.New=function(Key,Value)
@@ -194,10 +193,7 @@
   {
    return Seq.collect(function(m)
    {
-    var v,k;
-    v=m[1];
-    k=m[0];
-    return[Pair.New(k,v)];
+    return[Pair.New(m[0],m[1])];
    },Seq.distinctBy(function(t)
    {
     return t[0];
@@ -209,7 +205,7 @@
  FSharpMap=Collections.FSharpMap=Runtime.Class({
   Equals:function(other)
   {
-   return this.get_Count()===other.get_Count()?Seq.forall2(Unchecked.Equals,this,other):false;
+   return this.get_Count()===other.get_Count()&&Seq.forall2(Unchecked.Equals,this,other);
   },
   GetHashCode:function()
   {
@@ -217,43 +213,26 @@
   },
   GetEnumerator$1:function()
   {
-   var m;
-   return Enumerator.Get((m=function(kv)
+   return Enumerator.Get(Seq.map(function(kv)
    {
     return{
      K:kv.Key,
      V:kv.Value
     };
-   },function(s)
-   {
-    return Seq.map(m,s);
-   }(BalancedTree.Enumerate(false,this.tree))));
+   },BalancedTree.Enumerate(false,this.tree)));
   },
   TryFind:function(k)
   {
-   var m,v;
-   m=function(kv)
-   {
-    return kv.Value;
+   var o;
+   o=BalancedTree.TryFind(Pair.New(k,void 0),this.tree);
+   return o==null?null:{
+    $:1,
+    $0:o.$0.Value
    };
-   return function(o)
-   {
-    return o==null?null:{
-     $:1,
-     $0:m(o.$0)
-    };
-   }((v=Pair.New(k,void 0),function(t)
-   {
-    return BalancedTree.TryFind(v,t);
-   }(this.tree)));
   },
   Remove:function(k)
   {
-   var k$1;
-   return new FSharpMap.New$1((k$1=Pair.New(k,void 0),function(s)
-   {
-    return BalancedTree.Remove(k$1,s);
-   }(this.tree)));
+   return new FSharpMap.New$1(BalancedTree.Remove(Pair.New(k,void 0),this.tree));
   },
   get_Item:function(k)
   {
@@ -273,20 +252,11 @@
   },
   ContainsKey:function(k)
   {
-   var v;
-   v=Pair.New(k,void 0);
-   return function(t)
-   {
-    return BalancedTree.Contains(v,t);
-   }(this.tree);
+   return BalancedTree.Contains(Pair.New(k,void 0),this.tree);
   },
   Add:function(k,v)
   {
-   var x;
-   return new FSharpMap.New$1((x=Pair.New(k,v),function(t)
-   {
-    return BalancedTree.Add(x,t);
-   }(this.tree)));
+   return new FSharpMap.New$1(BalancedTree.Add(Pair.New(k,v),this.tree));
   },
   get_Tree:function()
   {
@@ -302,7 +272,7 @@
   },
   CompareTo0:function(other)
   {
-   return Seq.compareWith(Operators.Compare,this,other);
+   return Seq.compareWith(Unchecked.Compare,this,other);
   }
  },null,FSharpMap);
  FSharpMap.New=Runtime.Ctor(function(s)
@@ -315,42 +285,27 @@
  },FSharpMap);
  Map.Map=function(f,m)
  {
-  var t,m$1;
-  t=BalancedTree.OfSeq((m$1=function(kv)
+  return new FSharpMap.New$1(BalancedTree.OfSeq(Seq.map(function(kv)
   {
    return Pair.New(kv.Key,f(kv.Key,kv.Value));
-  },function(s)
-  {
-   return Seq.map(m$1,s);
-  }(BalancedTree.Enumerate(false,m.get_Tree()))));
-  return new FSharpMap.New$1(t);
+  },BalancedTree.Enumerate(false,m.get_Tree()))));
  };
  Map.TryPick=function(f,m)
  {
-  var c;
-  c=function(kv)
+  return Seq.tryPick(function(kv)
   {
    return f(kv.K,kv.V);
-  };
-  return function(s)
-  {
-   return Seq.tryPick(c,s);
-  }(m);
+  },m);
  };
  Map.TryFindKey=function(f,m)
  {
-  var c;
-  c=function(kv)
+  return Seq.tryPick(function(kv)
   {
    return f(kv.K,kv.V)?{
     $:1,
     $0:kv.K
    }:null;
-  };
-  return function(s)
-  {
-   return Seq.tryPick(c,s);
-  }(m);
+  },m);
  };
  Map.TryFind=function(k,m)
  {
@@ -358,142 +313,91 @@
  };
  Map.ToSeq=function(m)
  {
-  var m$1;
-  m$1=function(kv)
+  return Seq.map(function(kv)
   {
    return[kv.Key,kv.Value];
-  };
-  return function(s)
-  {
-   return Seq.map(m$1,s);
-  }(BalancedTree.Enumerate(false,m.get_Tree()));
+  },BalancedTree.Enumerate(false,m.get_Tree()));
  };
  Map.Pick=function(f,m)
  {
-  var c;
-  c=function(kv)
+  return Seq.pick(function(kv)
   {
    return f(kv.K,kv.V);
-  };
-  return function(s)
-  {
-   return Seq.pick(c,s);
-  }(m);
+  },m);
  };
  Map.Partition=function(f,m)
  {
-  var p,p$1,y,x;
-  p=(p$1=function(kv)
+  var p,data,data$1;
+  p=Arrays.partition(function(kv)
   {
    return f(kv.Key,kv.Value);
-  },function(a)
-  {
-   return Arrays.partition(p$1,a);
-  }(Arrays.ofSeq(BalancedTree.Enumerate(false,m.get_Tree()))));
-  y=p[1];
-  x=p[0];
-  return[new FSharpMap.New$1(BalancedTree.Build(x,0,x.length-1)),new FSharpMap.New$1(BalancedTree.Build(y,0,y.length-1))];
+  },Arrays.ofSeq(BalancedTree.Enumerate(false,m.get_Tree())));
+  return[new FSharpMap.New$1((data=p[0],BalancedTree.Build(data,0,data.length-1))),new FSharpMap.New$1((data$1=p[1],BalancedTree.Build(data$1,0,data$1.length-1)))];
  };
  Map.OfArray=function(a)
  {
-  var t;
-  t=BalancedTree.OfSeq(Seq.map(function($1)
+  return new FSharpMap.New$1(BalancedTree.OfSeq(Seq.map(function($1)
   {
    return Pair.New($1[0],$1[1]);
-  },a));
-  return new FSharpMap.New$1(t);
+  },a)));
  };
  Map.Iterate=function(f,m)
  {
-  var a;
-  a=function(kv)
+  Seq.iter(function(kv)
   {
    f(kv.K,kv.V);
-  };
-  (function(s)
-  {
-   Seq.iter(a,s);
-  }(m));
+  },m);
  };
  Map.ForAll=function(f,m)
  {
-  var p;
-  p=function(kv)
+  return Seq.forall(function(kv)
   {
    return f(kv.K,kv.V);
-  };
-  return function(s)
-  {
-   return Seq.forall(p,s);
-  }(m);
+  },m);
  };
  Map.FoldBack=function(f,m,s)
  {
-  var f$1;
-  f$1=function(s$1,kv)
+  return Seq.fold(function(s$1,kv)
   {
    return f(kv.Key,kv.Value,s$1);
-  };
-  return function(s$1)
-  {
-   return Seq.fold(f$1,s,s$1);
-  }(BalancedTree.Enumerate(true,m.get_Tree()));
+  },s,BalancedTree.Enumerate(true,m.get_Tree()));
  };
  Map.Fold=function(f,s,m)
  {
-  var f$1;
-  f$1=function(s$1,kv)
+  return Seq.fold(function(s$1,kv)
   {
    return f(s$1,kv.Key,kv.Value);
-  };
-  return function(s$1)
-  {
-   return Seq.fold(f$1,s,s$1);
-  }(BalancedTree.Enumerate(false,m.get_Tree()));
+  },s,BalancedTree.Enumerate(false,m.get_Tree()));
  };
  Map.FindKey=function(f,m)
  {
-  var c;
-  c=function(kv)
+  return Seq.pick(function(kv)
   {
    return f(kv.K,kv.V)?{
     $:1,
     $0:kv.K
    }:null;
-  };
-  return function(s)
-  {
-   return Seq.pick(c,s);
-  }(m);
+  },m);
  };
  Map.Filter=function(f,m)
  {
-  var t,d,p;
-  t=(d=Arrays.ofSeq((p=function(kv)
+  var d;
+  return new FSharpMap.New$1((d=Arrays.ofSeq(Seq.filter(function(kv)
   {
    return f(kv.Key,kv.Value);
-  },function(s)
-  {
-   return Seq.filter(p,s);
-  }(BalancedTree.Enumerate(false,m.get_Tree())))),BalancedTree.Build(d,0,d.length-1));
-  return new FSharpMap.New$1(t);
+  },BalancedTree.Enumerate(false,m.get_Tree()))),BalancedTree.Build(d,0,d.length-1)));
  };
  Map.Exists=function(f,m)
  {
-  var p;
-  p=function(kv)
+  return Seq.exists(function(kv)
   {
    return f(kv.K,kv.V);
-  };
-  return function(s)
-  {
-   return Seq.exists(p,s);
-  }(m);
+  },m);
  };
  FSharpSet=Collections.FSharpSet=Runtime.Class({
   Equals:function(other)
   {
-   return this.get_Count()===other.get_Count()?Seq.forall2(Unchecked.Equals,this,other):false;
+   return this.get_Count()===other.get_Count()&&Seq.forall2(Unchecked.Equals,this,other);
   },
   GetHashCode:function()
   {
@@ -533,11 +437,11 @@
   },
   IsProperSupersetOf:function(s)
   {
-   return this.IsSupersetOf(s)?this.get_Count()>s.get_Count():false;
+   return this.IsSupersetOf(s)&&this.get_Count()>s.get_Count();
   },
   IsProperSubsetOf:function(s)
   {
-   return this.IsSubsetOf(s)?this.get_Count()<s.get_Count():false;
+   return this.IsSubsetOf(s)&&this.get_Count()<s.get_Count();
   },
   get_Tree:function()
   {
@@ -574,7 +478,7 @@
   },
   CompareTo0:function(other)
   {
-   return Seq.compareWith(Operators.Compare,this,other);
+   return Seq.compareWith(Unchecked.Compare,this,other);
   },
   GetEnumerator:function()
   {
@@ -606,11 +510,9 @@
  },FSharpSet);
  Set.Partition=function(f,a)
  {
-  var p,y,x;
+  var p;
   p=Arrays.partition(f,Arrays.ofSeq(a));
-  y=p[1];
-  x=p[0];
-  return[new FSharpSet.New$1(BalancedTree.OfSeq(x)),new FSharpSet.New$1(BalancedTree.OfSeq(y))];
+  return[new FSharpSet.New$1(BalancedTree.OfSeq(p[0])),new FSharpSet.New$1(BalancedTree.OfSeq(p[1]))];
  };
  Set.FoldBack=function(f,a,s)
  {
@@ -674,13 +576,11 @@
   },
   RemoveRange:function(index,count)
   {
-   var v;
-   v=ResizeArray.splice(this.arr,index,count,[]);
+   ResizeArray.splice(this.arr,index,count,[]);
   },
   RemoveAt:function(x)
   {
-   var v;
-   v=ResizeArray.splice(this.arr,x,1,[]);
+   ResizeArray.splice(this.arr,x,1,[]);
   },
   set_Item:function(x,v)
   {
@@ -692,13 +592,11 @@
   },
   InsertRange:function(index,items)
   {
-   var v;
-   v=ResizeArray.splice(this.arr,index,0,Arrays.ofSeq(items));
+   ResizeArray.splice(this.arr,index,0,Arrays.ofSeq(items));
   },
   Insert:function(index,items)
   {
-   var v;
-   v=ResizeArray.splice(this.arr,index,0,[items]);
+   ResizeArray.splice(this.arr,index,0,[items]);
   },
   GetRange:function(index,count)
   {
@@ -722,8 +620,7 @@
   },
   Clear:function()
   {
-   var v;
-   v=ResizeArray.splice(this.arr,0,Arrays.length(this.arr),[]);
+   ResizeArray.splice(this.arr,0,Arrays.length(this.arr),[]);
   },
   AddRange:function(x)
   {
@@ -765,7 +662,7 @@
  },List);
  ResizeArray.splice=function(arr,index,howMany,items)
  {
-  return Global.Array.prototype.splice.apply(arr,[index,howMany].concat(items));
+  return window.Array.prototype.splice.apply(arr,[index,howMany].concat(items));
  };
  LinkedListEnumerator=Collections.LinkedListEnumerator=Runtime.Class({
   Reset:function()
@@ -825,7 +722,7 @@
    var node,notFound;
    node=this.p;
    notFound=true;
-   while(notFound?!Unchecked.Equals(node,null):false)
+   while(notFound&&!Unchecked.Equals(node,null))
     if(node.v==value)
      notFound=false;
     else
@@ -837,7 +734,7 @@
    var node,notFound;
    node=this.n;
    notFound=true;
-   while(notFound?!Unchecked.Equals(node,null):false)
+   while(notFound&&!Unchecked.Equals(node,null))
     if(node.v==value)
      notFound=false;
     else
@@ -849,7 +746,7 @@
    var found,node;
    found=false;
    node=this.n;
-   while(!Unchecked.Equals(node,null)?!found:false)
+   while(!Unchecked.Equals(node,null)&&!found)
     if(node.v==value)
      found=true;
     else
@@ -969,7 +866,7 @@
  FsComparer=WebSharper.FsComparer=Runtime.Class({
   Compare:function(x,y)
   {
-   return Operators.Compare(x,y);
+   return Unchecked.Compare(x,y);
   }
  },null,FsComparer);
  FsComparer.New=Runtime.Ctor(function()
@@ -1028,9 +925,7 @@
   },
   System_Linq_IOrderedEnumerable_1$CreateOrderedEnumerable:function(keySelector,secondary,descending)
   {
-   var secondary$1;
-   secondary$1=descending?new ReverseComparer.New(secondary,keySelector):new ProjectionComparer.New(secondary,keySelector);
-   return new OrderedEnumerable.New(this.source,new CompoundComparer.New(this.primary,secondary$1));
+   return new OrderedEnumerable.New(this.source,new CompoundComparer.New(this.primary,descending?new ReverseComparer.New(secondary,keySelector):new ProjectionComparer.New(secondary,keySelector)));
   }
  },null,OrderedEnumerable);
  OrderedEnumerable.New=Runtime.Ctor(function(source,primary)
@@ -1084,7 +979,7 @@
    found=null;
    while(e.MoveNext())
     if(predicate(e.Current()))
-     if(found!=null?found.$==1:false)
+     if(found!=null&&found.$==1)
       Operators.InvalidOp("Sequence contains more than one element");
      else
       found={
@@ -1123,15 +1018,13 @@
  };
  Linq.Union=function(_this,second,comparer)
  {
-  var tbl,e,v;
+  var tbl,e;
   tbl=new HashSet.New(_this,comparer);
   e=Enumerator.Get(second);
   try
   {
    while(e.MoveNext())
-    {
-     v=tbl.Add(e.Current());
-    }
+    tbl.Add(e.Current());
   }
   finally
   {
@@ -1168,7 +1061,7 @@
    {
     return Seq.enumWhile(function()
     {
-     return e.MoveNext()?predicate(e.Current()):false;
+     return e.MoveNext()&&predicate(e.Current());
     },Seq.delay(function()
     {
      return[e.Current()];
@@ -1186,7 +1079,7 @@
     i=0;
     return Seq.enumWhile(function()
     {
-     return e.MoveNext()?predicate(e.Current(),i):false;
+     return e.MoveNext()&&predicate(e.Current(),i);
     },Seq.delay(function()
     {
      i=i+1;
@@ -1205,7 +1098,7 @@
     i=0;
     return Seq.enumWhile(function()
     {
-     return i<count?e.MoveNext():false;
+     return i<count&&e.MoveNext();
     },Seq.delay(function()
     {
      i=i+1;
@@ -1216,17 +1109,14 @@
  };
  Linq.Sum=function(_this)
  {
-  var s,c;
-  s=(c=function(x)
+  var s;
+  s=Seq.choose(function(x)
   {
    return x!=null?{
     $:1,
     $0:Nullable.get(x)
    }:null;
-  },function(s$1)
-  {
-   return Seq.choose(c,s$1);
-  }(_this));
+  },_this);
   return Seq.isEmpty(s)?null:Seq.sum(s);
  };
  Linq.SkipWhile=function(_this,predicate)
@@ -1239,7 +1129,7 @@
     predWasTrue=true;
     return Seq.append(Seq.enumWhile(function()
     {
-     return predWasTrue?e.MoveNext():false;
+     return predWasTrue&&e.MoveNext();
     },Seq.delay(function()
     {
      return!predicate(e.Current())?(predWasTrue=false,[]):[];
@@ -1270,7 +1160,7 @@
     predWasTrue=true;
     return Seq.append(Seq.enumWhile(function()
     {
-     return predWasTrue?e.MoveNext():false;
+     return predWasTrue&&e.MoveNext();
     },Seq.delay(function()
     {
      return predicate(e.Current(),i)?(i=i+1,[]):(predWasTrue=false,[]);
@@ -1300,7 +1190,7 @@
     i=0;
     return Seq.append(Seq.enumWhile(function()
     {
-     return i<count?e.MoveNext():false;
+     return i<count&&e.MoveNext();
     },Seq.delay(function()
     {
      i=i+1;
@@ -1328,7 +1218,7 @@
     $0:cur
    }:state;
   },(Runtime.Curried3(Seq.fold))(f))(null))(_this);
-  return(x!=null?x.$==1:false)?x.$0:Operators.InvalidOp("Sequence contains no elements");
+  return x!=null&&x.$==1?x.$0:Operators.InvalidOp("Sequence contains no elements");
  };
  Linq.SequenceEqual=function(_this,second,comparer)
  {
@@ -1344,9 +1234,7 @@
      while(true)
       if(e1.MoveNext())
       {
-       if(e2.MoveNext()?comparer.CEquals(e1.Current(),e2.Current()):false)
-        ;
-       else
+       if(!(e2.MoveNext()&&comparer.CEquals(e1.Current(),e2.Current())))
         return false;
       }
       else
@@ -1368,61 +1256,39 @@
  };
  Linq.SelectMany=function(_this,selector,collectionSelector)
  {
-  var m,m$1;
+  var m;
   m=function(t,cs)
   {
-   var m$2;
-   m$2=function(c)
+   return Seq.map(function(c)
    {
     return collectionSelector(t,c);
-   };
-   return function(s)
-   {
-    return Seq.map(m$2,s);
-   }(cs);
+   },cs);
   };
-  return function(s)
+  return Seq.collect(function($1)
   {
-   return Seq.collect(function($1)
-   {
-    return m($1[0],$1[1]);
-   },s);
-  }((m$1=function(i,t)
+   return m($1[0],$1[1]);
+  },Seq.mapi(function(i,t)
   {
    return[t,selector(t,i)];
-  },function(s)
-  {
-   return Seq.mapi(m$1,s);
-  }(_this)));
+  },_this));
  };
  Linq.SelectMany$1=function(_this,selector,collectionSelector)
  {
-  var m,m$1;
+  var m;
   m=function(t,cs)
   {
-   var m$2;
-   m$2=function(c)
+   return Seq.map(function(c)
    {
     return collectionSelector(t,c);
-   };
-   return function(s)
-   {
-    return Seq.map(m$2,s);
-   }(cs);
+   },cs);
   };
-  return function(s)
+  return Seq.collect(function($1)
   {
-   return Seq.collect(function($1)
-   {
-    return m($1[0],$1[1]);
-   },s);
-  }((m$1=function(t)
+   return m($1[0],$1[1]);
+  },Seq.map(function(t)
   {
    return[t,selector(t)];
-  },function(s)
-  {
-   return Seq.map(m$1,s);
-  }(_this)));
+  },_this));
  };
  Linq.SelectMany$2=function(_this,selector)
  {
@@ -1466,32 +1332,26 @@
  };
  Linq.Min=function(_this)
  {
-  var s,c;
-  s=(c=function(x)
+  var s;
+  s=Seq.choose(function(x)
   {
    return x!=null?{
     $:1,
     $0:Nullable.get(x)
    }:null;
-  },function(s$1)
-  {
-   return Seq.choose(c,s$1);
-  }(_this));
+  },_this);
   return Seq.isEmpty(s)?null:Seq.min(s);
  };
  Linq.Max=function(_this)
  {
-  var s,c;
-  s=(c=function(x)
+  var s;
+  s=Seq.choose(function(x)
   {
    return x!=null?{
     $:1,
     $0:Nullable.get(x)
    }:null;
-  },function(s$1)
-  {
-   return Seq.choose(c,s$1);
-  }(_this));
+  },_this);
   return Seq.isEmpty(s)?null:Seq.max(s);
  };
  Linq.Last=function(_this,predicate)
@@ -1521,9 +1381,9 @@
    {
     return Seq.collect(function(o)
     {
-     var k,m,o$1,pair;
+     var k,o$1,pair;
      k=outerKeySelector(o);
-     m=(o$1=null,[t.TryGetValue(k,{
+     return(o$1=null,[t.TryGetValue(k,{
       get:function()
       {
        return o$1;
@@ -1532,8 +1392,7 @@
       {
        o$1=v;
       }
-     }),o$1]);
-     return m[0]?[]:(pair=[o,new List.New$2()],(t.Add(k,pair),[pair]));
+     }),o$1])[0]?[]:(pair=[o,new List.New$2()],(t.Add(k,pair),[pair]));
     },outer);
    }));
    e=Enumerator.Get(inner);
@@ -1542,10 +1401,9 @@
     while(e.MoveNext())
      (function()
      {
-      var i,k,m,o;
+      var i,m,o;
       i=e.Current();
-      k=innerKeySelector(i);
-      m=(o=null,[t.TryGetValue(k,{
+      m=(o=null,[t.TryGetValue(innerKeySelector(i),{
        get:function()
        {
         return o;
@@ -1567,13 +1425,12 @@
    {
     return Seq.collect(function(m)
     {
-     var o,is;
+     var o;
      o=m[0];
-     is=m[1];
      return Seq.map(function(i)
      {
       return resultSelector(o,i);
-     },is);
+     },m[1]);
     },a);
    }));
   });
@@ -1588,7 +1445,7 @@
    t2=new HashSet.New$1(comparer);
    return Seq.collect(function(x)
    {
-    return(t1.Contains(x)?t2.Add(x):false)?[x]:[];
+    return t1.Contains(x)&&t2.Add(x)?[x]:[];
    },second);
   });
  };
@@ -1596,15 +1453,15 @@
  {
   return Seq.delay(function()
   {
-   var a,t,a$1,e;
+   var t,a,e;
    t=new Dictionary.New$3(comparer);
-   a$1=Arrays.ofSeq(Seq.delay(function()
+   a=Arrays.ofSeq(Seq.delay(function()
    {
     return Seq.collect(function(o)
     {
-     var k,m,o$1,pair;
+     var k,o$1,pair;
      k=outerKeySelector(o);
-     m=(o$1=null,[t.TryGetValue(k,{
+     return(o$1=null,[t.TryGetValue(k,{
       get:function()
       {
        return o$1;
@@ -1613,8 +1470,7 @@
       {
        o$1=v;
       }
-     }),o$1]);
-     return m[0]?[]:(pair=[o,new List.New$2()],(t.Add(k,pair),[pair]));
+     }),o$1])[0]?[]:(pair=[o,new List.New$2()],(t.Add(k,pair),[pair]));
     },outer);
    }));
    e=Enumerator.Get(inner);
@@ -1623,10 +1479,9 @@
     while(e.MoveNext())
      (function()
      {
-      var i,k,m,o;
+      var i,m,o;
       i=e.Current();
-      k=innerKeySelector(i);
-      m=(o=null,[t.TryGetValue(k,{
+      m=(o=null,[t.TryGetValue(innerKeySelector(i),{
        get:function()
        {
         return o;
@@ -1644,31 +1499,19 @@
     if("Dispose"in e)
      e.Dispose();
    }
-   a=function(i,t$1)
+   Arrays.iteri(function(i,t$1)
    {
-    var o,is;
-    o=t$1[0];
-    is=t$1[1];
-    return Arrays.set(a$1,i,resultSelector(o,is));
-   };
-   (function(a$2)
-   {
-    Arrays.iteri(a,a$2);
-   }(a$1));
-   return a$1;
+    return Arrays.set(a,i,resultSelector(t$1[0],t$1[1]));
+   },a);
+   return a;
   });
  };
  Linq.GroupBy=function(_this,keySelector,elementSelector,resultSelector,comparer)
  {
-  var m;
-  m=function(g)
+  return Seq.map(function(g)
   {
    return resultSelector(g.System_Linq_IGrouping_2$get_Key(),g);
-  };
-  return function(s)
-  {
-   return Seq.map(m,s);
-  }(Linq.GroupBy$1(_this,keySelector,elementSelector,comparer));
+  },Linq.GroupBy$1(_this,keySelector,elementSelector,comparer));
  };
  Linq.GroupBy$1=function(_this,keySelector,elementSelector,comparer)
  {
@@ -1700,15 +1543,13 @@
  };
  Linq.Except=function(_this,second,comparer)
  {
-  var tbl,e,v;
+  var tbl,e;
   tbl=new HashSet.New(_this,comparer);
   e=Enumerator.Get(second);
   try
   {
    while(e.MoveNext())
-    {
-     v=tbl.Remove(e.Current());
-    }
+    tbl.Remove(e.Current());
   }
   finally
   {
@@ -1741,7 +1582,7 @@
  };
  Linq.Average=function(_this)
  {
-  var x,e,x$1,c,v,c$1;
+  var x,e,c,c$1;
   x=[];
   e=Enumerator.Get(_this);
   try
@@ -1750,10 +1591,10 @@
     {
      if(c=e.Current(),c!=null)
       {
-       v=x.push((c$1=e.Current(),Nullable.get(c$1)));
+       x.push((c$1=e.Current(),Nullable.get(c$1)));
       }
     }
-   return Arrays.length(x)===0?null:Seq.sum(x)/(x$1=Arrays.length(x),Global.Number(x$1));
+   return Arrays.length(x)===0?null:Seq.sum(x)/window.Number(Arrays.length(x));
   }
   finally
   {

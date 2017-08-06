@@ -1,9 +1,8 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Charting,Pervasives,Color,Seq,Reactive,Charts,DataType,ChartConfig,SeriesChartConfig,ColorConfig,PolarData,LineChart,BarChart,RadarChart,PolarAreaChart,PieChart,DoughnutChart,CompositeChart,Chart,LiveChart,SC$1,Renderers,ChartJsInternal,BatchUpdater,ChartJs,SC$2,IntelliFactory,Runtime,Seq$1,List,Reactive$1,Reactive$2,Util,Control,FSharpEvent,Random,Ref,Operators,Arrays,Slice,Option,UI,Next,AttrProxy,AttrModule,Doc;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,Charting,Pervasives,Color,Seq,Reactive,Charts,DataType,ChartConfig,SeriesChartConfig,ColorConfig,PolarData,LineChart,BarChart,RadarChart,PolarAreaChart,PieChart,DoughnutChart,CompositeChart,Chart,LiveChart,SC$1,Renderers,ChartJsInternal,BatchUpdater,ChartJs,SC$2,IntelliFactory,Runtime,Seq$1,List,Reactive$1,Reactive$2,Util,Control,FSharpEvent,Random,Arrays,Chart$1,Operators,Option,Slice,UI,Next,Doc,AttrProxy,AttrModule;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  Charting=WebSharper.Charting=WebSharper.Charting||{};
  Pervasives=Charting.Pervasives=Charting.Pervasives||{};
  Color=Pervasives.Color=Pervasives.Color||{};
@@ -24,13 +23,13 @@
  CompositeChart=Charts.CompositeChart=Charts.CompositeChart||{};
  Chart=Charting.Chart=Charting.Chart||{};
  LiveChart=Charting.LiveChart=Charting.LiveChart||{};
- SC$1=Global.StartupCode$WebSharper_Charting$Charts=Global.StartupCode$WebSharper_Charting$Charts||{};
+ SC$1=window.StartupCode$WebSharper_Charting$Charts=window.StartupCode$WebSharper_Charting$Charts||{};
  Renderers=Charting.Renderers=Charting.Renderers||{};
  ChartJsInternal=Renderers.ChartJsInternal=Renderers.ChartJsInternal||{};
  BatchUpdater=ChartJsInternal.BatchUpdater=ChartJsInternal.BatchUpdater||{};
  ChartJs=Renderers.ChartJs=Renderers.ChartJs||{};
- SC$2=Global.StartupCode$WebSharper_Charting$Renderers=Global.StartupCode$WebSharper_Charting$Renderers||{};
- IntelliFactory=Global.IntelliFactory;
+ SC$2=window.StartupCode$WebSharper_Charting$Renderers=window.StartupCode$WebSharper_Charting$Renderers||{};
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Seq$1=WebSharper&&WebSharper.Seq;
  List=WebSharper&&WebSharper.List;
@@ -40,24 +39,23 @@
  Control=WebSharper&&WebSharper.Control;
  FSharpEvent=Control&&Control.FSharpEvent;
  Random=WebSharper&&WebSharper.Random;
- Ref=WebSharper&&WebSharper.Ref;
- Operators=WebSharper&&WebSharper.Operators;
  Arrays=WebSharper&&WebSharper.Arrays;
- Slice=WebSharper&&WebSharper.Slice;
+ Chart$1=window.Chart;
+ Operators=WebSharper&&WebSharper.Operators;
  Option=WebSharper&&WebSharper.Option;
+ Slice=WebSharper&&WebSharper.Slice;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
+ Doc=Next&&Next.Doc;
  AttrProxy=Next&&Next.AttrProxy;
  AttrModule=Next&&Next.AttrModule;
- Doc=Next&&Next.Doc;
  Color=Pervasives.Color=Runtime.Class({
   toString:function()
   {
-   var r,g,b,a,f;
-   return this.$==1?this.$0:this.$==2?this.$0:(r=this.$0,(g=this.$1,(b=this.$2,(a=this.$3,((((f=function($1,$2,$3,$4,$5)
+   return this.$==1?this.$0:this.$==2?this.$0:(((((Runtime.Curried(function($1,$2,$3,$4,$5)
    {
-    return $1("rgba("+Global.String($2)+", "+Global.String($3)+", "+Global.String($4)+", "+$5.toFixed(6)+")");
-   },(Runtime.Curried(f,5))(Global.id))(r))(g))(b))(a)))));
+    return $1("rgba("+window.String($2)+", "+window.String($3)+", "+window.String($4)+", "+$5.toFixed(6)+")");
+   },5))(window.id))(this.$0))(this.$1))(this.$2))(this.$3);
   }
  },null,Color);
  Seq.headOption=function(s)
@@ -69,12 +67,12 @@
  };
  Reactive.SequenceOnlyNew=function(streams)
  {
-  var m,xs,x;
+  var m;
   m=List.ofSeq(streams);
-  return m.$==1?(xs=m.$1,(x=m.$0,Reactive.sequence(Reactive$2.Select(x,function(v)
+  return m.$==1?Reactive.sequence(Reactive$2.Select(m.$0,function(v)
   {
    return[v];
-  }),xs))):Reactive$2.Return([]);
+  }),m.$1):Reactive$2.Return([]);
  };
  Reactive.sequence=function(acc,a)
  {
@@ -107,12 +105,16 @@
  };
  Pervasives.withIndex=function(s)
  {
-  return Seq$1.zip(Seq$1.initInfinite(Global.String),s);
+  return Seq$1.zip(Seq$1.initInfinite(window.String),s);
  };
  Pervasives.streamWithLabel=function(stream)
  {
-  var i;
-  i=Reactive$2.Aggregate(stream,[0,0],function($1,$2)
+  var f;
+  f=function($1,$2)
+  {
+   return[window.String($1),$2];
+  };
+  return Reactive$2.Select(Reactive$2.Aggregate(stream,[0,0],function($1,$2)
   {
    return(function(t)
    {
@@ -123,28 +125,20 @@
      return[s+1,c];
     };
    }($1))($2);
-  });
-  return function(f)
+  }),function($1)
   {
-   return Reactive$2.Select(i,f);
-  }(function(t)
-  {
-   var a,b;
-   a=t[0];
-   b=t[1];
-   return[Global.String(a),b];
+   return f($1[0],$1[1]);
   });
  };
  DataType.Map=function(fn,dt)
  {
-  var io,s;
-  return dt.$==1?(io=dt.$0,{
+  return dt.$==1?{
    $:1,
-   $0:Reactive$2.Select(io,fn)
-  }):(s=dt.$0,{
+   $0:Reactive$2.Select(dt.$0,fn)
+  }:{
    $:0,
-   $0:Seq$1.map(fn,s)
-  });
+   $0:Seq$1.map(fn,dt.$0)
+  };
  };
  ChartConfig.New=function(Title)
  {
@@ -300,7 +294,7 @@
   },
   WebSharper_Charting_Charts_IMutableChart_2$OnUpdate:function(fn)
   {
-   Util.addListener(this.event.event,fn);
+   this.event.event.Subscribe(Util.observer(fn));
   },
   WebSharper_Charting_Charts_IMutableChart_2$UpdateData:function(data,props)
   {
@@ -348,7 +342,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(data,props);
   },
-  cst:Global.id,
+  cst:window.id,
   get_DataSet:function()
   {
    return this.dataset;
@@ -387,7 +381,7 @@
   },
   WebSharper_Charting_Charts_IMutableChart_2$OnUpdate:function(fn)
   {
-   Util.addListener(this.event.event,fn);
+   this.event.event.Subscribe(Util.observer(fn));
   },
   WebSharper_Charting_Charts_IMutableChart_2$UpdateData:function(data,props)
   {
@@ -516,7 +510,7 @@
   },
   WebSharper_Charting_Charts_IMutableChart_2$OnUpdate:function(fn)
   {
-   Util.addListener(this.event.event,fn);
+   this.event.event.Subscribe(Util.observer(fn));
   },
   WebSharper_Charting_Charts_IMutableChart_2$UpdateData:function(data,props)
   {
@@ -548,7 +542,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(props,data);
   },
-  cst:Global.id,
+  cst:window.id,
   WebSharper_Charting_Charts_IChart_1$WithTitle:function(title)
   {
    return new PolarAreaChart.New(this.dataset,ChartConfig.New(title));
@@ -563,7 +557,7 @@
   },
   WebSharper_Charting_Charts_IMutableChart_2$OnUpdate:function(fn)
   {
-   Util.addListener(this.event.event,fn);
+   this.event.event.Subscribe(Util.observer(fn));
   },
   WebSharper_Charting_Charts_IMutableChart_2$UpdateData:function(props,data)
   {
@@ -593,7 +587,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(props,data);
   },
-  cst:Global.id,
+  cst:window.id,
   WebSharper_Charting_Charts_IChart_1$WithTitle:function(title)
   {
    return new PieChart.New(this.dataset,ChartConfig.New(title));
@@ -608,7 +602,7 @@
   },
   WebSharper_Charting_Charts_IMutableChart_2$OnUpdate:function(fn)
   {
-   Util.addListener(this.event.event,fn);
+   this.event.event.Subscribe(Util.observer(fn));
   },
   WebSharper_Charting_Charts_IMutableChart_2$UpdateData:function(data,props)
   {
@@ -638,7 +632,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(props,data);
   },
-  cst:Global.id,
+  cst:window.id,
   WebSharper_Charting_Charts_IChart_1$WithTitle:function(title)
   {
    return new DoughnutChart.New(this.dataset,ChartConfig.New(title));
@@ -653,7 +647,7 @@
   },
   WebSharper_Charting_Charts_IMutableChart_2$OnUpdate:function(fn)
   {
-   Util.addListener(this.event.event,fn);
+   this.event.event.Subscribe(Util.observer(fn));
   },
   WebSharper_Charting_Charts_IMutableChart_2$UpdateData:function(data,props)
   {
@@ -702,17 +696,12 @@
  };
  Chart.Doughnut=function(dataset)
  {
-  var d,m;
-  d=(m=function(t)
-  {
-   return((Charts.defaultPolarData())(t[0]))(t[1]);
-  },function(s)
-  {
-   return Seq$1.map(m,s);
-  }(dataset));
   return new DoughnutChart.New({
    $:0,
-   $0:d
+   $0:Seq$1.map(function(t)
+   {
+    return((Charts.defaultPolarData())(t[0]))(t[1]);
+   },dataset)
   },Charts.defaultChartConfig());
  };
  Chart.Doughnut$1=function(dataset)
@@ -724,17 +713,12 @@
  };
  Chart.Pie=function(dataset)
  {
-  var d,m;
-  d=(m=function(t)
-  {
-   return((Charts.defaultPolarData())(t[0]))(t[1]);
-  },function(s)
-  {
-   return Seq$1.map(m,s);
-  }(dataset));
   return new PieChart.New({
    $:0,
-   $0:d
+   $0:Seq$1.map(function(t)
+   {
+    return((Charts.defaultPolarData())(t[0]))(t[1]);
+   },dataset)
   },Charts.defaultChartConfig());
  };
  Chart.Pie$1=function(dataset)
@@ -746,17 +730,12 @@
  };
  Chart.PolarArea=function(dataset)
  {
-  var d,m;
-  d=(m=function(t)
-  {
-   return((Charts.defaultPolarData())(t[0]))(t[1]);
-  },function(s)
-  {
-   return Seq$1.map(m,s);
-  }(dataset));
   return new PolarAreaChart.New({
    $:0,
-   $0:d
+   $0:Seq$1.map(function(t)
+   {
+    return((Charts.defaultPolarData())(t[0]))(t[1]);
+   },dataset)
   },Charts.defaultChartConfig());
  };
  Chart.PolarArea$1=function(dataset)
@@ -941,7 +920,7 @@
   {
    return function(data)
    {
-    var p,r,g,b,highlight,color;
+    var p,r,g,b;
     p=(r=rand.Next(0,256),(g=rand.Next(0,256),(b=rand.Next(0,256),[new Color({
      $:0,
      $0:r,
@@ -955,17 +934,15 @@
      $2:b,
      $3:0.6
     })])));
-    highlight=p[1];
-    color=p[0];
-    return PolarData.New(data,color,highlight,label);
+    return PolarData.New(data,p[0],p[1],label);
    };
   });
-  SC$1.$cctor=Global.ignore;
+  SC$1.$cctor=window.ignore;
  });
  BatchUpdater=ChartJsInternal.BatchUpdater=Runtime.Class({
   Update:function(updater)
   {
-   var $this,o,h,m;
+   var $this,o;
    function doUpdate()
    {
     $this.handle[0]=null;
@@ -974,467 +951,288 @@
    }
    $this=this;
    o=this.handle[0];
-   o==null?void 0:(h=o.$0,Global.clearTimeout(h));
-   this.count[0]<this.maxCount?(Ref.incr(this.count),this.handle[0]={
+   o==null?void 0:window.clearTimeout(o.$0);
+   this.count[0]<this.maxCount?(this.count[0]++,this.handle[0]={
     $:1,
-    $0:(m=this.interval,Global.setTimeout(doUpdate,m))
+    $0:window.setTimeout(doUpdate,this.interval)
    }):doUpdate();
   }
  },null,BatchUpdater);
  BatchUpdater.New=Runtime.Ctor(function(interval,maxCount)
  {
-  this.interval=Operators.DefaultArg(interval,75);
-  this.maxCount=Operators.DefaultArg(maxCount,10);
+  this.interval=interval==null?75:interval.$0;
+  this.maxCount=maxCount==null?10:maxCount.$0;
   this.handle=[null];
   this.count=[0];
  },BatchUpdater);
  ChartJsInternal.RenderCombinedRadarChart=function(chart,size,cfg,window$1)
  {
-  var k;
-  k=function(canvas)
+  return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var labels,e,c,data,m,rendered,a,streams,m$1,l,r;
-   labels=(e=(c=function(chart$1)
+   var labels,e,rendered;
+   labels=(e=Seq$1.choose(function(chart$1)
    {
-    var m$2,s;
-    m$2=chart$1.get_DataSet();
-    return m$2.$==1?null:(s=m$2.$0,{
+    var m;
+    m=chart$1.get_DataSet();
+    return m.$==1?null:{
      $:1,
      $0:Seq$1.map(function(t)
      {
       return t[0];
-     },s)
-    });
-   },function(s)
-   {
-    return Seq$1.choose(c,s);
-   }(chart.get_Charts())),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
-   data={
-    datasets:Arrays.ofSeq((m=function(chart$1)
-    {
-     var initials,r$1,m$2;
-     initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
-     r$1={};
-     r$1.label=chart$1.get__Config().Title;
-     r$1.backgroundColor=Global.String(chart$1.get__SeriesConfig().FillColor);
-     r$1.borderColor=Global.String(chart$1.get__SeriesConfig().StrokeColor);
-     r$1.pointBackgroundColor=Global.String(chart$1.get__ColorConfig().PointColor);
-     r$1.pointHoverBackgroundColor=Global.String(chart$1.get__ColorConfig().PointHighlightFill);
-     r$1.pointHoverBorderColor=Global.String(chart$1.get__ColorConfig().PointHighlightStroke);
-     r$1.pointBorderColor=Global.String(chart$1.get__ColorConfig().PointStrokeColor);
-     r$1.data=(m$2=function(t)
-     {
-      return t[1];
-     },function(a$1)
-     {
-      return Arrays.map(m$2,a$1);
-     }(initials));
-     return r$1;
-    },function(s)
-    {
-     return Seq$1.map(m,s);
-    }(chart.get_Charts())))
-   };
-   data.labels=Arrays.ofSeq(labels);
-   rendered=new Global.Chart(canvas,{
-    type:"radar",
-    data:data,
-    options:Operators.DefaultArg(cfg,{})
-   });
-   a=function(i,chart$1)
-   {
-    var u;
-    u=function(j,d)
-    {
-     var data$1,ds,s;
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     s=Arrays.get(ds,i).data;
-     s[j]=d(Arrays.get(s,j));
+     },m.$0)
     };
-    return function(f)
-    {
-     return ChartJsInternal.registerUpdater(chart$1,function($1,$2)
+   },chart.get_Charts()),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
+   rendered=new window.Chart(canvas,{
+    type:"radar",
+    data:{
+     datasets:Arrays.ofSeq(Seq$1.map(function(chart$1)
      {
-      return u($1,$2);
-     },f);
-    }(function()
+      var initials,r;
+      initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
+      r={};
+      r.label=chart$1.get__Config().Title;
+      r.backgroundColor=window.String(chart$1.get__SeriesConfig().FillColor);
+      r.borderColor=window.String(chart$1.get__SeriesConfig().StrokeColor);
+      r.pointBackgroundColor=window.String(chart$1.get__ColorConfig().PointColor);
+      r.pointHoverBackgroundColor=window.String(chart$1.get__ColorConfig().PointHighlightFill);
+      r.pointHoverBorderColor=window.String(chart$1.get__ColorConfig().PointHighlightStroke);
+      r.pointBorderColor=window.String(chart$1.get__ColorConfig().PointStrokeColor);
+      r.data=Arrays.map(function(t)
+      {
+       return t[1];
+      },initials);
+      return r;
+     },chart.get_Charts())),
+     labels:Arrays.ofSeq(labels)
+    },
+    options:cfg==null?{}:cfg.$0
+   });
+   Seq$1.iteri(function(i,chart$1)
+   {
+    return ChartJsInternal.registerUpdater(chart$1,function(j,$1)
+    {
+     var s;
+     s=Arrays.get(rendered.data.datasets,i).data;
+     s[j]=$1(Arrays.get(s,j));
+    },function()
     {
      rendered.update();
     });
-   };
-   (function(s)
-   {
-    Seq$1.iteri(a,s);
-   }(chart.get_Charts()));
-   streams=ChartJsInternal.extractStreams((m$1=function(chart$1)
+   },chart.get_Charts());
+   return ChartJsInternal.onCombinedEvent(ChartJsInternal.extractStreams(Seq$1.map(function(chart$1)
    {
     return chart$1.get_DataSet();
-   },function(s)
+   },chart.get_Charts())),Seq$1.length(chart.get_Charts()),window$1,function()
    {
-    return Seq$1.map(m$1,s);
-   }(chart.get_Charts())));
-   l=Seq$1.length(chart.get_Charts());
-   return(r=function()
-   {
-    var data$1,ds,labels$1,a$1;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    labels$1=data$1.labels;
-    a$1=function(d)
+    var data,ds,labels$1;
+    data=rendered.data;
+    ds=data.datasets;
+    labels$1=data.labels;
+    Arrays.iter(function(d)
     {
      d.data.shift();
-    };
-    (function(a$2)
-    {
-     Arrays.iter(a$1,a$2);
-    }(ds));
+    },ds);
     labels$1.shift();
     return rendered.update();
-   },function(a$1)
+   },function(a,t)
    {
-    return ChartJsInternal.onCombinedEvent(streams,l,window$1,function($1,$2)
+    var arr,data,ds,labels$1;
+    arr=t[0];
+    data=rendered.data;
+    ds=data.datasets;
+    labels$1=data.labels;
+    Arrays.iteri(function(i,d)
     {
-     return r($1,$2);
-    },function($1,$2)
-    {
-     return(a$1($1))($2);
-    });
-   })(function()
-   {
-    return function(t)
-    {
-     var arr,label,data$1,ds,labels$1,a$1;
-     arr=t[0];
-     label=t[1];
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     labels$1=data$1.labels;
-     a$1=function(i,d)
-     {
-      var dd;
-      dd=d.data;
-      return dd[Arrays.length(dd)]=Arrays.get(arr,i);
-     };
-     (function(a$2)
-     {
-      Arrays.iteri(a$1,a$2);
-     }(ds));
-     labels$1[Arrays.length(labels$1)]=label;
-     return rendered.update();
-    };
+     var dd;
+     dd=d.data;
+     return dd[Arrays.length(dd)]=Arrays.get(arr,i);
+    },ds);
+    labels$1[Arrays.length(labels$1)]=t[1];
+    return rendered.update();
    });
-  };
-  return ChartJsInternal.withNewCanvas(size,function($1,$2)
-  {
-   return k($1,$2);
   });
  };
  ChartJsInternal.RenderCombinedBarChart=function(chart,size,cfg,window$1)
  {
-  var k;
-  k=function(canvas)
+  return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var labels,e,c,data,m,rendered,a,streams,m$1,l,r;
-   labels=(e=(c=function(chart$1)
+   var labels,e,rendered;
+   labels=(e=Seq$1.choose(function(chart$1)
    {
-    var m$2,s;
-    m$2=chart$1.get_DataSet();
-    return m$2.$==1?null:(s=m$2.$0,{
+    var m;
+    m=chart$1.get_DataSet();
+    return m.$==1?null:{
      $:1,
      $0:Seq$1.map(function(t)
      {
       return t[0];
-     },s)
-    });
-   },function(s)
-   {
-    return Seq$1.choose(c,s);
-   }(chart.get_Charts())),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
-   data={
-    datasets:Arrays.ofSeq((m=function(chart$1)
-    {
-     var initials,r$1,m$2;
-     initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
-     r$1={};
-     r$1.label=chart$1.get__Config().Title;
-     r$1.backgroundColor=Global.String(chart$1.get__SeriesConfig().FillColor);
-     r$1.borderColor=Global.String(chart$1.get__SeriesConfig().StrokeColor);
-     r$1.data=(m$2=function(t)
-     {
-      return t[1];
-     },function(a$1)
-     {
-      return Arrays.map(m$2,a$1);
-     }(initials));
-     return r$1;
-    },function(s)
-    {
-     return Seq$1.map(m,s);
-    }(chart.get_Charts())))
-   };
-   data.labels=Arrays.ofSeq(labels);
-   rendered=new Global.Chart(canvas,{
-    type:"bar",
-    data:data,
-    options:Operators.DefaultArg(cfg,{})
-   });
-   a=function(i,chart$1)
-   {
-    var u;
-    u=function(j,d)
-    {
-     var data$1,ds,s;
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     s=Arrays.get(ds,i).data;
-     s[j]=d(Arrays.get(s,j));
+     },m.$0)
     };
-    return function(f)
-    {
-     return ChartJsInternal.registerUpdater(chart$1,function($1,$2)
+   },chart.get_Charts()),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
+   rendered=new window.Chart(canvas,{
+    type:"bar",
+    data:{
+     datasets:Arrays.ofSeq(Seq$1.map(function(chart$1)
      {
-      return u($1,$2);
-     },f);
-    }(function()
+      var initials,r;
+      initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
+      r={};
+      r.label=chart$1.get__Config().Title;
+      r.backgroundColor=window.String(chart$1.get__SeriesConfig().FillColor);
+      r.borderColor=window.String(chart$1.get__SeriesConfig().StrokeColor);
+      r.data=Arrays.map(function(t)
+      {
+       return t[1];
+      },initials);
+      return r;
+     },chart.get_Charts())),
+     labels:Arrays.ofSeq(labels)
+    },
+    options:cfg==null?{}:cfg.$0
+   });
+   Seq$1.iteri(function(i,chart$1)
+   {
+    return ChartJsInternal.registerUpdater(chart$1,function(j,$1)
+    {
+     var s;
+     s=Arrays.get(rendered.data.datasets,i).data;
+     s[j]=$1(Arrays.get(s,j));
+    },function()
     {
      rendered.update();
     });
-   };
-   (function(s)
-   {
-    Seq$1.iteri(a,s);
-   }(chart.get_Charts()));
-   streams=ChartJsInternal.extractStreams((m$1=function(chart$1)
+   },chart.get_Charts());
+   return ChartJsInternal.onCombinedEvent(ChartJsInternal.extractStreams(Seq$1.map(function(chart$1)
    {
     return chart$1.get_DataSet();
-   },function(s)
+   },chart.get_Charts())),Seq$1.length(chart.get_Charts()),window$1,function()
    {
-    return Seq$1.map(m$1,s);
-   }(chart.get_Charts())));
-   l=Seq$1.length(chart.get_Charts());
-   return(r=function()
-   {
-    var data$1,ds,labels$1,a$1;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    labels$1=data$1.labels;
-    a$1=function(d)
+    var data,ds,labels$1;
+    data=rendered.data;
+    ds=data.datasets;
+    labels$1=data.labels;
+    Arrays.iter(function(d)
     {
      d.data.shift();
-    };
-    (function(a$2)
-    {
-     Arrays.iter(a$1,a$2);
-    }(ds));
+    },ds);
     labels$1.shift();
     return rendered.update();
-   },function(a$1)
+   },function(a,t)
    {
-    return ChartJsInternal.onCombinedEvent(streams,l,window$1,function($1,$2)
+    var arr,data,ds,labels$1;
+    arr=t[0];
+    data=rendered.data;
+    ds=data.datasets;
+    labels$1=data.labels;
+    Arrays.iteri(function(i,d)
     {
-     return r($1,$2);
-    },function($1,$2)
-    {
-     return(a$1($1))($2);
-    });
-   })(function()
-   {
-    return function(t)
-    {
-     var arr,label,data$1,ds,labels$1,a$1;
-     arr=t[0];
-     label=t[1];
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     labels$1=data$1.labels;
-     a$1=function(i,d)
-     {
-      var dd;
-      dd=d.data;
-      return dd[Arrays.length(dd)]=Arrays.get(arr,i);
-     };
-     (function(a$2)
-     {
-      Arrays.iteri(a$1,a$2);
-     }(ds));
-     labels$1[Arrays.length(labels$1)]=label;
-     return rendered.update();
-    };
+     var dd;
+     dd=d.data;
+     return dd[Arrays.length(dd)]=Arrays.get(arr,i);
+    },ds);
+    labels$1[Arrays.length(labels$1)]=t[1];
+    return rendered.update();
    });
-  };
-  return ChartJsInternal.withNewCanvas(size,function($1,$2)
-  {
-   return k($1,$2);
   });
  };
  ChartJsInternal.RenderCombinedLineChart=function(chart,size,cfg,window$1)
  {
-  var k;
-  k=function(canvas)
+  return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var labels,e,m,m$1,c,data,m$2,rendered,a,streams,m$3,l,r;
-   labels=(e=(m=(m$1=function(t)
+   var labels,e,m,rendered;
+   labels=(e=Seq$1.map((m=function(t)
    {
     return t[0];
    },function(s)
    {
-    return Seq$1.map(m$1,s);
-   }),function(s)
-   {
     return Seq$1.map(m,s);
-   }((c=function(chart$1)
+   }),Seq$1.choose(function(chart$1)
    {
-    var m$4;
-    m$4=chart$1.get_DataSet();
-    return m$4.$==1?null:{
+    var m$1;
+    m$1=chart$1.get_DataSet();
+    return m$1.$==1?null:{
      $:1,
-     $0:ChartJsInternal.mkInitial(m$4,window$1)
+     $0:ChartJsInternal.mkInitial(m$1,window$1)
     };
-   },function(s)
-   {
-    return Seq$1.choose(c,s);
-   }(chart.get_Charts())))),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
-   data={
-    datasets:Arrays.ofSeq((m$2=function(chart$1)
-    {
-     var initials,r$1,m$4;
-     initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
-     r$1={};
-     r$1.label=chart$1.get__Config().Title;
-     r$1.backgroundColor=Global.String(chart$1.get__SeriesConfig().FillColor);
-     r$1.borderColor=Global.String(chart$1.get__SeriesConfig().StrokeColor);
-     r$1.pointBackgroundColor=Global.String(chart$1.get__ColorConfig().PointColor);
-     r$1.pointHoverBackgroundColor=Global.String(chart$1.get__ColorConfig().PointHighlightFill);
-     r$1.pointHoverBorderColor=Global.String(chart$1.get__ColorConfig().PointHighlightStroke);
-     r$1.pointBorderColor=Global.String(chart$1.get__ColorConfig().PointStrokeColor);
-     r$1.data=(m$4=function(t)
-     {
-      return t[1];
-     },function(a$1)
-     {
-      return Arrays.map(m$4,a$1);
-     }(initials));
-     return r$1;
-    },function(s)
-    {
-     return Seq$1.map(m$2,s);
-    }(chart.get_Charts())))
-   };
-   data.labels=Arrays.ofSeq(labels);
-   rendered=Global.Chart.Line(canvas,{
+   },chart.get_Charts())),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
+   rendered=Chart$1.Line(canvas,{
     type:"line",
-    data:data,
-    options:Operators.DefaultArg(cfg,{})
-   });
-   a=function(i,chart$1)
-   {
-    var u;
-    u=function(j,d)
-    {
-     var data$1,ds,s;
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     s=Arrays.get(ds,i).data;
-     s[j]=d(Arrays.get(s,j));
-    };
-    return function(f)
-    {
-     return ChartJsInternal.registerUpdater(chart$1,function($1,$2)
+    data:{
+     datasets:Arrays.ofSeq(Seq$1.map(function(chart$1)
      {
-      return u($1,$2);
-     },f);
-    }(function()
+      var initials,r;
+      initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
+      r={};
+      r.label=chart$1.get__Config().Title;
+      r.backgroundColor=window.String(chart$1.get__SeriesConfig().FillColor);
+      r.borderColor=window.String(chart$1.get__SeriesConfig().StrokeColor);
+      r.pointBackgroundColor=window.String(chart$1.get__ColorConfig().PointColor);
+      r.pointHoverBackgroundColor=window.String(chart$1.get__ColorConfig().PointHighlightFill);
+      r.pointHoverBorderColor=window.String(chart$1.get__ColorConfig().PointHighlightStroke);
+      r.pointBorderColor=window.String(chart$1.get__ColorConfig().PointStrokeColor);
+      r.data=Arrays.map(function(t)
+      {
+       return t[1];
+      },initials);
+      return r;
+     },chart.get_Charts())),
+     labels:Arrays.ofSeq(labels)
+    },
+    options:cfg==null?{}:cfg.$0
+   });
+   Seq$1.iteri(function(i,chart$1)
+   {
+    return ChartJsInternal.registerUpdater(chart$1,function(j,$1)
+    {
+     var s;
+     s=Arrays.get(rendered.data.datasets,i).data;
+     s[j]=$1(Arrays.get(s,j));
+    },function()
     {
      rendered.update();
     });
-   };
-   (function(s)
-   {
-    Seq$1.iteri(a,s);
-   }(chart.get_Charts()));
-   streams=ChartJsInternal.extractStreams((m$3=function(chart$1)
+   },chart.get_Charts());
+   return ChartJsInternal.onCombinedEvent(ChartJsInternal.extractStreams(Seq$1.map(function(chart$1)
    {
     return chart$1.get_DataSet();
-   },function(s)
+   },chart.get_Charts())),Seq$1.length(chart.get_Charts()),window$1,function()
    {
-    return Seq$1.map(m$3,s);
-   }(chart.get_Charts())));
-   l=Seq$1.length(chart.get_Charts());
-   return(r=function()
-   {
-    var data$1,ds,labels$1,a$1;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    labels$1=data$1.labels;
-    a$1=function(d)
+    var data,ds,labels$1;
+    data=rendered.data;
+    ds=data.datasets;
+    labels$1=data.labels;
+    Arrays.iter(function(d)
     {
      d.data.shift();
-    };
-    (function(a$2)
-    {
-     Arrays.iter(a$1,a$2);
-    }(ds));
+    },ds);
     labels$1.shift();
     return rendered.update();
-   },function(a$1)
+   },function(a,t)
    {
-    return ChartJsInternal.onCombinedEvent(streams,l,window$1,function($1,$2)
+    var arr,data,ds,labels$1;
+    arr=t[0];
+    data=rendered.data;
+    ds=data.datasets;
+    labels$1=data.labels;
+    Arrays.iteri(function(i,d)
     {
-     return r($1,$2);
-    },function($1,$2)
-    {
-     return(a$1($1))($2);
-    });
-   })(function()
-   {
-    return function(t)
-    {
-     var arr,label,data$1,ds,labels$1,a$1;
-     arr=t[0];
-     label=t[1];
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     labels$1=data$1.labels;
-     a$1=function(i,d)
-     {
-      var dd;
-      dd=d.data;
-      return dd[Arrays.length(dd)]=Arrays.get(arr,i);
-     };
-     (function(a$2)
-     {
-      Arrays.iteri(a$1,a$2);
-     }(ds));
-     labels$1[Arrays.length(labels$1)]=label;
-     return rendered.update();
-    };
+     var dd;
+     dd=d.data;
+     return dd[Arrays.length(dd)]=Arrays.get(arr,i);
+    },ds);
+    labels$1[Arrays.length(labels$1)]=t[1];
+    return rendered.update();
    });
-  };
-  return ChartJsInternal.withNewCanvas(size,function($1,$2)
-  {
-   return k($1,$2);
   });
  };
  ChartJsInternal.onCombinedEvent=function(streams,l,window$1,remove,add)
  {
   var size;
   size=[0];
-  Util.addListener(streams,function(data)
+  streams.Subscribe(Util.observer(function(data)
   {
-   var a,arr,a$1,a$2;
-   a=function(window$2)
-   {
-    if(size[0]>=window$2)
-     remove(window$2,size[0]);
-   };
-   (function(o)
-   {
-    if(o==null)
-     ;
-    else
-     a(o.$0);
-   }(window$1));
+   var window$2,arr,a,o;
+   window$1==null?void 0:(window$2=window$1.$0,size[0]>=window$2?remove(window$2,size[0]):void 0);
    arr=Arrays.ofSeq(Seq$1.delay(function()
    {
     return Seq$1.map(function()
@@ -1442,550 +1240,344 @@
      return 0;
     },Operators.range(1,l));
    }));
-   a$1=function(i,a$3)
+   a=function(i,a$1)
    {
-    var l$1;
-    l$1=a$3[1];
-    Arrays.set(arr,i,l$1);
+    Arrays.set(arr,i,a$1[1]);
    };
-   (function(s)
+   Seq$1.iter(function($1)
    {
-    Seq$1.iter(function($1)
-    {
-     return a$1($1[0],$1[1]);
-    },s);
-   }(data));
-   a$2=function(a$3,a$4)
+    return a($1[0],$1[1]);
+   },data);
+   o=Seq.headOption(data);
+   o==null?void 0:(function(a$1,a$2)
    {
-    add(size[0],[arr,a$4[0]]);
-   };
-   (function(o)
-   {
-    if(o==null)
-     ;
-    else
-     a$2.apply(null,o.$0);
-   }(Seq.headOption(data)));
-   Ref.incr(size);
-  });
+    add(size[0],[arr,a$2[0]]);
+   }).apply(null,o.$0);
+   size[0]++;
+  }));
  };
  ChartJsInternal.extractStreams=function(dataSet)
  {
-  var c,m;
-  return Reactive.SequenceOnlyNew((c=Global.id,function(s)
+  return Reactive.SequenceOnlyNew(Seq$1.choose(window.id,Seq$1.mapi(function(i,data)
   {
-   return Seq$1.choose(c,s);
-  }((m=function(i,data)
-  {
-   var s;
-   return data.$==0?null:(s=data.$0,{
+   return data.$==0?null:{
     $:1,
-    $0:Reactive$2.Select(s,function(d)
+    $0:Reactive$2.Select(data.$0,function(d)
     {
      return[i,d];
     })
-   });
-  },function(s)
-  {
-   return Seq$1.mapi(m,s);
-  }(dataSet)))));
+   };
+  },dataSet)));
  };
  ChartJsInternal.RenderPolarAreaChart=function(chart,size,typ,window$1)
  {
-  var k;
-  k=function(canvas)
+  return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var initial,toBGColor,m,toHBGColor,m$1,toValue,m$2,toLabel,m$3,cc,opt,x,r,opt$1,x$1,r$1,opts,x$2,r$2,rendered,d,r$3,a;
+   var initial,toBGColor,toHBGColor,toValue,toLabel,rendered,r,r$1,r$2,a;
    initial=ChartJsInternal.mkInitial(chart.WebSharper_Charting_Charts_IPolarAreaChart_1$get_DataSet(),null);
-   toBGColor=(m=function(e)
+   toBGColor=Arrays.map(function(e)
    {
-    return Global.String(e.Color);
-   },function(a$1)
+    return window.String(e.Color);
+   },initial);
+   toHBGColor=Arrays.map(function(e)
    {
-    return Arrays.map(m,a$1);
-   }(initial));
-   toHBGColor=(m$1=function(e)
+    return window.String(e.Highlight);
+   },initial);
+   toValue=Arrays.map(function(e)
    {
-    return Global.String(e.Highlight);
-   },function(a$1)
-   {
-    return Arrays.map(m$1,a$1);
-   }(initial));
-   toValue=(m$2=function(e)
-   {
-    var x$3;
-    x$3=e.Value;
-    return Global.Number(x$3);
-   },function(a$1)
-   {
-    return Arrays.map(m$2,a$1);
-   }(initial));
-   toLabel=(m$3=function(e)
+    return window.Number(e.Value);
+   },initial);
+   toLabel=Arrays.map(function(e)
    {
     return e.Label;
-   },function(a$1)
-   {
-    return Arrays.map(m$3,a$1);
-   }(initial));
-   cc=typ.$==1?(opt=typ.$0,(x={
-    datasets:[(r={},r.data=toValue,r.backgroundColor=toBGColor,r.hoverBackgroundColor=toHBGColor,r)]
-   },(x.labels=toLabel,{
+   },initial);
+   rendered=new Chart$1(canvas,typ.$==1?{
     type:"pie",
-    data:x,
-    options:opt
-   }))):typ.$==2?(opt$1=typ.$0,(x$1={
-    datasets:[(r$1={},r$1.data=toValue,r$1.backgroundColor=toBGColor,r$1.hoverBackgroundColor=toHBGColor,r$1)]
-   },(x$1.labels=toLabel,{
+    data:{
+     datasets:[(r={},r.data=toValue,r.backgroundColor=toBGColor,r.hoverBackgroundColor=toHBGColor,r)],
+     labels:toLabel
+    },
+    options:typ.$0
+   }:typ.$==2?{
     type:"doughnut",
-    data:x$1,
-    options:opt$1
-   }))):(opts=typ.$0,(x$2={
-    datasets:[(r$2={},r$2.data=toValue,r$2.backgroundColor=toBGColor,r$2.hoverBackgroundColor=toHBGColor,r$2)]
-   },(x$2.labels=toLabel,{
+    data:{
+     datasets:[(r$1={},r$1.data=toValue,r$1.backgroundColor=toBGColor,r$1.hoverBackgroundColor=toHBGColor,r$1)],
+     labels:toLabel
+    },
+    options:typ.$0
+   }:{
     type:"polarArea",
-    data:x$2,
-    options:opts
-   })));
-   rendered=new Global.Chart(canvas,cc);
-   d=chart.WebSharper_Charting_Charts_IPolarAreaChart_1$get_DataSet();
-   (r$3=function()
+    data:{
+     datasets:[(r$2={},r$2.data=toValue,r$2.backgroundColor=toBGColor,r$2.hoverBackgroundColor=toHBGColor,r$2)],
+     labels:toLabel
+    },
+    options:typ.$0
+   });
+   ChartJsInternal.onEvent(chart.WebSharper_Charting_Charts_IPolarAreaChart_1$get_DataSet(),window$1,function()
    {
-    var data,ds,labels,a$1;
+    var data,ds,labels;
     data=rendered.data;
     ds=data.datasets;
     labels=data.labels;
-    a$1=function(d$1)
+    Arrays.iter(function(d)
     {
-     d$1.data.shift();
-    };
-    (function(a$2)
-    {
-     Arrays.iter(a$1,a$2);
-    }(ds));
+     d.data.shift();
+    },ds);
     labels.shift();
     return rendered.update();
-   },function(a$1)
+   },function(a$1,polardata)
    {
-    return ChartJsInternal.onEvent(d,window$1,function($1,$2)
-    {
-     return r$3($1,$2);
-    },function($1,$2)
-    {
-     return(a$1($1))($2);
-    });
-   })(function()
-   {
-    return function(polardata)
-    {
-     var data,ds,labels,a$1;
-     data=rendered.data;
-     ds=data.datasets;
-     labels=data.labels;
-     a$1=function(i,d$1)
-     {
-      var dd;
-      dd=d$1.data;
-      return dd[Arrays.length(dd)]=polardata.Value;
-     };
-     (function(a$2)
-     {
-      Arrays.iteri(a$1,a$2);
-     }(ds));
-     labels[Arrays.length(labels)]=polardata.Label;
-     return rendered.update();
-    };
-   });
-   a=function(i,d$1)
-   {
-    var data,ds,s;
+    var data,ds,labels;
     data=rendered.data;
     ds=data.datasets;
-    s=Arrays.get(ds,0).data;
-    s[i]=d$1(Arrays.get(s,i));
+    labels=data.labels;
+    Arrays.iteri(function(i,d)
+    {
+     var dd;
+     dd=d.data;
+     return dd[Arrays.length(dd)]=polardata.Value;
+    },ds);
+    labels[Arrays.length(labels)]=polardata.Label;
+    return rendered.update();
+   });
+   a=function(i,$1)
+   {
+    var s;
+    s=Arrays.get(rendered.data.datasets,0).data;
+    s[i]=$1(Arrays.get(s,i));
     rendered.update();
    };
    return chart.WebSharper_Charting_Charts_IMutableChart_2$OnUpdate(function($1)
    {
     return a($1[0],$1[1]);
    });
-  };
-  return ChartJsInternal.withNewCanvas(size,function($1,$2)
-  {
-   return k($1,$2);
   });
  };
  ChartJsInternal.RenderRadarChart=function(chart,size,cfg,window$1)
  {
-  var k;
-  k=function(canvas)
+  return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var initial,data,r,m,m$1,rendered,u,d,r$1;
+   var initial,rendered,r;
    initial=ChartJsInternal.mkInitial(chart.get_DataSet(),window$1);
-   data={
-    datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=Global.String(chart.get__SeriesConfig().FillColor),r.borderColor=Global.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=Global.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=Global.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=Global.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=Global.String(chart.get__ColorConfig().PointStrokeColor),r.data=(m=function(t)
-    {
-     return t[1];
-    },function(a)
-    {
-     return Arrays.map(m,a);
-    }(initial)),r)]
-   };
-   data.labels=(m$1=function(t)
-   {
-    return t[0];
-   },function(a)
-   {
-    return Arrays.map(m$1,a);
-   }(initial));
-   rendered=new Global.Chart(canvas,{
+   rendered=new Chart$1(canvas,{
     type:"radar",
-    data:data,
-    options:Operators.DefaultArg(cfg,{})
+    data:{
+     datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=window.String(chart.get__SeriesConfig().FillColor),r.borderColor=window.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=window.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=window.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=window.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=window.String(chart.get__ColorConfig().PointStrokeColor),r.data=Arrays.map(function(t)
+     {
+      return t[1];
+     },initial),r)],
+     labels:Arrays.map(function(t)
+     {
+      return t[0];
+     },initial)
+    },
+    options:cfg==null?{}:cfg.$0
    });
-   u=function(i,d$1)
+   ChartJsInternal.registerUpdater(chart,function(i,$1)
    {
-    var data$1,ds,s;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    s=Arrays.get(ds,0).data;
-    s[i]=d$1(Arrays.get(s,i));
-   };
-   (function(f)
-   {
-    return ChartJsInternal.registerUpdater(chart,function($1,$2)
-    {
-     return u($1,$2);
-    },f);
-   }(function()
+    var s;
+    s=Arrays.get(rendered.data.datasets,0).data;
+    s[i]=$1(Arrays.get(s,i));
+   },function()
    {
     rendered.update();
-   }));
-   d=chart.get_DataSet();
-   return(r$1=function()
+   });
+   return ChartJsInternal.onEvent(chart.get_DataSet(),window$1,function()
    {
-    var data$1,ds,labels,a;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    labels=data$1.labels;
-    a=function(d$1)
+    var data,ds,labels;
+    data=rendered.data;
+    ds=data.datasets;
+    labels=data.labels;
+    Arrays.iter(function(d)
     {
-     d$1.data.shift();
-    };
-    (function(a$1)
-    {
-     Arrays.iter(a,a$1);
-    }(ds));
+     d.data.shift();
+    },ds);
     labels.shift();
     return rendered.update();
-   },function(a)
+   },function(a,t)
    {
-    return ChartJsInternal.onEvent(d,window$1,function($1,$2)
+    var arr,data,ds,labels;
+    arr=t[1];
+    data=rendered.data;
+    ds=data.datasets;
+    labels=data.labels;
+    Arrays.iteri(function(i,d)
     {
-     return r$1($1,$2);
-    },function($1,$2)
-    {
-     return(a($1))($2);
-    });
-   })(function()
-   {
-    return function(t)
-    {
-     var label,arr,data$1,ds,labels,a;
-     label=t[0];
-     arr=t[1];
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     labels=data$1.labels;
-     a=function(i,d$1)
-     {
-      var dd;
-      dd=d$1.data;
-      return dd[Arrays.length(dd)]=arr;
-     };
-     (function(a$1)
-     {
-      Arrays.iteri(a,a$1);
-     }(ds));
-     labels[Arrays.length(labels)]=label;
-     return rendered.update();
-    };
+     var dd;
+     dd=d.data;
+     return dd[Arrays.length(dd)]=arr;
+    },ds);
+    labels[Arrays.length(labels)]=t[0];
+    return rendered.update();
    });
-  };
-  return ChartJsInternal.withNewCanvas(size,function($1,$2)
-  {
-   return k($1,$2);
   });
  };
  ChartJsInternal.RenderBarChart=function(chart,size,cfg,window$1)
  {
-  var k;
-  k=function(canvas)
+  return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var initial,data,r,m,m$1,rendered,u,d,r$1;
+   var initial,rendered,r;
    initial=ChartJsInternal.mkInitial(chart.get_DataSet(),window$1);
-   data={
-    datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=Global.String(chart.get__SeriesConfig().FillColor),r.borderColor=Global.String(chart.get__SeriesConfig().StrokeColor),r.data=(m=function(t)
-    {
-     return t[1];
-    },function(a)
-    {
-     return Arrays.map(m,a);
-    }(initial)),r)]
-   };
-   data.labels=(m$1=function(t)
-   {
-    return t[0];
-   },function(a)
-   {
-    return Arrays.map(m$1,a);
-   }(initial));
-   rendered=new Global.Chart(canvas,{
+   rendered=new Chart$1(canvas,{
     type:"bar",
-    data:data,
-    options:Operators.DefaultArg(cfg,{})
+    data:{
+     datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=window.String(chart.get__SeriesConfig().FillColor),r.borderColor=window.String(chart.get__SeriesConfig().StrokeColor),r.data=Arrays.map(function(t)
+     {
+      return t[1];
+     },initial),r)],
+     labels:Arrays.map(function(t)
+     {
+      return t[0];
+     },initial)
+    },
+    options:cfg==null?{}:cfg.$0
    });
-   u=function(i,d$1)
+   ChartJsInternal.registerUpdater(chart,function(i,$1)
    {
-    var data$1,ds,s;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    s=Arrays.get(ds,0).data;
-    s[i]=d$1(Arrays.get(s,i));
-   };
-   (function(f)
-   {
-    return ChartJsInternal.registerUpdater(chart,function($1,$2)
-    {
-     return u($1,$2);
-    },f);
-   }(function()
+    var s;
+    s=Arrays.get(rendered.data.datasets,0).data;
+    s[i]=$1(Arrays.get(s,i));
+   },function()
    {
     rendered.update();
-   }));
-   d=chart.get_DataSet();
-   return(r$1=function()
+   });
+   return ChartJsInternal.onEvent(chart.get_DataSet(),window$1,function()
    {
-    var data$1,ds,labels,a;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    labels=data$1.labels;
-    a=function(d$1)
+    var data,ds,labels;
+    data=rendered.data;
+    ds=data.datasets;
+    labels=data.labels;
+    Arrays.iter(function(d)
     {
-     d$1.data.shift();
-    };
-    (function(a$1)
-    {
-     Arrays.iter(a,a$1);
-    }(ds));
+     d.data.shift();
+    },ds);
     labels.shift();
     return rendered.update();
-   },function(a)
+   },function(a,t)
    {
-    return ChartJsInternal.onEvent(d,window$1,function($1,$2)
+    var arr,data,ds,labels;
+    arr=t[1];
+    data=rendered.data;
+    ds=data.datasets;
+    labels=data.labels;
+    Arrays.iteri(function(i,d)
     {
-     return r$1($1,$2);
-    },function($1,$2)
-    {
-     return(a($1))($2);
-    });
-   })(function()
-   {
-    return function(t)
-    {
-     var label,arr,data$1,ds,labels,a;
-     label=t[0];
-     arr=t[1];
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     labels=data$1.labels;
-     a=function(i,d$1)
-     {
-      var dd;
-      dd=d$1.data;
-      return dd[Arrays.length(dd)]=arr;
-     };
-     (function(a$1)
-     {
-      Arrays.iteri(a,a$1);
-     }(ds));
-     labels[Arrays.length(labels)]=label;
-     return rendered.update();
-    };
+     var dd;
+     dd=d.data;
+     return dd[Arrays.length(dd)]=arr;
+    },ds);
+    labels[Arrays.length(labels)]=t[0];
+    return rendered.update();
    });
-  };
-  return ChartJsInternal.withNewCanvas(size,function($1,$2)
-  {
-   return k($1,$2);
   });
  };
  ChartJsInternal.RenderLineChart=function(chart,size,cfg,window$1)
  {
-  var k;
-  k=function(canvas)
+  return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var initial,data,r,m,m$1,rendered,u,d,r$1;
+   var initial,rendered,r;
    initial=ChartJsInternal.mkInitial(chart.get_DataSet(),window$1);
-   data={
-    datasets:[(r={},r.label=chart.get__Config().Title,r.fill=chart.get__SeriesConfig().IsFilled,r.backgroundColor=Global.String(chart.get__SeriesConfig().FillColor),r.borderColor=Global.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=Global.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=Global.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=Global.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=Global.String(chart.get__ColorConfig().PointStrokeColor),r.data=(m=function(t)
-    {
-     return t[1];
-    },function(a)
-    {
-     return Arrays.map(m,a);
-    }(initial)),r)]
-   };
-   data.labels=(m$1=function(t)
-   {
-    return t[0];
-   },function(a)
-   {
-    return Arrays.map(m$1,a);
-   }(initial));
-   rendered=Global.Chart.Line(canvas,{
+   rendered=Chart$1.Line(canvas,{
     type:"line",
-    data:data,
-    options:Operators.DefaultArg(cfg,{})
+    data:{
+     datasets:[(r={},r.label=chart.get__Config().Title,r.fill=chart.get__SeriesConfig().IsFilled,r.backgroundColor=window.String(chart.get__SeriesConfig().FillColor),r.borderColor=window.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=window.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=window.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=window.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=window.String(chart.get__ColorConfig().PointStrokeColor),r.data=Arrays.map(function(t)
+     {
+      return t[1];
+     },initial),r)],
+     labels:Arrays.map(function(t)
+     {
+      return t[0];
+     },initial)
+    },
+    options:cfg==null?{}:cfg.$0
    });
-   u=function(i,d$1)
+   ChartJsInternal.registerUpdater(chart,function(i,$1)
    {
-    var data$1,ds,s;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    s=Arrays.get(ds,0).data;
-    s[i]=d$1(Arrays.get(s,i));
-   };
-   (function(f)
-   {
-    return ChartJsInternal.registerUpdater(chart,function($1,$2)
-    {
-     return u($1,$2);
-    },f);
-   }(function()
+    var s;
+    s=Arrays.get(rendered.data.datasets,0).data;
+    s[i]=$1(Arrays.get(s,i));
+   },function()
    {
     rendered.update();
-   }));
-   d=chart.get_DataSet();
-   return(r$1=function()
+   });
+   return ChartJsInternal.onEvent(chart.get_DataSet(),window$1,function()
    {
-    var data$1,ds,labels,a;
-    data$1=rendered.data;
-    ds=data$1.datasets;
-    labels=data$1.labels;
-    a=function(d$1)
+    var data,ds,labels;
+    data=rendered.data;
+    ds=data.datasets;
+    labels=data.labels;
+    Arrays.iter(function(d)
     {
-     d$1.data.shift();
-    };
-    (function(a$1)
-    {
-     Arrays.iter(a,a$1);
-    }(ds));
+     d.data.shift();
+    },ds);
     labels.shift();
     return rendered.update();
-   },function(a)
+   },function(a,t)
    {
-    return ChartJsInternal.onEvent(d,window$1,function($1,$2)
+    var arr,data,ds,labels;
+    arr=t[1];
+    data=rendered.data;
+    ds=data.datasets;
+    labels=data.labels;
+    Arrays.iteri(function(i,d)
     {
-     return r$1($1,$2);
-    },function($1,$2)
-    {
-     return(a($1))($2);
-    });
-   })(function()
-   {
-    return function(t)
-    {
-     var label,arr,data$1,ds,labels,a;
-     label=t[0];
-     arr=t[1];
-     data$1=rendered.data;
-     ds=data$1.datasets;
-     labels=data$1.labels;
-     a=function(i,d$1)
-     {
-      var dd;
-      dd=d$1.data;
-      return dd[Arrays.length(dd)]=arr;
-     };
-     (function(a$1)
-     {
-      Arrays.iteri(a,a$1);
-     }(ds));
-     labels[Arrays.length(labels)]=label;
-     return rendered.update();
-    };
+     var dd;
+     dd=d.data;
+     return dd[Arrays.length(dd)]=arr;
+    },ds);
+    labels[Arrays.length(labels)]=t[0];
+    return rendered.update();
    });
-  };
-  return ChartJsInternal.withNewCanvas(size,function($1,$2)
-  {
-   return k($1,$2);
   });
  };
  ChartJsInternal.onEvent=function(dataSet,window$1,remove,add)
  {
-  var o,size;
+  var size;
   if(dataSet.$==1)
    {
-    o=dataSet.$0;
     size=[0];
-    Util.addListener(o,function(data)
+    dataSet.$0.Subscribe(Util.observer(function(data)
     {
-     var a;
-     a=function(window$2)
-     {
-      if(size[0]>=window$2)
-       remove(window$2,size[0]);
-     };
-     (function(o$1)
-     {
-      if(o$1==null)
-       ;
-      else
-       a(o$1.$0);
-     }(window$1));
+     var window$2;
+     window$1==null?void 0:(window$2=window$1.$0,size[0]>=window$2?remove(window$2,size[0]):void 0);
      add(size[0],data);
-     Ref.incr(size);
-    });
+     size[0]++;
+    }));
    }
  };
  ChartJsInternal.mkInitial=function(dataSet,window$1)
  {
-  var s,f,s$1;
-  return dataSet.$==0?(s=dataSet.$0,(f=function(s$2,w)
+  return dataSet.$==0?Option.fold(function(s,w)
   {
    var skp;
-   skp=Arrays.length(s$2)-w;
-   return skp>=Arrays.length(s$2)?[]:skp<=0?s$2:Slice.array(s$2,{
+   skp=Arrays.length(s)-w;
+   return skp>=Arrays.length(s)?[]:skp<=0?s:Slice.array(s,{
     $:1,
     $0:skp
    },null);
-  },(s$1=Arrays.ofSeq(s),function(o)
-  {
-   return Option.fold(f,s$1,o);
-  })(window$1))):[];
+  },Arrays.ofSeq(dataSet.$0),window$1):[];
  };
  ChartJsInternal.withNewCanvas=function(size,k)
  {
-  var width,height,a,a$1,a$2;
+  var width,height;
   width=size.$0;
   height=size.$1;
-  a=[AttrProxy.Create("width",Global.String(width)),AttrProxy.Create("height",Global.String(height)),AttrModule.Style("width",Global.String(width)+"px"),AttrModule.Style("height",Global.String(height)+"px")];
-  a$1=[(a$2=[AttrModule.OnAfterRender(function(el)
+  return Doc.Element("div",[AttrProxy.Create("width",window.String(width)),AttrProxy.Create("height",window.String(height)),AttrModule.Style("width",window.String(width)+"px"),AttrModule.Style("height",window.String(height)+"px")],[Doc.Element("canvas",[AttrModule.OnAfterRender(function(el)
   {
    var ctx;
    ctx=el.getContext("2d");
    el.width=width;
    el.height=height;
    k(el,ctx);
-  })],Doc.Element("canvas",a$2,[]))];
-  return Doc.Element("div",a,a$1);
+  })],[])]);
  };
  ChartJsInternal.registerUpdater=function(mChart,upd,fin)
  {
   var bu,a;
   bu=new BatchUpdater.New(null,null);
-  a=function(i,d)
+  a=function($1,$2)
   {
-   upd(i,d);
+   upd($1,$2);
    bu.Update(fin);
   };
   mChart.WebSharper_Charting_Charts_IMutableChart_2$OnUpdate(function($1)
@@ -1995,48 +1587,57 @@
  };
  ChartJs.Render=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderCombinedRadarChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),Config,Window);
+  var d;
+  return ChartJsInternal.RenderCombinedRadarChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),Config,Window);
  };
  ChartJs.Render$1=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderCombinedBarChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),Config,Window);
+  var d;
+  return ChartJsInternal.RenderCombinedBarChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),Config,Window);
  };
  ChartJs.Render$2=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderCombinedLineChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),Config,Window);
+  var d;
+  return ChartJsInternal.RenderCombinedLineChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),Config,Window);
  };
  ChartJs.Render$3=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderPolarAreaChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),{
+  var d;
+  return ChartJsInternal.RenderPolarAreaChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),{
    $:0,
-   $0:Operators.DefaultArg(Config,{})
+   $0:Config==null?{}:Config.$0
   },Window);
  };
  ChartJs.Render$4=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderPolarAreaChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),{
+  var d;
+  return ChartJsInternal.RenderPolarAreaChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),{
    $:2,
-   $0:Operators.DefaultArg(Config,{})
+   $0:Config==null?{}:Config.$0
   },Window);
  };
  ChartJs.Render$5=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderPolarAreaChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),{
+  var d;
+  return ChartJsInternal.RenderPolarAreaChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),{
    $:1,
-   $0:Operators.DefaultArg(Config,{})
+   $0:Config==null?{}:Config.$0
   },Window);
  };
  ChartJs.Render$6=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderRadarChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),Config,Window);
+  var d;
+  return ChartJsInternal.RenderRadarChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),Config,Window);
  };
  ChartJs.Render$7=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderBarChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),Config,Window);
+  var d;
+  return ChartJsInternal.RenderBarChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),Config,Window);
  };
  ChartJs.Render$8=function(chart,Size,Config,Window)
  {
-  return ChartJsInternal.RenderLineChart(chart,Operators.DefaultArg(Size,Renderers.defaultSize()),Config,Window);
+  var d;
+  return ChartJsInternal.RenderLineChart(chart,(d=Renderers.defaultSize(),Size==null?d:Size.$0),Config,Window);
  };
  Renderers.defaultSize=function()
  {
@@ -2050,6 +1651,6 @@
    $0:500,
    $1:200
   };
-  SC$2.$cctor=Global.ignore;
+  SC$2.$cctor=window.ignore;
  });
 }());

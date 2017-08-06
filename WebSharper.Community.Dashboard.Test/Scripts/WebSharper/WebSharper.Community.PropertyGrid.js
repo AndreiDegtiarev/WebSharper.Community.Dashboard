@@ -1,9 +1,8 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,PropertyGrid,PropertyItem,IGroupProperty,Properties,PropertyGrid$1,UI,Next,Key,IntelliFactory,Runtime,Doc,AttrModule,List,ListModel;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,Community,PropertyGrid,PropertyItem,IGroupProperty,Properties,PropertyGrid$1,UI,Next,Key,IntelliFactory,Runtime,Doc,AttrModule,List,ListModel;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  PropertyGrid=Community.PropertyGrid=Community.PropertyGrid||{};
  PropertyItem=PropertyGrid.PropertyItem=PropertyGrid.PropertyItem||{};
@@ -13,7 +12,7 @@
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Key=Next&&Next.Key;
- IntelliFactory=Global.IntelliFactory;
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Doc=Next&&Next.Doc;
  AttrModule=Next&&Next.AttrModule;
@@ -51,77 +50,65 @@
  Properties.check=function(name,_var)
  {
   return{
-   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
-   {
-    var a;
-    a=[AttrModule.Class("form-control")];
-    return Doc.CheckBox(a,_var);
-   },
    WebSharper_Community_PropertyGrid_IProperty$get_Name:function()
    {
     return name;
+   },
+   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
+   {
+    return Doc.CheckBox([AttrModule.Class("form-control")],_var);
    }
   };
  };
  Properties.select=function(name,fncCnv,selections,_var)
  {
   return{
-   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
-   {
-    var a;
-    a=[AttrModule.Class("form-control")];
-    return Doc.Select(a,fncCnv,selections,_var);
-   },
    WebSharper_Community_PropertyGrid_IProperty$get_Name:function()
    {
     return name;
+   },
+   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
+   {
+    return Doc.Select([AttrModule.Class("form-control")],fncCnv,selections,_var);
    }
   };
  };
  Properties["double"]=function(name,_var)
  {
   return{
-   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
-   {
-    return Doc.FloatInputUnchecked([],_var);
-   },
    WebSharper_Community_PropertyGrid_IProperty$get_Name:function()
    {
     return name;
+   },
+   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
+   {
+    return Doc.FloatInputUnchecked([],_var);
    }
   };
  };
  Properties.string=function(name,_var)
  {
   return{
-   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
-   {
-    return Doc.Input([],_var);
-   },
    WebSharper_Community_PropertyGrid_IProperty$get_Name:function()
    {
     return name;
+   },
+   WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
+   {
+    return Doc.Input([],_var);
    }
   };
  };
  PropertyGrid$1=PropertyGrid.PropertyGrid=Runtime.Class({
   get_Render:function()
   {
-   var renderItem,a,a$1,a$2;
-   renderItem=function(item)
-   {
-    var a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12;
-    return item.Property instanceof IGroupProperty?(a$3=[(a$4=[(a$5=[AttrModule.Class("td-group")],(a$6=[item.Property.WebSharper_Community_PropertyGrid_IProperty$get_Render()],Doc.Element("td",a$5,a$6)))],Doc.Element("tr",[],a$4))],Doc.Element("table",[],a$3)):(a$7=[(a$8=[(a$9=[AttrModule.Class("td-no-group")],(a$10=[Doc.TextNode(item.Property.WebSharper_Community_PropertyGrid_IProperty$get_Name())],Doc.Element("td",a$9,a$10))),(a$11=[AttrModule.Class("td-no-group")],(a$12=[item.Property.WebSharper_Community_PropertyGrid_IProperty$get_Render()],Doc.Element("td",a$11,a$12)))],Doc.Element("tr",[],a$8))],Doc.Element("table",[],a$7));
-   };
-   a=[AttrModule.Class("propertyGrid")];
-   a$1=[(a$2=function(m)
+   return Doc.Element("div",[AttrModule.Class("propertyGrid")],[Doc.ConvertBy(function(m)
    {
     return m.Key;
-   },function(a$3)
+   },function(item)
    {
-    return Doc.ConvertBy(a$2,renderItem,a$3);
-   }(this.Properties.v))];
-   return Doc.Element("div",a,a$1);
+    return item.Property instanceof IGroupProperty?Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Class("td-group")],[item.Property.WebSharper_Community_PropertyGrid_IProperty$get_Render()])])]):Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Class("td-no-group")],[Doc.TextNode(item.Property.WebSharper_Community_PropertyGrid_IProperty$get_Name())]),Doc.Element("td",[AttrModule.Class("td-no-group")],[item.Property.WebSharper_Community_PropertyGrid_IProperty$get_Render()])])]);
+   },this.Properties.v)]);
   },
   Edit:function(properties)
   {
@@ -131,11 +118,10 @@
  },null,PropertyGrid$1);
  PropertyGrid$1.get_Create=function()
  {
-  var a;
-  return PropertyGrid$1.New((a=List.T.Empty,ListModel.Create(function(item)
+  return PropertyGrid$1.New(ListModel.Create(function(item)
   {
    return item.Key;
-  },a)));
+  },List.T.Empty));
  };
  PropertyGrid$1.New=function(Properties$1)
  {

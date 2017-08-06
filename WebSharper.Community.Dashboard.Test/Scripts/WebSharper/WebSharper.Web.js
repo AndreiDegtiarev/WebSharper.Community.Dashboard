@@ -1,16 +1,15 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,IntelliFactory,Runtime,Collections,Dictionary,FSharpMap,Unchecked,Arrays,Operators,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,IntelliFactory,Runtime,Collections,Dictionary,FSharpMap,Unchecked,Arrays,Operators,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  Json=WebSharper.Json=WebSharper.Json||{};
  Provider=Json.Provider=Json.Provider||{};
  Web=WebSharper.Web=WebSharper.Web||{};
  Control=Web.Control=Web.Control||{};
  FSharpInlineControl=Web.FSharpInlineControl=Web.FSharpInlineControl||{};
  InlineControl=Web.InlineControl=Web.InlineControl||{};
- IntelliFactory=Global.IntelliFactory;
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Collections=WebSharper&&WebSharper.Collections;
  Dictionary=Collections&&Collections.Dictionary;
@@ -44,7 +43,8 @@
   decEl$1=decEl();
   for(var k$1 in o)if(function(k$2)
   {
-   m[0]=m[0].Add(k$2,decEl$1(o[k$2]));
+   var v;
+   m[0]=(v=decEl$1(o[k$2]),m[0].Add(k$2,v));
    return false;
   }(k$1))
    break;
@@ -61,26 +61,23 @@
    return function(x)
    {
     var tag,tagName,p,a,o,r,k;
-    if(typeof x==="object"?x!=null:false)
+    if(typeof x==="object"&&x!=null)
      {
       o=t===void 0?{}:new t();
       if(Unchecked.Equals(typeof discr,"string"))
        tag=(tagName=x[discr],p=function(name)
        {
         return name===tagName;
-       },function(a$1)
+       },Arrays.findIndex(function($1)
        {
-        return Arrays.findIndex(function($1)
-        {
-         return p($1[0],$1[1]);
-        },a$1);
-       }(cases));
+        return p($1[0],$1[1]);
+       },cases));
       else
        {
         r=[void 0];
         for(var k$1 in discr)if(function(k$2)
         {
-         return x.hasOwnProperty(k$2)?(r[0]=discr[k$2],true):false;
+         return x.hasOwnProperty(k$2)&&(r[0]=discr[k$2],true);
         }(k$1))
          break;
         tag=r[0];
@@ -107,13 +104,10 @@
          else
           Operators.FailWith("Invalid field option kind");
       };
-      (function(a$1)
+      Arrays.iter(function($1)
       {
-       Arrays.iter(function($1)
-       {
-        return a($1[0],$1[1],$1[2],$1[3]);
-       },a$1);
-      }((Arrays.get(cases,tag))[1]));
+       return a($1[0],$1[1],$1[2],$1[3]);
+      },(Arrays.get(cases,tag))[1]);
       return o;
      }
     else
@@ -153,22 +147,17 @@
        else
         Operators.FailWith("Invalid field option kind");
     };
-    (function(a$1)
+    Arrays.iter(function($1)
     {
-     Arrays.iter(function($1)
-     {
-      return a($1[0],$1[1],$1[2]);
-     },a$1);
-    }(fields));
+     return a($1[0],$1[1],$1[2]);
+    },fields);
     return o;
    };
   };
  };
  Provider.DecodeSet=Runtime.Curried3(function(decEl,$1,a)
  {
-  var e;
-  e=decEl();
-  return new FSharpSet.New$1(BalancedTree.OfSeq(Arrays.map(e,a)));
+  return new FSharpSet.New$1(BalancedTree.OfSeq(Arrays.map(decEl(),a)));
  });
  Provider.DecodeList=Runtime.Curried3(function(decEl,$1,a)
  {
@@ -181,7 +170,7 @@
  });
  Provider.DecodeDateTime=Runtime.Curried3(function($1,$2,x)
  {
-  return(new Global.Date(x)).getTime();
+  return(new window.Date(x)).getTime();
  });
  Provider.DecodeTuple=function(decs)
  {
@@ -189,7 +178,7 @@
  };
  Provider.EncodeStringDictionary=Runtime.Curried3(function(encEl,$1,d)
  {
-  var o,e,e$1,f,a;
+  var o,e,e$1,a;
   o={};
   e=encEl();
   e$1=Enumerator.Get(d);
@@ -197,8 +186,7 @@
   {
    while(e$1.MoveNext())
     {
-     f=e$1.Current();
-     a=Operators.KeyValue(f);
+     a=Operators.KeyValue(e$1.Current());
      o[a[0]]=e(a[1]);
     }
   }
@@ -211,40 +199,29 @@
  });
  Provider.EncodeStringMap=Runtime.Curried3(function(encEl,$1,m)
  {
-  var o,e,a;
+  var o,e;
   o={};
   e=encEl();
-  a=function(k,v)
+  Map.Iterate(function(k,v)
   {
    o[k]=e(v);
-  };
-  (function(t)
-  {
-   Map.Iterate(a,t);
-  }(m));
+  },m);
   return o;
  });
  Provider.EncodeSet=Runtime.Curried3(function(encEl,$1,s)
  {
-  var a,e,a$1;
+  var a,e;
   a=[];
   e=encEl();
-  a$1=function(x)
+  Seq.iter(function(x)
   {
-   var v;
-   v=a.push(e(x));
-  };
-  (function(s$1)
-  {
-   Seq.iter(a$1,s$1);
-  }(s));
+   a.push(e(x));
+  },s);
   return a;
  });
  Provider.EncodeArray=Runtime.Curried3(function(encEl,$1,a)
  {
-  var e;
-  e=encEl();
-  return Arrays.map(e,a);
+  return Arrays.map(encEl(),a);
  });
  Provider.EncodeUnion=function(a,discr,cases)
  {
@@ -252,10 +229,10 @@
   {
    return function(x)
    {
-    var o,tag,p,tagName,fields,a$1;
-    return(typeof x==="object"?x!=null:false)?(o={},(tag=x.$,(p=Arrays.get(cases,tag),(tagName=p[0],(fields=p[1],(Unchecked.Equals(typeof discr,"string")?o[discr]=tagName:void 0,a$1=function(from,to,enc,kind)
+    var o,p,a$1;
+    return typeof x==="object"&&x!=null?(o={},(p=Arrays.get(cases,x.$),(Unchecked.Equals(typeof discr,"string")?o[discr]=p[0]:void 0,a$1=function(from,to,enc,kind)
     {
-     var record,k,m,x$1;
+     var record,k,m;
      if(from===null)
       {
        record=(enc(null))(x.$0);
@@ -273,17 +250,14 @@
        if(Unchecked.Equals(kind,1))
         {
          m=x[from];
-         m==null?void 0:(x$1=m.$0,o[to]=(enc(null))(x$1));
+         m==null?void 0:o[to]=(enc(null))(m.$0);
         }
        else
         Operators.FailWith("Invalid field option kind");
-    },function(a$2)
+    },Arrays.iter(function($1)
     {
-     Arrays.iter(function($1)
-     {
-      return a$1($1[0],$1[1],$1[2],$1[3]);
-     },a$2);
-    }(fields),o)))))):x;
+     return a$1($1[0],$1[1],$1[2],$1[3]);
+    },p[1]),o))):x;
    };
   };
  };
@@ -297,14 +271,14 @@
     o={};
     a$1=function(name,enc,kind)
     {
-     var m,x$1;
+     var m;
      if(Unchecked.Equals(kind,0))
       o[name]=(enc(null))(x[name]);
      else
       if(Unchecked.Equals(kind,1))
        {
         m=x[name];
-        m==null?void 0:(x$1=m.$0,o[name]=(enc(null))(x$1));
+        m==null?void 0:o[name]=(enc(null))(m.$0);
        }
       else
        if(Unchecked.Equals(kind,2))
@@ -315,36 +289,28 @@
        else
         Operators.FailWith("Invalid field option kind");
     };
-    (function(a$2)
+    Arrays.iter(function($1)
     {
-     Arrays.iter(function($1)
-     {
-      return a$1($1[0],$1[1],$1[2]);
-     },a$2);
-    }(fields));
+     return a$1($1[0],$1[1],$1[2]);
+    },fields);
     return o;
    };
   };
  };
  Provider.EncodeList=Runtime.Curried3(function(encEl,$1,l)
  {
-  var a,e,a$1;
+  var a,e;
   a=[];
   e=encEl();
-  a$1=function(x)
+  List.iter(function(x)
   {
-   var v;
-   v=a.push(e(x));
-  };
-  (function(l$1)
-  {
-   List.iter(a$1,l$1);
-  }(l));
+   a.push(e(x));
+  },l);
   return a;
  });
  Provider.EncodeDateTime=Runtime.Curried3(function($1,$2,x)
  {
-  return(new Global.Date(x)).toISOString();
+  return(new window.Date(x)).toISOString();
  });
  Provider.EncodeTuple=Runtime.Curried3(function(encs,$1,args)
  {
@@ -369,7 +335,7 @@
    return Arrays.fold(function($1,$2)
    {
     return $1[$2];
-   },Global.window,this.funcName).apply(null,this.args);
+   },window,this.funcName).apply(null,this.args);
   }
  },Control,FSharpInlineControl);
  InlineControl=Web.InlineControl=Runtime.Class({
@@ -378,7 +344,7 @@
    return Arrays.fold(function($1,$2)
    {
     return $1[$2];
-   },Global.window,this.funcName).apply(null,this.args);
+   },window,this.funcName).apply(null,this.args);
   }
  },Control,InlineControl);
 }());

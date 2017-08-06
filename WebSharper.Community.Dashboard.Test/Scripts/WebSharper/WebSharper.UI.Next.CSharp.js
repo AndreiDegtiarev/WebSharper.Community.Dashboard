@@ -1,9 +1,8 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,UI,Next,CSharp,ViewExtensions,DocExtension,Client,Helpers,RouteMapBuilder,RouteItemParsers,View,Doc,Var,List,IntelliFactory,Runtime,RouteMap,Seq,Unchecked,Arrays,Collections,FSharpMap,Option,Map,Nullable,Operators;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,UI,Next,CSharp,ViewExtensions,DocExtension,Client,Helpers,RouteMapBuilder,RouteItemParsers,View,Doc,Var,List,IntelliFactory,Runtime,RouteMap,Seq,Unchecked,Arrays,Collections,FSharpMap,Option,Map,Nullable,Operators;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  UI=WebSharper.UI=WebSharper.UI||{};
  Next=UI.Next=UI.Next||{};
  CSharp=Next.CSharp=Next.CSharp||{};
@@ -17,7 +16,7 @@
  Doc=Next&&Next.Doc;
  Var=Next&&Next.Var;
  List=WebSharper&&WebSharper.List;
- IntelliFactory=Global.IntelliFactory;
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  RouteMap=Next&&Next.RouteMap;
  Seq=WebSharper&&WebSharper.Seq;
@@ -35,61 +34,46 @@
  };
  DocExtension.DocSeqCached=function(v,f,g)
  {
-  var a;
-  a=function(a$1,b)
+  return Doc.ConvertSeqBy(f,function(a)
   {
-   return g(a$1,b);
-  };
-  return Doc.ConvertSeqBy(f,function($1)
-  {
-   return function($2)
+   return function(b)
    {
-    return a($1,$2);
+    return g(a,b);
    };
   },v);
  };
  Helpers.seqRefToListRef=function(l)
  {
-  var a;
-  a=function(a$1,b)
+  return Var.Lens(l,List.ofSeq,function(a,b)
   {
    return b;
-  };
-  return Var.Lens(l,List.ofSeq,function($1,$2)
-  {
-   return a($1,$2);
   });
  };
  RouteMapBuilder=Client.RouteMapBuilder=Runtime.Class({
   Install:function()
   {
-   var routeMap,_var,renders,m,v;
-   routeMap=this.ToRouteMap();
-   _var=RouteMap.Install(routeMap);
+   var _var,renders,m;
+   _var=RouteMap.Install(this.ToRouteMap());
    renders=(m=function(f,r)
    {
     return f(function(d)
     {
      return Var.Set(_var,d);
     },r);
-   },function(l)
+   },List.map(function($1)
    {
-    return List.map(function($1)
+    return function($2)
     {
-     return function($2)
-     {
-      return m($1,$2);
-     };
-    },l);
-   }(List.rev(this.renders)));
-   v=_var.v;
+     return m($1,$2);
+    };
+   },List.rev(this.renders)));
    return Doc.BindView(function(r)
    {
     return Seq.pick(function(f)
     {
      return f(r);
     },renders);
-   },v);
+   },_var.v);
   },
   ToRouteMap:function()
   {
@@ -143,21 +127,21 @@
  },RouteMapBuilder);
  RouteItemParsers["System.Double"]=function(a)
  {
-  var x,x$1,rest,m,x$2;
+  var x,m;
   x=a[0];
-  return x.$==1?(x$1=x.$0,(rest=x.$1,(m=(new Global.RegExp("^[0-9](?:\\.[0-9]*)?$")).exec(x$1),Unchecked.Equals(m,null)?null:{
+  return x.$==1?(m=(new window.RegExp("^[0-9](?:\\.[0-9]*)?$")).exec(x.$0),Unchecked.Equals(m,null)?null:{
    $:1,
-   $0:[(x$2=Arrays.get(m,0),Global.parseFloat(x$2)),rest]
-  }))):null;
+   $0:[window.parseFloat(Arrays.get(m,0)),x.$1]
+  }):null;
  };
  RouteItemParsers["System.Int32"]=function(a)
  {
-  var x,x$1,rest,m,a$1;
+  var x,m;
   x=a[0];
-  return x.$==1?(x$1=x.$0,(rest=x.$1,(m=(new Global.RegExp("^[0-9]+$")).exec(x$1),Unchecked.Equals(m,null)?null:{
+  return x.$==1?(m=(new window.RegExp("^[0-9]+$")).exec(x.$0),Unchecked.Equals(m,null)?null:{
    $:1,
-   $0:[(a$1=Arrays.get(m,0),Global.parseInt(a$1,Global.$1)),rest]
-  }))):null;
+   $0:[window.parseInt(Arrays.get(m,0),window.$1),x.$1]
+  }):null;
  };
  RouteItemParsers["System.String"]=function(a)
  {
@@ -172,34 +156,28 @@
  {
   return function(value)
   {
-   var name,args,map,m,linkItem,m$1,g,items,m$2;
-   return shape.$==1?(name=shape.$1,(args=shape.$2,(map=[new FSharpMap.New([])],[List.append(Option.toList(name),List.ofSeq((m=function(name$1,queryItem,a,link)
+   var map,m,f,g,m$1;
+   return shape.$==1?(map=[new FSharpMap.New([])],[List.append(Option.toList(shape.$1),List.ofSeq((m=function(name,queryItem,a,link)
    {
-    var p,m$3,l,x,m$4,x$1,v;
-    return Unchecked.Equals(queryItem,0)?(p=link(value[name$1]),(m$3=p[1],(l=p[0],(map[0]=Map.FoldBack(function($1,$2,$3)
+    var p,v,m$2,v$1,v$2,v$3;
+    return Unchecked.Equals(queryItem,0)?(p=link(value[name]),(map[0]=Map.FoldBack(function($1,$2,$3)
     {
      return $3.Add($1,$2);
-    },m$3,map[0]),l)))):Unchecked.Equals(queryItem,1)?(x=List.head((link(value[name$1]))[0]),(map[0]=map[0].Add(name$1,x),List.T.Empty)):Unchecked.Equals(queryItem,2)?(m$4=value[name$1],(m$4!=null?m$4.$==1:false)?(x$1=m$4.$0,map[0]=map[0].Add(name$1,List.head((link(x$1))[0]))):void 0,List.T.Empty):Unchecked.Equals(queryItem,3)?(v=value[name$1],(v!=null?map[0]=map[0].Add(name$1,List.head((link(Nullable.get(v)))[0])):void 0,List.T.Empty)):Operators.FailWith("invalid QueryItem enum value");
-   },function(s)
+    },p[1],map[0]),p[0])):Unchecked.Equals(queryItem,1)?(map[0]=(v=List.head((link(value[name]))[0]),map[0].Add(name,v)),List.T.Empty):Unchecked.Equals(queryItem,2)?(m$2=value[name],m$2!=null&&m$2.$==1?map[0]=(v$1=List.head((link(m$2.$0))[0]),map[0].Add(name,v$1)):void 0,List.T.Empty):Unchecked.Equals(queryItem,3)?(v$2=value[name],(v$2!=null?map[0]=(v$3=List.head((link(Nullable.get(v$2)))[0]),map[0].Add(name,v$3)):void 0,List.T.Empty)):Operators.FailWith("invalid QueryItem enum value");
+   },Seq.collect(function($1)
    {
-    return Seq.collect(function($1)
-    {
-     return m($1[0],$1[1],$1[2],$1[3]);
-    },s);
-   }(args)))),map[0]]))):shape.$==2?(linkItem=shape.$2,[new List.T({
+    return m($1[0],$1[1],$1[2],$1[3]);
+   },shape.$2)))),map[0]]):shape.$==2?[new List.T({
     $:1,
-    $0:Global.String(Seq.length(value)),
-    $1:List.ofSeq((m$1=(g=function(t)
+    $0:window.String(Seq.length(value)),
+    $1:List.ofSeq(Seq.collect((f=shape.$2,(g=function(t)
     {
      return t[0];
     },function(x)
     {
-     return g(linkItem(x));
-    }),function(s)
-    {
-     return Seq.collect(m$1,s);
-    }(value)))
-   }),new FSharpMap.New([])]):shape.$==3?(items=shape.$0,[List.ofSeq(Seq.concat(((m$2=function(a,link)
+     return g(f(x));
+    })),value))
+   }),new FSharpMap.New([])]:shape.$==3?[List.ofSeq(Seq.concat(((m$1=function(a,link)
    {
     return function(x)
     {
@@ -209,9 +187,9 @@
    {
     return(function($3)
     {
-     return m$2($3[0],$3[1]);
+     return m$1($3[0],$3[1]);
     }($1))($2);
-   }))(items))(value))),new FSharpMap.New([])]):[List.ofArray([Global.String(value)]),new FSharpMap.New([])];
+   }))(shape.$0))(value))),new FSharpMap.New([])]:[List.ofArray([window.String(value)]),new FSharpMap.New([])];
   };
  };
  RouteItemParsers.ParseRoute=function(shape)
@@ -237,125 +215,85 @@
  {
   return function(t)
   {
-   var path,query,args,init,name,$1,fromArray,parseItem,b,items,t$1,m,f;
-   function parseArgs(init$1,rest,args$1)
+   var path,query,$1,fromArray,parseItem,o,length,rest,arr,t$1,o$1,f;
+   function parseArgs(init,rest$1,args)
    {
-    var v,m$1,f$1;
-    v=init$1();
-    m$1=function(rest$1)
+    var v,o$2,f$1;
+    v=init();
+    o$2=((f$1=function(rest$2,t$2)
     {
-     return[v,rest$1];
-    };
-    return function(o)
-    {
-     return o==null?null:{
-      $:1,
-      $0:m$1(o.$0)
-     };
-    }(((f$1=function(rest$1,t$2)
-    {
-     var name$1,queryItem,parse,rest$2,m$2,rest$3,m$3,m$4,x,m$5,m$6,x$1,m$7;
-     name$1=t$2[0];
+     var name,queryItem,parse,rest$3,m,m$1,m$2,m$3,m$4,m$5;
+     name=t$2[0];
      queryItem=t$2[1];
      parse=t$2[2];
-     return(rest$1!=null?rest$1.$==1:false)?(rest$2=rest$1.$0,Unchecked.Equals(queryItem,0)?(m$2=parse([rest$2,query]),(m$2!=null?m$2.$==1:false)?(rest$3=m$2.$0[1],(v[name$1]=m$2.$0[0],{
+     return rest$2!=null&&rest$2.$==1?(rest$3=rest$2.$0,Unchecked.Equals(queryItem,0)?(m=parse([rest$3,query]),m!=null&&m.$==1?(v[name]=m.$0[0],{
+      $:1,
+      $0:m.$0[1]
+     }):null):Unchecked.Equals(queryItem,1)?(m$1=Map.TryFind(name,query),m$1==null?null:(v[name]=m$1.$0,{
       $:1,
       $0:rest$3
-     })):null):Unchecked.Equals(queryItem,1)?(m$3=Map.TryFind(name$1,query),m$3==null?null:(v[name$1]=m$3.$0,{
+     })):Unchecked.Equals(queryItem,2)?(m$2=Map.TryFind(name,query),m$2!=null&&m$2.$==1?(m$3=parse([List.ofArray([m$2.$0]),new FSharpMap.New([])]),m$3!=null&&m$3.$==1?(v[name]={
       $:1,
-      $0:rest$2
-     })):Unchecked.Equals(queryItem,2)?(m$4=Map.TryFind(name$1,query),(m$4!=null?m$4.$==1:false)?(x=m$4.$0,(m$5=parse([List.ofArray([x]),new FSharpMap.New([])]),(m$5!=null?m$5.$==1:false)?(v[name$1]={
-      $:1,
-      $0:m$5.$0[0]
+      $0:m$3.$0[0]
      },{
       $:1,
-      $0:rest$2
-     }):null)):(v[name$1]=null,{
+      $0:rest$3
+     }):null):(v[name]=null,{
       $:1,
-      $0:rest$2
-     })):Unchecked.Equals(queryItem,3)?(m$6=Map.TryFind(name$1,query),(m$6!=null?m$6.$==1:false)?(x$1=m$6.$0,(m$7=parse([List.ofArray([x$1]),new FSharpMap.New([])]),(m$7!=null?m$7.$==1:false)?(v[name$1]=m$7.$0[0],{
+      $0:rest$3
+     })):Unchecked.Equals(queryItem,3)?(m$4=Map.TryFind(name,query),m$4!=null&&m$4.$==1?(m$5=parse([List.ofArray([m$4.$0]),new FSharpMap.New([])]),m$5!=null&&m$5.$==1?(v[name]=m$5.$0[0],{
       $:1,
-      $0:rest$2
-     }):null)):(v[name$1]=null,{
+      $0:rest$3
+     }):null):(v[name]=null,{
       $:1,
-      $0:rest$2
+      $0:rest$3
      })):Operators.FailWith("invalid QueryItem enum value")):null;
     },(Runtime.Curried3(Arrays.fold))(f$1))({
      $:1,
-     $0:rest
-    }))(args$1));
+     $0:rest$1
+    }))(args);
+    return o$2==null?null:{
+     $:1,
+     $0:[v,o$2.$0]
+    };
    }
    path=t[0];
    query=t[1];
-   return shape.$==1?shape.$1==null?parseArgs(shape.$0,path,shape.$2):(args=shape.$2,(init=shape.$0,(name=shape.$1.$0,(path.$==1?path.$0===name?($1=[path.$1,path.$0],true):false:false)?parseArgs(init,$1[0],args):null))):shape.$==2?(fromArray=shape.$0,(parseItem=shape.$1,(b=function(length,rest)
+   return shape.$==1?shape.$1==null?parseArgs(shape.$0,path,shape.$2):path.$==1&&(path.$0===shape.$1.$0&&($1=[path.$1,path.$0],true))?parseArgs(shape.$0,$1[0],shape.$2):null:shape.$==2?(fromArray=shape.$0,(parseItem=shape.$1,(o=RouteItemParsers["System.Int32"]([path,query]),o==null?null:(length=o.$0[0],(rest=o.$0[1],(arr=Arrays.create(length,null),function(i,rest$1)
    {
-    var arr;
-    arr=Arrays.create(length,null);
-    return function(i,rest$1)
-    {
-     var m$1,rest$2,item;
-     while(true)
-      if(i===length)
-       return{
-        $:1,
-        $0:[fromArray(arr),rest$1]
-       };
-      else
-       {
-        m$1=parseItem([rest$1,query]);
-        if(m$1!=null?m$1.$==1:false)
-         {
-          rest$2=m$1.$0[1];
-          item=m$1.$0[0];
-          Arrays.set(arr,i,item);
-          i=i+1;
-          rest$1=rest$2;
-         }
-        else
-         return null;
-       }
-    }(0,rest);
-   },function(o)
-   {
-    return o==null?null:b.apply(null,o.$0);
-   }(RouteItemParsers["System.Int32"]([path,query]))))):shape.$==3?(items=shape.$0,(t$1=Global.Array.prototype.constructor.apply(Global.Array,[]),(m=function(rest)
-   {
-    return[t$1,rest];
-   },function(o)
-   {
-    return o==null?null:{
-     $:1,
-     $0:m(o.$0)
-    };
-   }(((f=function(rest,t$2)
-   {
-    var parse,b$1;
-    parse=t$2[0];
-    b$1=function(rest$1)
-    {
-     var m$1;
-     m$1=function(parsed,rest$2)
-     {
-      var v;
-      v=t$1.push(parsed);
-      return rest$2;
-     };
-     return function(o)
-     {
-      return o==null?null:{
+    var m;
+    while(true)
+     if(i===length)
+      return{
        $:1,
-       $0:m$1.apply(null,o.$0)
+       $0:[fromArray(arr),rest$1]
       };
-     }(parse([rest$1,query]));
-    };
-    return function(o)
-    {
-     return o==null?null:b$1(o.$0);
-    }(rest);
+     else
+      {
+       m=parseItem([rest$1,query]);
+       if(m!=null&&m.$==1)
+        {
+         Arrays.set(arr,i,m.$0[0]);
+         i=i+1;
+         rest$1=m.$0[1];
+        }
+       else
+        return null;
+      }
+   }(0,rest))))))):shape.$==3?(t$1=[],(o$1=((f=function(rest$1,t$2)
+   {
+    var o$2,parsed,rest$2;
+    return rest$1==null?null:(o$2=t$2[0]([rest$1.$0,query]),o$2==null?null:{
+     $:1,
+     $0:(parsed=o$2.$0[0],(rest$2=o$2.$0[1],(t$1.push(parsed),rest$2)))
+    });
    },(Runtime.Curried3(Arrays.fold))(f))({
     $:1,
     $0:path
-   }))(items))))):shape.$0([path,query]);
+   }))(shape.$0),o$1==null?null:{
+    $:1,
+    $0:[t$1,o$1.$0]
+   })):shape.$0([path,query]);
   };
  };
 }());

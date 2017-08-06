@@ -1,15 +1,14 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Guid,Strings,Concurrency,List,Arrays,JavaScript,Pervasives$1,IntelliFactory,Runtime$1,Operators,Unchecked;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Strings,Guid,Concurrency,$,List,JavaScript,Pervasives$1,Arrays,IntelliFactory,Runtime$1,Operators,Array,Unchecked;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  Data=WebSharper.Data=WebSharper.Data||{};
  Pervasives=Data.Pervasives=Data.Pervasives||{};
  WBRuntime=Data.WBRuntime=Data.WBRuntime||{};
  WorldBankCountry=WBRuntime.WorldBankCountry=WBRuntime.WorldBankCountry||{};
  WorldBankRuntime=WBRuntime.WorldBankRuntime=WBRuntime.WorldBankRuntime||{};
- FSharp=Global.FSharp=Global.FSharp||{};
+ FSharp=window.FSharp=window.FSharp||{};
  Data$1=FSharp.Data=FSharp.Data||{};
  Runtime=Data$1.Runtime=Data$1.Runtime||{};
  WorldBank=Runtime.WorldBank=Runtime.WorldBank||{};
@@ -17,22 +16,23 @@
  JSRuntime=Data.JSRuntime=Data.JSRuntime||{};
  TxtRuntime=Data.TxtRuntime=Data.TxtRuntime||{};
  IO=Runtime.IO=Runtime.IO||{};
- Guid=WebSharper&&WebSharper.Guid;
  Strings=WebSharper&&WebSharper.Strings;
+ Guid=WebSharper&&WebSharper.Guid;
  Concurrency=WebSharper&&WebSharper.Concurrency;
+ $=window.jQuery;
  List=WebSharper&&WebSharper.List;
- Arrays=WebSharper&&WebSharper.Arrays;
  JavaScript=WebSharper&&WebSharper.JavaScript;
  Pervasives$1=JavaScript&&JavaScript.Pervasives;
- IntelliFactory=Global.IntelliFactory;
+ Arrays=WebSharper&&WebSharper.Arrays;
+ IntelliFactory=window.IntelliFactory;
  Runtime$1=IntelliFactory&&IntelliFactory.Runtime;
  Operators=WebSharper&&WebSharper.Operators;
+ Array=window.Array;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Pervasives.randomFunctionName=function()
  {
-  var _this,c;
-  _this=(c=Guid.NewGuid(),Global.String(c)).toLowerCase();
-  return Strings.ReplaceChar(_this,45,95);
+  var c;
+  return Strings.ReplaceChar((c=Guid.NewGuid(),window.String(c)).toLowerCase(),45,95);
  };
  WorldBankCountry.New=function(Context,Code,Name)
  {
@@ -46,61 +46,47 @@
  {
   return Concurrency.FromContinuations(function(ok,ko)
   {
-   var guid,wb,countryCode,url,v,a,r;
+   var guid,r;
    guid=Pervasives.randomFunctionName();
-   wb=country.Context;
-   countryCode=country.Code;
-   url=WBRuntime.worldBankUrl(wb,List.ofArray(["countries",countryCode,"indicators",indicator]),List.ofArray([["date","1900:2050"],["format","jsonp"]]));
-   v=(a=(r={},r.url=url,r.dataType="jsonp",r.jsonp="prefix",r.jsonpCallback="jsonp"+guid,r.error=function(jqXHR,textStatus,error)
+   $.ajax((r={},r.url=WBRuntime.worldBankUrl(country.Context,List.ofArray(["countries",country.Code,"indicators",indicator]),List.ofArray([["date","1900:2050"],["format","jsonp"]])),r.dataType="jsonp",r.jsonp="prefix",r.jsonpCallback="jsonp"+guid,r.error=function(jqXHR,textStatus,error)
    {
-    return ko(Global.Error(textStatus+error));
+    return ko(window.Error(textStatus+error));
    },r.success=function(data)
    {
-    var res,c;
-    res=(c=function(e)
+    return ok(Pervasives$1.NewFromSeq(Arrays.choose(function(e)
     {
      return e.value==null?null:{
       $:1,
       $0:[e.date,e.value]
      };
-    },function(a$1)
-    {
-     return Arrays.choose(c,a$1);
-    }(Arrays.get(data,1))).slice().reverse();
-    return ok(Pervasives$1.NewFromSeq(res));
-   },r),Global.jQuery.ajax(a));
+    },Arrays.get(data,1)).slice().reverse()));
+   },r));
   });
  };
- WorldBankRuntime.GetIndicators=Global.id;
+ WorldBankRuntime.GetIndicators=window.id;
  WorldBankRuntime.GetCountry=function(countries,code,name)
  {
   return WorldBankCountry.New(countries,code,name);
  };
  WBRuntime.worldBankUrl=function(wb,functions,props)
  {
-  var s,m,s$1,m$1;
-  return wb.serviceUrl+"/"+(s=(m=function(m$2)
+  var m;
+  return wb.serviceUrl+"/"+Strings.concat("",List.map(function(m$1)
   {
-   return"/"+Global.encodeURIComponent(m$2);
-  },function(l)
+   return"/"+window.encodeURIComponent(m$1);
+  },functions))+"?per_page=1000"+Strings.concat("",(m=function(key,value)
   {
-   return List.map(m,l);
-  }(functions)),Strings.concat("",s))+"?per_page=1000"+(s$1=(m$1=function(key,value)
+   return"&"+key+"="+window.encodeURIComponent(value);
+  },List.map(function($1)
   {
-   return"&"+key+"="+Global.encodeURIComponent(value);
-  },function(l)
-  {
-   return List.map(function($1)
-   {
-    return m$1($1[0],$1[1]);
-   },l);
-  }(props)),Strings.concat("",s$1));
+   return m($1[0],$1[1]);
+  },props)));
  };
  Indicator=WorldBank.Indicator=Runtime$1.Class({
   TryGetValueAt:function(year)
   {
    var e;
-   e=this[Global.String(year)];
+   e=this[window.String(year)];
    return e==void 0?null:{
     $:1,
     $0:e
@@ -110,7 +96,7 @@
  JSRuntime.GetArrayChildByTypeTag=function(value,cultureStr,tagCode)
  {
   var arr;
-  arr=JSRuntime.GetArrayChildrenByTypeTag(value,cultureStr,tagCode,Global.id);
+  arr=JSRuntime.GetArrayChildrenByTypeTag(value,cultureStr,tagCode,window.id);
   return Arrays.length(arr)===1?Arrays.get(arr,0):Operators.FailWith("JSON mismatch: Expected single value, but found multiple.");
  };
  JSRuntime.TryGetArrayChildByTypeTag=function(doc,cultureStr,tagCode,mapping)
@@ -124,61 +110,51 @@
  };
  JSRuntime.TryGetValueByTypeTag=function(doc,cultureStr,tagCode,mapping)
  {
-  var m,f;
-  m=(f=Global.id,function(x)
-  {
-   return mapping(f(x));
-  });
-  return function(o)
-  {
-   return o==null?null:{
-    $:1,
-    $0:m(o.$0)
-   };
-  }(JSRuntime.matchTag(tagCode,doc));
+  var o;
+  o=JSRuntime.matchTag(tagCode,doc);
+  return o==null?null:{
+   $:1,
+   $0:mapping(o.$0)
+  };
  };
  JSRuntime.GetArrayChildrenByTypeTag=function(doc,cultureStr,tagCode,mapping)
  {
-  var m,f,c;
-  return Global.Array.isArray(doc)?(m=(f=Global.id,function(x)
+  var f;
+  return Array.isArray(doc)?Arrays.map((f=window.id,function(x)
   {
    return mapping(f(x));
-  }),function(a)
-  {
-   return Arrays.map(m,a);
-  }((c=function(v)
+  }),Arrays.choose(function(v)
   {
    return JSRuntime.matchTag(tagCode,v);
-  },function(a)
-  {
-   return Arrays.choose(c,a);
-  }(doc)))):Operators.FailWith("JSON mismatch: Expected Array node");
+  },doc)):Operators.FailWith("JSON mismatch: Expected Array node");
  };
  JSRuntime.matchTag=function(tagCode,value)
  {
   var v;
-  return value==null?null:(Unchecked.Equals(typeof value,"boolean")?tagCode==="Boolean":false)?{
+  return value==null?null:Unchecked.Equals(typeof value,"boolean")&&tagCode==="Boolean"?{
    $:1,
    $0:value
-  }:(Unchecked.Equals(typeof value,"number")?tagCode==="Number":false)?{
+  }:Unchecked.Equals(typeof value,"number")&&tagCode==="Number"?{
    $:1,
    $0:value
-  }:(Unchecked.Equals(typeof value,"string")?tagCode==="Number":false)?(v=1*value,Global.isNaN(v)?null:{
+  }:Unchecked.Equals(typeof value,"string")&&tagCode==="Number"?(v=1*value,window.isNaN(v)?null:{
    $:1,
    $0:v
-  }):(Unchecked.Equals(typeof value,"string")?tagCode==="String":false)?{
+  }):Unchecked.Equals(typeof value,"string")&&tagCode==="String"?{
    $:1,
    $0:value
-  }:(Global.Array.isArray(value)?tagCode==="Array":false)?{
+  }:Array.isArray(value)&&tagCode==="Array"?{
    $:1,
    $0:value
-  }:(Unchecked.Equals(typeof value,"object")?tagCode==="Record":false)?{
+  }:Unchecked.Equals(typeof value,"object")&&tagCode==="Record"?{
    $:1,
    $0:value
   }:null;
  };
  TxtRuntime.AsyncMap=function(comp,mapping)
  {
+  var b;
+  b=null;
   return Concurrency.Delay(function()
   {
    return Concurrency.Bind(comp,function(a)
@@ -196,19 +172,17 @@
   var a;
   a=function(ok,ko)
   {
-   var p,l,uri$1,jsonp,settings,r,fn,v;
+   var p,l,settings,r,fn;
    p=(l=uri.toLowerCase(),Strings.StartsWith(l,"jsonp|")?[uri.substring(6),true]:Strings.StartsWith(l,"json|")?[uri.substring(5),false]:[uri,false]);
-   uri$1=p[0];
-   jsonp=p[1];
    settings=(r={},r.dataType="json",r.success=function(data)
    {
     return ok(data);
    },r.error=function(a$1,a$2,err)
    {
-    return ko(Global.Error(err));
+    return ko(window.Error(err));
    },r);
-   jsonp?(fn=Pervasives.randomFunctionName(),settings.dataType="jsonp",settings.jsonp="prefix",settings.jsonpCallback="jsonp"+fn):void 0;
-   v=Global.jQuery.ajax(uri$1,settings);
+   p[1]?(fn=Pervasives.randomFunctionName(),settings.dataType="jsonp",settings.jsonp="prefix",settings.jsonpCallback="jsonp"+fn):void 0;
+   $.ajax(p[0],settings);
   };
   return Concurrency.FromContinuations(function($1,$2,$3)
   {

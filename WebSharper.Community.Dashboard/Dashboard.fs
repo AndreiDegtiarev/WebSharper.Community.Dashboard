@@ -29,14 +29,12 @@ type Dashboard =
            DshEditor = DshEditor.Create
            PropertyGrid = PropertyGrid.Create
         }
-    member x.RegisterWidget (toPanelContainer:PanelContainer) (worker:Worker) = 
+    member x.RegisterWidget (toPanelContainer:PanelContainer) worker = 
         x.Data.RegisterWidget worker
         let panel = Panel.Create
                          .WithTitle(false)
-                         .WithPanelContent(match worker with
-                                           | :?  Widget as widget -> widget.Render()                                    
-                                           | _ ->div[] :> Doc)
-                         .WithProperties ((SourceProperty(x.Data,worker) :>IProperty)::worker.Properties) 
+                         .WithPanelContent(worker.Render)
+                        // .WithProperties ((SourceProperty(x.Data,worker) :>IProperty)::worker.Properties) 
 
         toPanelContainer.AddPanel panel
     member x.CreatePanel(name,cx,?afterRenderFnc) = 
@@ -64,7 +62,9 @@ type Dashboard =
                                                                         x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 Console.Log("Dialog.IsOK")
-                                                                                                                x.RegisterWidget panel.Children (selected.Value.Worker.Clone())
+                                                                                                                //let worker = selected.Value.Worker
+                                                                                                                //let copy = MakeWorker.Clone worker
+                                                                                                                x.RegisterWidget panel.Children selected.Value.Worker.CloneAndRun
                                                                                                              )
                                                                        ))}
                                         {Icon="edit"; Action=(fun panel->Console.Log("Edit")
@@ -114,9 +114,8 @@ type Dashboard =
                                                                     let items = x.Factory.EventItems|>List.ofSeq
                                                                     let selected=Var.Create (items.Head)
                                                                     x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
-                                                                                                             (fun _ ->  let event = selected.Value.Worker.Clone()
-                                                                                                                        x.Data.RegisterEvent event
-                                                                                                                        event.Run())
+                                                                                                             (fun _ ->  let event = selected.Value.Worker.CloneAndRun
+                                                                                                                        x.Data.RegisterEvent event)
                                                                 else if varBoolDash.Value then
                                                                     x.CreatePanel("Panel",700,(fun _->()))|>ignore
                                                              )]]

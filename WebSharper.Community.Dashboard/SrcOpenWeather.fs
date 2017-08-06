@@ -9,7 +9,7 @@ open FSharp.Data
 open WebSharper.Community.PropertyGrid
 
 [<JavaScript>]
-module SrcOpenWeather =
+module OpenWeather =
 
     type Forecast =
         {
@@ -42,24 +42,32 @@ module SrcOpenWeather =
                 Console.Log(e.Message)
                 return None
         }
-    type Create(city)=
-        inherit Worker("OpenWeatherMap")
-        let inApiKey = InPortStr("ApiKey","")
-        let inCity =   InPortStr("City",city)
-        let outTempearatur = OutPortNum("Temperature")
-        override x.InPorts = [inApiKey;inCity]
-        override x.OutPorts = [outTempearatur]
-        override x.Clone() = Create(city) :> Worker
-        override x.Run()=
-            let rnd = System.Random()
-            async {
-                while true do
-                    let! response = get inApiKey.Value.Value inCity.Value.Value
-                    match response with
-                    |Some(res) -> 
-                        Console.Log ("Value generated:"+response.Value.Title)
-                        outTempearatur.Trigger ((double)response.Value.Temperature)
-                    |None -> ()
-                    do! Async.Sleep (1000*15)
-            }
-            |> Async.Start
+
+    let run (worker:IWorker)=
+                     async {
+                         while true do
+                             let inCity=worker.InPorts.[0]
+                             let inApiKey=worker.InPorts.[1]
+                             let outTempearatur=worker.OutPorts.[0]
+                             let api = Ports.StringVar inApiKey
+                             let crCity = Ports.StringVar inCity
+                             let! response = get api.Value crCity.Value
+                             match response with
+                             |Some(res) -> 
+                                 Console.Log ("Value generated:"+response.Value.Title)
+                                 Ports.NumTrigger outTempearatur ((double)response.Value.Temperature)
+                             |None -> ()
+                             do! Async.Sleep (1000*15)
+                     }
+                     |> Async.Start
+                     None
+[<JavaScript>]
+type OpenWeatherRunner =
+ {
+        OpenWeatherCity:string
+        OpenWeatherApiKey:string
+ }
+ static member Create city apikey = {OpenWeatherCity=city;OpenWeatherApiKey=apikey}
+ interface IRunner with
+        override x.Run= (fun worker -> OpenWeather.run worker)
+ interface IWorkerContext

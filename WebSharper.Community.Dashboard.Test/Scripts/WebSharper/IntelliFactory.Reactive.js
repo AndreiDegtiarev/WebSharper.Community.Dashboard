@@ -1,25 +1,23 @@
 (function()
 {
  "use strict";
- var Global,IntelliFactory,Reactive,Disposable,Observer,HotStream,Reactive$1,Reactive$2,SC$1,Runtime,WebSharper,Control,FSharpEvent,Util,List,Collections,Dictionary,Ref,Seq;
- Global=window;
- IntelliFactory=Global.IntelliFactory=Global.IntelliFactory||{};
+ var IntelliFactory,Reactive,Disposable,Observer,HotStream,Reactive$1,Reactive$2,SC$1,Runtime,WebSharper,Control,FSharpEvent,Util,List,Collections,Dictionary,Seq;
+ IntelliFactory=window.IntelliFactory=window.IntelliFactory||{};
  Reactive=IntelliFactory.Reactive=IntelliFactory.Reactive||{};
  Disposable=Reactive.Disposable=Reactive.Disposable||{};
  Observer=Reactive.Observer=Reactive.Observer||{};
  HotStream=Reactive.HotStream=Reactive.HotStream||{};
  Reactive$1=Reactive.Reactive=Reactive.Reactive||{};
  Reactive$2=Reactive$1.Reactive=Reactive$1.Reactive||{};
- SC$1=Global.StartupCode$IntelliFactory_Reactive$Reactive=Global.StartupCode$IntelliFactory_Reactive$Reactive||{};
+ SC$1=window.StartupCode$IntelliFactory_Reactive$Reactive=window.StartupCode$IntelliFactory_Reactive$Reactive||{};
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
- WebSharper=Global.WebSharper;
+ WebSharper=window.WebSharper;
  Control=WebSharper&&WebSharper.Control;
  FSharpEvent=Control&&Control.FSharpEvent;
  Util=WebSharper&&WebSharper.Util;
  List=WebSharper&&WebSharper.List;
  Collections=WebSharper&&WebSharper.Collections;
  Dictionary=Collections&&Collections.Dictionary;
- Ref=WebSharper&&WebSharper.Ref;
  Seq=WebSharper&&WebSharper.Seq;
  Disposable.New=function(d)
  {
@@ -33,15 +31,15 @@
  Observer.New=function(onNext,onComplete)
  {
   return{
-   OnError:function()
-   {
-    return null;
-   },
+   OnNext:onNext,
    OnCompleted:function()
    {
     return onComplete();
    },
-   OnNext:onNext
+   OnError:function()
+   {
+    return null;
+   }
   };
  };
  HotStream=Reactive.HotStream=Runtime.Class({
@@ -155,29 +153,28 @@
  };
  Reactive$1.Heat=function(io)
  {
-  var s,disp;
+  var s;
   s=HotStream.New$2();
-  disp=Util.subscribeTo(io,function(a)
+  io.Subscribe(Util.observer(function(a)
   {
    s.Trigger(a);
-  });
+  }));
   return s;
  };
  Reactive$1.Sequence=function(ios)
  {
   function sequence(ios$1)
   {
-   var xs,x,rest;
-   return ios$1.$==1?(xs=ios$1.$1,(x=ios$1.$0,(rest=sequence(xs),Reactive$1.CombineLatest(x,rest,function($1,$2)
+   return ios$1.$==1?Reactive$1.CombineLatest(ios$1.$0,sequence(ios$1.$1),function($1,$2)
    {
     return new List.T({
      $:1,
      $0:$1,
      $1:$2
     });
-   })))):Reactive$1.Return(List.T.Empty);
+   }):Reactive$1.Return(List.T.Empty);
   }
-  return Reactive$1.Select(sequence(List.ofSeq(ios)),Global.id);
+  return Reactive$1.Select(sequence(List.ofSeq(ios)),window.id);
  };
  Reactive$1.CollectLatest=function(outer)
  {
@@ -187,12 +184,12 @@
     var dict,index;
     dict=new Dictionary.New$5();
     index=[0];
-    return Util.subscribeTo(outer,function(inner)
+    return outer.Subscribe(Util.observer(function(inner)
     {
-     var currentIndex,v;
-     Ref.incr(index);
+     var currentIndex;
+     index[0]++;
      currentIndex=index[0];
-     v=Util.subscribeTo(inner,function(value)
+     inner.Subscribe(Util.observer(function(value)
      {
       dict.set_Item(currentIndex,value);
       o.OnNext(Seq.delay(function()
@@ -202,8 +199,8 @@
         return pair.V;
        },dict);
       }));
-     });
-    });
+     }));
+    }));
    }
   };
  };
@@ -214,11 +211,11 @@
    {
     var state;
     state=[seed];
-    return Util.subscribeTo(io,function(value)
+    return io.Subscribe(Util.observer(function(value)
     {
      state[0]=acc(state[0],value);
      o.OnNext(state[0]);
-    });
+    }));
    }
   };
  };
@@ -231,19 +228,19 @@
     disp=[function()
     {
     }];
-    d=Util.subscribeTo(io,function(o1)
+    d=io.Subscribe(Util.observer(function(o1)
     {
      var d$1;
-     d$1=Util.subscribeTo(o1,function(a)
+     d$1=o1.Subscribe(Util.observer(function(a)
      {
       o.OnNext(a);
-     });
+     }));
      disp[0]=function()
      {
       disp[0]();
       d$1.Dispose();
      };
-    });
+    }));
     return Disposable.New(function()
     {
      disp[0]();
@@ -260,21 +257,21 @@
     var index,disp;
     index=[0];
     disp=[null];
-    return Util.subscribeTo(io,function(o1)
+    return io.Subscribe(Util.observer(function(o1)
     {
      var currentIndex;
-     Ref.incr(index);
+     index[0]++;
      disp[0]!=null?disp[0].$0.Dispose():void 0;
      currentIndex=index[0];
      disp[0]={
       $:1,
-      $0:Util.subscribeTo(o1,function(v)
+      $0:o1.Subscribe(Util.observer(function(v)
       {
        if(currentIndex===index[0])
         o.OnNext(v);
-      })
+      }))
      };
-    });
+    }));
    }
   };
  };
@@ -288,7 +285,7 @@
     lv2s=[];
     update=function()
     {
-     if(lv1s.length>0?lv2s.length>0:false)
+     if(lv1s.length>0&&lv2s.length>0)
       o.OnNext(f(lv1s.shift(),lv2s.shift()));
     };
     d1=io1.Subscribe(Observer.New(function(x)
@@ -326,7 +323,7 @@
      var $1,$2;
      $1=lv1[0];
      $2=lv2[0];
-     ($1!=null?$1.$==1:false)?($2!=null?$2.$==1:false)?o.OnNext(f($1.$0,$2.$0)):void 0:void 0;
+     $1!=null&&$1.$==1?$2!=null&&$2.$==1?o.OnNext(f($1.$0,$2.$0)):void 0:void 0;
     };
     d1=io1.Subscribe(Observer.New(function(x)
     {
@@ -408,7 +405,7 @@
     },function()
     {
      completed1[0]=true;
-     (completed1[0]?completed2[0]:false)?o.OnCompleted():void 0;
+     completed1[0]&&completed2[0]?o.OnCompleted():void 0;
     }));
     disp2=io2.Subscribe(Observer.New(function(a)
     {
@@ -416,7 +413,7 @@
     },function()
     {
      completed2[0]=true;
-     (completed1[0]?completed2[0]:false)?o.OnCompleted():void 0;
+     completed1[0]&&completed2[0]?o.OnCompleted():void 0;
     }));
     return Disposable.New(function()
     {
@@ -433,11 +430,11 @@
    {
     var index;
     index=[0];
-    return Util.subscribeTo(io,function(v)
+    return io.Subscribe(Util.observer(function(v)
     {
-     Ref.incr(index);
+     index[0]++;
      index[0]>count?o1.OnNext(v):void 0;
-    });
+    }));
    }
   };
  };
@@ -446,12 +443,12 @@
   return{
    Subscribe:function(o1)
    {
-    return Util.subscribeTo(io,function(v)
+    return io.Subscribe(Util.observer(function(v)
     {
      var m;
      m=f(v);
      m==null?void 0:o1.OnNext(m.$0);
-    });
+    }));
    }
   };
  };
@@ -460,11 +457,11 @@
   return{
    Subscribe:function(o1)
    {
-    return Util.subscribeTo(io,function(v)
+    return io.Subscribe(Util.observer(function(v)
     {
      if(f(v))
       o1.OnNext(v);
-    });
+    }));
    }
   };
  };
@@ -473,10 +470,10 @@
   return{
    Subscribe:function(o1)
    {
-    return Util.subscribeTo(io,function(v)
+    return io.Subscribe(Util.observer(function(v)
     {
      o1.OnNext(f(v));
-    });
+    }));
    }
   };
  };
@@ -507,6 +504,6 @@
  SC$1.$cctor=Runtime.Cctor(function()
  {
   SC$1.Default=new Reactive$2.New();
-  SC$1.$cctor=Global.ignore;
+  SC$1.$cctor=window.ignore;
  });
 }());

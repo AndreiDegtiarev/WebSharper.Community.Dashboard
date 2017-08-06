@@ -1,29 +1,24 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,DshBase,DshBaseReact,InPort,OutPort,InPortNum,InPortStr,OutPortNum,PortConnector,Worker,Sources,RandomValueSource,SrcOpenWeather,Forecast,Create,Widget,Widgets,TextBox,Chart,WorkerItem,Factory,PortConnectorItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,SourceProperty,Dashboard$1,IntelliFactory,Runtime,UI,Next,Var,PropertyGrid,Properties,Control,FSharpEvent,List,Random,Concurrency,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,Unchecked,Arrays,View,AttrModule,Doc,Seq,Charting,Renderers,ChartJs,Operators,Chart$1,Pervasives,Key,ListModel,Option,Panel,Helper,Enumerator,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
- Global=window;
- WebSharper=Global.WebSharper=Global.WebSharper||{};
+ var WebSharper,Community,Dashboard,EmptyTrigger,NumberTrigger,IInPort,IOutPort,PortConnector,Ports,IWorker,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,WorkerItem,Factory,PortConnectorItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,Dashboard$1,IntelliFactory,Runtime,PropertyGrid,Properties,UI,Next,Var,Control,FSharpEvent,console,Operators,Unchecked,List,Doc,Random,Concurrency,Math,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Seq,Chart,Pervasives,View,AttrModule,Key,ListModel,Option,Panel,Helper,Enumerator,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
- DshBase=Dashboard.DshBase=Dashboard.DshBase||{};
- DshBaseReact=Dashboard.DshBaseReact=Dashboard.DshBaseReact||{};
- InPort=Dashboard.InPort=Dashboard.InPort||{};
- OutPort=Dashboard.OutPort=Dashboard.OutPort||{};
- InPortNum=Dashboard.InPortNum=Dashboard.InPortNum||{};
- InPortStr=Dashboard.InPortStr=Dashboard.InPortStr||{};
- OutPortNum=Dashboard.OutPortNum=Dashboard.OutPortNum||{};
+ EmptyTrigger=Dashboard.EmptyTrigger=Dashboard.EmptyTrigger||{};
+ NumberTrigger=Dashboard.NumberTrigger=Dashboard.NumberTrigger||{};
+ IInPort=Dashboard.IInPort=Dashboard.IInPort||{};
+ IOutPort=Dashboard.IOutPort=Dashboard.IOutPort||{};
  PortConnector=Dashboard.PortConnector=Dashboard.PortConnector||{};
- Worker=Dashboard.Worker=Dashboard.Worker||{};
- Sources=Dashboard.Sources=Dashboard.Sources||{};
- RandomValueSource=Sources.RandomValueSource=Sources.RandomValueSource||{};
- SrcOpenWeather=Dashboard.SrcOpenWeather=Dashboard.SrcOpenWeather||{};
- Forecast=SrcOpenWeather.Forecast=SrcOpenWeather.Forecast||{};
- Create=SrcOpenWeather.Create=SrcOpenWeather.Create||{};
- Widget=Dashboard.Widget=Dashboard.Widget||{};
- Widgets=Dashboard.Widgets=Dashboard.Widgets||{};
- TextBox=Widgets.TextBox=Widgets.TextBox||{};
- Chart=Widgets.Chart=Widgets.Chart||{};
+ Ports=Dashboard.Ports=Dashboard.Ports||{};
+ IWorker=Dashboard.IWorker=Dashboard.IWorker||{};
+ RandomRunner=Dashboard.RandomRunner=Dashboard.RandomRunner||{};
+ OpenWeather=Dashboard.OpenWeather=Dashboard.OpenWeather||{};
+ Forecast=OpenWeather.Forecast=OpenWeather.Forecast||{};
+ OpenWeatherRunner=Dashboard.OpenWeatherRunner=Dashboard.OpenWeatherRunner||{};
+ ChartRunnerContext=Dashboard.ChartRunnerContext=Dashboard.ChartRunnerContext||{};
+ ChartRenderer=Dashboard.ChartRenderer=Dashboard.ChartRenderer||{};
+ TextBoxRenderer=Dashboard.TextBoxRenderer=Dashboard.TextBoxRenderer||{};
  WorkerItem=Dashboard.WorkerItem=Dashboard.WorkerItem||{};
  Factory=Dashboard.Factory=Dashboard.Factory||{};
  PortConnectorItem=Dashboard.PortConnectorItem=Dashboard.PortConnectorItem||{};
@@ -31,39 +26,41 @@
  DshEditorCellItem=Dashboard.DshEditorCellItem=Dashboard.DshEditorCellItem||{};
  DshEditorRowItem=Dashboard.DshEditorRowItem=Dashboard.DshEditorRowItem||{};
  DshEditor=Dashboard.DshEditor=Dashboard.DshEditor||{};
- SourceProperty=Dashboard.SourceProperty=Dashboard.SourceProperty||{};
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
- IntelliFactory=Global.IntelliFactory;
+ IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ PropertyGrid=Community&&Community.PropertyGrid;
+ Properties=PropertyGrid&&PropertyGrid.Properties;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Var=Next&&Next.Var;
- PropertyGrid=Community&&Community.PropertyGrid;
- Properties=PropertyGrid&&PropertyGrid.Properties;
  Control=WebSharper&&WebSharper.Control;
  FSharpEvent=Control&&Control.FSharpEvent;
+ console=window.console;
+ Operators=WebSharper&&WebSharper.Operators;
+ Unchecked=WebSharper&&WebSharper.Unchecked;
  List=WebSharper&&WebSharper.List;
+ Doc=Next&&Next.Doc;
  Random=WebSharper&&WebSharper.Random;
  Concurrency=WebSharper&&WebSharper.Concurrency;
+ Math=window.Math;
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  Data=WebSharper&&WebSharper.Data;
  TxtRuntime=Data&&Data.TxtRuntime;
- FSharp=Global.FSharp;
+ FSharp=window.FSharp;
  Data$1=FSharp&&FSharp.Data;
  Runtime$1=Data$1&&Data$1.Runtime;
  IO=Runtime$1&&Runtime$1.IO;
- Unchecked=WebSharper&&WebSharper.Unchecked;
+ JSON=window.JSON;
  Arrays=WebSharper&&WebSharper.Arrays;
- View=Next&&Next.View;
- AttrModule=Next&&Next.AttrModule;
- Doc=Next&&Next.Doc;
- Seq=WebSharper&&WebSharper.Seq;
  Charting=WebSharper&&WebSharper.Charting;
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
- Operators=WebSharper&&WebSharper.Operators;
- Chart$1=Charting&&Charting.Chart;
+ Seq=WebSharper&&WebSharper.Seq;
+ Chart=Charting&&Charting.Chart;
  Pervasives=Charting&&Charting.Pervasives;
+ View=Next&&Next.View;
+ AttrModule=Next&&Next.AttrModule;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
  Option=WebSharper&&WebSharper.Option;
@@ -76,228 +73,305 @@
  TitleButton=Panel&&Panel.TitleButton;
  Dialog=Panel&&Panel.Dialog;
  PropertyGrid$1=PropertyGrid&&PropertyGrid.PropertyGrid;
- DshBase=Dashboard.DshBase=Runtime.Class({
-  get_Name:function()
-  {
-   return this.name;
-  }
- },null,DshBase);
- DshBase.New=Runtime.Ctor(function(name)
+ EmptyTrigger.New=function(EmptyTrigger$1)
  {
-  this.name=name;
- },DshBase);
- DshBaseReact=Dashboard.DshBaseReact=Runtime.Class({
-  get_Name:function()
-  {
-   return this.name;
-  }
- },null,DshBaseReact);
- DshBaseReact.New=Runtime.Ctor(function(name)
- {
-  this.name=Var.Create$1(name);
- },DshBaseReact);
- InPort=Dashboard.InPort=Runtime.Class({
-  get_Property:function()
-  {
-   return Properties.group("empty");
-  },
-  Disconnect:function()
-  {
-   var a;
-   this.Disconnector();
-   a="Port "+this.name$1+" disconnected";
-   Global.console.log(a);
-   this.Disconnector=function()
-   {
-   };
-  },
-  RegisterDisconnector:function(outPort,disconnector)
-  {
-   this._outPort=outPort;
-   this.Disconnector=disconnector;
-  },
-  get_OutPort:function()
-  {
-   return this._outPort;
-  }
- },DshBase,InPort);
- InPort.New=Runtime.Ctor(function(name)
- {
-  DshBase.New.call(this,name);
-  this.name$1=name;
-  this.Disconnector=function()
-  {
+  return{
+   EmptyTrigger:EmptyTrigger$1
   };
-  this._outPort=new OutPort.New("No connection");
- },InPort);
- OutPort=Dashboard.OutPort=Runtime.Class({
-  IsCompatible:function(port)
-  {
-   return false;
-  },
-  Connect:function(port)
-  {
-   return function()
-   {
-   };
-  }
- },DshBase,OutPort);
- OutPort.New=Runtime.Ctor(function(name)
- {
-  DshBase.New.call(this,name);
- },OutPort);
- InPortNum=Dashboard.InPortNum=Runtime.Class({
-  get_Value:function()
-  {
-   return this.value;
-  },
-  get_Property:function()
-  {
-   return Properties["double"](this.name$2,this.value);
-  }
- },InPort,InPortNum);
- InPortNum.New=Runtime.Ctor(function(name,defValue)
- {
-  InPort.New.call(this,name);
-  this.name$2=name;
-  this.value=Var.Create$1(defValue);
- },InPortNum);
- InPortStr=Dashboard.InPortStr=Runtime.Class({
-  get_Value:function()
-  {
-   return this.value;
-  },
-  get_Property:function()
-  {
-   return Properties.string(this.name$2,this.value);
-  }
- },InPort,InPortStr);
- InPortStr.New=Runtime.Ctor(function(name,defStr)
- {
-  InPort.New.call(this,name);
-  this.name$2=name;
-  this.value=Var.Create$1(defStr);
- },InPortStr);
- OutPortNum=Dashboard.OutPortNum=Runtime.Class({
+ };
+ NumberTrigger=Dashboard.NumberTrigger=Runtime.Class({
   Trigger:function(value)
   {
-   this.event.event.Trigger(value);
-  },
-  Connect:function(port)
+   this.NumberEvent.event.Trigger(value);
+  }
+ },null,NumberTrigger);
+ NumberTrigger.New=function(NumberEvent)
+ {
+  return new NumberTrigger({
+   NumberEvent:NumberEvent
+  });
+ };
+ IInPort=Dashboard.IInPort=Runtime.Class({
+  Equals:function(y)
   {
-   var $this,a,handler;
-   $this=this;
-   a="Port "+this.name$1+" connect";
-   Global.console.log(a);
-   port.Disconnect();
-   handler=function(a$1,arg)
+   return y instanceof IInPort&&this.Name===y.Name;
+  },
+  get_Property:function()
+  {
+   var m;
+   m=this.Value;
+   return m.$==1?Properties["double"](this.Name,m.$0.NumValue):m.$==2?Properties.string(this.Name,m.$0.StrValue):Properties.group(this.Name);
+  },
+  get_Clone:function()
+  {
+   var m;
+   return IInPort.New(this.Name,this.Disconnector,this.Disconnect,this.OutPort,(m=this.Value,m.$==1?{
+    $:1,
+    $0:{
+     NumValue:Var.Create$1(m.$0.NumValue.c)
+    }
+   }:m.$==2?{
+    $:2,
+    $0:{
+     StrValue:Var.Create$1(m.$0.StrValue.c)
+    }
+   }:{
+    $:0,
+    $0:m.$0
+   }));
+  }
+ },null,IInPort);
+ IInPort.New=function(Name,Disconnector,Disconnect,OutPort,Value)
+ {
+  return new IInPort({
+   Name:Name,
+   Disconnector:Disconnector,
+   Disconnect:Disconnect,
+   OutPort:OutPort,
+   Value:Value
+  });
+ };
+ IOutPort=Dashboard.IOutPort=Runtime.Class({
+  Equals:function(y)
+  {
+   return y instanceof IOutPort&&this.Name===y.Name;
+  }
+ },null,IOutPort);
+ IOutPort.New=function(Name,IsCompatible,Connect,Trigger)
+ {
+  return new IOutPort({
+   Name:Name,
+   IsCompatible:IsCompatible,
+   Connect:Connect,
+   Trigger:Trigger
+  });
+ };
+ PortConnector.Create=function(oPort,iPort)
+ {
+  return PortConnector.New(oPort.Name+"->"+iPort.Name,iPort,oPort,oPort.Connect(iPort));
+ };
+ PortConnector.New=function(Name,InPort,OutPort,Disconnect)
+ {
+  return{
+   Name:Name,
+   InPort:InPort,
+   OutPort:OutPort,
+   Disconnect:Disconnect
+  };
+ };
+ Ports.Clone=function(oPort)
+ {
+  return oPort.Trigger.$==1?Ports.OutPortNum(oPort.Name):Ports.BaseOutPort(oPort.Name);
+ };
+ Ports.OutPortNum=function(name)
+ {
+  var event;
+  event=new FSharpEvent.New();
+  return IOutPort.New(Ports.BaseOutPort(name).Name,function(port)
+  {
+   return port.Value.$==1&&true;
+  },function(port)
+  {
+   var m,numValue,handler;
+   m=port.Value;
+   return m.$==1?(numValue=m.$0,(port.Disconnect(),handler=function(a,arg)
    {
-    var a$2;
-    a$2=port.get_Value();
-    return Var.Set(a$2,arg);
-   };
-   this.event.event.AddHandler(handler);
+    return Var.Set(numValue.NumValue,arg);
+   },event.event.AddHandler(handler),console.log("Port "+name+" connected with "+port.Name),function()
+   {
+    event.event.RemoveHandler(handler);
+   })):Operators.FailWith("Unexpected type");
+  },{
+   $:1,
+   $0:NumberTrigger.New(event)
+  });
+ };
+ Ports.InPortStr=function(name,defValue)
+ {
+  var i;
+  i=Ports.BaseInPort(name);
+  return IInPort.New(i.Name,i.Disconnector,i.Disconnect,i.OutPort,{
+   $:2,
+   $0:{
+    StrValue:Var.Create$1(defValue)
+   }
+  });
+ };
+ Ports.InPortNum=function(name,defValue)
+ {
+  var i;
+  i=Ports.BaseInPort(name);
+  return IInPort.New(i.Name,i.Disconnector,i.Disconnect,i.OutPort,{
+   $:1,
+   $0:{
+    NumValue:Var.Create$1(defValue)
+   }
+  });
+ };
+ Ports.BaseInPort=function(name)
+ {
+  return IInPort.New(name,function()
+  {
+  },function()
+  {
+   console.log("Port "+name+" disconnected");
+  },Ports.BaseOutPort("Empty"),{
+   $:0,
+   $0:{
+    Nothing:""
+   }
+  });
+ };
+ Ports.BaseOutPort=function(name)
+ {
+  return IOutPort.New(name,function()
+  {
+   return false;
+  },function()
+  {
    return function()
    {
-    $this.event.event.RemoveHandler(handler);
+    return null;
    };
-  },
-  IsCompatible:function(port)
-  {
-   return port instanceof InPortNum;
-  }
- },OutPort,OutPortNum);
- OutPortNum.New=Runtime.Ctor(function(name)
+  },{
+   $:0,
+   $0:EmptyTrigger.New("")
+  });
+ };
+ Ports.NumTrigger=function(port)
  {
-  OutPort.New.call(this,name);
-  this.name$1=name;
-  this.event=new FSharpEvent.New();
- },OutPortNum);
- PortConnector=Dashboard.PortConnector=Runtime.Class({
-  Disconnect:function()
+  var m,trigger;
+  m=port.Trigger;
+  return m.$==1?(trigger=m.$0,function(a)
   {
-   this.disconnector();
-  }
- },DshBase,PortConnector);
- PortConnector.New=Runtime.Ctor(function(outPort,inPort)
+   trigger.Trigger(a);
+  }):Operators.FailWith("unexpected type");
+ };
+ Ports.StringVar=function(port)
  {
-  DshBase.New.call(this,outPort.get_Name()+"->"+inPort.get_Name());
-  this.disconnector=outPort.Connect(inPort);
- },PortConnector);
- Worker=Dashboard.Worker=Runtime.Class({
-  get_OutPorts:function()
+  var m;
+  m=port.Value;
+  return m.$==2?m.$0.StrValue:Operators.FailWith("unexpected type");
+ };
+ Ports.NumberVar=function(port)
+ {
+  var m;
+  m=port.Value;
+  return m.$==1?m.$0.NumValue:Operators.FailWith("unexpected type");
+ };
+ IWorker=Dashboard.IWorker=Runtime.Class({
+  Equals:function(y)
   {
-   return List.T.Empty;
-  },
-  get_InPorts:function()
-  {
-   return List.T.Empty;
-  },
-  Run:function()
-  {
+   return y instanceof IWorker&&Unchecked.Equals(this.Name,y.Name);
   },
   get_Properties:function()
   {
+   return new List.T({
+    $:1,
+    $0:Properties.string("Name",this.Name),
+    $1:List.map(function(port)
+    {
+     return port.get_Property();
+    },this.InPorts)
+   });
+  },
+  get_Render:function()
+  {
    var m;
-   m=function(prop)
-   {
-    return prop.get_Property();
-   };
-   return function(l)
-   {
-    return List.map(m,l);
-   }(this.get_InPorts());
-  }
- },DshBaseReact,Worker);
- Worker.New=Runtime.Ctor(function(name)
- {
-  DshBaseReact.New.call(this,name);
- },Worker);
- RandomValueSource=Sources.RandomValueSource=Runtime.Class({
-  Run:function()
+   m=this.Renderer;
+   return m==null?Doc.Empty():(m.$0.WebSharper_Community_Dashboard_IRenderer$get_Render())(this);
+  },
+  get_CloneAndRun:function()
   {
-   var $this,rnd;
-   $this=this;
-   rnd=new Random.New();
-   Concurrency.Start(Concurrency.Delay(function()
+   var copy,m;
+   copy=IWorker.New(Var.Create$1(this.Name.c),List.map(function(port)
    {
-    return Concurrency.While(function()
+    return port.get_Clone();
+   },this.InPorts),List.map(Ports.Clone,this.OutPorts),this.Runner,this.Renderer,this.DataContext,null);
+   m=copy.Runner;
+   return m==null?copy:IWorker.New(copy.Name,copy.InPorts,copy.OutPorts,copy.Runner,copy.Renderer,copy.DataContext,(m.$0.WebSharper_Community_Dashboard_IRunner$get_Run())(copy));
+  }
+ },null,IWorker);
+ IWorker.CreateRenderer=function(name,iPorts,oPorts,dataContext)
+ {
+  return IWorker.CreateNative(name,iPorts,oPorts,dataContext,null,{
+   $:1,
+   $0:dataContext
+  });
+ };
+ IWorker.CreateRunner=function(name,iPorts,oPorts,dataContext)
+ {
+  return IWorker.CreateNative(name,iPorts,oPorts,dataContext,{
+   $:1,
+   $0:dataContext
+  },null);
+ };
+ IWorker.Create=function(name,iPorts,oPorts,dataContext)
+ {
+  return IWorker.CreateNative(name,iPorts,oPorts,dataContext,{
+   $:1,
+   $0:dataContext
+  },{
+   $:1,
+   $0:dataContext
+  });
+ };
+ IWorker.CreateNative=function(name,iPorts,oPorts,dataContext,runner,renderer)
+ {
+  return IWorker.New(Var.Create$1(name),iPorts,oPorts,runner,renderer,dataContext,null);
+ };
+ IWorker.New=function(Name,InPorts,OutPorts,Runner,Renderer,DataContext,RunnerContext)
+ {
+  return new IWorker({
+   Name:Name,
+   InPorts:InPorts,
+   OutPorts:OutPorts,
+   Runner:Runner,
+   Renderer:Renderer,
+   DataContext:DataContext,
+   RunnerContext:RunnerContext
+  });
+ };
+ RandomRunner=Dashboard.RandomRunner=Runtime.Class({
+  WebSharper_Community_Dashboard_IRunner$get_Run:function()
+  {
+   return function(worker)
+   {
+    var b;
+    new Random.New();
+    Concurrency.Start((b=null,Concurrency.Delay(function()
     {
-     return true;
-    },Concurrency.Delay(function()
-    {
-     return Concurrency.Bind(Concurrency.Sleep(600),function()
+     return Concurrency.While(function()
      {
-      var d;
-      d=Global.Math.random()*$this.inDispersionValue.get_Value().c+$this.inMiddleValue.get_Value().c;
-      $this.outRandomNumber.Trigger(d);
-      return Concurrency.Return(null);
-     });
-    }));
-   }),null);
-  },
-  Clone:function()
-  {
-   return new RandomValueSource.New(this.middleValue,this.dispersion);
-  },
-  get_OutPorts:function()
-  {
-   return List.ofArray([this.outRandomNumber]);
-  },
-  get_InPorts:function()
-  {
-   return List.ofArray([this.inMiddleValue,this.inDispersionValue]);
+      return true;
+     },Concurrency.Delay(function()
+     {
+      return Concurrency.Bind(Concurrency.Sleep(600),function()
+      {
+       var disper,middle,d;
+       disper=Ports.NumberVar(worker.InPorts.get_Item(1));
+       middle=Ports.NumberVar(worker.InPorts.get_Item(0));
+       d=Math.random()*disper.c+middle.c;
+       (Ports.NumTrigger(worker.OutPorts.get_Item(0)))(d);
+       return Concurrency.Zero();
+      });
+     }));
+    })),null);
+    return null;
+   };
   }
- },Worker,RandomValueSource);
- RandomValueSource.New=Runtime.Ctor(function(middleValue,dispersion)
+ },null,RandomRunner);
+ RandomRunner.Create=function(middleValue,dispersion)
  {
-  Worker.New.call(this,"Random");
-  this.middleValue=middleValue;
-  this.dispersion=dispersion;
-  this.inMiddleValue=new InPortNum.New("Middle value",this.middleValue);
-  this.inDispersionValue=new InPortNum.New("Dispersion",this.dispersion);
-  this.outRandomNumber=new OutPortNum.New("Random value");
- },RandomValueSource);
+  return RandomRunner.New(middleValue,dispersion);
+ };
+ RandomRunner.New=function(MiddleValue,Dispersion)
+ {
+  return new RandomRunner({
+   MiddleValue:MiddleValue,
+   Dispersion:Dispersion
+  });
+ };
  Forecast.New=function(Title,Description,ImageUrl,Temperature,TemparatureMinMax)
  {
   return{
@@ -308,273 +382,231 @@
    TemparatureMinMax:TemparatureMinMax
   };
  };
- Create=SrcOpenWeather.Create=Runtime.Class({
-  Run:function()
+ OpenWeather.run=function(worker)
+ {
+  var b;
+  Concurrency.Start((b=null,Concurrency.Delay(function()
   {
-   var $this,rnd;
-   $this=this;
-   rnd=new Random.New();
-   Concurrency.Start(Concurrency.Delay(function()
+   return Concurrency.While(function()
    {
-    return Concurrency.While(function()
+    return true;
+   },Concurrency.Delay(function()
+   {
+    var inCity,inApiKey,outTempearatur;
+    inCity=worker.InPorts.get_Item(0);
+    inApiKey=worker.InPorts.get_Item(1);
+    outTempearatur=worker.OutPorts.get_Item(0);
+    return Concurrency.Bind(OpenWeather.get(Ports.StringVar(inApiKey).c,Ports.StringVar(inCity).c),function(a)
     {
-     return true;
-    },Concurrency.Delay(function()
-    {
-     var x;
-     x=SrcOpenWeather.get($this.inApiKey.get_Value().c,$this.inCity.get_Value().c);
-     return Concurrency.Bind(x,function(a)
+     return Concurrency.Combine(a==null?Concurrency.Zero():(console.log("Value generated:"+a.$0.Title),(Ports.NumTrigger(outTempearatur))(+a.$0.Temperature),Concurrency.Zero()),Concurrency.Delay(function()
      {
-      var a$1,a$2;
-      a$1=a==null?Concurrency.Return(null):(a$2="Value generated:"+a.$0.Title,Global.console.log(a$2),$this.outTempearatur.Trigger(+a.$0.Temperature),Concurrency.Return(null));
-      return Concurrency.Combine(a$1,Concurrency.Delay(function()
+      return Concurrency.Bind(Concurrency.Sleep(1000*15),function()
       {
-       return Concurrency.Bind(Concurrency.Sleep(1000*15),function()
-       {
-        return Concurrency.Return(null);
-       });
-      }));
-     });
-    }));
-   }),null);
-  },
-  Clone:function()
-  {
-   return new Create.New(this.city);
-  },
-  get_OutPorts:function()
-  {
-   return List.ofArray([this.outTempearatur]);
-  },
-  get_InPorts:function()
-  {
-   return List.ofArray([this.inApiKey,this.inCity]);
-  }
- },Worker,Create);
- Create.New=Runtime.Ctor(function(city)
+       return Concurrency.Return(null);
+      });
+     }));
+    });
+   }));
+  })),null);
+  return null;
+ };
+ OpenWeather.get=function(key,city)
  {
-  Worker.New.call(this,"OpenWeatherMap");
-  this.city=city;
-  this.inApiKey=new InPortStr.New("ApiKey","");
-  this.inCity=new InPortStr.New("City",this.city);
-  this.outTempearatur=new OutPortNum.New("Temperature");
- },Create);
- SrcOpenWeather.get=function(key,city)
- {
+  var b;
+  b=null;
   return Concurrency.Delay(function()
   {
-   var request,f;
-   request=((f=function($1,$2,$3)
+   var request;
+   request=(((Runtime.Curried3(function($1,$2,$3)
    {
     return $1("http://api.openweathermap.org/data/2.5/weather?q="+PrintfHelpers.toSafe($2)+"&units=metric&appid="+PrintfHelpers.toSafe($3));
-   },(Runtime.Curried3(f))(Global.id))(city))(key);
-   Global.console.log("get key city "+request);
+   }))(window.id))(city))(key);
+   console.log("get key city "+request);
    return Concurrency.TryWith(Concurrency.Delay(function()
    {
-    var x;
-    x=TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\Andrey\\Private\\VS_Projects\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
+    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\Andrey\\Private\\VS_Projects\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
     {
-     return Unchecked.Equals(typeof t,"string")?Global.JSON.parse(t):t;
-    });
-    return Concurrency.Bind(x,function(a)
+     return Unchecked.Equals(typeof t,"string")?JSON.parse(t):t;
+    }),function(a)
     {
-     var m;
-     Global.console.log("get key city 2");
-     return Concurrency.Return((m=function(head)
-     {
-      var f$1,v,name,t,v$1,name$1,v$2,name$2,f$2,v$3,name$3,t$1,v$4,name$4,opt,t$2,v$5,name$5,opt$1,t$3,v$6,name$6,opt$2;
-      return Forecast.New(((f$1=function($1,$2,$3)
+     var o,head,prop,opt,x,prop$1,opt$1,prop$2,opt$2,prop$3,opt$3,v,x$1,prop$4,opt$4,v$1,x$2,prop$5,opt$5,v$2,x$3,prop$6,opt$6;
+     console.log("get key city 2");
+     return Concurrency.Return((o=Arrays.tryHead(a.weather),o==null?null:{
+      $:1,
+      $0:(head=o.$0,Forecast.New((((Runtime.Curried3(function($1,$2,$3)
       {
        return $1(PrintfHelpers.toSafe($2)+", "+PrintfHelpers.toSafe($3));
-      },(Runtime.Curried3(f$1))(Global.id))((v=(name="name",name in a?{
+      }))(window.id))((opt=(prop="name",prop in a?{
        $:1,
-       $0:a[name]
-      }:null),v==null?null:v.$0)))((t=a.sys,(v$1=(name$1="country",name$1 in t?{
+       $0:a[prop]
+      }:null),opt==null?null:opt.$0)))((opt$1=(x=a.sys,(prop$1="country",prop$1 in x?{
        $:1,
-       $0:t[name$1]
-      }:null),v$1==null?null:v$1.$0))),(v$2=(name$2="main",name$2 in head?{
+       $0:x[prop$1]
+      }:null)),opt$1==null?null:opt$1.$0)),(opt$2=(prop$2="main",prop$2 in head?{
        $:1,
-       $0:head[name$2]
-      }:null),v$2==null?null:v$2.$0),(f$2=function($1,$2)
-      {
-       return $1("http://openweathermap.org/img/w/"+PrintfHelpers.toSafe($2)+".png");
-      },(function($1)
+       $0:head[prop$2]
+      }:null),opt$2==null?null:opt$2.$0),(function($1)
       {
        return function($2)
        {
-        return f$2($1,$2);
+        return $1("http://openweathermap.org/img/w/"+PrintfHelpers.toSafe($2)+".png");
        };
-      }(Global.id))((v$3=(name$3="icon",name$3 in head?{
+      }(window.id))((opt$3=(prop$3="icon",prop$3 in head?{
        $:1,
-       $0:head[name$3]
-      }:null),v$3==null?null:v$3.$0))),(t$1=a.main,(v$4=(name$4="temp",name$4 in t$1?{
+       $0:head[prop$3]
+      }:null),opt$3==null?null:opt$3.$0)),(v=(x$1=a.main,(prop$4="temp",prop$4 in x$1?{
        $:1,
-       $0:t$1[name$4]
-      }:null),(opt=v$4==null?null:{
+       $0:x$1[prop$4]
+      }:null)),(opt$4=v==null?null:{
        $:1,
-       $0:1*v$4.$0
-      },opt==null?null:opt.$0))),[(t$2=a.main,(v$5=(name$5="temp_min",name$5 in t$2?{
+       $0:1*v.$0
+      },opt$4==null?null:opt$4.$0)),[(v$1=(x$2=a.main,(prop$5="temp_min",prop$5 in x$2?{
        $:1,
-       $0:t$2[name$5]
-      }:null),(opt$1=v$5==null?null:{
+       $0:x$2[prop$5]
+      }:null)),(opt$5=v$1==null?null:{
        $:1,
-       $0:1*v$5.$0
-      },opt$1==null?null:opt$1.$0))),(t$3=a.main,(v$6=(name$6="temp_max",name$6 in t$3?{
+       $0:1*v$1.$0
+      },opt$5==null?null:opt$5.$0)),(v$2=(x$3=a.main,(prop$6="temp_max",prop$6 in x$3?{
        $:1,
-       $0:t$3[name$6]
-      }:null),(opt$2=v$6==null?null:{
+       $0:x$3[prop$6]
+      }:null)),(opt$6=v$2==null?null:{
        $:1,
-       $0:1*v$6.$0
-      },opt$2==null?null:opt$2.$0)))]);
-     },function(o)
-     {
-      return o==null?null:{
-       $:1,
-       $0:m(o.$0)
-      };
-     }(Arrays.tryHead(a.weather))));
+       $0:1*v$2.$0
+      },opt$6==null?null:opt$6.$0))]))
+     }));
     });
    }),function(a)
    {
-    var a$1;
-    a$1=a.message;
-    Global.console.log(a$1);
+    console.log(a.message);
     return Concurrency.Return(null);
    });
   });
  };
- Widget=Dashboard.Widget=Runtime.Class({},Worker,Widget);
- Widget.New=Runtime.Ctor(function(name)
- {
-  Worker.New.call(this,name);
- },Widget);
- TextBox=Widgets.TextBox=Runtime.Class({
-  get_Number:function()
+ OpenWeatherRunner=Dashboard.OpenWeatherRunner=Runtime.Class({
+  WebSharper_Community_Dashboard_IRunner$get_Run:function()
   {
-   return this.inPortNumber;
-  },
-  Render:function()
-  {
-   var strView,a,a$1,a$2;
-   strView=(a=this.get_Number().get_Value().v,View.Map(function(value)
-   {
-    var c;
-    c=value<<0;
-    return Global.String(c);
-   },a));
-   a$1=[AttrModule.Class("bigvalue")];
-   a$2=[Doc.TextView(strView)];
-   return Doc.Element("div",a$1,a$2);
-  },
-  Clone:function()
-  {
-   return new TextBox.New();
-  },
-  get_InPorts:function()
-  {
-   return List.ofArray([this.inPortNumber]);
+   return OpenWeather.run;
   }
- },Widget,TextBox);
- TextBox.New=Runtime.Ctor(function()
+ },null,OpenWeatherRunner);
+ OpenWeatherRunner.Create=function(city,apikey)
  {
-  Widget.New.call(this,"Text");
-  this.inPortNumber=new InPortNum.New("in Value",0);
- },TextBox);
- Chart=Widgets.Chart=Runtime.Class({
-  observe:function(value)
+  return OpenWeatherRunner.New(city,apikey);
+ };
+ OpenWeatherRunner.New=function(OpenWeatherCity,OpenWeatherApiKey)
+ {
+  return new OpenWeatherRunner({
+   OpenWeatherCity:OpenWeatherCity,
+   OpenWeatherApiKey:OpenWeatherApiKey
+  });
+ };
+ ChartRunnerContext.New=function(LineChart)
+ {
+  return{
+   LineChart:LineChart
+  };
+ };
+ ChartRenderer=Dashboard.ChartRenderer=Runtime.Class({
+  WebSharper_Community_Dashboard_IRenderer$get_Render:function()
   {
-   var $this,v,a;
-   $this=this;
-   this.values.push(value);
-   this.values.length>this.chartBufferSize?v=this.values.shift():void 0;
-   a=function(ind,entry)
+   return function(worker)
    {
-    return $this.chart.__UpdateData(ind,function()
-    {
-     return entry;
-    });
+    return ChartJs.Render$8(worker.RunnerContext.$0.LineChart,{
+     $:1,
+     $0:{
+      $:0,
+      $0:Ports.NumberVar(worker.InPorts.get_Item(1)).c<<0,
+      $1:Ports.NumberVar(worker.InPorts.get_Item(2)).c<<0
+     }
+    },null,null);
    };
-   (function(s)
+  },
+  WebSharper_Community_Dashboard_IRunner$get_Run:function()
+  {
+   return function(worker)
    {
-    Seq.iteri(a,s);
-   }(this.values));
-  },
-  get_Cy:function()
-  {
-   return this.inPortCy;
-  },
-  get_Cx:function()
-  {
-   return this.inPortCx;
-  },
-  get_Chart:function()
-  {
-   return this.chart;
-  },
-  Render:function()
-  {
-   return ChartJs.Render$8(this.get_Chart(),{
-    $:1,
-    $0:{
-     $:0,
-     $0:this.get_Cx().get_Value().c<<0,
-     $1:this.get_Cy().get_Value().c<<0
-    }
-   },null,null);
-  },
-  Clone:function()
-  {
-   return new Chart.New(this.cx,this.cy,this.chartBufferSize);
-  },
-  get_InPorts:function()
-  {
-   return List.ofArray([this.inPortNumber,this.inPortCx,this.inPortCy]);
+    var chartBufferSize,data,values,queue,chart;
+    chartBufferSize=Ports.NumberVar(worker.InPorts.get_Item(3)).c<<0;
+    data=List.ofSeq(Seq.delay(function()
+    {
+     return Seq.map(function()
+     {
+      return 0;
+     },Operators.range(0,chartBufferSize-1));
+    }));
+    values=(queue=[],(Seq.iter(function(entry)
+    {
+     queue.push(entry);
+    },data),queue));
+    chart=Chart.Line(data).__WithFillColor(new Pervasives.Color({
+     $:2,
+     $0:"white"
+    }));
+    View.Sink(function(value)
+    {
+     values.push(value);
+     values.length>chartBufferSize?values.shift():void 0;
+     Seq.iteri(function(ind,entry)
+     {
+      return chart.__UpdateData(ind,function()
+      {
+       return entry;
+      });
+     },values);
+    },Ports.NumberVar(worker.InPorts.get_Item(0)).v);
+    return{
+     $:1,
+     $0:ChartRunnerContext.New(chart)
+    };
+   };
   }
- },Widget,Chart);
- Chart.New=Runtime.Ctor(function(cx,cy,chartBufferSize)
+ },null,ChartRenderer);
+ ChartRenderer.Create=function(cx,cy,bufferSize)
  {
-  var $this,data,queue,a,a$1;
-  $this=this;
-  Widget.New.call(this,"Chart");
-  this.cx=cx;
-  this.cy=cy;
-  this.chartBufferSize=chartBufferSize;
-  data=List.ofSeq(Seq.delay(function()
+  return ChartRenderer.New(cx,cy,bufferSize);
+ };
+ ChartRenderer.New=function(Cx,Cy,ChartBufferSize)
+ {
+  return new ChartRenderer({
+   Cx:Cx,
+   Cy:Cy,
+   ChartBufferSize:ChartBufferSize
+  });
+ };
+ TextBoxRenderer=Dashboard.TextBoxRenderer=Runtime.Class({
+  WebSharper_Community_Dashboard_IRenderer$get_Render:function()
   {
-   return Seq.map(function()
+   return function(worker)
    {
-    return 0;
-   },Operators.range(0,$this.chartBufferSize-1));
-  }));
-  this.values=(queue=[],(a=function(entry)
-  {
-   queue.push(entry);
-  },function(s)
-  {
-   Seq.iter(a,s);
-  }(data),queue));
-  this.chart=Chart$1.Line(data).__WithFillColor(new Pervasives.Color({
-   $:2,
-   $0:"white"
-  }));
-  this.inPortCx=new InPortNum.New("cx",this.cx);
-  this.inPortCy=new InPortNum.New("cy",this.cy);
-  this.inPortNumber=new InPortNum.New("in Value",0);
-  a$1=this.inPortNumber.get_Value().v;
-  View.Sink(function(v)
-  {
-   $this.observe(v);
-  },a$1);
- },Chart);
+    var strView;
+    strView=View.Map(function(value)
+    {
+     var c;
+     c=value<<0;
+     return window.String(c);
+    },Ports.NumberVar(worker.InPorts.get_Item(0)).v);
+    return Doc.Element("div",[AttrModule.Class("bigvalue")],[Doc.TextView(strView)]);
+   };
+  }
+ },null,TextBoxRenderer);
+ TextBoxRenderer.get_Create=function()
+ {
+  return TextBoxRenderer.New("TextBoxRenderer");
+ };
+ TextBoxRenderer.New=function(TextBoxRenderer$1)
+ {
+  return new TextBoxRenderer({
+   TextBoxRenderer:TextBoxRenderer$1
+  });
+ };
  WorkerItem.Create=function(worker)
  {
   return WorkerItem.New(Key.Fresh(),worker);
  };
- WorkerItem.New=function(Key$1,Worker$1)
+ WorkerItem.New=function(Key$1,Worker)
  {
   return{
    Key:Key$1,
-   Worker:Worker$1
+   Worker:Worker
   };
  };
  Factory=Dashboard.Factory=Runtime.Class({
@@ -589,14 +621,13 @@
  },null,Factory);
  Factory.get_Create=function()
  {
-  var a,a$1;
-  return Factory.New((a=List.T.Empty,ListModel.Create(function(item)
+  return Factory.New(ListModel.Create(function(item)
   {
    return item.Key;
-  },a)),(a$1=List.T.Empty,ListModel.Create(function(item)
+  },List.T.Empty),ListModel.Create(function(item)
   {
    return item.Key;
-  },a$1)));
+  },List.T.Empty));
  };
  Factory.New=function(EventItems,WidgetItems)
  {
@@ -619,9 +650,8 @@
  DshData=Dashboard.DshData=Runtime.Class({
   ConnectPorts:function(outPort,inPort)
   {
-   var connnector;
-   connnector=new PortConnector.New(outPort,inPort);
-   this.PortConnectorItems.Append(PortConnectorItem.Create(connnector));
+   console.log("Connect ports:"+outPort.Name+" "+inPort.Name);
+   this.PortConnectorItems.Append(PortConnectorItem.Create(PortConnector.Create(outPort,inPort)));
   },
   RegisterWidget:function(widget)
   {
@@ -640,20 +670,19 @@
  },null,DshData);
  DshData.get_Create=function()
  {
-  var a,a$1,a$2,a$3;
-  return DshData.New((a=List.T.Empty,ListModel.Create(function(item)
+  return DshData.New(ListModel.Create(function(item)
   {
    return item.Key;
-  },a)),(a$1=List.T.Empty,ListModel.Create(function(item)
+  },List.T.Empty),ListModel.Create(function(item)
   {
    return item.Key;
-  },a$1)),(a$2=List.T.Empty,ListModel.Create(function(item)
+  },List.T.Empty),ListModel.Create(function(item)
   {
    return item.Key;
-  },a$2)),(a$3=List.T.Empty,ListModel.Create(function(item)
+  },List.T.Empty),ListModel.Create(function(item)
   {
    return item.Key;
-  },a$3)));
+  },List.T.Empty));
  };
  DshData.New=function(WorkItems,WidgetItems,EventItems,PortConnectorItems)
  {
@@ -667,118 +696,85 @@
  DshEditorCellItem=Dashboard.DshEditorCellItem=Runtime.Class({
   Render:function(data,reconnectFnc)
   {
-   var $this,a,a$1,a$2,workerSelector,inPorts,v,outPorts,v$1,items,v$2,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15,a$16,a$17,a$18,a$19,a$20;
+   var $this,workerSelector,inPorts,outPorts,items;
    $this=this;
-   a=this.OptWorker.v;
    View.Sink(function(optWorker)
    {
-    var workerItem,a$21,a$22,a$23,a$24;
+    var workerItem;
     if(optWorker==null)
      ;
     else
      {
       workerItem=optWorker.$0;
-      a$21=$this.OptInPort;
-      a$22=List.tryHead(workerItem.Worker.get_InPorts());
-      Var.Set(a$21,a$22);
-      a$23=$this.OptOutPort;
-      a$24=List.tryHead(workerItem.Worker.get_OutPorts());
-      Var.Set(a$23,a$24);
+      console.log("Workitem selected");
+      Var.Set($this.OptInPort,List.tryHead(workerItem.Worker.InPorts));
+      Var.Set($this.OptOutPort,List.tryHead(workerItem.Worker.OutPorts));
       reconnectFnc();
      }
-   },a);
-   a$1=this.OptInPort.v;
+   },this.OptWorker.v);
    View.Sink(function()
    {
     reconnectFnc();
-   },a$1);
-   a$2=this.OptOutPort.v;
+   },this.OptInPort.v);
    View.Sink(function()
    {
     reconnectFnc();
-   },a$2);
-   workerSelector=(inPorts=(v=this.OptWorker.v,View.Map(function(workerItemOpt)
+   },this.OptOutPort.v);
+   workerSelector=(inPorts=View.Map(function(workerItemOpt)
    {
-    var workerItem,ports,m;
-    return workerItemOpt==null?List.ofArray([null]):(workerItem=workerItemOpt.$0,(ports=(m=function(item)
+    var ports;
+    return workerItemOpt==null?List.ofArray([null]):(ports=List.map(function(item)
     {
      return{
       $:1,
       $0:item
      };
-    },function(l)
-    {
-     return List.map(m,l);
-    }(workerItem.Worker.get_InPorts())),ports.get_Length()>0?ports:List.ofArray([null])));
-   },v)),(outPorts=(v$1=this.OptWorker.v,View.Map(function(workerItemOpt)
+    },workerItemOpt.$0.Worker.InPorts),ports.get_Length()>0?ports:List.ofArray([null]));
+   },this.OptWorker.v),(outPorts=View.Map(function(workerItemOpt)
    {
-    var workerItem,ports,m;
-    return workerItemOpt==null?List.ofArray([null]):(workerItem=workerItemOpt.$0,(ports=(m=function(item)
+    var ports;
+    return workerItemOpt==null?List.ofArray([null]):(ports=List.map(function(item)
     {
      return{
       $:1,
       $0:item
      };
-    },function(l)
-    {
-     return List.map(m,l);
-    }(workerItem.Worker.get_OutPorts())),ports.get_Length()>0?ports:List.ofArray([null])));
-   },v$1)),(items=(v$2=data.WorkItems.v,View.Map(function(itemSeq)
+    },workerItemOpt.$0.Worker.OutPorts),ports.get_Length()>0?ports:List.ofArray([null]));
+   },this.OptWorker.v),(items=View.Map(function(itemSeq)
    {
-    var m;
     return new List.T({
      $:1,
      $0:null,
-     $1:(m=function(item)
+     $1:List.map(function(item)
      {
       return{
        $:1,
        $0:item
       };
-     },function(l)
-     {
-      return List.map(m,l);
-     }(List.ofSeq(itemSeq)))
+     },List.ofSeq(itemSeq))
     });
-   },v$2)),(a$3=[(a$4=[(a$5=[(a$6=[AttrModule.Class("form-control")],(a$7=this.OptInPort,Doc.SelectDyn(a$6,function(item)
+   },data.WorkItems.v),Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.SelectDyn([AttrModule.Class("form-control")],function(item)
    {
-    var f;
-    f=function(a$21,port)
+    return Option.fold(function(a,port)
     {
-     return port.get_Name();
-    };
-    return function(o)
-    {
-     return Option.fold(f," ",o);
-    }(item);
-   },inPorts,a$7)))],Doc.Element("td",[],a$5)),(a$8=[(a$9=[AttrModule.Class("form-control")],(a$10=this.OptWorker,Doc.SelectDyn(a$9,function(item)
+     return port.Name;
+    }," ",item);
+   },inPorts,this.OptInPort)]),Doc.Element("td",[],[Doc.SelectDyn([AttrModule.Class("form-control")],function(item)
    {
-    var f;
-    f=function(a$21,workerItem)
+    return Option.fold(function(a,workerItem)
     {
-     return workerItem.Worker.get_Name().c;
-    };
-    return function(o)
-    {
-     return Option.fold(f," ",o);
-    }(item);
-   },items,a$10)))],Doc.Element("td",[],a$8)),(a$11=[(a$12=[AttrModule.Class("form-control")],(a$13=this.OptOutPort,Doc.SelectDyn(a$12,function(item)
+     return workerItem.Worker.Name.c;
+    }," ",item);
+   },items,this.OptWorker)]),Doc.Element("td",[],[Doc.SelectDyn([AttrModule.Class("form-control")],function(item)
    {
-    var f;
-    f=function(a$21,port)
+    return Option.fold(function(a,port)
     {
-     return port.get_Name();
-    };
-    return function(o)
-    {
-     return Option.fold(f," ",o);
-    }(item);
-   },outPorts,a$13)))],Doc.Element("td",[],a$11))],Doc.Element("tr",[],a$4))],Doc.Element("table",[],a$3)))));
-   a$14=[AttrModule.Class("td DshEditorCell")];
-   a$15=[(a$16=[AttrModule.Class("div DshEditorCell")],(a$17=[(a$18=[(a$19=[(a$20=[Helper.IconNormal("add",function()
+     return port.Name;
+    }," ",item);
+   },outPorts,this.OptOutPort)])])]))));
+   return Doc.Element("td",[AttrModule.Class("td DshEditorCell")],[Doc.Element("div",[AttrModule.Class("div DshEditorCell")],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
    {
-   })],Doc.Element("td",[],a$20)),Doc.Element("td",[],[workerSelector])],Doc.Element("tr",[],a$19))],Doc.Element("table",[],a$18))],Doc.Element("div",a$16,a$17)))];
-   return Doc.Element("td",a$14,a$15);
+   })]),Doc.Element("td",[],[workerSelector])])])])]);
   }
  },null,DshEditorCellItem);
  DshEditorCellItem.get_Create=function()
@@ -797,32 +793,26 @@
  DshEditorRowItem=Dashboard.DshEditorRowItem=Runtime.Class({
   Render:function(data,reconnectFnc)
   {
-   var $this,renderExistentCells,a,a$1,a$2;
+   var $this;
    $this=this;
-   renderExistentCells=(a=function(m)
+   return Doc.Element("tr",[],[Doc.ConvertBy(function(m)
    {
     return m.Key;
-   },(a$1=function(item)
+   },function(item)
    {
     return item.Render(data,reconnectFnc);
-   },function(a$3)
-   {
-    return Doc.ConvertBy(a,a$1,a$3);
-   })(this.CellItems.v));
-   a$2=[renderExistentCells,Helper.IconNormal("add",function()
+   },this.CellItems.v),Helper.IconNormal("add",function()
    {
     $this.CellItems.Append(DshEditorCellItem.get_Create());
-   })];
-   return Doc.Element("tr",[],a$2);
+   })]);
   }
  },null,DshEditorRowItem);
  DshEditorRowItem.get_Create=function()
  {
-  var a;
-  return DshEditorRowItem.New(Key.Fresh(),(a=List.T.Empty,ListModel.Create(function(item)
+  return DshEditorRowItem.New(Key.Fresh(),ListModel.Create(function(item)
   {
    return item.Key;
-  },a)));
+  },List.T.Empty));
  };
  DshEditorRowItem.New=function(Key$1,CellItems)
  {
@@ -834,42 +824,30 @@
  DshEditor=Dashboard.DshEditor=Runtime.Class({
   Render:function(data)
   {
-   var $this,renderRows,a,a$1,a$2,a$3,a$4;
+   var $this;
    $this=this;
-   renderRows=(a=function(m)
+   return Doc.Element("table",[],[Doc.ConvertBy(function(m)
    {
     return m.Key;
-   },(a$1=function(item)
+   },function(item)
    {
-    var a$5;
-    a$5=[item.Render(data,function()
+    return Doc.Element("tr",[],[item.Render(data,function()
     {
      $this.Reconnect(data,void 0);
-    })];
-    return Doc.Element("tr",[],a$5);
-   },function(a$5)
-   {
-    return Doc.ConvertBy(a,a$1,a$5);
-   })(this.RowItems.v));
-   a$2=[renderRows,(a$3=[(a$4=[Helper.IconNormal("add",function()
+    })]);
+   },this.RowItems.v),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
    {
     $this.RowItems.Append(DshEditorRowItem.get_Create());
-   })],Doc.Element("td",[],a$4))],Doc.Element("tr",[],a$3))];
-   return Doc.Element("table",[],a$2);
+   })])])]);
   },
   Reconnect:function(data,u)
   {
-   var a,a$1;
-   a=function(item)
+   Seq.iter(function(item)
    {
     item.PortConnector.Disconnect();
-   };
-   (function(s)
-   {
-    Seq.iter(a,s);
-   }(data.PortConnectorItems));
+   },data.PortConnectorItems);
    data.PortConnectorItems.Clear();
-   a$1=function(row)
+   List.iter(function(row)
    {
     var cells,i,e;
     cells=List.ofSeq(row.CellItems);
@@ -880,31 +858,17 @@
      while(e.MoveNext())
       (function()
       {
-       var i$1,cell1,cell2,v,m;
+       var i$1,cell1,cell2,o,o$1;
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
-       v=(m=function(outPort)
-       {
-        var m$1;
-        m$1=function(inPort)
-        {
-         data.ConnectPorts(outPort,inPort);
-        };
-        return function(o)
-        {
-         return o==null?null:{
-          $:1,
-          $0:m$1(o.$0)
-         };
-        }(cell2.OptInPort.c);
-       },function(o)
-       {
-        return o==null?null:{
+       o=cell1.OptOutPort.c,o==null?null:{
+        $:1,
+        $0:(o$1=cell2.OptInPort.c,o$1==null?null:{
          $:1,
-         $0:m(o.$0)
-        };
-       }(cell1.OptOutPort.c));
+         $0:data.ConnectPorts(o.$0,o$1.$0)
+        })
+       };
       }());
     }
     finally
@@ -912,20 +876,15 @@
      if("Dispose"in e)
       e.Dispose();
     }
-   };
-   (function(l)
-   {
-    List.iter(a$1,l);
-   }(List.ofSeq(this.RowItems)));
+   },List.ofSeq(this.RowItems));
   }
  },null,DshEditor);
  DshEditor.get_Create=function()
  {
-  var a;
-  return DshEditor.New((a=List.T.Empty,ListModel.Create(function(item)
+  return DshEditor.New(ListModel.Create(function(item)
   {
    return item.Key;
-  },a)));
+  },List.T.Empty));
  };
  DshEditor.New=function(RowItems)
  {
@@ -933,218 +892,132 @@
    RowItems:RowItems
   });
  };
- SourceProperty=Dashboard.SourceProperty=Runtime.Class({
-  WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
-  {
-   var $this,items,m,item,m$1,p,selected,observe,a,a$1,a$2;
-   $this=this;
-   items=List.concat((m=function(item$1)
-   {
-    var m$2;
-    m$2=function(port)
-    {
-     return[item$1,port];
-    };
-    return function(l)
-    {
-     return List.map(m$2,l);
-    }(item$1.Worker.get_OutPorts());
-   },function(l)
-   {
-    return List.map(m,l);
-   }(List.ofSeq(this.data.WorkItems))));
-   return items.get_Length()>0?(item=(m$1=(p=function(srcItem,port)
-   {
-    return Unchecked.Equals(port,$this.receiver.get_InPorts().get_Item(0).get_OutPort());
-   },function(l)
-   {
-    return Seq.tryFind(function($1)
-    {
-     return p($1[0],$1[1]);
-    },l);
-   }(items)),(m$1!=null?m$1.$==1:false)?m$1.$0:List.head(items)),(selected=Var.Create$1(item),(observe=function(src,outPort)
-   {
-    $this.data.ConnectPorts(outPort,$this.receiver.get_InPorts().get_Item(0));
-   },(a=selected.v,View.Sink(function($1)
-   {
-    return observe($1[0],$1[1]);
-   },a),a$1=[AttrModule.Class("form-control")],a$2=function(item$1,port)
-   {
-    return item$1.Worker.get_Name().c+"\\"+port.get_Name();
-   },Doc.Select(a$1,function($1)
-   {
-    return a$2($1[0],$1[1]);
-   },items,selected))))):Doc.TextNode("No sources defined");
-  },
-  WebSharper_Community_PropertyGrid_IProperty$get_Name:function()
-  {
-   return"Source";
-  }
- },null,SourceProperty);
- SourceProperty.New=Runtime.Ctor(function(data,receiver)
- {
-  this.data=data;
-  this.receiver=receiver;
- },SourceProperty);
  Dashboard$1=Dashboard.Dashboard=Runtime.Class({
   get_Render:function()
   {
-   var $this,eventsRender,a,a$1,a$2,containers,menu,m,containerDivs,m$1,a$3,a$4,a$5,a$6,a$7,a$8,a$9,a$10,a$11,a$12,a$13,a$14,a$15,a$16;
+   var $this,eventsRender,containers,menu,m,containerDivs,m$1;
    function container(varValue,content)
    {
-    var varVis,a$17,a$18;
+    var varVis;
     varVis=Var.Create$1(varValue);
-    return[varVis,(a$17=[AttrModule.DynamicStyle("display",(a$18=varVis.v,View.Map(function(isVisible)
+    return[varVis,Doc.Element("div",[AttrModule.DynamicStyle("display",View.Map(function(isVisible)
     {
      return isVisible?"initial":"none";
-    },a$18)))],Doc.Element("div",a$17,[content]))];
+    },varVis.v))],[content])];
    }
    $this=this;
-   eventsRender=(a=[(a$1=function(m$2)
+   eventsRender=Doc.Element("table",[],[Doc.ConvertBy(function(m$2)
    {
     return m$2.Key;
-   },(a$2=function(item)
+   },function(item)
    {
-    var a$17,a$18,a$19;
-    a$17=[(a$18=Helper.AttrsClick(function()
+    return Doc.Element("tr",[],[Doc.Element("i",Helper.AttrsClick(function()
     {
      $this.PropertyGrid.Edit(item.Worker.get_Properties());
-    }),(a$19=[Doc.TextView(item.Worker.get_Name().v)],Doc.Element("i",a$18,a$19)))];
-    return Doc.Element("tr",[],a$17);
-   },function(a$17)
-   {
-    return Doc.ConvertBy(a$1,a$2,a$17);
-   })(this.Data.EventItems.v))],Doc.Element("table",[],a));
+    }),[Doc.TextView(item.Worker.Name.v)])]);
+   },this.Data.EventItems.v)]);
    containers=List.ofArray([["Board",container(true,this.PanelContainer.get_Render())],["Events",container(false,eventsRender)],["Rules",container(false,this.DshEditor.Render(this.Data))]]);
-   menu=(m=function(name,a$17)
+   menu=(m=function(name,a)
    {
-    var varVis,a$18,a$19,a$20,a$21;
-    varVis=a$17[0];
-    a$18=[(a$19=[AttrModule.DynamicStyle("Color",(a$20=varVis.v,View.Map(function(isVisible)
+    var varVis;
+    varVis=a[0];
+    return Doc.Element("tr",[],[Doc.Element("td",[AttrModule.DynamicStyle("Color",View.Map(function(isVisible)
     {
      return isVisible?"#FB8C00":"#7D4600";
-    },a$20))),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+    },varVis.v)),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
     {
      return function()
      {
-      var a$22;
+      var a$1;
       $this.PropertyGrid.Edit(List.T.Empty);
-      a$22=function(a$23,a$24)
+      a$1=function(a$2,a$3)
       {
        var varBool;
-       varBool=a$24[0];
+       varBool=a$3[0];
        !Unchecked.Equals(varBool,varVis)?Var.Set(varBool,false):Var.Set(varBool,true);
       };
-      return function(l)
+      return List.iter(function($1)
       {
-       List.iter(function($1)
-       {
-        return a$22($1[0],$1[1]);
-       },l);
-      }(containers);
+       return a$1($1[0],$1[1]);
+      },containers);
      };
-    })],(a$21=[Doc.TextNode(name)],Doc.Element("td",a$19,a$21)))];
-    return Doc.Element("tr",[],a$18);
-   },function(l)
+    })],[Doc.TextNode(name)])]);
+   },List.map(function($1)
    {
-    return List.map(function($1)
+    return m($1[0],$1[1]);
+   },containers));
+   containerDivs=(m$1=function(a,a$1)
+   {
+    return a$1[1];
+   },List.map(function($1)
+   {
+    return m$1($1[0],$1[1]);
+   },containers));
+   return Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Doc.Element("table",[],Seq.concat([List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("dehaze",function()
+   {
+   })])]),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
+   {
+    var varBoolDash,items,selected;
+    varBoolDash=(containers.get_Item(0))[1][0];
+    (containers.get_Item(1))[1][0].c?(items=List.ofSeq($this.Factory.EventItems),selected=Var.Create$1(List.head(items)),$this.Dialog.ShowDialog("Select source",Doc.Element("div",[],[Doc.Select([AttrModule.Class("form-control")],function(item)
     {
-     return m($1[0],$1[1]);
-    },l);
-   }(containers));
-   containerDivs=(m$1=function(a$17,a$18)
-   {
-    return a$18[1];
-   },function(l)
-   {
-    return List.map(function($1)
+     return item.Worker.Name.c;
+    },items,selected)]),function()
     {
-     return m$1($1[0],$1[1]);
-    },l);
-   }(containers));
-   a$3=[(a$4=[(a$5=[(a$6=[AttrModule.Style("vertical-align","top")],(a$7=[(a$8=Seq.concat([List.ofArray([(a$9=[(a$10=[Helper.IconNormal("dehaze",function()
-   {
-   })],Doc.Element("td",[],a$10))],Doc.Element("tr",[],a$9)),(a$11=[(a$12=[Helper.IconNormal("add",function()
-   {
-    var p,varBoolDash,p$1,varBoolSrc,items,selected,o,a$17,a$18,a$19,v;
-    p=containers.get_Item(0);
-    varBoolDash=p[1][0];
-    p$1=containers.get_Item(1);
-    varBoolSrc=p$1[1][0];
-    varBoolSrc.c?(items=List.ofSeq($this.Factory.EventItems),selected=Var.Create$1(List.head(items)),o=$this.Dialog,a$17=(a$18=[(a$19=[AttrModule.Class("form-control")],Doc.Select(a$19,function(item)
-    {
-     return item.Worker.get_Name().c;
-    },items,selected))],Doc.Element("div",[],a$18)),o.ShowDialog("Select source",a$17,function()
-    {
-     var event;
-     event=selected.c.Worker.Clone();
-     $this.Data.RegisterEvent(event);
-     event.Run();
-    })):varBoolDash.c?v=$this.CreatePanel("Panel",700,{
+     $this.Data.RegisterEvent(selected.c.Worker.get_CloneAndRun());
+    })):varBoolDash.c?$this.CreatePanel("Panel",700,{
      $:1,
      $0:function()
      {
      }
     }):void 0;
-   })],Doc.Element("td",[],a$12))],Doc.Element("tr",[],a$11)),(a$13=[Doc.Element("td",[],[])],Doc.Element("tr",[],a$13)),(a$14=[(a$15=[this.PropertyGrid.get_Render()],Doc.Element("td",[],a$15))],Doc.Element("tr",[],a$14))]),menu]),Doc.Element("table",[],a$8))],Doc.Element("td",a$6,a$7))),Doc.Element("td",[],containerDivs)],Doc.Element("tr",[],a$5))],Doc.Element("table",[],a$4)),(a$16=[this.Dialog.get_Render()],Doc.Element("div",[],a$16))];
-   return Doc.Element("div",[],a$3);
+   })])]),Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[this.PropertyGrid.get_Render()])])]),menu]))]),Doc.Element("td",[],containerDivs)])]),Doc.Element("div",[],[this.Dialog.get_Render()])]);
   },
   CreatePanel:function(name,cx,afterRenderFnc)
   {
-   var $this,renderWidgets,x,a,childContainerContent;
+   var $this,childContainerContent;
    $this=this;
-   renderWidgets=(x=this.Factory.WidgetItems.v,(a=this.Data.WidgetItems.key,Doc.ConvertBy(a,function(item)
+   Doc.ConvertBy(this.Data.WidgetItems.key,function(item)
    {
-    var nameView,a$1;
-    nameView=item.Worker.get_Name().v;
-    a$1=[Doc.TextView(nameView)];
-    return Doc.Element("div",[],a$1);
-   },x)));
+    return Doc.Element("div",[],[Doc.TextView(item.Worker.Name.v)]);
+   },this.Factory.WidgetItems.v);
    childContainerContent=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.StackPanelLayoutManager()).WithAttributes([AttrModule.Style("border","1px solid white"),AttrModule.Style("display","flex")]);
-   this.PanelContainer.AddPanel(Panel$1.get_Create().WithPannelAttrs([AttrModule.Style("Width",Global.String(cx)+"px"),AttrModule.Style("position","absolute")]).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel)
+   this.PanelContainer.AddPanel(Panel$1.get_Create().WithPannelAttrs([AttrModule.Style("Width",window.String(cx)+"px"),AttrModule.Style("position","absolute")]).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel)
    {
-    var items,selected,o,a$1,a$2,a$3;
+    var items,selected;
     items=List.ofSeq($this.Factory.WidgetItems);
     selected=Var.Create$1(List.head(items));
-    o=$this.Dialog;
-    a$1=(a$2=[(a$3=[AttrModule.Class("form-control")],Doc.Select(a$3,function(item)
+    $this.Dialog.ShowDialog("Select widget",Doc.Element("div",[],[Doc.Select([AttrModule.Class("form-control")],function(item)
     {
-     return item.Worker.get_Name().c;
-    },items,selected))],Doc.Element("div",[],a$2));
-    o.ShowDialog("Select widget",a$1,function()
+     return item.Worker.Name.c;
+    },items,selected)]),function()
     {
-     Global.console.log("Dialog.IsOK");
-     $this.RegisterWidget(panel.Children,selected.c.Worker.Clone());
+     console.log("Dialog.IsOK");
+     $this.RegisterWidget(panel.Children,selected.c.Worker.get_CloneAndRun());
     });
    }),TitleButton.New("edit",function(panel)
    {
-    Global.console.log("Edit");
+    console.log("Edit");
     panel.EditProperties($this.PropertyGrid);
    }),TitleButton.New("clear",function(panel)
    {
     $this.PanelContainer.PanelItems.Remove($this.PanelContainer.FindPanelItem(panel));
-   })])).WithChildPanelContainer(childContainerContent).WithOnAfterRender(Operators.DefaultArg(afterRenderFnc,function()
+   })])).WithChildPanelContainer(childContainerContent).WithOnAfterRender(afterRenderFnc==null?function()
    {
-   })));
+   }:afterRenderFnc.$0));
    return childContainerContent;
   },
   RegisterWidget:function(toPanelContainer,worker)
   {
    this.Data.RegisterWidget(worker);
-   toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(worker instanceof Widget?worker.Render():Doc.Element("div",[],[])).WithProperties(new List.T({
-    $:1,
-    $0:new SourceProperty.New(this.Data,worker),
-    $1:worker.get_Properties()
-   })));
+   toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(worker.get_Render()));
   }
  },null,Dashboard$1);
  Dashboard$1.Create=function(panelContainer)
  {
-  var dialog,F,D;
+  var dialog;
   dialog=Dialog.get_Create();
-  F=Factory.get_Create();
-  D=DshData.get_Create();
-  return Dashboard$1.New(F,D,panelContainer,DshEditor.get_Create(),PropertyGrid$1.get_Create(),dialog);
+  return Dashboard$1.New(Factory.get_Create(),DshData.get_Create(),panelContainer,DshEditor.get_Create(),PropertyGrid$1.get_Create(),dialog);
  };
  Dashboard$1.New=function(Factory$1,Data$2,PanelContainer$1,DshEditor$1,PropertyGrid$2,Dialog$1)
  {

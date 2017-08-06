@@ -12,9 +12,9 @@ open WebSharper.Community.PropertyGrid
 type DshEditorCellItem =
     {
         Key:Key
-        OptInPort : Var<Option<InPort> >
+        OptInPort : Var<Option<IInPort> >
         OptWorker : Var<Option<WorkerItem> >
-        OptOutPort : Var<Option<OutPort> >
+        OptOutPort : Var<Option<IOutPort> >
     }
     static member Create =
         {
@@ -26,8 +26,8 @@ type DshEditorCellItem =
     member x.Render data reconnectFnc= 
          let observe (optWorker) =
               match optWorker with 
-              |Some(workerItem) -> //Console.Log("Workitem selected")
-                                   x.OptInPort.Value <- workerItem.Worker.InPorts |> List.tryHead
+              |Some(workerItem) -> Console.Log("Workitem selected")
+                                   x.OptInPort.Value <-  workerItem.Worker.InPorts |> List.tryHead
                                    x.OptOutPort.Value <- workerItem.Worker.OutPorts |> List.tryHead
                                    reconnectFnc()
               |None -> ()
@@ -49,7 +49,7 @@ type DshEditorCellItem =
            let items = data.WorkItems.View.Map (fun itemSeq -> None::(itemSeq|>List.ofSeq|>List.map(fun item -> Some(item))))
            table[tr[
                   td[Doc.SelectDyn [Attr.Class "form-control"] 
-                       (fun (item) -> item |> Option.fold (fun _ (port:InPort) ->  port.Name) " ")
+                       (fun (item) -> item |> Option.fold (fun _ (port:IInPort) ->  port.Name) " ")
                        inPorts
                        x.OptInPort ]
                   td[Doc.SelectDyn [Attr.Class "form-control"] 
@@ -57,7 +57,7 @@ type DshEditorCellItem =
                        items
                        x.OptWorker]
                   td[Doc.SelectDyn [Attr.Class "form-control"] 
-                       (fun (item) -> item |> Option.fold (fun _ (port:OutPort) ->  port.Name) " ")
+                       (fun (item) -> item |> Option.fold (fun _ (port:IOutPort) ->  port.Name) " ")
                        outPorts
                        x.OptOutPort ]
             ]]
@@ -121,9 +121,9 @@ type DshEditor =
                renderRows
                tr[td[Helper.IconNormal "add" (fun _ -> x.RowItems.Add (DshEditorRowItem.Create) )]]
              ]
-
+(*
 [<JavaScript>] 
-type SourceProperty(data,receiver:Worker)= 
+type SourceProperty(data,receiver:WorkerS)= 
     interface IProperty with 
           override x.Name = "Source"
           override x.Render = 
@@ -134,8 +134,8 @@ type SourceProperty(data,receiver:Worker)=
                       |None -> items.Head
                       |Some(item) -> item
                   let selected=Var.Create (item)
-                  let propSources = Properties.select "Source" (fun (item,port:OutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) items selected
-                  let observe (src,outPort:OutPort) =
+                  let propSources = Properties.select "Source" (fun (item,port:IOutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) items selected
+                  let observe (src,outPort:IOutPort) =
                       data.ConnectPorts outPort receiver.InPorts.[0]
                   View.Sink observe selected.View
 
@@ -145,4 +145,4 @@ type SourceProperty(data,receiver:Worker)=
                         selected  :>Doc
               else 
                 text "No sources defined"        
-    
+    *)

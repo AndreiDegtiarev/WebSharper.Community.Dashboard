@@ -5,37 +5,41 @@ open WebSharper.JavaScript
 open WebSharper.UI.Next
 open WebSharper.Community.PropertyGrid
 
-
-[<JavaScript>]type IWorkerContext = interface end
 [<JavaScript>]type IRunnerContext = interface end
 
-[<JavaScript;CustomEquality;NoComparison>] 
-type IWorker =
+[<JavaScript>]
+type IWorkerContext =
+    abstract Name:string
+    abstract InPorts  : (InPort list)
+    abstract OutPorts : (OutPort list)
+and
+ [<JavaScript;CustomEquality;NoComparison>] 
+ Worker =
    {
        Name:Var<string>
-       InPorts:list<IInPort>
-       OutPorts:list<IOutPort>
+       InPorts:list<InPort>
+       OutPorts:list<OutPort>
        Runner:Option<IRunner>
        Renderer:Option<IRenderer>
        DataContext:IWorkerContext
        RunnerContext:Option<IRunnerContext>
    }
-   static member CreateNative name iPorts oPorts dataContext runner renderer =
+   static member CreateNative (dataContext:IWorkerContext) runner renderer =
            {
-               Name = Var.Create name
-               InPorts = iPorts
-               OutPorts = oPorts
+               Name = Var.Create dataContext.Name
+               InPorts = dataContext.InPorts
+               OutPorts = dataContext.OutPorts
                Runner = runner
                Renderer = renderer
                DataContext = dataContext 
                RunnerContext = None                   
            }
-   static member Create name iPorts oPorts dataContext= 
-       IWorker.CreateNative name iPorts oPorts dataContext (Some(dataContext :>IRunner)) (Some(dataContext :>IRenderer)) 
-   static member CreateRunner name iPorts oPorts dataContext = 
-       IWorker.CreateNative name iPorts oPorts dataContext (Some(dataContext :>IRunner)) None
-   static member CreateRenderer name iPorts oPorts dataContext = 
-       IWorker.CreateNative name iPorts oPorts dataContext None (Some(dataContext :>IRenderer)) 
+   static member Create dataContext= 
+       Worker.CreateNative dataContext (Some(dataContext :>IRunner)) (Some(dataContext :>IRenderer)) 
+   static member CreateRunner dataContext = 
+       Worker.CreateNative dataContext (Some(dataContext :>IRunner)) None
+   static member CreateRenderer dataContext = 
+       Worker.CreateNative dataContext None (Some(dataContext :>IRenderer)) 
 
    member x.CloneAndRun =
           let varName = Var.Create x.Name.Value
@@ -61,11 +65,11 @@ type IWorker =
        
    member   x.Properties = (Properties.string "Name" x.Name)::(x.InPorts |> List.map (fun port -> port.Property))
    override x.Equals y = match y with
-                         | :? IWorker as worker -> x.Name = worker.Name
+                         | :? Worker as worker -> x.Name = worker.Name
                          | _ -> false
 and
  [<JavaScript>] IRunner = 
-    abstract Run:(IWorker->Option<IRunnerContext>)
+    abstract Run:(Worker->Option<IRunnerContext>)
 and
- [<JavaScript>] IRenderer = abstract Render:(IWorker->Doc)
+ [<JavaScript>] IRenderer = abstract Render:(Worker->Doc)
 

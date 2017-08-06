@@ -41,7 +41,7 @@ type DshData =
         let item = WorkerItem.Create widget
         x.WidgetItems.Add item
         x.WorkItems.Add item
-    member x.ConnectPorts (outPort:IOutPort) (inPort:IInPort) = 
+    member x.ConnectPorts (outPort:OutPort) (inPort:InPort) = 
         Console.Log("Connect ports:"+outPort.Name+" "+inPort.Name)
         let connnector = PortConnector.Create outPort inPort 
         x. PortConnectorItems.Add (PortConnectorItem.Create connnector)

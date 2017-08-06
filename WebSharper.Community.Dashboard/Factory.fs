@@ -30,7 +30,7 @@ module Helper =
 type WorkerItem =
     {
         Key:Key
-        Worker : IWorker
+        Worker : Worker
     }
     static member Create  worker=
         {

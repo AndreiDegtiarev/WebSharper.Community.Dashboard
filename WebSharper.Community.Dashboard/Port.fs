@@ -33,9 +33,9 @@ type ITrigger =
 
 
 [<JavaScript;CustomEquality;NoComparison>]
-type IInPort =  {Name:string;Disconnector:(unit->unit);Disconnect:(unit->unit);OutPort:IOutPort;Value:IPortValue;}
+type InPort =  {Name:string;Disconnector:(unit->unit);Disconnect:(unit->unit);OutPort:OutPort;Value:IPortValue;}
                 override x.Equals y = match y with
-                                      | :? IInPort as yPort -> x.Name = yPort.Name
+                                      | :? InPort as yPort -> x.Name = yPort.Name
                                       | _ -> false
                 member x.Clone = {
                                     x with 
@@ -53,25 +53,25 @@ type IInPort =  {Name:string;Disconnector:(unit->unit);Disconnect:(unit->unit);O
                         |StringValue(value) -> Properties.string  x.Name value.StrValue
 and
  [<JavaScript;CustomEquality;NoComparison>]
- IOutPort = {Name:string;IsCompatible:(IInPort->bool);Connect:IInPort->(unit->unit);Trigger:ITrigger}
+ OutPort = {Name:string;IsCompatible:(InPort->bool);Connect:InPort->(unit->unit);Trigger:ITrigger}
                 override x.Equals y = match y with
-                                      | :? IOutPort as yPort -> x.Name = yPort.Name
+                                      | :? OutPort as yPort -> x.Name = yPort.Name
                                       | _ -> false
 
 
 [<JavaScript>]
-type PortConnector = {Name:string;InPort:IInPort;OutPort:IOutPort;Disconnect:(unit->unit)}
-                      static member Create  (oPort:IOutPort) (iPort:IInPort)= 
+type PortConnector = {Name:string;InPort:InPort;OutPort:OutPort;Disconnect:(unit->unit)}
+                      static member Create  (oPort:OutPort) (iPort:InPort)= 
                                 let disconnector=oPort.Connect iPort
                                 {Name=(oPort.Name+"->"+iPort.Name);InPort = iPort;OutPort=oPort;Disconnect=disconnector}
 [<JavaScript>]
 module Ports = 
 
-    let NumberVar (port:IInPort) = match port.Value with |NumberValue(value) -> value.NumValue | _ -> failwith("unexpected type")
+    let NumberVar (port:InPort) = match port.Value with |NumberValue(value) -> value.NumValue | _ -> failwith("unexpected type")
 
-    let StringVar (port:IInPort) = match port.Value with |StringValue(value) -> value.StrValue | _ -> failwith("unexpected type")
+    let StringVar (port:InPort) = match port.Value with |StringValue(value) -> value.StrValue | _ -> failwith("unexpected type")
 
-    let NumTrigger (port:IOutPort) = match port.Trigger with|NumberTrigger(trigger) -> trigger.Trigger| _ -> failwith("unexpected type")
+    let NumTrigger (port:OutPort) = match port.Trigger with|NumberTrigger(trigger) -> trigger.Trigger| _ -> failwith("unexpected type")
 
     let BaseOutPort name = {Name = name;IsCompatible=(fun _ -> false); Connect = (fun _ ->(fun _ ->()));Trigger = EmptyTrigger({EmptyTrigger=""})}
 
@@ -110,7 +110,7 @@ module Ports =
                           ) 
                 Trigger = NumberTrigger({NumberEvent = event})
         }                               
-    let Clone (oPort:IOutPort) =
+    let Clone (oPort:OutPort) =
         match oPort.Trigger with
         |NumberTrigger(trigger) -> OutPortNum oPort.Name
         | _ -> BaseOutPort oPort.Name

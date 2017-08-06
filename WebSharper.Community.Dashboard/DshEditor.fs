@@ -12,9 +12,9 @@ open WebSharper.Community.PropertyGrid
 type DshEditorCellItem =
     {
         Key:Key
-        OptInPort : Var<Option<IInPort> >
+        OptInPort : Var<Option<InPort> >
         OptWorker : Var<Option<WorkerItem> >
-        OptOutPort : Var<Option<IOutPort> >
+        OptOutPort : Var<Option<OutPort> >
     }
     static member Create =
         {
@@ -49,7 +49,7 @@ type DshEditorCellItem =
            let items = data.WorkItems.View.Map (fun itemSeq -> None::(itemSeq|>List.ofSeq|>List.map(fun item -> Some(item))))
            table[tr[
                   td[Doc.SelectDyn [Attr.Class "form-control"] 
-                       (fun (item) -> item |> Option.fold (fun _ (port:IInPort) ->  port.Name) " ")
+                       (fun (item) -> item |> Option.fold (fun _ (port:InPort) ->  port.Name) " ")
                        inPorts
                        x.OptInPort ]
                   td[Doc.SelectDyn [Attr.Class "form-control"] 
@@ -57,7 +57,7 @@ type DshEditorCellItem =
                        items
                        x.OptWorker]
                   td[Doc.SelectDyn [Attr.Class "form-control"] 
-                       (fun (item) -> item |> Option.fold (fun _ (port:IOutPort) ->  port.Name) " ")
+                       (fun (item) -> item |> Option.fold (fun _ (port:OutPort) ->  port.Name) " ")
                        outPorts
                        x.OptOutPort ]
             ]]
@@ -121,28 +121,3 @@ type DshEditor =
                renderRows
                tr[td[Helper.IconNormal "add" (fun _ -> x.RowItems.Add (DshEditorRowItem.Create) )]]
              ]
-(*
-[<JavaScript>] 
-type SourceProperty(data,receiver:WorkerS)= 
-    interface IProperty with 
-          override x.Name = "Source"
-          override x.Render = 
-              let items = data.WorkItems|>List.ofSeq|>List.map(fun item -> item.Worker.OutPorts|>List.map(fun port -> item,port))|>List.concat
-              if items.Length > 0 then
-                  let item = 
-                      match items |>List.tryFind (fun (srcItem,port) -> port = receiver.InPorts.[0].OutPort) with
-                      |None -> items.Head
-                      |Some(item) -> item
-                  let selected=Var.Create (item)
-                  let propSources = Properties.select "Source" (fun (item,port:IOutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) items selected
-                  let observe (src,outPort:IOutPort) =
-                      data.ConnectPorts outPort receiver.InPorts.[0]
-                  View.Sink observe selected.View
-
-                  Doc.Select [Attr.Class "form-control"] 
-                        (fun (item,port:OutPort) -> item.Worker.Name.Value + "\\"+(port.Name)) 
-                        items
-                        selected  :>Doc
-              else 
-                text "No sources defined"        
-    *)

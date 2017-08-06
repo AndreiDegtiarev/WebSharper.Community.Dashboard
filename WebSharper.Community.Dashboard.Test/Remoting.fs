@@ -10,3 +10,7 @@ module Server =
         async {
             return R input
         }
+    [<Rpc>]
+    let Serialize (input:AppModel list) =
+        
+            Json.Serialize<AppModel list> input        

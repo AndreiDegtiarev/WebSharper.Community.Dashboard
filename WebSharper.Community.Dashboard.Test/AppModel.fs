@@ -10,23 +10,25 @@ type AppModel =
     |OpenWeatherSource of OpenWeatherRunner
     |TextWidget   of TextBoxRenderer
     |ChartWidget  of ChartRenderer
-    member x.IWorker =
+    member x.Worker =
         match x with 
-        |RandomSource(src) -> IWorker.CreateRunner      "Random" [Ports.InPortNum "Middle value" src.MiddleValue;Ports.InPortNum "Dispersion" src.Dispersion] [Ports.OutPortNum "Random value"] src
-        |OpenWeatherSource(src) -> IWorker.CreateRunner "OpenWeatherMap" [Ports.InPortStr "City" src.OpenWeatherCity;Ports.InPortStr "ApiKey" src.OpenWeatherApiKey]  [Ports.OutPortNum "Temperature"] src
-        |TextWidget(src)   -> IWorker.CreateRenderer    "Text"   [Ports.InPortNum "in Value" 0.0] [] src
-        |ChartWidget(src)  -> IWorker.Create "Chart"  [
-                                                        Ports.InPortNum "in Value" 0.0
-                                                        Ports.InPortNum "cx" src.Cx
-                                                        Ports.InPortNum "cy" src.Cy
-                                                        Ports.InPortNum "BufferSize" ((double)src.ChartBufferSize)
-                                                      ] [] src
+        |RandomSource(src) -> Worker.CreateRunner src
+        |OpenWeatherSource(src) -> Worker.CreateRunner src
+        |TextWidget(src)   -> Worker.CreateRenderer src
+        |ChartWidget(src)  -> Worker.Create src
     static member FromDataContext (data:IWorkerContext)=
         match data with
         | :? RandomRunner    as src -> RandomSource(src)
         | :? OpenWeatherRunner as src -> OpenWeatherSource(src)
         | :? TextBoxRenderer as src -> TextWidget(src)
         | :? ChartRenderer   as src -> ChartWidget(src)
-        | _ -> failwith("AllTypes FromDataContext unknown type")  
-    static member FromIWorker (worker:IWorker)= AppModel.FromDataContext worker.DataContext
-    static member ToIWorker data = (data |> AppModel.FromDataContext).IWorker
+        | _ -> failwith("AllTypes FromDataContext unknown type") 
+         
+    static member FromWorker (worker:Worker)= 
+                            match worker.DataContext with
+                            | :? RandomRunner    as src -> RandomSource(RandomRunner.FromInPorts worker)
+                            | :? OpenWeatherRunner as src -> OpenWeatherSource(OpenWeatherRunner.FromInPorts worker)
+                            | :? TextBoxRenderer as src -> TextWidget(TextBoxRenderer.FromInPorts worker)
+                            | :? ChartRenderer   as src -> ChartWidget(ChartRenderer.FromInPorts worker)
+                            | _ -> failwith("AllTypes FromDataContext unknown type") 
+    static member ToWorker data = (data |> AppModel.FromDataContext).Worker

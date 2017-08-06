@@ -43,7 +43,20 @@ module OpenWeather =
                 return None
         }
 
-    let run (worker:IWorker)=
+[<JavaScript>]
+type OpenWeatherRunner =
+ {
+        OpenWeatherCity:string
+        OpenWeatherApiKey:string
+ }
+ static member Create city apikey = {OpenWeatherCity=city;OpenWeatherApiKey=apikey}
+ static member FromInPorts = (fun worker -> OpenWeatherRunner.Create (Ports.StringVar worker.InPorts.[0]).Value (Ports.StringVar worker.InPorts.[1]).Value)
+ interface IWorkerContext with
+    override x.Name = "OpenWeatherMap"
+    override x.InPorts = [Ports.InPortStr "City" x.OpenWeatherCity;Ports.InPortStr "ApiKey" x.OpenWeatherApiKey]
+    override x.OutPorts = [Ports.OutPortNum "Temperature"]
+ interface IRunner with
+    override x.Run= (fun worker -> 
                      async {
                          while true do
                              let inCity=worker.InPorts.[0]
@@ -51,7 +64,7 @@ module OpenWeather =
                              let outTempearatur=worker.OutPorts.[0]
                              let api = Ports.StringVar inApiKey
                              let crCity = Ports.StringVar inCity
-                             let! response = get api.Value crCity.Value
+                             let! response = OpenWeather.get api.Value crCity.Value
                              match response with
                              |Some(res) -> 
                                  Console.Log ("Value generated:"+response.Value.Title)
@@ -60,14 +73,4 @@ module OpenWeather =
                              do! Async.Sleep (1000*15)
                      }
                      |> Async.Start
-                     None
-[<JavaScript>]
-type OpenWeatherRunner =
- {
-        OpenWeatherCity:string
-        OpenWeatherApiKey:string
- }
- static member Create city apikey = {OpenWeatherCity=city;OpenWeatherApiKey=apikey}
- interface IRunner with
-        override x.Run= (fun worker -> OpenWeather.run worker)
- interface IWorkerContext
+                     None)

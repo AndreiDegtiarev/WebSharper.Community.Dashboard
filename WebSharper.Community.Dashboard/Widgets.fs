@@ -56,6 +56,16 @@ type ChartRenderer =
                                             Cx=cx;Cy=cy;ChartBufferSize=bufferSize
                                           }
 
+  static member FromInPorts = (fun worker -> ChartRenderer.Create (Ports.NumberVar worker.InPorts.[1]).Value (Ports.NumberVar worker.InPorts.[2]).Value  ((int)(Ports.NumberVar worker.InPorts.[3]).Value))
+  interface IWorkerContext with
+    override x.Name = "Chart"
+    override x.InPorts =  [
+                             Ports.InPortNum "in Value" 0.0
+                             Ports.InPortNum "cx" x.Cx
+                             Ports.InPortNum "cy" x.Cy
+                             Ports.InPortNum "BufferSize" ((double)x.ChartBufferSize)
+                          ]
+    override x.OutPorts = []
   interface IRunner with
     override x.Run = (fun worker ->
                                     let chartBufferSize = (int) (Ports.NumberVar worker.InPorts.[3]).Value
@@ -81,11 +91,18 @@ type ChartRenderer =
                             let chart = worker.RunnerContext.Value :?> ChartRunnerContext
                             Renderers.ChartJs.Render(chart.LineChart, Size=Size((int) cx.Value, (int) cy.Value)) :> Doc
                              )
-  interface IWorkerContext
+
+
 [<JavaScript>]
 type TextBoxRenderer =
-  {TextBoxRenderer:string}
-  static member Create = {TextBoxRenderer="TextBoxRenderer"}
+  {TextBoxValue:double}
+  static member Create = {TextBoxValue=0.0}
+  static member FromInPorts = (fun worker -> {TextBoxValue=(Ports.NumberVar worker.InPorts.[0]).Value})
+  interface IWorkerContext with
+    override x.Name = "Text"
+    override x.InPorts =  [Ports.InPortNum "in Value" x.TextBoxValue]
+    override x.OutPorts = []
+
   interface IRenderer with
     override x.Render  = (fun worker -> 
                             let numValue = Ports.NumberVar worker.InPorts.[0]
@@ -93,6 +110,5 @@ type TextBoxRenderer =
                             divAttr [Attr.Class "bigvalue"] [
                                              textView strView
                             ] :> Doc)
-  interface IWorkerContext
 
 

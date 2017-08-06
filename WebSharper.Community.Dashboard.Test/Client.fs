@@ -23,7 +23,7 @@ module Client =
                                                           //Attr.Style "position" "absolute"
                                                          ])
         let dashboard = Dashboard.Create panelContainer
-        let register data fnc = data |> AppModel.ToIWorker |> fnc
+        let register data fnc = data |> AppModel.ToWorker |> fnc
         let registerEvent  data = register data dashboard.Factory.RegisterEvent
         let registerWidget data = register data dashboard.Factory.RegisterWidget
 
@@ -33,7 +33,7 @@ module Client =
         ChartRenderer.Create 100.0 100.0 50 |> registerWidget
 
         div[dashboard.Render
-            Helper.IconNormal "add" (fun _ ->  let elems =  dashboard.Data.EventItems |>List.ofSeq |> List.map (fun item -> AppModel.FromIWorker item.Worker)
-                                               Console.Log(Json.Serialize<AppModel list> elems))
+            Helper.IconNormal "add" (fun _ ->  let elems =  dashboard.Data.EventItems |>List.ofSeq |> List.map (fun item -> AppModel.FromWorker item.Worker)
+                                               Console.Log(Server.Serialize elems))
 
         ]

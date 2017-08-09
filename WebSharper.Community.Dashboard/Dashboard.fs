@@ -15,7 +15,7 @@ type Dashboard =
         Factory : Factory
         Data:DshData
         PanelContainer:PanelContainer
-        DshEditor: DshEditor
+        Editor: DshEditor
         PropertyGrid : PropertyGrid
         Dialog : Dialog
     }
@@ -26,30 +26,32 @@ type Dashboard =
            Data = DshData.Create
            PanelContainer=panelContainer
            Dialog = dialog
-           DshEditor = DshEditor.Create
+           Editor = DshEditor.Create
            PropertyGrid = PropertyGrid.Create
         }
-    member x.RegisterWidget panelKey (toPanelContainer:PanelContainer) worker = 
-        x.Data.RegisterWidget panelKey worker
+    member x.RegisterWidget key panelKey (toPanelContainer:PanelContainer) worker = 
+        x.Data.RegisterWidget key panelKey worker 
         let panel = Panel.Create
                          .WithTitle(false)
                          .WithPanelContent(worker.Render)
                         // .WithProperties ((SourceProperty(x.Data,worker) :>IProperty)::worker.Properties) 
 
         toPanelContainer.AddPanel panel
-    member x.CreatePanel(name,cx,?afterRenderFnc) = 
+    member x.CreatePanel(name,cx,?key) = //,?afterRenderFnc) = 
         let renderWidgets= x.Data.WidgetItems.View
                            |> Doc.BindSeqCachedBy x.Data.WidgetItems.Key (fun item-> 
                                                                                 let nameView = item.Widget.Name.View
                                                                                 div[textView nameView])           
 
-        let afterRenderFncDef = defaultArg afterRenderFnc (fun _->())
+        //let afterRenderFncDef = defaultArg afterRenderFnc (fun _->())
+        let keyDef = defaultArg key (System.Guid.NewGuid().ToString())
         let childContainerContent = PanelContainer.Create
                                                   .WithLayoutManager(LayoutManagers.StackPanelLayoutManager)
                                                   .WithAttributes([Attr.Style "border" "1px solid white"
                                                                    Attr.Style "display" "flex"
                                                                   ]) 
         let panel = Panel.Create
+                         .WithKey(keyDef)
                          .WithPannelAttrs([Attr.Style "Width" (cx.ToString()+"px")
                                            Attr.Style "position" "absolute"
                                           ])
@@ -62,7 +64,7 @@ type Dashboard =
                                                                         x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 Console.Log("Dialog.IsOK")
-                                                                                                                x.RegisterWidget panel.Key panel.Children selected.Value.Worker.CloneAndRun
+                                                                                                                x.RegisterWidget (Helper.UniqueKey()) panel.Key panel.Children selected.Value.Worker.CloneAndRun
                                                                                                              )
                                                                        ))}
                                         {Icon="edit"; Action=(fun panel->Console.Log("Edit")
@@ -70,9 +72,29 @@ type Dashboard =
                                         {Icon="clear";Action=(fun panel->x.PanelContainer.PanelItems.Remove(x.PanelContainer.FindPanelItem panel))}
                                       ])
                           .WithChildPanelContainer(childContainerContent)
-                          .WithOnAfterRender(afterRenderFncDef)
+                          //.WithOnAfterRender(afterRenderFncDef)
         x.PanelContainer.AddPanel panel
-        childContainerContent   
+        //childContainerContent
+        panel   
+    member x.Restore panelList events widgets dashEditorData =
+        x.PanelContainer.PanelItems.Clear()
+        x.Data.Clear
+        panelList
+        |> List.iter(fun (panelConfig:PanelData) -> 
+                             let panel = x.CreatePanel("Panel",700,panelConfig.Key)
+                             panel.Left.Value <- panelConfig.Left
+                             panel.Top.Value <- panelConfig.Top
+                    )
+        events |> List.iter (fun (key,event:Worker) -> x.Data.RegisterEvent key (event.WithStartRunner()))     
+        Console.Log("Events restored")   
+        widgets |> List.iter (fun (key,panelKey,widget:Worker) ->
+                                let panel = x.PanelContainer.PanelItems |>List.ofSeq |> List.find (fun entry -> entry.Key = panelKey)
+                                x.RegisterWidget key panelKey panel.Children (widget.WithStartRunner()))
+        Console.Log("Widgets restored")   
+        x.Editor.Restore (x.Data) dashEditorData
+        Console.Log("Connectors restored")   
+        x.Data.WorkItems |> List.ofSeq |> List.iter (fun worker -> worker.Worker.Runner |> Option.map(fun runner -> runner.Run worker.Worker) |> ignore)
+
     member x.Render=
         let eventsRender =
             table[
@@ -86,7 +108,7 @@ type Dashboard =
                                                         [content])
         let containers = ["Board",  container true x.PanelContainer.Render
                           "Events", container false eventsRender
-                          "Rules",  container false (x.DshEditor.Render x.Data)
+                          "Rules",  container false (x.Editor.Render x.Data)
                          ]
         let menu=containers |> List.map (fun (name,(varVis,targetDiv)) ->tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (isVisible) -> if isVisible then "#FB8C00" else "#7D4600")  varVis.View) 
                                                                                    Attr.Style "cursor" "pointer"
@@ -113,9 +135,9 @@ type Dashboard =
                                                                     let selected=Var.Create (items.Head)
                                                                     x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ ->  let event = selected.Value.Worker.CloneAndRun
-                                                                                                                        x.Data.RegisterEvent event)
+                                                                                                                        x.Data.RegisterEvent (Helper.UniqueKey()) event)
                                                                 else if varBoolDash.Value then
-                                                                    x.CreatePanel("Panel",700,(fun _->()))|>ignore
+                                                                    x.CreatePanel("Panel",700)|>ignore
                                                              )]]
                                             tr[td[]]
                                             tr[td[x.PropertyGrid.Render]]

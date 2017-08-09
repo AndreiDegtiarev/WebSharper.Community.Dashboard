@@ -46,11 +46,13 @@ module OpenWeather =
 [<JavaScript>]
 type OpenWeatherRunner =
  {
+        Name:string 
         OpenWeatherCity:StringValue
         OpenWeatherApiKey:StringValue
         OutPortKey:string
  }
  static member Create city apikey = {
+                                        Name = "OpenWeatherMap"
                                         OpenWeatherCity = StringValue.Create city;
                                         OpenWeatherApiKey= StringValue.Create apikey
                                         OutPortKey = System.Guid.NewGuid().ToString()
@@ -59,11 +61,12 @@ type OpenWeatherRunner =
                                              OpenWeatherCity=worker.InPorts.[0].StringValue 
                                              OpenWeatherApiKey=worker.InPorts.[1].StringValue 
                                              OutPortKey=worker.OutPorts.[0].Key
+                                             Name = worker.Name.Value
                                           }
                            )
  
  interface IWorkerContext with
-    override x.Name = "OpenWeatherMap"
+    override x.Name = x.Name
     override x.InPorts = [Ports.InPortStr "City" x.OpenWeatherCity;Ports.InPortStr "ApiKey" x.OpenWeatherApiKey]
     override x.OutPorts = [Ports.OutPortNum x.OutPortKey "Temperature"]
  interface IRunner with

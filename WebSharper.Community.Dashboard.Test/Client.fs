@@ -15,25 +15,22 @@ module Client =
 
     let Main () =
         
-        let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
-        let panelContainer=PanelContainer.Create
-                                         .WithLayoutManager(layoutManager)
-                                         .WithWidth(800.0).WithHeight(420.0)
-                                         .WithAttributes([Attr.Style "border" "1px solid white"
-                                                          //Attr.Style "position" "absolute"
-                                                         ])
-        let dashboard = Dashboard.Create panelContainer
-        let register data fnc = data |> AppModel.ToWorker |> fnc
-        let registerEvent  data = register data dashboard.Factory.RegisterEvent
-        let registerWidget data = register data dashboard.Factory.RegisterWidget
+        let dashboard = AppData.CreateDashboard
 
-        OpenWeatherRunner.Create "London" ""  |> registerEvent
-        RandomRunner.Create 50.0 5.0          |> registerEvent
-        TextBoxRenderer.Create                |> registerWidget
-        ChartRenderer.Create 300.0 100.0 50.0 |> registerWidget
-
+        let fileName = Var.Create "D:\\Dashboard.cfg"
         div[dashboard.Render
-            Helper.IconNormal "add" (fun _ ->  let data =  dashboard.Data |> AppData.Create 
-                                               Console.Log(Server.Serialize data))
+            text "File name"
+            Doc.Input [] fileName
+            Helper.TxtIconNormal "file_upload" "Upload" (fun _ ->  
+                                          let data =  AppData.Create dashboard
+                                          //data.Recreate dashboard
+                                          Server.SaveToFile(fileName.Value,data)
+                                          //Console.Log(Server.Serialize data)
+                                    )
+            Helper.TxtIconNormal "file_download" "Download" (fun _ ->  
+                              let data =  Server.LoadFromFile(fileName.Value)
+                              data.Recreate dashboard
+                              //Console.Log(Server.Serialize data)
+                        )
 
         ]

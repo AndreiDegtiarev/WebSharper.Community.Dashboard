@@ -4,6 +4,7 @@ open WebSharper
 open WebSharper.JavaScript
 open WebSharper.UI.Next
 open WebSharper.UI.Next.Storage
+open WebSharper.Community.Panel
 
 
 [<JavaScript>]
@@ -47,14 +48,20 @@ type DshData =
             //EventItems = ListModel.CreateWithStorage (fun item ->item.Key) (LocalStorage "local-storage" Serializer.Default<WorkerItem>)
             PortConnectorItems = ListModel.Create (fun item ->item.Key) []
         }
-    member x.RegisterEvent event = 
-        let item = WorkerItem.Create event
+    member x.Clear = 
+        x.WorkItems.Clear()
+        x.WidgetItems.Clear()
+        x.EventItems.Clear()
+        x.PortConnectorItems.Clear()
+    member x.RegisterEvent key (event:Worker) = 
+        let item = WorkerItem.Create (event.WithKey(key))
         x.EventItems.Add item
         x.WorkItems.Add item
-    member x.RegisterWidget panel widget = 
-        let item = WidgetItem.Create panel widget
+    member x.RegisterWidget key panel (widget:Worker) = 
+        let widget_key = widget.WithKey(key)
+        let item = WidgetItem.Create panel (widget_key)
         x.WidgetItems.Add item
-        x.WorkItems.Add (WorkerItem.Create widget)
+        x.WorkItems.Add (WorkerItem.Create widget_key)
     member x.ConnectPorts (outPort:OutPort) (inPort:InPort) = 
         Console.Log("Connect ports:"+outPort.Name+" "+inPort.Name)
         let connnector = PortConnector.Create outPort inPort 

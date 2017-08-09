@@ -4,6 +4,7 @@ open WebSharper
 open WebSharper.JavaScript
 open WebSharper.UI.Next
 open WebSharper.Community.PropertyGrid
+open WebSharper.Community.Panel
 
 [<JavaScript>]type IRunnerContext = interface end
 
@@ -16,6 +17,7 @@ and
  [<JavaScript;CustomEquality;NoComparison>] 
  Worker =
    {
+       Key:string
        Name:Var<string>
        InPorts:list<InPort>
        OutPorts:list<OutPort>
@@ -24,8 +26,23 @@ and
        DataContext:IWorkerContext
        RunnerContext:Option<IRunnerContext>
    }
-   static member CreateNative (dataContext:IWorkerContext) runner renderer =
+   static member Create (dataContext:IWorkerContext) =
            {
+               Key = System.Guid.NewGuid().ToString()
+               Name = Var.Create dataContext.Name
+               InPorts = dataContext.InPorts
+               OutPorts = dataContext.OutPorts
+               Runner = None
+               Renderer = None
+               DataContext = dataContext 
+               RunnerContext = None                   
+           }
+   member x.WithKey(key) = {x with Key=key}
+   member x.WithRunner(runner) = {x with Runner=Some(runner)}
+   member x.WithRenderer(renderer) = {x with Renderer=Some(renderer)}
+(*   static member CreateNative (dataContext:IWorkerContext) runner renderer =
+           {
+               Key = System.Guid.NewGuid().ToString()
                Name = Var.Create dataContext.Name
                InPorts = dataContext.InPorts
                OutPorts = dataContext.OutPorts
@@ -39,7 +56,11 @@ and
    static member CreateRunner dataContext = 
        Worker.CreateNative dataContext (Some(dataContext :>IRunner)) None
    static member CreateRenderer dataContext = 
-       Worker.CreateNative dataContext None (Some(dataContext :>IRenderer)) 
+       Worker.CreateNative dataContext None (Some(dataContext :>IRenderer))  *)
+   member x.WithStartRunner()  = 
+          match x.Runner with
+          |Some(runner) -> {x with RunnerContext=runner.Run(x)}
+          |None -> x
 
    member x.CloneAndRun =
           let varName = Var.Create x.Name.Value
@@ -47,6 +68,7 @@ and
           let oPorts = x.OutPorts |> List.map (fun port -> Ports.Clone port)
           let copy =
               {
+                       Key = Helper.UniqueKey()
                        Name = varName
                        InPorts = iPorts
                        OutPorts = oPorts
@@ -55,9 +77,7 @@ and
                        DataContext = x.DataContext
                        RunnerContext = None
               } 
-          match copy.Runner with
-          |Some(runner) -> {copy with RunnerContext=runner.Run(copy)}
-          |None -> copy
+          copy.WithStartRunner()
           
    member x.Render =  match x.Renderer with
                       |Some(renderer) -> renderer.Render(x)

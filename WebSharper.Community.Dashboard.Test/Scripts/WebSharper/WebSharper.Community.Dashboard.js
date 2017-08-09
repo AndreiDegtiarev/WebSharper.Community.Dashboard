@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,EmptyTrigger,NumberTrigger,NumberValue,StringValue,InPort,OutPort,PortConnectorData,PortConnector,Ports,Worker,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,WorkerItem,Factory,PortConnectorItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,Dashboard$1,IntelliFactory,Runtime,Guid,Operators,PropertyGrid,Properties,UI,Next,Var,Control,FSharpEvent,console,Unchecked,List,Doc,Random,Concurrency,Math,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Seq,Chart,Pervasives,View,AttrModule,Key,ListModel,Option,Panel,Helper,Enumerator,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var WebSharper,Community,Dashboard,EmptyTrigger,NumberTrigger,NumberValue,StringValue,InPort,OutPort,PortConnector,Ports,Worker,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,WorkerItem,Factory,PortConnectorItem,WidgetItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,DshEditorCellData,DshEditorRowData,DshEditorData,Dashboard$1,IntelliFactory,Runtime,Guid,Operators,PropertyGrid,Properties,UI,Next,Var,Control,FSharpEvent,console,Unchecked,List,Doc,Panel,Helper,Random,Concurrency,Math,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Seq,Chart,Pervasives,View,AttrModule,Key,ListModel,Option,Enumerator,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
@@ -11,7 +11,6 @@
  StringValue=Dashboard.StringValue=Dashboard.StringValue||{};
  InPort=Dashboard.InPort=Dashboard.InPort||{};
  OutPort=Dashboard.OutPort=Dashboard.OutPort||{};
- PortConnectorData=Dashboard.PortConnectorData=Dashboard.PortConnectorData||{};
  PortConnector=Dashboard.PortConnector=Dashboard.PortConnector||{};
  Ports=Dashboard.Ports=Dashboard.Ports||{};
  Worker=Dashboard.Worker=Dashboard.Worker||{};
@@ -25,10 +24,14 @@
  WorkerItem=Dashboard.WorkerItem=Dashboard.WorkerItem||{};
  Factory=Dashboard.Factory=Dashboard.Factory||{};
  PortConnectorItem=Dashboard.PortConnectorItem=Dashboard.PortConnectorItem||{};
+ WidgetItem=Dashboard.WidgetItem=Dashboard.WidgetItem||{};
  DshData=Dashboard.DshData=Dashboard.DshData||{};
  DshEditorCellItem=Dashboard.DshEditorCellItem=Dashboard.DshEditorCellItem||{};
  DshEditorRowItem=Dashboard.DshEditorRowItem=Dashboard.DshEditorRowItem||{};
  DshEditor=Dashboard.DshEditor=Dashboard.DshEditor||{};
+ DshEditorCellData=Dashboard.DshEditorCellData=Dashboard.DshEditorCellData||{};
+ DshEditorRowData=Dashboard.DshEditorRowData=Dashboard.DshEditorRowData||{};
+ DshEditorData=Dashboard.DshEditorData=Dashboard.DshEditorData||{};
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
@@ -45,6 +48,8 @@
  Unchecked=WebSharper&&WebSharper.Unchecked;
  List=WebSharper&&WebSharper.List;
  Doc=Next&&Next.Doc;
+ Panel=Community&&Community.Panel;
+ Helper=Panel&&Panel.Helper;
  Random=WebSharper&&WebSharper.Random;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  Math=window.Math;
@@ -68,8 +73,6 @@
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
  Option=WebSharper&&WebSharper.Option;
- Panel=Community&&Community.Panel;
- Helper=Panel&&Panel.Helper;
  Enumerator=WebSharper&&WebSharper.Enumerator;
  PanelContainer=Panel&&Panel.PanelContainer;
  LayoutManagers=Panel&&Panel.LayoutManagers;
@@ -228,31 +231,18 @@
    Trigger:Trigger
   });
  };
- PortConnectorData.New=function(OutPortKey,InPortKey)
- {
-  return{
-   OutPortKey:OutPortKey,
-   InPortKey:InPortKey
-  };
- };
- PortConnector=Dashboard.PortConnector=Runtime.Class({
-  get_Data:function()
-  {
-   return PortConnectorData.New(this.OutPort.Key,this.InPort.Key);
-  }
- },null,PortConnector);
  PortConnector.Create=function(oPort,iPort)
  {
   return PortConnector.New(oPort.Name+"->"+iPort.Name,iPort,oPort,oPort.Connect(iPort));
  };
  PortConnector.New=function(Name,InPort$1,OutPort$1,Disconnect)
  {
-  return new PortConnector({
+  return{
    Name:Name,
    InPort:InPort$1,
    OutPort:OutPort$1,
    Disconnect:Disconnect
-  });
+  };
  };
  Ports.Clone=function(oPort)
  {
@@ -368,46 +358,49 @@
   },
   get_CloneAndRun:function()
   {
-   var copy,m;
-   copy=Worker.New(Var.Create$1(this.Name.c),List.map(function(port)
+   var varName,iPorts,oPorts;
+   varName=Var.Create$1(this.Name.c);
+   iPorts=List.map(function(port)
    {
     return port.get_Clone();
-   },this.InPorts),List.map(Ports.Clone,this.OutPorts),this.Runner,this.Renderer,this.DataContext,null);
-   m=copy.Runner;
-   return m==null?copy:Worker.New(copy.Name,copy.InPorts,copy.OutPorts,copy.Runner,copy.Renderer,copy.DataContext,(m.$0.WebSharper_Community_Dashboard_IRunner$get_Run())(copy));
+   },this.InPorts);
+   oPorts=List.map(Ports.Clone,this.OutPorts);
+   return Worker.New(Helper.UniqueKey(),varName,iPorts,oPorts,this.Runner,this.Renderer,this.DataContext,null).WithStartRunner();
+  },
+  WithStartRunner:function()
+  {
+   var m;
+   m=this.Runner;
+   return m==null?this:Worker.New(this.Key,this.Name,this.InPorts,this.OutPorts,this.Runner,this.Renderer,this.DataContext,(m.$0.WebSharper_Community_Dashboard_IRunner$get_Run())(this));
+  },
+  WithRenderer:function(renderer)
+  {
+   return Worker.New(this.Key,this.Name,this.InPorts,this.OutPorts,this.Runner,{
+    $:1,
+    $0:renderer
+   },this.DataContext,this.RunnerContext);
+  },
+  WithRunner:function(runner)
+  {
+   return Worker.New(this.Key,this.Name,this.InPorts,this.OutPorts,{
+    $:1,
+    $0:runner
+   },this.Renderer,this.DataContext,this.RunnerContext);
+  },
+  WithKey:function(key)
+  {
+   return Worker.New(key,this.Name,this.InPorts,this.OutPorts,this.Runner,this.Renderer,this.DataContext,this.RunnerContext);
   }
  },null,Worker);
- Worker.CreateRenderer=function(dataContext)
- {
-  return Worker.CreateNative(dataContext,null,{
-   $:1,
-   $0:dataContext
-  });
- };
- Worker.CreateRunner=function(dataContext)
- {
-  return Worker.CreateNative(dataContext,{
-   $:1,
-   $0:dataContext
-  },null);
- };
  Worker.Create=function(dataContext)
  {
-  return Worker.CreateNative(dataContext,{
-   $:1,
-   $0:dataContext
-  },{
-   $:1,
-   $0:dataContext
-  });
+  var c;
+  return Worker.New((c=Guid.NewGuid(),window.String(c)),Var.Create$1(dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_Name()),dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_InPorts(),dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_OutPorts(),null,null,dataContext,null);
  };
- Worker.CreateNative=function(dataContext,runner,renderer)
- {
-  return Worker.New(Var.Create$1(dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_Name()),dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_InPorts(),dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_OutPorts(),runner,renderer,dataContext,null);
- };
- Worker.New=function(Name,InPorts,OutPorts,Runner,Renderer,DataContext,RunnerContext)
+ Worker.New=function(Key$1,Name,InPorts,OutPorts,Runner,Renderer,DataContext,RunnerContext)
  {
   return new Worker({
+   Key:Key$1,
    Name:Name,
    InPorts:InPorts,
    OutPorts:OutPorts,
@@ -438,6 +431,7 @@
        middle=worker.InPorts.get_Item(0).get_Number();
        d=Math.random()*disper+middle;
        (Ports.NumTrigger(worker.OutPorts.get_Item(0)))(d);
+       console.log("Value generated");
        return Concurrency.Zero();
       });
      }));
@@ -455,24 +449,25 @@
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_Name:function()
   {
-   return"Rundom";
+   return this.Name;
   }
  },null,RandomRunner);
  RandomRunner.get_FromPorts=function()
  {
   return function(worker)
   {
-   return RandomRunner.New(worker.InPorts.get_Item(0).get_NumberValue(),worker.InPorts.get_Item(1).get_NumberValue(),worker.OutPorts.get_Item(0).Key);
+   return RandomRunner.New(worker.Name.c,worker.InPorts.get_Item(0).get_NumberValue(),worker.InPorts.get_Item(1).get_NumberValue(),worker.OutPorts.get_Item(0).Key);
   };
  };
  RandomRunner.Create=function(middleValue,dispersion)
  {
   var c;
-  return RandomRunner.New(NumberValue.Create(middleValue),NumberValue.Create(dispersion),(c=Guid.NewGuid(),window.String(c)));
+  return RandomRunner.New("Random",NumberValue.Create(middleValue),NumberValue.Create(dispersion),(c=Guid.NewGuid(),window.String(c)));
  };
- RandomRunner.New=function(MiddleValue,Dispersion,OutPortKey)
+ RandomRunner.New=function(Name,MiddleValue,Dispersion,OutPortKey)
  {
   return new RandomRunner({
+   Name:Name,
    MiddleValue:MiddleValue,
    Dispersion:Dispersion,
    OutPortKey:OutPortKey
@@ -602,24 +597,25 @@
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_Name:function()
   {
-   return"OpenWeatherMap";
+   return this.Name;
   }
  },null,OpenWeatherRunner);
  OpenWeatherRunner.get_FromPorts=function()
  {
   return function(worker)
   {
-   return OpenWeatherRunner.New(worker.InPorts.get_Item(0).get_StringValue(),worker.InPorts.get_Item(1).get_StringValue(),worker.OutPorts.get_Item(0).Key);
+   return OpenWeatherRunner.New(worker.Name.c,worker.InPorts.get_Item(0).get_StringValue(),worker.InPorts.get_Item(1).get_StringValue(),worker.OutPorts.get_Item(0).Key);
   };
  };
  OpenWeatherRunner.Create=function(city,apikey)
  {
   var c;
-  return OpenWeatherRunner.New(StringValue.Create(city),StringValue.Create(apikey),(c=Guid.NewGuid(),window.String(c)));
+  return OpenWeatherRunner.New("OpenWeatherMap",StringValue.Create(city),StringValue.Create(apikey),(c=Guid.NewGuid(),window.String(c)));
  };
- OpenWeatherRunner.New=function(OpenWeatherCity,OpenWeatherApiKey,OutPortKey)
+ OpenWeatherRunner.New=function(Name,OpenWeatherCity,OpenWeatherApiKey,OutPortKey)
  {
   return new OpenWeatherRunner({
+   Name:Name,
    OpenWeatherCity:OpenWeatherCity,
    OpenWeatherApiKey:OpenWeatherApiKey,
    OutPortKey:OutPortKey
@@ -812,25 +808,44 @@
    PortConnector:PortConnector$1
   };
  };
+ WidgetItem.Create=function(panel,widget)
+ {
+  return WidgetItem.New(Key.Fresh(),panel,widget);
+ };
+ WidgetItem.New=function(Key$1,Panel$2,Widget)
+ {
+  return{
+   Key:Key$1,
+   Panel:Panel$2,
+   Widget:Widget
+  };
+ };
  DshData=Dashboard.DshData=Runtime.Class({
   ConnectPorts:function(outPort,inPort)
   {
    console.log("Connect ports:"+outPort.Name+" "+inPort.Name);
    this.PortConnectorItems.Append(PortConnectorItem.Create(PortConnector.Create(outPort,inPort)));
   },
-  RegisterWidget:function(widget)
+  RegisterWidget:function(key,panel,widget)
   {
-   var item;
-   item=WorkerItem.Create(widget);
-   this.WidgetItems.Append(item);
-   this.WorkItems.Append(item);
+   var widget_key;
+   widget_key=widget.WithKey(key);
+   this.WidgetItems.Append(WidgetItem.Create(panel,widget_key));
+   this.WorkItems.Append(WorkerItem.Create(widget_key));
   },
-  RegisterEvent:function(event)
+  RegisterEvent:function(key,event)
   {
    var item;
-   item=WorkerItem.Create(event);
+   item=WorkerItem.Create(event.WithKey(key));
    this.EventItems.Append(item);
    this.WorkItems.Append(item);
+  },
+  get_Clear:function()
+  {
+   this.WorkItems.Clear();
+   this.WidgetItems.Clear();
+   this.EventItems.Clear();
+   this.PortConnectorItems.Clear();
   }
  },null,DshData);
  DshData.get_Create=function()
@@ -998,14 +1013,64 @@
    {
     return Doc.Element("tr",[],[item.Render(data,function()
     {
-     $this.Reconnect(data,void 0);
+     $this.Reconnect(data);
     })]);
    },this.RowItems.v),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
    {
     $this.RowItems.Append(DshEditorRowItem.get_Create());
    })])])]);
   },
-  Reconnect:function(data,u)
+  Recreate:function(data)
+  {
+   this.RowItems.Clear();
+  },
+  Restore:function(data,editorData)
+  {
+   var $this,allOutPorts,allInPorts;
+   function allPorts(fnc)
+   {
+    return List.concat(List.map(function(item)
+    {
+     return fnc(item.Worker);
+    },List.ofSeq(data.WorkItems)));
+   }
+   $this=this;
+   this.RowItems.Clear();
+   allOutPorts=allPorts(function(worker)
+   {
+    return worker.OutPorts;
+   });
+   allInPorts=allPorts(function(worker)
+   {
+    return worker.InPorts;
+   });
+   List.iter(function(rowData)
+   {
+    var row;
+    row=DshEditorRowItem.get_Create();
+    List.iter(function(cellData)
+    {
+     var cell;
+     cell=DshEditorCellItem.get_Create();
+     Var.Set(cell.OptWorker,Seq.tryFind(function(item)
+     {
+      return item.Worker.Key===cellData.CellWorkerKey;
+     },List.ofSeq(data.WorkItems)));
+     Var.Set(cell.OptInPort,Seq.tryFind(function(port)
+     {
+      return port.Key===cellData.CellInPortKey;
+     },allInPorts));
+     Var.Set(cell.OptOutPort,Seq.tryFind(function(port)
+     {
+      return port.Key===cellData.CellOutPortKey;
+     },allOutPorts));
+     row.CellItems.Append(cell);
+    },rowData.DshEditorCells);
+    $this.RowItems.Append(row);
+   },editorData.DshEditorRows);
+   this.Reconnect(data);
+  },
+  Reconnect:function(data)
   {
    Seq.iter(function(item)
    {
@@ -1057,6 +1122,37 @@
    RowItems:RowItems
   });
  };
+ DshEditorCellData.New=function(CellInPortKey,CellOutPortKey,CellWorkerKey)
+ {
+  return{
+   CellInPortKey:CellInPortKey,
+   CellOutPortKey:CellOutPortKey,
+   CellWorkerKey:CellWorkerKey
+  };
+ };
+ DshEditorRowData.New=function(DshEditorCells)
+ {
+  return{
+   DshEditorCells:DshEditorCells
+  };
+ };
+ DshEditorData.Create=function(editor)
+ {
+  return DshEditorData.New(List.map(function(row)
+  {
+   return DshEditorRowData.New(List.map(function(cell)
+   {
+    var m,m$1,m$2;
+    return DshEditorCellData.New((m=cell.OptInPort.c,m==null?"":m.$0.Key),(m$1=cell.OptOutPort.c,m$1==null?"":m$1.$0.Key),(m$2=cell.OptWorker.c,m$2==null?"":m$2.$0.Worker.Key));
+   },List.ofSeq(row.CellItems)));
+  },List.ofSeq(editor.RowItems)));
+ };
+ DshEditorData.New=function(DshEditorRows)
+ {
+  return{
+   DshEditorRows:DshEditorRows
+  };
+ };
  Dashboard$1=Dashboard.Dashboard=Runtime.Class({
   get_Render:function()
   {
@@ -1081,7 +1177,7 @@
      $this.PropertyGrid.Edit(item.Worker.get_Properties());
     }),[Doc.TextView(item.Worker.Name.v)])]);
    },this.Data.EventItems.v)]);
-   containers=List.ofArray([["Board",container(true,this.PanelContainer.get_Render())],["Events",container(false,eventsRender)],["Rules",container(false,this.DshEditor.Render(this.Data))]]);
+   containers=List.ofArray([["Board",container(true,this.PanelContainer.get_Render())],["Events",container(false,eventsRender)],["Rules",container(false,this.Editor.Render(this.Data))]]);
    menu=(m=function(name,a)
    {
     var varVis;
@@ -1129,25 +1225,69 @@
      return item.Worker.Name.c;
     },items,selected)]),function()
     {
-     $this.Data.RegisterEvent(selected.c.Worker.get_CloneAndRun());
-    })):varBoolDash.c?$this.CreatePanel("Panel",700,{
-     $:1,
-     $0:function()
-     {
-     }
-    }):void 0;
+     var a;
+     a=selected.c.Worker.get_CloneAndRun();
+     $this.Data.RegisterEvent(Helper.UniqueKey(),a);
+    })):varBoolDash.c?$this.CreatePanel("Panel",700,null):void 0;
    })])]),Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[this.PropertyGrid.get_Render()])])]),menu]))]),Doc.Element("td",[],containerDivs)])]),Doc.Element("div",[],[this.Dialog.get_Render()])]);
   },
-  CreatePanel:function(name,cx,afterRenderFnc)
+  Restore:function(panelList,events,widgets,dashEditorData)
   {
-   var $this,childContainerContent;
+   var $this,a,a$1;
+   $this=this;
+   this.PanelContainer.PanelItems.Clear();
+   this.Data.get_Clear();
+   List.iter(function(panelConfig)
+   {
+    var panel;
+    panel=$this.CreatePanel("Panel",700,{
+     $:1,
+     $0:panelConfig.Key
+    });
+    Var.Set(panel.Left,panelConfig.Left);
+    Var.Set(panel.Top,panelConfig.Top);
+   },panelList);
+   a=function(key,event)
+   {
+    $this.Data.RegisterEvent(key,event.WithStartRunner());
+   };
+   List.iter(function($1)
+   {
+    return a($1[0],$1[1]);
+   },events);
+   console.log("Events restored");
+   a$1=function(key,panelKey,widget)
+   {
+    $this.RegisterWidget(key,panelKey,Seq.find(function(entry)
+    {
+     return entry.Key===panelKey;
+    },List.ofSeq($this.PanelContainer.PanelItems)).Children,widget.WithStartRunner());
+   };
+   List.iter(function($1)
+   {
+    return a$1($1[0],$1[1],$1[2]);
+   },widgets);
+   console.log("Widgets restored");
+   this.Editor.Restore(this.Data,dashEditorData);
+   console.log("Connectors restored");
+   List.iter(function(worker)
+   {
+    var o;
+    o=worker.Worker.Runner;
+    o==null?void 0:(o.$0.WebSharper_Community_Dashboard_IRunner$get_Run())(worker.Worker);
+   },List.ofSeq(this.Data.WorkItems));
+  },
+  CreatePanel:function(name,cx,key)
+  {
+   var $this,keyDef,d,c,childContainerContent,panel;
    $this=this;
    Doc.ConvertBy(this.Data.WidgetItems.key,function(item)
    {
-    return Doc.Element("div",[],[Doc.TextView(item.Worker.Name.v)]);
-   },this.Factory.WidgetItems.v);
+    return Doc.Element("div",[],[Doc.TextView(item.Widget.Name.v)]);
+   },this.Data.WidgetItems.v);
+   keyDef=(d=(c=Guid.NewGuid(),window.String(c)),key==null?d:key.$0);
    childContainerContent=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.StackPanelLayoutManager()).WithAttributes([AttrModule.Style("border","1px solid white"),AttrModule.Style("display","flex")]);
-   this.PanelContainer.AddPanel(Panel$1.get_Create().WithPannelAttrs([AttrModule.Style("Width",window.String(cx)+"px"),AttrModule.Style("position","absolute")]).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel)
+   panel=Panel$1.get_Create().WithKey(keyDef).WithPannelAttrs([AttrModule.Style("Width",window.String(cx)+"px"),AttrModule.Style("position","absolute")]).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel$1)
    {
     var items,selected;
     items=List.ofSeq($this.Factory.WidgetItems);
@@ -1158,23 +1298,22 @@
     },items,selected)]),function()
     {
      console.log("Dialog.IsOK");
-     $this.RegisterWidget(panel.Children,selected.c.Worker.get_CloneAndRun());
+     $this.RegisterWidget(Helper.UniqueKey(),panel$1.Key,panel$1.Children,selected.c.Worker.get_CloneAndRun());
     });
-   }),TitleButton.New("edit",function(panel)
+   }),TitleButton.New("edit",function(panel$1)
    {
     console.log("Edit");
-    panel.EditProperties($this.PropertyGrid);
-   }),TitleButton.New("clear",function(panel)
+    panel$1.EditProperties($this.PropertyGrid);
+   }),TitleButton.New("clear",function(panel$1)
    {
-    $this.PanelContainer.PanelItems.Remove($this.PanelContainer.FindPanelItem(panel));
-   })])).WithChildPanelContainer(childContainerContent).WithOnAfterRender(afterRenderFnc==null?function()
-   {
-   }:afterRenderFnc.$0));
-   return childContainerContent;
+    $this.PanelContainer.PanelItems.Remove($this.PanelContainer.FindPanelItem(panel$1));
+   })])).WithChildPanelContainer(childContainerContent);
+   this.PanelContainer.AddPanel(panel);
+   return panel;
   },
-  RegisterWidget:function(toPanelContainer,worker)
+  RegisterWidget:function(key,panelKey,toPanelContainer,worker)
   {
-   this.Data.RegisterWidget(worker);
+   this.Data.RegisterWidget(key,panelKey,worker);
    toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(worker.get_Render()));
   }
  },null,Dashboard$1);
@@ -1184,13 +1323,13 @@
   dialog=Dialog.get_Create();
   return Dashboard$1.New(Factory.get_Create(),DshData.get_Create(),panelContainer,DshEditor.get_Create(),PropertyGrid$1.get_Create(),dialog);
  };
- Dashboard$1.New=function(Factory$1,Data$2,PanelContainer$1,DshEditor$1,PropertyGrid$2,Dialog$1)
+ Dashboard$1.New=function(Factory$1,Data$2,PanelContainer$1,Editor,PropertyGrid$2,Dialog$1)
  {
   return new Dashboard$1({
    Factory:Factory$1,
    Data:Data$2,
    PanelContainer:PanelContainer$1,
-   DshEditor:DshEditor$1,
+   Editor:Editor,
    PropertyGrid:PropertyGrid$2,
    Dialog:Dialog$1
   });

@@ -8,6 +8,7 @@ open WebSharper.UI.Next.Html
 open WebSharper.Community.Panel
 open WebSharper.Community.PropertyGrid
 
+
 [<JavaScript>]
 type DshEditorCellItem =
     {
@@ -72,6 +73,7 @@ type DshEditorCellItem =
                          ]
                       ]
               ]
+    
 [<JavaScript>]
 type DshEditorRowItem =
     {
@@ -99,7 +101,7 @@ type DshEditor =
         {
             RowItems = ListModel.Create (fun item ->item.Key) []
         }
-    member x.Reconnect (data:DshData) ()= 
+    member x.Reconnect (data:DshData) = 
                            data.PortConnectorItems |> Seq.iter (fun item -> item.PortConnector.Disconnect())
                            data.PortConnectorItems.Clear()
                            x.RowItems
@@ -114,10 +116,60 @@ type DshEditor =
                                                                                   |> Option.map (fun inPort->data.ConnectPorts outPort inPort))|>ignore
                                                     //data.ConnectPorts (cell1.OptOutPort.Value.Value) (cell2.OptInPort.Value.Value) 
                                         )
+    member x.Restore data (editorData:DshEditorData) =
+        x.RowItems.Clear()
+        let allPorts fnc = data.WorkItems |>List.ofSeq |> List.map (fun item -> fnc item.Worker) |> List.concat
+        let allOutPorts = allPorts (fun worker -> worker.OutPorts)
+        let allInPorts = allPorts (fun worker -> worker.InPorts)
+
+        editorData.DshEditorRows |> List.iter (fun rowData -> 
+                                            let row = DshEditorRowItem.Create 
+                                            rowData.DshEditorCells |> List.iter (fun cellData ->
+                                                                                    let cell = DshEditorCellItem.Create
+                                                                                    cell.OptWorker.Value <- data.WorkItems |> List.ofSeq |> List.tryFind (fun item ->  item.Worker.Key = cellData.CellWorkerKey)
+                                                                                    cell.OptInPort.Value <- allInPorts |> List.tryFind (fun port ->  port.Key = cellData.CellInPortKey)
+                                                                                    cell.OptOutPort.Value <- allOutPorts |> List.tryFind (fun port ->  port.Key = cellData.CellOutPortKey)
+                                                                                    row.CellItems.Add cell
+                                                                                )  
+                                            x.RowItems.Add row      
+                                     )
+        x.Reconnect data
+    member x.Recreate (data:DshData) =
+        x.RowItems.Clear()
+
+        
     member x.Render data = 
         let renderRows=  ListModel.View x.RowItems
-                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data (x.Reconnect data)])
+                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data (fun _ -> x.Reconnect data)])
         table[
                renderRows
                tr[td[Helper.IconNormal "add" (fun _ -> x.RowItems.Add (DshEditorRowItem.Create) )]]
              ]
+and
+ [<JavaScript>]
+  DshEditorCellData =
+   {CellInPortKey:string;CellOutPortKey:string;CellWorkerKey:string;}
+and
+ [<JavaScript>]
+  DshEditorRowData =
+   {DshEditorCells:DshEditorCellData list}
+and
+ [<JavaScript>]
+  DshEditorData =
+    {DshEditorRows:DshEditorRowData list}
+    static member Create editor =
+       {DshEditorRows =
+            editor.RowItems |> List.ofSeq 
+            |> List.map (fun row -> {DshEditorCells =
+                                         row.CellItems |> List.ofSeq
+                                         |> List.map (fun cell ->
+                                                            {CellInPortKey  = match cell.OptInPort.Value with | Some(port) -> port.Key | None -> ""
+                                                             CellOutPortKey = match cell.OptOutPort.Value with | Some(port) -> port.Key | None -> ""
+                                                             CellWorkerKey  = match cell.OptWorker.Value with | Some(worker) -> worker.Worker.Key | None -> "" 
+                                                            }
+                                                       )
+                                    }
+                                 
+                         ) 
+                     }
+

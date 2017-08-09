@@ -81,14 +81,14 @@ and
                                       | :? OutPort as yPort -> x.Name = yPort.Name
                                       | _ -> false
 
-[<JavaScript>]
-type PortConnectorData = {OutPortKey:string;InPortKey:string}
+//[<JavaScript>]
+//type PortConnectorData = {OutPortKey:string;InPortKey:string}
 [<JavaScript>]
 type PortConnector = {Name:string;InPort:InPort;OutPort:OutPort;Disconnect:(unit->unit)}
                       static member Create  (oPort:OutPort) (iPort:InPort)= 
                                 let disconnector=oPort.Connect iPort
                                 {Name=(oPort.Name+"->"+iPort.Name);InPort = iPort;OutPort=oPort;Disconnect=disconnector}
-                      member x.Data={OutPortKey=x.OutPort.Key;InPortKey=x.InPort.Key}
+                     // member x.Data={OutPortKey=x.OutPort.Key;InPortKey=x.InPort.Key}
 
  
 [<JavaScript>]

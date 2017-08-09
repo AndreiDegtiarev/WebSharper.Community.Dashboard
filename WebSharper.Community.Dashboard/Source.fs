@@ -9,11 +9,13 @@ open WebSharper.Community.PropertyGrid
 [<JavaScript>]
 type RandomRunner =
  {
+        Name:string
         MiddleValue:NumberValue
         Dispersion:NumberValue
         OutPortKey:string
  }
  static member Create middleValue dispersion = {
+                                                Name = "Random"
                                                 MiddleValue=NumberValue.Create middleValue;
                                                 Dispersion=NumberValue.Create dispersion
                                                 OutPortKey=System.Guid.NewGuid().ToString()
@@ -22,9 +24,10 @@ type RandomRunner =
                                              MiddleValue=worker.InPorts.[0].NumberValue 
                                              Dispersion=worker.InPorts.[1].NumberValue
                                              OutPortKey=worker.OutPorts.[0].Key
+                                             Name = worker.Name.Value
                                           })
  interface IWorkerContext with
-    override x.Name = "Rundom"
+    override x.Name = x.Name
     override x.InPorts =  [Ports.InPortNum "Middle value" x.MiddleValue;Ports.InPortNum "Dispersion" x.Dispersion]
     override x.OutPorts = [Ports.OutPortNum x.OutPortKey "Random value"]
  interface IRunner with
@@ -37,6 +40,7 @@ type RandomRunner =
                                             let middle = worker.InPorts.[0].Number
                                             let d = rnd.NextDouble() * disper + middle
                                             Ports.NumTrigger (worker.OutPorts.[0]) d
+                                            Console.Log("Value generated")
                                     }|> Async.Start 
                                     None
                          )

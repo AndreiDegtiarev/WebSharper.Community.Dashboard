@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,Worker,RandomRunner,OpenWeatherRunner,TextBoxRenderer,ChartRenderer,Operators,List,Dashboard$1,Panel,PanelContainer,LayoutManagers,UI,Next,AttrModule,Doc,Helper,console,Remoting,AjaxRemotingProvider;
+ var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,Worker,RandomRunner,OpenWeatherRunner,TextBoxRenderer,ChartRenderer,Operators,List,Dashboard$1,Panel,PanelContainer,LayoutManagers,UI,Next,AttrModule,DshEditorData,Var,Doc,Helper,Remoting,AjaxRemotingProvider;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
@@ -25,15 +25,17 @@
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  AttrModule=Next&&Next.AttrModule;
+ DshEditorData=Dashboard&&Dashboard.DshEditorData;
+ Var=Next&&Next.Var;
  Doc=Next&&Next.Doc;
  Helper=Panel&&Panel.Helper;
- console=window.console;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  AppModel=Test.AppModel=Runtime.Class({
   get_Worker:function()
   {
-   return this.$==1?Worker.CreateRunner(this.$0):this.$==2?Worker.CreateRenderer(this.$0):this.$==3?Worker.Create(this.$0):Worker.CreateRunner(this.$0);
+   var src,src$1,src$2,src$3;
+   return this.$==1?(src=this.$0,Worker.Create(src).WithRunner(src)):this.$==2?(src$1=this.$0,Worker.Create(src$1).WithRenderer(src$1)):this.$==3?(src$2=this.$0,Worker.Create(src$2).WithRunner(src$2).WithRenderer(src$2)):(src$3=this.$0,Worker.Create(src$3).WithRunner(src$3));
   }
  },null,AppModel);
  AppModel.ToWorker=function(data)
@@ -74,28 +76,26 @@
    $0:data
   }):Operators.FailWith("AllTypes FromDataContext unknown type");
  };
- AppData.Create=function(dschData)
- {
-  return AppData.New(List.map(function(item)
+ AppData=Test.AppData=Runtime.Class({
+  Recreate:function(dashboard)
   {
-   return AppModel.FromWorker(item.Worker);
-  },List.ofSeq(dschData.EventItems)),List.map(function(item)
-  {
-   return AppModel.FromWorker(item.Worker);
-  },List.ofSeq(dschData.WidgetItems)),List.map(function(item)
-  {
-   return item.PortConnector.get_Data();
-  },List.ofSeq(dschData.PortConnectorItems)));
- };
- AppData.New=function(Events,Widgets,PortConnectors)
- {
-  return{
-   Events:Events,
-   Widgets:Widgets,
-   PortConnectors:PortConnectors
-  };
- };
- Client.Main=function()
+   var m,m$1;
+   dashboard.Restore(this.PanelData,(m=function(key,event)
+   {
+    return[key,event.get_Worker()];
+   },List.map(function($1)
+   {
+    return m($1[0],$1[1]);
+   },this.Events)),(m$1=function(key,keyPanel,widget)
+   {
+    return[key,keyPanel,widget.get_Worker()];
+   },List.map(function($1)
+   {
+    return m$1($1[0],$1[1],$1[2]);
+   },this.Widgets)),this.DshEditorData);
+  }
+ },null,AppData);
+ AppData.get_CreateDashboard=function()
  {
   var dashboard,register;
   function registerEvent(data)
@@ -123,9 +123,41 @@
   registerEvent(RandomRunner.Create(50,5));
   registerWidget(TextBoxRenderer.get_Create());
   registerWidget(ChartRenderer.Create(300,100,50));
-  return Doc.Element("div",[],[dashboard.get_Render(),Helper.IconNormal("add",function()
+  return dashboard;
+ };
+ AppData.Create=function(dashboard)
+ {
+  return AppData.New(List.map(function(panel)
   {
-   console.log((new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.Serialize:1132126697",[AppData.Create(dashboard.Data)]));
+   return panel.get_PanelData();
+  },List.ofSeq(dashboard.PanelContainer.PanelItems)),List.map(function(item)
+  {
+   return[item.Worker.Key,AppModel.FromWorker(item.Worker)];
+  },List.ofSeq(dashboard.Data.EventItems)),List.map(function(item)
+  {
+   return[item.Widget.Key,item.Panel,AppModel.FromWorker(item.Widget)];
+  },List.ofSeq(dashboard.Data.WidgetItems)),DshEditorData.Create(dashboard.Editor));
+ };
+ AppData.New=function(PanelData,Events,Widgets,DshEditorData$1)
+ {
+  return new AppData({
+   PanelData:PanelData,
+   Events:Events,
+   Widgets:Widgets,
+   DshEditorData:DshEditorData$1
+  });
+ };
+ Client.Main=function()
+ {
+  var dashboard,fileName;
+  dashboard=AppData.get_CreateDashboard();
+  fileName=Var.Create$1("D:\\Dashboard.cfg");
+  return Doc.Element("div",[],[dashboard.get_Render(),Doc.TextNode("File name"),Doc.Input([],fileName),Helper.TxtIconNormal("file_upload","Upload",function()
+  {
+   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.SaveToFile:-1567987319",[fileName.c,AppData.Create(dashboard)]);
+  }),Helper.TxtIconNormal("file_download","Download",function()
+  {
+   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:-133840407",[fileName.c]).Recreate(dashboard);
   })]);
  };
 }());

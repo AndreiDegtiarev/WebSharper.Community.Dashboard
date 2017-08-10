@@ -47,14 +47,14 @@ module OpenWeather =
 type OpenWeatherRunner =
  {
         Name:string 
-        OpenWeatherCity:StringValue
-        OpenWeatherApiKey:StringValue
+        OpenWeatherCity:MessageBus.KeyValue
+        OpenWeatherApiKey:MessageBus.KeyValue
         OutPortKey:string
  }
  static member Create city apikey = {
                                         Name = "OpenWeatherMap"
-                                        OpenWeatherCity = StringValue.Create city;
-                                        OpenWeatherApiKey= StringValue.Create apikey
+                                        OpenWeatherCity = MessageBus.CreateString city;
+                                        OpenWeatherApiKey= MessageBus.CreateString apikey
                                         OutPortKey = System.Guid.NewGuid().ToString()
                                      }
  static member FromPorts = (fun worker -> {
@@ -67,8 +67,8 @@ type OpenWeatherRunner =
  
  interface IWorkerContext with
     override x.Name = x.Name
-    override x.InPorts = [Ports.InPortStr "City" x.OpenWeatherCity;Ports.InPortStr "ApiKey" x.OpenWeatherApiKey]
-    override x.OutPorts = [Ports.OutPortNum x.OutPortKey "Temperature"]
+    override x.InPorts = [("City",x.OpenWeatherCity);("ApiKey",x.OpenWeatherApiKey)] |> Ports.Create
+    override x.OutPorts = [OutPort.CreateNumber x.OutPortKey "Temperature"]
  interface IRunner with
     override x.Run= (fun worker -> 
                      async {
@@ -82,7 +82,8 @@ type OpenWeatherRunner =
                              match response with
                              |Some(res) -> 
                                  Console.Log ("Value generated:"+response.Value.Title)
-                                 Ports.NumTrigger outTempearatur ((double)response.Value.Temperature)
+                                 MessageBus.Number((double)response.Value.Temperature) |> outTempearatur.Trigger 
+                                 //Ports.NumTrigger outTempearatur ((double)response.Value.Temperature)
                              |None -> ()
                              do! Async.Sleep (1000*15)
                      }

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,Worker,RandomRunner,OpenWeatherRunner,TextBoxRenderer,ChartRenderer,Operators,List,Dashboard$1,Panel,PanelContainer,LayoutManagers,UI,Next,AttrModule,DshEditorData,Var,Doc,Helper,Remoting,AjaxRemotingProvider;
+ var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,Worker,RandomRunner,OpenWeatherRunner,TextBoxRenderer,ChartRenderer,Operators,List,Dashboard$1,Panel,PanelContainer,LayoutManagers,UI,Next,AttrModule,DshEditorData,Var,Helper,PanelData,DshEditorRowData,DshEditorCellData,Doc,Remoting,AjaxRemotingProvider;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
@@ -27,8 +27,11 @@
  AttrModule=Next&&Next.AttrModule;
  DshEditorData=Dashboard&&Dashboard.DshEditorData;
  Var=Next&&Next.Var;
- Doc=Next&&Next.Doc;
  Helper=Panel&&Panel.Helper;
+ PanelData=Panel&&Panel.PanelData;
+ DshEditorRowData=Dashboard&&Dashboard.DshEditorRowData;
+ DshEditorCellData=Dashboard&&Dashboard.DshEditorCellData;
+ Doc=Next&&Next.Doc;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  AppModel=Test.AppModel=Runtime.Class({
@@ -138,10 +141,10 @@
    return[item.Widget.Key,item.Panel,AppModel.FromWorker(item.Widget)];
   },List.ofSeq(dashboard.Data.WidgetItems)),DshEditorData.Create(dashboard.Editor));
  };
- AppData.New=function(PanelData,Events,Widgets,DshEditorData$1)
+ AppData.New=function(PanelData$1,Events,Widgets,DshEditorData$1)
  {
   return new AppData({
-   PanelData:PanelData,
+   PanelData:PanelData$1,
    Events:Events,
    Widgets:Widgets,
    DshEditorData:DshEditorData$1
@@ -149,15 +152,35 @@
  };
  Client.Main=function()
  {
-  var dashboard,fileName;
-  dashboard=AppData.get_CreateDashboard();
+  var fileName,dashboard,makeTestConfig;
   fileName=Var.Create$1("D:\\Dashboard.cfg");
+  dashboard=AppData.get_CreateDashboard();
+  makeTestConfig=function()
+  {
+   var panelKey,event,eventWorker,widget,widgetWorker;
+   AppData.Create(dashboard);
+   panelKey=Helper.UniqueKey();
+   event=new AppModel({
+    $:0,
+    $0:RandomRunner.Create(100,50)
+   });
+   eventWorker=event.get_Worker();
+   widget=new AppModel({
+    $:2,
+    $0:TextBoxRenderer.get_Create()
+   });
+   widgetWorker=widget.get_Worker();
+   AppData.New(List.ofArray([PanelData.Create(panelKey,0,0,List.T.Empty)]),List.ofArray([[eventWorker.Key,event]]),List.ofArray([[widgetWorker.Key,panelKey,widget]]),DshEditorData.New(List.ofArray([DshEditorRowData.New(List.ofArray([DshEditorCellData.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),DshEditorCellData.New(widgetWorker.InPorts.get_Item(0).Key,"",widgetWorker.Key)]))]))).Recreate(dashboard);
+  };
   return Doc.Element("div",[],[dashboard.get_Render(),Doc.TextNode("File name"),Doc.Input([],fileName),Helper.TxtIconNormal("file_upload","Upload",function()
   {
    (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.SaveToFile:-1567987319",[fileName.c,AppData.Create(dashboard)]);
   }),Helper.TxtIconNormal("file_download","Download",function()
   {
    (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:-133840407",[fileName.c]).Recreate(dashboard);
+  }),Helper.TxtIconNormal("build","Sample configuration",function()
+  {
+   makeTestConfig();
   })]);
  };
 }());

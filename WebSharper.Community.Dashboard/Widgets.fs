@@ -21,16 +21,16 @@ type ChartRunnerContext =
 [<JavaScript>]
 type ChartRenderer =
   {
-    Number:NumberValue
-    Cx:NumberValue
-    Cy:NumberValue
-    ChartBufferSize:NumberValue
+    Number:MessageBus.KeyValue
+    Cx:MessageBus.KeyValue
+    Cy:MessageBus.KeyValue
+    ChartBufferSize:MessageBus.KeyValue
   }
   static member Create cx cy bufferSize = {
-                                            Number=NumberValue.Create 0.0
-                                            Cx=NumberValue.Create cx
-                                            Cy=NumberValue.Create cy
-                                            ChartBufferSize=NumberValue.Create bufferSize
+                                            Number=MessageBus.CreateNumber 0.0
+                                            Cx=MessageBus.CreateNumber cx
+                                            Cy=MessageBus.CreateNumber cy
+                                            ChartBufferSize=MessageBus.CreateNumber bufferSize
                                           }
 
   static member FromPorts = (fun worker -> {
@@ -42,11 +42,11 @@ type ChartRenderer =
   interface IWorkerContext with
     override x.Name = "Chart"
     override x.InPorts =  [
-                             Ports.InPortNum "in Value" (NumberValue.Create 0.0)
-                             Ports.InPortNum "cx" x.Cx
-                             Ports.InPortNum "cy" x.Cy
-                             Ports.InPortNum "BufferSize" x.ChartBufferSize
-                          ]
+                             ("in Value",MessageBus.CreateNumber 0.0)
+                             ("cx", x.Cx)
+                             ("cy", x.Cy)
+                             ("BufferSize", x.ChartBufferSize)
+                          ]|>Ports.Create
     override x.OutPorts = []
   interface IRunner with
     override x.Run = (fun worker ->
@@ -77,12 +77,12 @@ type ChartRenderer =
 
 [<JavaScript>]
 type TextBoxRenderer =
-  {TextBoxValue:NumberValue}
-  static member Create = {TextBoxValue=NumberValue.Create 0.0}
+  {TextBoxValue:MessageBus.KeyValue}
+  static member Create = {TextBoxValue=MessageBus.CreateNumber 0.0}
   static member FromPorts = (fun worker -> {TextBoxValue=worker.InPorts.[0].NumberValue})
   interface IWorkerContext with
     override x.Name = "Text"
-    override x.InPorts =  [Ports.InPortNum "in Value" x.TextBoxValue]
+    override x.InPorts =  [("in Value",x.TextBoxValue)] |> Ports.Create 
     override x.OutPorts = []
 
   interface IRenderer with

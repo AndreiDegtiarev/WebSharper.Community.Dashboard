@@ -49,6 +49,7 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="MessageBus.fs" />
     <Compile Include="Port.fs" />
     <Compile Include="Worker.fs" />
     <Compile Include="Source.fs" />

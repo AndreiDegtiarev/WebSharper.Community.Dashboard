@@ -102,8 +102,9 @@ type DshEditor =
             RowItems = ListModel.Create (fun item ->item.Key) []
         }
     member x.Reconnect (data:DshData) = 
-                           data.PortConnectorItems |> Seq.iter (fun item -> item.PortConnector.Disconnect())
-                           data.PortConnectorItems.Clear()
+                           MessageBus.Agent.Post MessageBus.Clear
+                           //data.PortConnectorItems |> Seq.iter (fun item -> item.PortConnector.Disconnect())
+                           //data.PortConnectorItems.Clear()
                            x.RowItems
                            |> List.ofSeq
                            |> List.iter (fun row -> 

@@ -4,50 +4,17 @@ open WebSharper
 open WebSharper.JavaScript
 open WebSharper.UI.Next
 open WebSharper.Community.PropertyGrid
+open WebSharper.Community.Panel
 
-type EmptyVal = {Nothing:string} 
-
-type NumberVal = {NumValue : Var<double>} 
-
-type StringVal = {StrValue : Var<string>} 
 
 type PortValue =
-|EmptyPortValue of EmptyVal
-|NumberPortValue of NumberVal
-|StringPortValue of StringVal
+|NumberPortValue of Var<double>
+|StringPortValue of Var<string>
 
-
-[<JavaScript>]type EmptyTrigger = {EmptyTrigger:string}
-
-[<JavaScript>]
-type NumberTrigger = 
- {
-    NumberEvent:Event<double>
- }
- member x.Trigger value = x.NumberEvent.Trigger value
-
-[<JavaScript>]
-type ITrigger =
-|EmptyTrigger of EmptyTrigger
-|NumberTrigger of NumberTrigger
-
-[<JavaScript>]
-type NumberValue =
- {
-    Key:string
-    NumberValue:double
- }
- static member Create value= {Key=System.Guid.NewGuid().ToString();NumberValue=value}
-[<JavaScript>]
-type StringValue =
- {
-    Key:string
-    StringValue:string
- }
- static member Create value= {Key=System.Guid.NewGuid().ToString();StringValue=value}
 
 [<JavaScript;CustomEquality;NoComparison>]
-type InPort =  {Key:string;Name:string;Disconnector:(unit->unit);Disconnect:(unit->unit);OutPort:OutPort;PortValue:PortValue;}
+type InPort =  {Key:string;Name:string;PortValue:PortValue}
+                static member Create  key name portValue = {Key = key;Name = name;PortValue=portValue}
                 override x.Equals y = match y with
                                       | :? InPort as yPort -> x.Name = yPort.Name
                                       | _ -> false
@@ -56,89 +23,55 @@ type InPort =  {Key:string;Name:string;Disconnector:(unit->unit);Disconnect:(uni
                                         Key=System.Guid.NewGuid().ToString()
                                         PortValue =
                                             match x.PortValue with 
-                                            |EmptyPortValue(value)  -> EmptyPortValue(value)
-                                            |NumberPortValue(value) -> NumberPortValue({NumValue=Var.Create value.NumValue.Value})
-                                            |StringPortValue(value) -> StringPortValue({StrValue=Var.Create value.StrValue.Value})
+                                            |NumberPortValue(value) -> NumberPortValue(Var.Create value.Value)
+                                            |StringPortValue(value) -> StringPortValue(Var.Create value.Value)
 
                                   }
                 member x.Property = 
                         match x.PortValue with 
-                        |EmptyPortValue(value) -> Properties.group x.Name
-                        |NumberPortValue(value) -> Properties.double  x.Name value.NumValue
-                        |StringPortValue(value) -> Properties.string  x.Name value.StrValue
-               member x.ExtractPortNumberValue fnc= match x.PortValue with |NumberPortValue(value) -> fnc(value.NumValue) | _ -> failwith("unexpected type")
+                        |NumberPortValue(value) -> Properties.double  x.Name value
+                        |StringPortValue(value) -> Properties.string  x.Name value
+               member x.Receive value = match x.PortValue with 
+                                        |NumberPortValue(variable) -> match value with MessageBus.Number(dblValue) -> variable.Value <- dblValue | _ -> failwith("incompatible types")
+                                        |StringPortValue(variable) -> match value with MessageBus.String(strValue) -> variable.Value <- strValue | _ -> failwith("incompatible types")
+               member x.ExtractPortNumberValue fnc= match x.PortValue with |NumberPortValue(value) -> fnc(value) | _ -> failwith("unexpected type")
                member x.Number = x.ExtractPortNumberValue (fun variable -> variable.Value)
                member x.NumberVar = x.ExtractPortNumberValue (fun variable -> variable)
-               member x.NumberValue = x.ExtractPortNumberValue (fun variable -> {Key=x.Key;NumberValue=variable.Value})
-               member x.ExtractPortStringValue fnc= match x.PortValue with |StringPortValue(value) -> fnc(value.StrValue) | _ -> failwith("unexpected type")
+               member x.NumberValue = x.ExtractPortNumberValue (fun variable -> MessageBus.CreateNumPair x.Key (variable.Value))
+               member x.ExtractPortStringValue fnc= match x.PortValue with |StringPortValue(value) -> fnc(value) | _ -> failwith("unexpected type")
                member x.String = x.ExtractPortStringValue (fun variable -> variable.Value)
                member x.StringVar = x.ExtractPortStringValue (fun variable -> variable)
-               member x.StringValue = x.ExtractPortStringValue (fun variable -> {Key=x.Key;StringValue=variable.Value})
+               member x.StringValue = x.ExtractPortStringValue (fun variable ->  MessageBus.CreateStrPair x.Key (variable.Value))
+and
+ [<JavaScript>]
+ OutPortType =
+ |NumberOutPort
+ |StringOutPort
+ member x.IsCompatible inPort =
+    match x with
+    |NumberOutPort -> match inPort.PortValue with |NumberPortValue(_)->true | _ ->false
+    |StringOutPort -> match inPort.PortValue with |StringPortValue(_)->true | _ ->false
+    
 and
  [<JavaScript;CustomEquality;NoComparison>]
- OutPort = {Key:string;Name:string;IsCompatible:(InPort->bool);Connect:InPort->(unit->unit);Trigger:ITrigger}
-                override x.Equals y = match y with
-                                      | :? OutPort as yPort -> x.Name = yPort.Name
-                                      | _ -> false
-
-//[<JavaScript>]
-//type PortConnectorData = {OutPortKey:string;InPortKey:string}
-[<JavaScript>]
-type PortConnector = {Name:string;InPort:InPort;OutPort:OutPort;Disconnect:(unit->unit)}
-                      static member Create  (oPort:OutPort) (iPort:InPort)= 
-                                let disconnector=oPort.Connect iPort
-                                {Name=(oPort.Name+"->"+iPort.Name);InPort = iPort;OutPort=oPort;Disconnect=disconnector}
-                     // member x.Data={OutPortKey=x.OutPort.Key;InPortKey=x.InPort.Key}
-
- 
+ OutPort = {Key:string;Name:string;Type:OutPortType} //;Connect:InPort->(unit->unit)}
+           static member Create key name portType = {Key=key;Name = name;Type = portType}
+           static member CreateNumber key name = OutPort.Create key name NumberOutPort
+           static member CreateString key name = OutPort.Create key name StringOutPort
+           member x.Clone = {x with Key=Helper.UniqueKey()}
+           member x.Trigger value = MessageBus.Agent.Post (MessageBus.Send(MessageBus.CreateKeyValue x.Key value))
+           override x.Equals y = match y with
+                                 | :? OutPort as yPort -> x.Name = yPort.Name
+                                 | _ -> false
 [<JavaScript>]
 module Ports = 
-
-    let NumTrigger (port:OutPort) = match port.Trigger with|NumberTrigger(trigger) -> trigger.Trigger| _ -> failwith("unexpected type")
-
-    let BaseOutPort key name = {Key=key;Name = name;IsCompatible=(fun _ -> false); Connect = (fun _ ->(fun _ ->()));Trigger = EmptyTrigger({EmptyTrigger=""})}
-
-    let BaseInPort key name =  
-                           let disconnector = (fun _ -> ())
-                           {
-                            Key = key
-                            Name = name;
-                            Disconnector = disconnector;
-                            Disconnect = (fun _ -> 
-                                            disconnector()
-                                            Console.Log("Port "+ name + " disconnected"))
-                            OutPort = BaseOutPort "" "Empty"
-                            PortValue = EmptyPortValue({Nothing =""})
-                           }
-    let InPortNum name (defValue:NumberValue) = {BaseInPort defValue.Key name with PortValue =  NumberPortValue({NumValue=Var.Create defValue.NumberValue }) }
-
-    let InPortStr name (defValue:StringValue) = {BaseInPort defValue.Key name with PortValue = StringPortValue({StrValue = Var.Create defValue.StringValue}) }
-
-    let OutPortNum key name =
-        let event=new Event<double>()
-        {
-            BaseOutPort key name with 
-                IsCompatible = (fun port -> match port.PortValue with
-                                            |NumberPortValue(_)->true
-                                            | _ ->false
-                                            )
-                Connect = (fun port -> 
-                                   match port.PortValue with
-                                   |NumberPortValue(numValue)->
-                                       port.Disconnect()
-                                       let handler = Handler<double>(fun _ arg -> numValue.NumValue.Value<-arg)
-                                       event.Publish.AddHandler(handler)
-                                       let disconnector = (fun _ -> event.Publish.RemoveHandler(handler))
-                                       Console.Log("Port "+ name + " connected with "+port.Name)
-                                       disconnector
-                                   | _ -> failwith("Unexpected type")
-                          ) 
-                Trigger = NumberTrigger({NumberEvent = event})
-        }                               
-    let Clone (oPort:OutPort) =
-        let key=System.Guid.NewGuid().ToString()
-        match oPort.Trigger with
-        |NumberTrigger(trigger) -> OutPortNum key oPort.Name
-        | _ -> BaseOutPort key oPort.Name
+    let Create (info:(string*MessageBus.KeyValue) list) = 
+                        info
+                        |> List.map (fun  (name,pair:MessageBus.KeyValue) ->
+                            match pair.Value with
+                            |MessageBus.Number(value) -> InPort.Create pair.Key name (NumberPortValue(Var.Create value))
+                            |MessageBus.String(value) -> InPort.Create pair.Key name (StringPortValue(Var.Create value))
+                        )
+                          
 
             

@@ -28,7 +28,7 @@ and
    }
    static member Create (dataContext:IWorkerContext) =
            {
-               Key = System.Guid.NewGuid().ToString()
+               Key = Helper.UniqueKey()
                Name = Var.Create dataContext.Name
                InPorts = dataContext.InPorts
                OutPorts = dataContext.OutPorts
@@ -40,23 +40,6 @@ and
    member x.WithKey(key) = {x with Key=key}
    member x.WithRunner(runner) = {x with Runner=Some(runner)}
    member x.WithRenderer(renderer) = {x with Renderer=Some(renderer)}
-(*   static member CreateNative (dataContext:IWorkerContext) runner renderer =
-           {
-               Key = System.Guid.NewGuid().ToString()
-               Name = Var.Create dataContext.Name
-               InPorts = dataContext.InPorts
-               OutPorts = dataContext.OutPorts
-               Runner = runner
-               Renderer = renderer
-               DataContext = dataContext 
-               RunnerContext = None                   
-           }
-   static member Create dataContext= 
-       Worker.CreateNative dataContext (Some(dataContext :>IRunner)) (Some(dataContext :>IRenderer)) 
-   static member CreateRunner dataContext = 
-       Worker.CreateNative dataContext (Some(dataContext :>IRunner)) None
-   static member CreateRenderer dataContext = 
-       Worker.CreateNative dataContext None (Some(dataContext :>IRenderer))  *)
    member x.WithStartRunner()  = 
           match x.Runner with
           |Some(runner) -> {x with RunnerContext=runner.Run(x)}
@@ -65,7 +48,7 @@ and
    member x.CloneAndRun =
           let varName = Var.Create x.Name.Value
           let iPorts = x.InPorts |> List.map (fun port -> port.Clone)
-          let oPorts = x.OutPorts |> List.map (fun port -> Ports.Clone port)
+          let oPorts = x.OutPorts |> List.map (fun port -> port.Clone)
           let copy =
               {
                        Key = Helper.UniqueKey()

@@ -10,14 +10,15 @@ open WebSharper.Community.PropertyGrid
 type RandomRunner =
  {
         Name:string
-        MiddleValue:NumberValue
-        Dispersion:NumberValue
+        MiddleValue:MessageBus.KeyValue
+        Dispersion:MessageBus.KeyValue
         OutPortKey:string
  }
+ member x.WithMiddleValue(value) = {x with MiddleValue = MessageBus.CreateNumber value}
  static member Create middleValue dispersion = {
                                                 Name = "Random"
-                                                MiddleValue=NumberValue.Create middleValue;
-                                                Dispersion=NumberValue.Create dispersion
+                                                MiddleValue=MessageBus.CreateNumber middleValue
+                                                Dispersion=MessageBus.CreateNumber dispersion
                                                 OutPortKey=System.Guid.NewGuid().ToString()
                                                }
  static member FromPorts = (fun worker -> {
@@ -28,8 +29,8 @@ type RandomRunner =
                                           })
  interface IWorkerContext with
     override x.Name = x.Name
-    override x.InPorts =  [Ports.InPortNum "Middle value" x.MiddleValue;Ports.InPortNum "Dispersion" x.Dispersion]
-    override x.OutPorts = [Ports.OutPortNum x.OutPortKey "Random value"]
+    override x.InPorts =  [("Middle value",x.MiddleValue);("Dispersion",x.Dispersion)] |> Ports.Create 
+    override x.OutPorts = [OutPort.CreateNumber x.OutPortKey "Random value"]
  interface IRunner with
         override x.Run= (fun worker -> 
                                     let rnd = System.Random()
@@ -39,8 +40,8 @@ type RandomRunner =
                                             let disper = worker.InPorts.[1].Number
                                             let middle = worker.InPorts.[0].Number
                                             let d = rnd.NextDouble() * disper + middle
-                                            Ports.NumTrigger (worker.OutPorts.[0]) d
-                                            Console.Log("Value generated")
+                                            worker.OutPorts.[0].Trigger (MessageBus.Number(d))
+                                            //Console.Log("Value generated")
                                     }|> Async.Start 
                                     None
                          )

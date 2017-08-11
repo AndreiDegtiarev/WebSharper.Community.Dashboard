@@ -50,6 +50,7 @@ module Site =
 
     [<Website>]
     let Main =
+       // let dashboard = AppData.CreateDashboard
         Application.MultiPage (fun ctx endpoint ->
             match endpoint with
             | EndPoint.Home -> HomePage ctx

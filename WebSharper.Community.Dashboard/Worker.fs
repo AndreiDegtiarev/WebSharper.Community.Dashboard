@@ -76,3 +76,8 @@ and
 and
  [<JavaScript>] IRenderer = abstract Render:(Worker->Doc)
 
+[<JavaScript>]
+module Workers = 
+    let allPorts workers fnc = workers |> List.map fnc |> List.concat
+    let allOutPorts workers = allPorts workers (fun worker -> worker.OutPorts)
+    let allInPorts workers = allPorts workers (fun worker -> worker.InPorts)

@@ -55,6 +55,7 @@
     <Compile Include="Source.fs" />
     <Compile Include="SrcOpenWeather.fs" />
     <Compile Include="Widgets.fs" />
+    <Compile Include="Rules.fs" />
     <Compile Include="Factory.fs" />
     <Compile Include="DshData.fs" />
     <Compile Include="DshEditor.fs" />

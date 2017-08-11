@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,MessageBus,KeyValue,Message,AgentState,SC$1,InPort,OutPortType,OutPort,Ports,Worker,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,WorkerItem,Factory,WidgetItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,DshEditorCellData,DshEditorRowData,DshEditorData,Dashboard$1,Panel,Helper,IntelliFactory,Runtime,Control,MailboxProcessor,Concurrency,List,Operators,UI,Next,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,PrintfHelpers,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Seq,Chart,Pervasives,View,AttrModule,Key,ListModel,Option,Enumerator,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var WebSharper,Community,Dashboard,MessageBus,KeyValue,Message,AgentState,SC$1,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,WidgetItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,Dashboard$1,List,Concurrency,Remoting,AjaxRemotingProvider,console,Panel,Helper,Date,IntelliFactory,Runtime,Control,MailboxProcessor,Seq,Operators,UI,Next,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,View,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
@@ -15,6 +15,7 @@
  OutPort=Dashboard.OutPort=Dashboard.OutPort||{};
  Ports=Dashboard.Ports=Dashboard.Ports||{};
  Worker=Dashboard.Worker=Dashboard.Worker||{};
+ Workers=Dashboard.Workers=Dashboard.Workers||{};
  RandomRunner=Dashboard.RandomRunner=Dashboard.RandomRunner||{};
  OpenWeather=Dashboard.OpenWeather=Dashboard.OpenWeather||{};
  Forecast=OpenWeather.Forecast=OpenWeather.Forecast||{};
@@ -22,6 +23,9 @@
  ChartRunnerContext=Dashboard.ChartRunnerContext=Dashboard.ChartRunnerContext||{};
  ChartRenderer=Dashboard.ChartRenderer=Dashboard.ChartRenderer||{};
  TextBoxRenderer=Dashboard.TextBoxRenderer=Dashboard.TextBoxRenderer||{};
+ RuleEntry=Dashboard.RuleEntry=Dashboard.RuleEntry||{};
+ RuleChain=Dashboard.RuleChain=Dashboard.RuleChain||{};
+ RuleContainer=Dashboard.RuleContainer=Dashboard.RuleContainer||{};
  WorkerItem=Dashboard.WorkerItem=Dashboard.WorkerItem||{};
  Factory=Dashboard.Factory=Dashboard.Factory||{};
  WidgetItem=Dashboard.WidgetItem=Dashboard.WidgetItem||{};
@@ -29,18 +33,20 @@
  DshEditorCellItem=Dashboard.DshEditorCellItem=Dashboard.DshEditorCellItem||{};
  DshEditorRowItem=Dashboard.DshEditorRowItem=Dashboard.DshEditorRowItem||{};
  DshEditor=Dashboard.DshEditor=Dashboard.DshEditor||{};
- DshEditorCellData=Dashboard.DshEditorCellData=Dashboard.DshEditorCellData||{};
- DshEditorRowData=Dashboard.DshEditorRowData=Dashboard.DshEditorRowData||{};
- DshEditorData=Dashboard.DshEditorData=Dashboard.DshEditorData||{};
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
+ List=WebSharper&&WebSharper.List;
+ Concurrency=WebSharper&&WebSharper.Concurrency;
+ Remoting=WebSharper&&WebSharper.Remoting;
+ AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
+ console=window.console;
  Panel=Community&&Community.Panel;
  Helper=Panel&&Panel.Helper;
+ Date=window.Date;
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Control=WebSharper&&WebSharper.Control;
  MailboxProcessor=Control&&Control.MailboxProcessor;
- Concurrency=WebSharper&&WebSharper.Concurrency;
- List=WebSharper&&WebSharper.List;
+ Seq=WebSharper&&WebSharper.Seq;
  Operators=WebSharper&&WebSharper.Operators;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
@@ -53,7 +59,6 @@
  Random=WebSharper&&WebSharper.Random;
  Math=window.Math;
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
- console=window.console;
  Data=WebSharper&&WebSharper.Data;
  TxtRuntime=Data&&Data.TxtRuntime;
  FSharp=window.FSharp;
@@ -62,39 +67,90 @@
  IO=Runtime$1&&Runtime$1.IO;
  JSON=window.JSON;
  Arrays=WebSharper&&WebSharper.Arrays;
+ View=Next&&Next.View;
  Charting=WebSharper&&WebSharper.Charting;
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
- Seq=WebSharper&&WebSharper.Seq;
  Chart=Charting&&Charting.Chart;
  Pervasives=Charting&&Charting.Pervasives;
- View=Next&&Next.View;
  AttrModule=Next&&Next.AttrModule;
+ Enumerator=WebSharper&&WebSharper.Enumerator;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
  Option=WebSharper&&WebSharper.Option;
- Enumerator=WebSharper&&WebSharper.Enumerator;
  PanelContainer=Panel&&Panel.PanelContainer;
  LayoutManagers=Panel&&Panel.LayoutManagers;
  Panel$1=Panel&&Panel.Panel;
  TitleButton=Panel&&Panel.TitleButton;
  Dialog=Panel&&Panel.Dialog;
  PropertyGrid$1=PropertyGrid&&PropertyGrid.PropertyGrid;
- KeyValue.New=function(Key$1,Value)
+ KeyValue.New=function(Key$1,Time,Value)
  {
   return{
    Key:Key$1,
+   Time:Time,
    Value:Value
   };
  };
  Message.Clear={
   $:2
  };
- AgentState.New=function(Listeners)
+ AgentState.get_empty=function()
+ {
+  return AgentState.New(List.T.Empty,List.T.Empty);
+ };
+ AgentState.New=function(Buffer,Listeners)
  {
   return{
+   Buffer:Buffer,
    Listeners:Listeners
   };
+ };
+ MessageBus.RunServerRequests=function()
+ {
+  var b;
+  Concurrency.Start((b=null,Concurrency.Delay(function()
+  {
+   return Concurrency.While(function()
+   {
+    return true;
+   },Concurrency.Delay(function()
+   {
+    return Concurrency.Bind(Concurrency.Sleep(2*1000),function()
+    {
+     return Concurrency.Bind(MessageBus.Agent().PostAndAsyncReply(function(r)
+     {
+      return{
+       $:4,
+       $0:r
+      };
+     },null),function(a)
+     {
+      return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:-745577628",[a]),function(a$1)
+      {
+       List.iter(function(message)
+       {
+        var _this;
+        _this=MessageBus.Agent();
+        _this.mailbox.AddLast({
+         $:0,
+         $0:message
+        });
+        _this.resume();
+       },a$1);
+       console.log((function($1)
+       {
+        return function($2)
+        {
+         return $1("Values from server requested messages received:"+window.String($2));
+        };
+       }(window.id))(a$1.get_Length()));
+       return Concurrency.Zero();
+      });
+     });
+    });
+   }));
+  })),null);
  };
  MessageBus.Agent=function()
  {
@@ -125,12 +181,26 @@
  };
  MessageBus.CreateKeyValue=function(key,value)
  {
-  return KeyValue.New(key,value);
+  return KeyValue.New(key,Date.now(),value);
+ };
+ MessageBus.Log=function()
+ {
+  SC$1.$cctor();
+  return SC$1.Log;
+ };
+ MessageBus.set_Log=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.Log=$1;
  };
  SC$1.$cctor=Runtime.Cctor(function()
  {
+  SC$1.Log=function()
+  {
+  };
   SC$1.Agent=MailboxProcessor.Start(function(inbox)
   {
+   var cutBuffer;
    function loop(state)
    {
     var b;
@@ -139,28 +209,49 @@
     {
      return Concurrency.Bind(inbox.Receive(null),function(a)
      {
-      var busKeyValue,a$1,p;
-      return a.$==1?loop(AgentState.New(new List.T({
+      var m,busKeyValue,newState,newBuf,a$1,p;
+      return a.$==1?loop(AgentState.New(state.Buffer,new List.T({
        $:1,
        $0:a.$0,
        $1:state.Listeners
-      }))):a.$==0?(busKeyValue=a.$0,(a$1=function(a$2,callback)
+      }))):a.$==3?(a.$0[1](cutBuffer(a.$0[0],state.Buffer)),loop(state)):a.$==4?(a.$0((m=state.Buffer,m.$==0?(new Date(0,0-1,0)).getTime():List.maxBy(function(item)
+      {
+       return item.Time;
+      },m).Time)),loop(state)):a.$==0?(busKeyValue=a.$0,(newState=(newBuf=new List.T({
+       $:1,
+       $0:busKeyValue,
+       $1:state.Buffer
+      }),AgentState.New(cutBuffer(List.maxBy(function(item)
+      {
+       return item.Time;
+      },newBuf).Time-10*1000,newBuf),state.Listeners)),(a$1=function(a$2,name,callback)
       {
        callback(busKeyValue.Value);
       },List.iter(function($1)
       {
-       return a$1($1[0],$1[1]);
+       return a$1($1[0],$1[1],$1[2]);
       },(p=function(key)
       {
        return key===busKeyValue.Key;
       },List.filter(function($1)
       {
-       return p($1[0],$1[1]);
-      },state.Listeners))),loop(state))):loop(AgentState.New(List.T.Empty));
+       return p($1[0],$1[1],$1[2]);
+      },newState.Listeners))),loop(newState)))):loop(AgentState.get_empty());
      });
     });
    }
-   return loop(AgentState.New(List.T.Empty));
+   cutBuffer=function(time,buffer)
+   {
+    return Seq.fold(function(acc,item)
+    {
+     return item.Time>=time?new List.T({
+      $:1,
+      $0:item,
+      $1:acc
+     }):acc;
+    },List.T.Empty,buffer);
+   };
+   return loop(AgentState.get_empty());
   },null);
   SC$1.$cctor=window.ignore;
  });
@@ -407,6 +498,24 @@
    RunnerContext:RunnerContext
   });
  };
+ Workers.allInPorts=function(workers)
+ {
+  return Workers.allPorts(workers,function(worker)
+  {
+   return worker.InPorts;
+  });
+ };
+ Workers.allOutPorts=function(workers)
+ {
+  return Workers.allPorts(workers,function(worker)
+  {
+   return worker.OutPorts;
+  });
+ };
+ Workers.allPorts=function(workers,fnc)
+ {
+  return List.concat(List.map(fnc,workers));
+ };
  RandomRunner=Dashboard.RandomRunner=Runtime.Class({
   WithMiddleValue:function(value)
   {
@@ -627,10 +736,11 @@
    OutPortKey:OutPortKey
   });
  };
- ChartRunnerContext.New=function(LineChart)
+ ChartRunnerContext.New=function(LineChart,Queue)
  {
   return{
-   LineChart:LineChart
+   LineChart:LineChart,
+   Queue:Queue
   };
  };
  ChartRenderer=Dashboard.ChartRenderer=Runtime.Class({
@@ -638,6 +748,21 @@
   {
    return function(worker)
    {
+    var chartBufferSize,context;
+    chartBufferSize=worker.InPorts.get_Item(3).get_Number()<<0;
+    context=worker.RunnerContext.$0;
+    View.Sink(function(value)
+    {
+     context.Queue.push(value);
+     context.Queue.length>chartBufferSize?context.Queue.shift():void 0;
+     Seq.iteri(function(ind,entry)
+     {
+      return context.LineChart.__UpdateData(ind,function()
+      {
+       return entry;
+      });
+     },context.Queue);
+    },worker.InPorts.get_Item(0).get_NumberVar().v);
     return ChartJs.Render$8(worker.RunnerContext.$0.LineChart,{
      $:1,
      $0:{
@@ -652,7 +777,7 @@
   {
    return function(worker)
    {
-    var chartBufferSize,data,values,queue,chart;
+    var chartBufferSize,data,values,queue;
     chartBufferSize=worker.InPorts.get_Item(3).get_Number()<<0;
     data=List.ofSeq(Seq.delay(function()
     {
@@ -665,25 +790,12 @@
     {
      queue.push(entry);
     },data),queue));
-    chart=Chart.Line(data).__WithFillColor(new Pervasives.Color({
-     $:2,
-     $0:"white"
-    }));
-    View.Sink(function(value)
-    {
-     values.push(value);
-     values.length>chartBufferSize?values.shift():void 0;
-     Seq.iteri(function(ind,entry)
-     {
-      return chart.__UpdateData(ind,function()
-      {
-       return entry;
-      });
-     },values);
-    },worker.InPorts.get_Item(0).get_NumberVar().v);
     return{
      $:1,
-     $0:ChartRunnerContext.New(chart)
+     $0:ChartRunnerContext.New(Chart.Line(data).__WithFillColor(new Pervasives.Color({
+      $:2,
+      $0:"white"
+     })),values)
     };
    };
   },
@@ -697,23 +809,24 @@
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_Name:function()
   {
-   return"Chart";
+   return this.Name;
   }
  },null,ChartRenderer);
  ChartRenderer.get_FromPorts=function()
  {
   return function(worker)
   {
-   return ChartRenderer.New(worker.InPorts.get_Item(1).get_NumberValue(),worker.InPorts.get_Item(1).get_NumberValue(),worker.InPorts.get_Item(2).get_NumberValue(),worker.InPorts.get_Item(3).get_NumberValue());
+   return ChartRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).get_NumberValue(),worker.InPorts.get_Item(1).get_NumberValue(),worker.InPorts.get_Item(2).get_NumberValue(),worker.InPorts.get_Item(3).get_NumberValue());
   };
  };
  ChartRenderer.Create=function(cx,cy,bufferSize)
  {
-  return ChartRenderer.New(MessageBus.CreateNumber(0),MessageBus.CreateNumber(cx),MessageBus.CreateNumber(cy),MessageBus.CreateNumber(bufferSize));
+  return ChartRenderer.New("Chart",MessageBus.CreateNumber(0),MessageBus.CreateNumber(cx),MessageBus.CreateNumber(cy),MessageBus.CreateNumber(bufferSize));
  };
- ChartRenderer.New=function(Number,Cx,Cy,ChartBufferSize)
+ ChartRenderer.New=function(Name,Number,Cx,Cy,ChartBufferSize)
  {
   return new ChartRenderer({
+   Name:Name,
    Number:Number,
    Cx:Cx,
    Cy:Cy,
@@ -745,24 +858,111 @@
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_Name:function()
   {
-   return"Text";
+   return this.Name;
   }
  },null,TextBoxRenderer);
  TextBoxRenderer.get_FromPorts=function()
  {
   return function(worker)
   {
-   return TextBoxRenderer.New(worker.InPorts.get_Item(0).get_NumberValue());
+   return TextBoxRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).get_NumberValue());
   };
  };
  TextBoxRenderer.get_Create=function()
  {
-  return TextBoxRenderer.New(MessageBus.CreateNumber(0));
+  return TextBoxRenderer.New("Text",MessageBus.CreateNumber(0));
  };
- TextBoxRenderer.New=function(TextBoxValue)
+ TextBoxRenderer.New=function(Name,TextBoxValue)
  {
   return new TextBoxRenderer({
+   Name:Name,
    TextBoxValue:TextBoxValue
+  });
+ };
+ RuleEntry.New=function(InPortKey,OutPortKey,WorkerKey)
+ {
+  return{
+   InPortKey:InPortKey,
+   OutPortKey:OutPortKey,
+   WorkerKey:WorkerKey
+  };
+ };
+ RuleChain.New=function(RuleChain$1)
+ {
+  return{
+   RuleChain:RuleChain$1
+  };
+ };
+ RuleContainer=Dashboard.RuleContainer=Runtime.Class({
+  Reconnect:function(workers)
+  {
+   var allOutPorts,allInPorts,_this;
+   allOutPorts=Workers.allOutPorts(workers);
+   allInPorts=Workers.allInPorts(workers);
+   List.iter(function(inPort)
+   {
+    (MessageBus.Log())((((Runtime.Curried3(function($1,$2,$3)
+    {
+     return $1(PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
+    }))(window.id))(inPort.Name))(inPort.Key));
+   },allInPorts);
+   _this=MessageBus.Agent();
+   _this.mailbox.AddLast(Message.Clear);
+   _this.resume();
+   List.iter(function(row)
+   {
+    var cells,i,e;
+    cells=List.ofSeq(row.RuleChain);
+    i=List.ofSeq(Operators.range(1,cells.get_Length()-1));
+    e=Enumerator.Get(i);
+    try
+    {
+     while(e.MoveNext())
+      (function()
+      {
+       var i$1,cell1,cell2,o,outPort,o$1,inPort,_this$1;
+       i$1=e.Current();
+       cell1=cells.get_Item(i$1-1);
+       cell2=cells.get_Item(i$1);
+       o=Seq.tryFind(function(port)
+       {
+        return port.Key===cell1.OutPortKey;
+       },allOutPorts),o==null?null:{
+        $:1,
+        $0:(outPort=o.$0,((MessageBus.Log())((function($1)
+        {
+         return function($2)
+         {
+          return $1("Found out port "+PrintfHelpers.toSafe($2));
+         };
+        }(window.id))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
+        {
+         return port.Key===cell2.InPortKey;
+        },allInPorts),o$1==null?null:{
+         $:1,
+         $0:(inPort=o$1.$0,((MessageBus.Log())("Found int port"),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast({
+          $:1,
+          $0:[outPort.Key,outPort.Name+"->"+inPort.Name,function(a)
+          {
+           inPort.Receive(a);
+          }]
+         }),_this$1.resume()))
+        }))
+       };
+      }());
+    }
+    finally
+    {
+     if("Dispose"in e)
+      e.Dispose();
+    }
+   },List.ofSeq(this.RuleContainer));
+  }
+ },null,RuleContainer);
+ RuleContainer.New=function(RuleContainer$1)
+ {
+  return new RuleContainer({
+   RuleContainer:RuleContainer$1
   });
  };
  WorkerItem.Create=function(worker)
@@ -816,20 +1016,6 @@
   };
  };
  DshData=Dashboard.DshData=Runtime.Class({
-  ConnectPorts:function(outPort,inPort)
-  {
-   var _this;
-   console.log("Connect ports:"+outPort.Name+" "+inPort.Name);
-   _this=MessageBus.Agent();
-   _this.mailbox.AddLast({
-    $:1,
-    $0:[outPort.Key,function(a)
-    {
-     inPort.Receive(a);
-    }]
-   });
-   _this.resume();
-  },
   RegisterWidget:function(key,panel,widget)
   {
    var widget_key;
@@ -1003,8 +1189,17 @@
  DshEditor=Dashboard.DshEditor=Runtime.Class({
   Render:function(data)
   {
-   var $this;
+   var $this,reconnectFnc;
    $this=this;
+   reconnectFnc=function()
+   {
+    var x;
+    x=List.map(function(item)
+    {
+     return item.Worker;
+    },List.ofSeq(data.WorkItems));
+    $this.get_CopyToRules().Reconnect(x);
+   };
    return Doc.Element("table",[],[Doc.ConvertBy(function(m)
    {
     return m.Key;
@@ -1012,37 +1207,24 @@
    {
     return Doc.Element("tr",[],[item.Render(data,function()
     {
-     $this.Reconnect(data);
+     reconnectFnc();
     })]);
    },this.RowItems.v),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
    {
     $this.RowItems.Append(DshEditorRowItem.get_Create());
    })])])]);
   },
-  Recreate:function(data)
+  Restore:function(data,rules)
   {
-   this.RowItems.Clear();
-  },
-  Restore:function(data,editorData)
-  {
-   var $this,allOutPorts,allInPorts;
-   function allPorts(fnc)
-   {
-    return List.concat(List.map(function(item)
-    {
-     return fnc(item.Worker);
-    },List.ofSeq(data.WorkItems)));
-   }
+   var $this,allWorkers,allOutPorts,allInPorts;
    $this=this;
    this.RowItems.Clear();
-   allOutPorts=allPorts(function(worker)
+   allWorkers=List.map(function(item)
    {
-    return worker.OutPorts;
-   });
-   allInPorts=allPorts(function(worker)
-   {
-    return worker.InPorts;
-   });
+    return item.Worker;
+   },List.ofSeq(data.WorkItems));
+   allOutPorts=Workers.allOutPorts(allWorkers);
+   allInPorts=Workers.allInPorts(allWorkers);
    List.iter(function(rowData)
    {
     var row;
@@ -1053,58 +1235,32 @@
      cell=DshEditorCellItem.get_Create();
      Var.Set(cell.OptWorker,Seq.tryFind(function(item)
      {
-      return item.Worker.Key===cellData.CellWorkerKey;
+      return item.Worker.Key===cellData.WorkerKey;
      },List.ofSeq(data.WorkItems)));
      Var.Set(cell.OptInPort,Seq.tryFind(function(port)
      {
-      return port.Key===cellData.CellInPortKey;
+      return port.Key===cellData.InPortKey;
      },allInPorts));
      Var.Set(cell.OptOutPort,Seq.tryFind(function(port)
      {
-      return port.Key===cellData.CellOutPortKey;
+      return port.Key===cellData.OutPortKey;
      },allOutPorts));
      row.CellItems.Append(cell);
-    },rowData.DshEditorCells);
+    },rowData.RuleChain);
     $this.RowItems.Append(row);
-   },editorData.DshEditorRows);
-   this.Reconnect(data);
+   },rules.RuleContainer);
+   rules.Reconnect(allWorkers);
   },
-  Reconnect:function(data)
+  get_CopyToRules:function()
   {
-   var _this;
-   _this=MessageBus.Agent();
-   _this.mailbox.AddLast(Message.Clear);
-   _this.resume();
-   List.iter(function(row)
+   return RuleContainer.New(List.map(function(row)
    {
-    var cells,i,e;
-    cells=List.ofSeq(row.CellItems);
-    i=List.ofSeq(Operators.range(1,cells.get_Length()-1));
-    e=Enumerator.Get(i);
-    try
+    return RuleChain.New(List.map(function(cell)
     {
-     while(e.MoveNext())
-      (function()
-      {
-       var i$1,cell1,cell2,o,o$1;
-       i$1=e.Current();
-       cell1=cells.get_Item(i$1-1);
-       cell2=cells.get_Item(i$1);
-       o=cell1.OptOutPort.c,o==null?null:{
-        $:1,
-        $0:(o$1=cell2.OptInPort.c,o$1==null?null:{
-         $:1,
-         $0:data.ConnectPorts(o.$0,o$1.$0)
-        })
-       };
-      }());
-    }
-    finally
-    {
-     if("Dispose"in e)
-      e.Dispose();
-    }
-   },List.ofSeq(this.RowItems));
+     var m,m$1,m$2;
+     return RuleEntry.New((m=cell.OptInPort.c,m==null?"":m.$0.Key),(m$1=cell.OptOutPort.c,m$1==null?"":m$1.$0.Key),(m$2=cell.OptWorker.c,m$2==null?"":m$2.$0.Worker.Key));
+    },List.ofSeq(row.CellItems)));
+   },List.ofSeq(this.RowItems)));
   }
  },null,DshEditor);
  DshEditor.get_Create=function()
@@ -1119,37 +1275,6 @@
   return new DshEditor({
    RowItems:RowItems
   });
- };
- DshEditorCellData.New=function(CellInPortKey,CellOutPortKey,CellWorkerKey)
- {
-  return{
-   CellInPortKey:CellInPortKey,
-   CellOutPortKey:CellOutPortKey,
-   CellWorkerKey:CellWorkerKey
-  };
- };
- DshEditorRowData.New=function(DshEditorCells)
- {
-  return{
-   DshEditorCells:DshEditorCells
-  };
- };
- DshEditorData.Create=function(editor)
- {
-  return DshEditorData.New(List.map(function(row)
-  {
-   return DshEditorRowData.New(List.map(function(cell)
-   {
-    var m,m$1,m$2;
-    return DshEditorCellData.New((m=cell.OptInPort.c,m==null?"":m.$0.Key),(m$1=cell.OptOutPort.c,m$1==null?"":m$1.$0.Key),(m$2=cell.OptWorker.c,m$2==null?"":m$2.$0.Worker.Key));
-   },List.ofSeq(row.CellItems)));
-  },List.ofSeq(editor.RowItems)));
- };
- DshEditorData.New=function(DshEditorRows)
- {
-  return{
-   DshEditorRows:DshEditorRows
-  };
  };
  Dashboard$1=Dashboard.Dashboard=Runtime.Class({
   get_Render:function()
@@ -1247,7 +1372,7 @@
    },panelList);
    a=function(key,event)
    {
-    $this.Data.RegisterEvent(key,event.WithStartRunner());
+    $this.Data.RegisterEvent(key,event);
    };
    List.iter(function($1)
    {
@@ -1268,12 +1393,6 @@
    console.log("Widgets restored");
    this.Editor.Restore(this.Data,dashEditorData);
    console.log("Connectors restored");
-   List.iter(function(worker)
-   {
-    var o;
-    o=worker.Worker.Runner;
-    o==null?void 0:(o.$0.WebSharper_Community_Dashboard_IRunner$get_Run())(worker.Worker);
-   },List.ofSeq(this.Data.WorkItems));
   },
   CreatePanel:function(name,cx,key)
   {
@@ -1301,7 +1420,13 @@
    }),TitleButton.New("edit",function(panel$1)
    {
     console.log("Edit");
-    panel$1.EditProperties($this.PropertyGrid);
+    $this.PropertyGrid.Edit(List.concat(List.map(function(item)
+    {
+     return item.Widget.get_Properties();
+    },List.filter(function(item)
+    {
+     return item.Panel===panel$1.Key;
+    },List.ofSeq($this.Data.WidgetItems)))));
    }),TitleButton.New("clear",function(panel$1)
    {
     $this.PanelContainer.PanelItems.Remove($this.PanelContainer.FindPanelItem(panel$1));

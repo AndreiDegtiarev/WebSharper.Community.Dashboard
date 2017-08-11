@@ -41,7 +41,7 @@ type RandomRunner =
                                             let middle = worker.InPorts.[0].Number
                                             let d = rnd.NextDouble() * disper + middle
                                             worker.OutPorts.[0].Trigger (MessageBus.Number(d))
-                                            //Console.Log("Value generated")
+                                            //MessageBus.Log("Random value generated")
                                     }|> Async.Start 
                                     None
                          )

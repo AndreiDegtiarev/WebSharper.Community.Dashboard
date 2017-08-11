@@ -45,14 +45,14 @@ type AppData =
         PanelData:PanelData list
         Events:(string*AppModel) list
         Widgets:(string*string*AppModel) list
-        DshEditorData:DshEditorData
+        Rules:RuleContainer
     }
     static member Create dashboard = 
         {
             PanelData = dashboard.PanelContainer.PanelItems |>List.ofSeq |>List.map (fun panel -> panel.PanelData)
             Events=dashboard.Data.EventItems   |>List.ofSeq |> List.map (fun item -> (item.Worker.Key,AppModel.FromWorker item.Worker))
             Widgets=dashboard.Data.WidgetItems |>List.ofSeq |> List.map (fun item -> (item.Widget.Key,item.Panel,AppModel.FromWorker item.Widget))
-            DshEditorData = DshEditorData.Create dashboard.Editor
+            Rules = dashboard.Editor.CopyToRules
         }    
     static member CreateDashboard =
         let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
@@ -75,7 +75,16 @@ type AppData =
 
     member x.Recreate (dashboard:Dashboard) =
         dashboard.Restore x.PanelData 
+                          (x.Events |> List.map (fun (key,event) -> (key,event.Worker.WithStartRunner())))
+                          (x.Widgets |>List.map (fun (key,keyPanel,widget) -> (key,keyPanel,widget.Worker)))
+                          x.Rules
+    member x.RecreateOnClient (dashboard:Dashboard) =
+        dashboard.Restore x.PanelData 
                           (x.Events |> List.map (fun (key,event) -> (key,event.Worker)))
                           (x.Widgets |>List.map (fun (key,keyPanel,widget) -> (key,keyPanel,widget.Worker)))
-                          x.DshEditorData
-
+                          x.Rules
+    member x.RecreateOnServer =
+        let allWorkers=(x.Events |> List.map (fun (_,event) -> event.Worker))
+                       @(x.Widgets |> List.map (fun (_,_,widget) -> widget.Worker))
+                       |>List.map (fun worker -> worker.WithStartRunner())
+        x.Rules.Reconnect allWorkers

@@ -101,76 +101,48 @@ type DshEditor =
         {
             RowItems = ListModel.Create (fun item ->item.Key) []
         }
-    member x.Reconnect (data:DshData) = 
-                           MessageBus.Agent.Post MessageBus.Clear
-                           //data.PortConnectorItems |> Seq.iter (fun item -> item.PortConnector.Disconnect())
-                           //data.PortConnectorItems.Clear()
-                           x.RowItems
-                           |> List.ofSeq
-                           |> List.iter (fun row -> 
-                                                let cells = row.CellItems |> List.ofSeq
-                                                for i in [1..(cells.Length - 1)] do
-                                                    let cell1=cells.[i-1]
-                                                    let cell2=cells.[i]
-                                                    cell1.OptOutPort.Value 
-                                                    |> Option.map (fun outPort -> cell2.OptInPort.Value 
-                                                                                  |> Option.map (fun inPort->data.ConnectPorts outPort inPort))|>ignore
-                                                    //data.ConnectPorts (cell1.OptOutPort.Value.Value) (cell2.OptInPort.Value.Value) 
-                                        )
-    member x.Restore data (editorData:DshEditorData) =
-        x.RowItems.Clear()
-        let allPorts fnc = data.WorkItems |>List.ofSeq |> List.map (fun item -> fnc item.Worker) |> List.concat
-        let allOutPorts = allPorts (fun worker -> worker.OutPorts)
-        let allInPorts = allPorts (fun worker -> worker.InPorts)
-
-        editorData.DshEditorRows |> List.iter (fun rowData -> 
-                                            let row = DshEditorRowItem.Create 
-                                            rowData.DshEditorCells |> List.iter (fun cellData ->
-                                                                                    let cell = DshEditorCellItem.Create
-                                                                                    cell.OptWorker.Value <- data.WorkItems |> List.ofSeq |> List.tryFind (fun item ->  item.Worker.Key = cellData.CellWorkerKey)
-                                                                                    cell.OptInPort.Value <- allInPorts |> List.tryFind (fun port ->  port.Key = cellData.CellInPortKey)
-                                                                                    cell.OptOutPort.Value <- allOutPorts |> List.tryFind (fun port ->  port.Key = cellData.CellOutPortKey)
-                                                                                    row.CellItems.Add cell
-                                                                                )  
-                                            x.RowItems.Add row      
-                                     )
-        x.Reconnect data
-    member x.Recreate (data:DshData) =
-        x.RowItems.Clear()
-
-        
-    member x.Render data = 
-        let renderRows=  ListModel.View x.RowItems
-                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data (fun _ -> x.Reconnect data)])
-        table[
-               renderRows
-               tr[td[Helper.IconNormal "add" (fun _ -> x.RowItems.Add (DshEditorRowItem.Create) )]]
-             ]
-and
- [<JavaScript>]
-  DshEditorCellData =
-   {CellInPortKey:string;CellOutPortKey:string;CellWorkerKey:string;}
-and
- [<JavaScript>]
-  DshEditorRowData =
-   {DshEditorCells:DshEditorCellData list}
-and
- [<JavaScript>]
-  DshEditorData =
-    {DshEditorRows:DshEditorRowData list}
-    static member Create editor =
-       {DshEditorRows =
-            editor.RowItems |> List.ofSeq 
-            |> List.map (fun row -> {DshEditorCells =
+    member x.CopyToRules = 
+       {RuleContainer =
+            x.RowItems |> List.ofSeq 
+            |> List.map (fun row -> {RuleChain =
                                          row.CellItems |> List.ofSeq
                                          |> List.map (fun cell ->
-                                                            {CellInPortKey  = match cell.OptInPort.Value with | Some(port) -> port.Key | None -> ""
-                                                             CellOutPortKey = match cell.OptOutPort.Value with | Some(port) -> port.Key | None -> ""
-                                                             CellWorkerKey  = match cell.OptWorker.Value with | Some(worker) -> worker.Worker.Key | None -> "" 
+                                                            {InPortKey  = match cell.OptInPort.Value with | Some(port) -> port.Key | None -> ""
+                                                             OutPortKey = match cell.OptOutPort.Value with | Some(port) -> port.Key | None -> ""
+                                                             WorkerKey  = match cell.OptWorker.Value with | Some(worker) -> worker.Worker.Key | None -> "" 
                                                             }
                                                        )
                                     }
                                  
                          ) 
                      }
+    member x.Restore data rules =
+        x.RowItems.Clear()
+        let allWorkers = data.WorkItems |>List.ofSeq |> List.map (fun item -> item.Worker)
+        let allOutPorts = Workers.allOutPorts allWorkers
+        let allInPorts = Workers.allInPorts allWorkers
+
+        rules.RuleContainer |> List.iter (fun rowData -> 
+                                            let row = DshEditorRowItem.Create 
+                                            rowData.RuleChain |> List.iter (fun cellData ->
+                                                                                    let cell = DshEditorCellItem.Create
+                                                                                    cell.OptWorker.Value <- data.WorkItems |> List.ofSeq |> List.tryFind (fun item ->  item.Worker.Key = cellData.WorkerKey)
+                                                                                    cell.OptInPort.Value <- allInPorts |> List.tryFind (fun port ->  port.Key = cellData.InPortKey)
+                                                                                    cell.OptOutPort.Value <- allOutPorts |> List.tryFind (fun port ->  port.Key = cellData.OutPortKey)
+                                                                                    row.CellItems.Add cell
+                                                                                )  
+                                            x.RowItems.Add row      
+                                     )
+        rules.Reconnect allWorkers
+    member x.Render data = 
+        let reconnectFnc () =
+                data.WorkItems |>List.ofSeq |> List.map (fun item -> item.Worker)
+                |> (x.CopyToRules).Reconnect
+        let renderRows=  ListModel.View x.RowItems
+                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data (fun _ ->reconnectFnc())]) // x.Reconnect data)])
+        table[
+               renderRows
+               tr[td[Helper.IconNormal "add" (fun _ -> x.RowItems.Add (DshEditorRowItem.Create) )]]
+             ]
+
 

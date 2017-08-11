@@ -68,7 +68,13 @@ type Dashboard =
                                                                                                              )
                                                                        ))}
                                         {Icon="edit"; Action=(fun panel->Console.Log("Edit")
-                                                                         x.PropertyGrid |> panel.EditProperties)}
+                                                                         x.Data.WidgetItems 
+                                                                         |> List.ofSeq 
+                                                                         |> List.filter (fun item-> item.Panel = panel.Key)
+                                                                         |> List.map (fun item -> item.Widget.Properties)
+                                                                         |> List.concat
+                                                                         |> x.PropertyGrid.Edit)}
+                                                                         //x.PropertyGrid |> panel.EditProperties
                                         {Icon="clear";Action=(fun panel->x.PanelContainer.PanelItems.Remove(x.PanelContainer.FindPanelItem panel))}
                                       ])
                           .WithChildPanelContainer(childContainerContent)
@@ -85,7 +91,7 @@ type Dashboard =
                              panel.Left.Value <- panelConfig.Left
                              panel.Top.Value <- panelConfig.Top
                     )
-        events |> List.iter (fun (key,event:Worker) -> x.Data.RegisterEvent key (event.WithStartRunner()))     
+        events |> List.iter (fun (key,event:Worker) -> x.Data.RegisterEvent key event)     
         Console.Log("Events restored")   
         widgets |> List.iter (fun (key,panelKey,widget:Worker) ->
                                 let panel = x.PanelContainer.PanelItems |>List.ofSeq |> List.find (fun entry -> entry.Key = panelKey)
@@ -93,8 +99,8 @@ type Dashboard =
         Console.Log("Widgets restored")   
         x.Editor.Restore (x.Data) dashEditorData
         Console.Log("Connectors restored")   
-        x.Data.WorkItems |> List.ofSeq |> List.iter (fun worker -> worker.Worker.Runner |> Option.map(fun runner -> runner.Run worker.Worker) |> ignore)
-
+        //x.Data.WorkItems |> List.ofSeq |> List.iter (fun worker -> worker.Worker.Runner |> Option.map(fun runner -> runner.Run worker.Worker) |> ignore)
+        
     member x.Render=
         let eventsRender =
             table[

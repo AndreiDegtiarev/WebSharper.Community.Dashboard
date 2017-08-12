@@ -136,6 +136,7 @@ type Dashboard =
                                             tr[td[Helper.IconNormal "add" (fun _ -> 
                                                                 let (_,(varBoolDash,_)) = containers.[0]
                                                                 let (_,(varBoolSrc,_)) = containers.[1]
+                                                                let (_,(varBoolEdit,_)) = containers.[2]
                                                                 if varBoolSrc.Value then
                                                                     let items = x.Factory.EventItems|>List.ofSeq
                                                                     let selected=Var.Create (items.Head)
@@ -144,11 +145,15 @@ type Dashboard =
                                                                                                                         x.Data.RegisterEvent (Helper.UniqueKey()) event)
                                                                 else if varBoolDash.Value then
                                                                     x.CreatePanel("Panel",700)|>ignore
+                                                                else if varBoolEdit.Value then
+                                                                    x.Editor.RowItems.Add (DshEditorRowItem.Create [DshEditorCellItem.Create]) 
                                                              )]]
+                                       ]
+                                       menu
+                                       [     
                                             tr[td[]]
                                             tr[td[x.PropertyGrid.Render]]
                                        ]
-                                       menu
                                     ])
 
                       ]

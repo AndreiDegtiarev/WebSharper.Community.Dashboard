@@ -67,7 +67,7 @@ type DshEditorCellItem =
                       [
                         table
                          [
-                            tr[td[Helper.IconNormal "add" (fun _ ->())]
+                            tr[//td[Helper.IconNormal "add" (fun _ ->())]
                                td[workerSelector]
                               ]
                          ]
@@ -80,10 +80,10 @@ type DshEditorRowItem =
         Key:Key
         CellItems : ListModel<Key,DshEditorCellItem>
     }
-    static member Create =
+    static member Create children=
         {
             Key=Key.Fresh()
-            CellItems = ListModel.Create (fun item ->item.Key) []
+            CellItems = ListModel.Create (fun item ->item.Key) children
         }
 
     member x.Render data reconnectFnc = 
@@ -123,9 +123,9 @@ type DshEditor =
         let allInPorts = Workers.allInPorts allWorkers
 
         rules.RuleContainer |> List.iter (fun rowData -> 
-                                            let row = DshEditorRowItem.Create 
+                                            let row = DshEditorRowItem.Create []
                                             rowData.RuleChain |> List.iter (fun cellData ->
-                                                                                    let cell = DshEditorCellItem.Create
+                                                                                    let cell = DshEditorCellItem.Create 
                                                                                     cell.OptWorker.Value <- data.WorkItems |> List.ofSeq |> List.tryFind (fun item ->  item.Worker.Key = cellData.WorkerKey)
                                                                                     cell.OptInPort.Value <- allInPorts |> List.tryFind (fun port ->  port.Key = cellData.InPortKey)
                                                                                     cell.OptOutPort.Value <- allOutPorts |> List.tryFind (fun port ->  port.Key = cellData.OutPortKey)
@@ -142,7 +142,6 @@ type DshEditor =
                          |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data (fun _ ->reconnectFnc())]) // x.Reconnect data)])
         table[
                renderRows
-               tr[td[Helper.IconNormal "add" (fun _ -> x.RowItems.Add (DshEditorRowItem.Create) )]]
              ]
 
 

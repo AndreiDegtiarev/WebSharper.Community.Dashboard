@@ -805,7 +805,7 @@
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_InPorts:function()
   {
-   return Ports.Create(List.ofArray([["in Value",MessageBus.CreateNumber(0)],["cx",this.Cx],["cy",this.Cy],["BufferSize",this.ChartBufferSize]]));
+   return Ports.Create(List.ofArray([[" in Value",MessageBus.CreateNumber(0)],["cx",this.Cx],["cy",this.Cy],["BufferSize",this.ChartBufferSize]]));
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_Name:function()
   {
@@ -1137,9 +1137,7 @@
      return port.Name;
     }," ",item);
    },outPorts,this.OptOutPort)])])]))));
-   return Doc.Element("td",[AttrModule.Class("td DshEditorCell")],[Doc.Element("div",[AttrModule.Class("div DshEditorCell")],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
-   {
-   })]),Doc.Element("td",[],[workerSelector])])])])]);
+   return Doc.Element("td",[AttrModule.Class("td DshEditorCell")],[Doc.Element("div",[AttrModule.Class("div DshEditorCell")],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[workerSelector])])])])]);
   }
  },null,DshEditorCellItem);
  DshEditorCellItem.get_Create=function()
@@ -1172,12 +1170,12 @@
    })]);
   }
  },null,DshEditorRowItem);
- DshEditorRowItem.get_Create=function()
+ DshEditorRowItem.Create=function(children)
  {
   return DshEditorRowItem.New(Key.Fresh(),ListModel.Create(function(item)
   {
    return item.Key;
-  },List.T.Empty));
+  },children));
  };
  DshEditorRowItem.New=function(Key$1,CellItems)
  {
@@ -1209,10 +1207,7 @@
     {
      reconnectFnc();
     })]);
-   },this.RowItems.v),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
-   {
-    $this.RowItems.Append(DshEditorRowItem.get_Create());
-   })])])]);
+   },this.RowItems.v)]);
   },
   Restore:function(data,rules)
   {
@@ -1228,7 +1223,7 @@
    List.iter(function(rowData)
    {
     var row;
-    row=DshEditorRowItem.get_Create();
+    row=DshEditorRowItem.Create([]);
     List.iter(function(cellData)
     {
      var cell;
@@ -1341,9 +1336,11 @@
    {
    })])]),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
    {
-    var varBoolDash,items,selected;
+    var varBoolDash,varBoolSrc,varBoolEdit,items,selected;
     varBoolDash=(containers.get_Item(0))[1][0];
-    (containers.get_Item(1))[1][0].c?(items=List.ofSeq($this.Factory.EventItems),selected=Var.Create$1(List.head(items)),$this.Dialog.ShowDialog("Select source",Doc.Element("div",[],[Doc.Select([AttrModule.Class("form-control")],function(item)
+    varBoolSrc=(containers.get_Item(1))[1][0];
+    varBoolEdit=(containers.get_Item(2))[1][0];
+    varBoolSrc.c?(items=List.ofSeq($this.Factory.EventItems),selected=Var.Create$1(List.head(items)),$this.Dialog.ShowDialog("Select source",Doc.Element("div",[],[Doc.Select([AttrModule.Class("form-control")],function(item)
     {
      return item.Worker.Name.c;
     },items,selected)]),function()
@@ -1351,8 +1348,8 @@
      var a;
      a=selected.c.Worker.get_CloneAndRun();
      $this.Data.RegisterEvent(Helper.UniqueKey(),a);
-    })):varBoolDash.c?$this.CreatePanel("Panel",700,null):void 0;
-   })])]),Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[this.PropertyGrid.get_Render()])])]),menu]))]),Doc.Element("td",[],containerDivs)])]),Doc.Element("div",[],[this.Dialog.get_Render()])]);
+    })):varBoolDash.c?$this.CreatePanel("Panel",700,null):varBoolEdit.c?$this.Editor.RowItems.Append(DshEditorRowItem.Create([DshEditorCellItem.get_Create()])):void 0;
+   })])])]),menu,List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[this.PropertyGrid.get_Render()])])])]))]),Doc.Element("td",[],containerDivs)])]),Doc.Element("div",[],[this.Dialog.get_Render()])]);
   },
   Restore:function(panelList,events,widgets,dashEditorData)
   {

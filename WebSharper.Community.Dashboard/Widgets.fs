@@ -46,7 +46,7 @@ type ChartRenderer =
   interface IWorkerContext with
     override x.Name = x.Name
     override x.InPorts =  [
-                             ("in Value",MessageBus.CreateNumber 0.0)
+                             (" in Value",MessageBus.CreateNumber 0.0)
                              ("cx", x.Cx)
                              ("cy", x.Cy)
                              ("BufferSize", x.ChartBufferSize)

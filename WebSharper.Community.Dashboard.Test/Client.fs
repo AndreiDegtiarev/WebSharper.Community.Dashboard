@@ -9,7 +9,7 @@ open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
 open FSharp.Data
 
-//[<Require(typeof<WebSharper.Community.PropertyGrid.Resources.StyleResource>)>]
+[<Require(typeof<WebSharper.Community.PropertyGrid.Resources.StyleResource>)>]
 [<JavaScript>]
 module Client =
 

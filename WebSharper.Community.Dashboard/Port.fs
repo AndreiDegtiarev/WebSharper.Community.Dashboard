@@ -13,8 +13,8 @@ type PortValue =
 
 
 [<JavaScript;CustomEquality;NoComparison>]
-type InPort =  {Key:string;Name:string;PortValue:PortValue}
-                static member Create  key name portValue = {Key = key;Name = name;PortValue=portValue}
+type InPort =  {Key:string;Name:string;PortValue:PortValue;CacheSize:int}
+                static member Create  key name portValue cacheSize = {Key = key;Name = name;PortValue=portValue;CacheSize = cacheSize}
                 override x.Equals y = match y with
                                       | :? InPort as yPort -> x.Name = yPort.Name
                                       | _ -> false
@@ -65,13 +65,13 @@ and
                                  | _ -> false
 [<JavaScript>]
 module Ports = 
-    let Create (info:(string*MessageBus.KeyValue) list) = 
+    let CreateWithCache (info:(string*MessageBus.KeyValue*int) list)= 
                         info
-                        |> List.map (fun  (name,pair:MessageBus.KeyValue) ->
+                        |> List.map (fun  (name,pair:MessageBus.KeyValue,cacheSize) ->
                             match pair.Value with
-                            |MessageBus.Number(value) -> InPort.Create pair.Key name (NumberPortValue(Var.Create value))
-                            |MessageBus.String(value) -> InPort.Create pair.Key name (StringPortValue(Var.Create value))
+                            |MessageBus.Number(value) -> InPort.Create pair.Key name (NumberPortValue(Var.Create value)) cacheSize
+                            |MessageBus.String(value) -> InPort.Create pair.Key name (StringPortValue(Var.Create value)) cacheSize
                         )
-                          
+    let Create info = CreateWithCache (info |> List.map (fun (name,value) -> (name,value,1)))                     
 
             

@@ -1,12 +1,14 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,MessageBus,KeyValue,Message,AgentState,SC$1,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,WidgetItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,Dashboard$1,List,Concurrency,Remoting,AjaxRemotingProvider,console,Panel,Helper,Date,IntelliFactory,Runtime,Control,MailboxProcessor,Seq,Operators,UI,Next,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,PrintfHelpers,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,View,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var WebSharper,Community,Dashboard,MessageBus,Value,KeyValue,ListenerInfo,Message,AgentState,SC$1,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,WidgetItem,DshData,DshEditorCellItem,DshEditorRowItem,DshEditor,Dashboard$1,AppModelLib,App,SC$2,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,PrintfHelpers,Seq,UI,Next,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,View,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
  MessageBus=Dashboard.MessageBus=Dashboard.MessageBus||{};
+ Value=MessageBus.Value=MessageBus.Value||{};
  KeyValue=MessageBus.KeyValue=MessageBus.KeyValue||{};
+ ListenerInfo=MessageBus.ListenerInfo=MessageBus.ListenerInfo||{};
  Message=MessageBus.Message=MessageBus.Message||{};
  AgentState=MessageBus.AgentState=MessageBus.AgentState||{};
  SC$1=window.StartupCode$WebSharper_Community_Dashboard$MessageBus=window.StartupCode$WebSharper_Community_Dashboard$MessageBus||{};
@@ -34,20 +36,23 @@
  DshEditorRowItem=Dashboard.DshEditorRowItem=Dashboard.DshEditorRowItem||{};
  DshEditor=Dashboard.DshEditor=Dashboard.DshEditor||{};
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
+ AppModelLib=Dashboard.AppModelLib=Dashboard.AppModelLib||{};
+ App=Dashboard.App=Dashboard.App||{};
+ SC$2=window.StartupCode$WebSharper_Community_Dashboard$AppModelLib=window.StartupCode$WebSharper_Community_Dashboard$AppModelLib||{};
+ IntelliFactory=window.IntelliFactory;
+ Runtime=IntelliFactory&&IntelliFactory.Runtime;
+ Operators=WebSharper&&WebSharper.Operators;
+ Panel=Community&&Community.Panel;
+ Helper=Panel&&Panel.Helper;
+ Date=window.Date;
  List=WebSharper&&WebSharper.List;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
- console=window.console;
- Panel=Community&&Community.Panel;
- Helper=Panel&&Panel.Helper;
- Date=window.Date;
- IntelliFactory=window.IntelliFactory;
- Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Control=WebSharper&&WebSharper.Control;
  MailboxProcessor=Control&&Control.MailboxProcessor;
+ PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  Seq=WebSharper&&WebSharper.Seq;
- Operators=WebSharper&&WebSharper.Operators;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Var=Next&&Next.Var;
@@ -58,7 +63,7 @@
  Doc=Next&&Next.Doc;
  Random=WebSharper&&WebSharper.Random;
  Math=window.Math;
- PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
+ console=window.console;
  Data=WebSharper&&WebSharper.Data;
  TxtRuntime=Data&&Data.TxtRuntime;
  FSharp=window.FSharp;
@@ -84,12 +89,34 @@
  TitleButton=Panel&&Panel.TitleButton;
  Dialog=Panel&&Panel.Dialog;
  PropertyGrid$1=PropertyGrid&&PropertyGrid.PropertyGrid;
- KeyValue.New=function(Key$1,Time,Value)
+ Value=MessageBus.Value=Runtime.Class({
+  get_AsNumber:function()
+  {
+   return this.$==0?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+  }
+ },null,Value);
+ KeyValue.Create=function(value)
+ {
+  return KeyValue.New(Helper.UniqueKey(),Date.now(),value);
+ };
+ KeyValue.New=function(Key$1,Time,Value$1)
  {
   return{
    Key:Key$1,
    Time:Time,
-   Value:Value
+   Value:Value$1
+  };
+ };
+ ListenerInfo.Create=function(key,name,cacheSize)
+ {
+  return ListenerInfo.New(key,name,cacheSize);
+ };
+ ListenerInfo.New=function(Key$1,Name,CacheSize)
+ {
+  return{
+   Key:Key$1,
+   Name:Name,
+   CacheSize:CacheSize
   };
  };
  Message.Clear={
@@ -97,12 +124,11 @@
  };
  AgentState.get_empty=function()
  {
-  return AgentState.New(List.T.Empty,List.T.Empty);
+  return AgentState.New(List.T.Empty);
  };
- AgentState.New=function(Buffer,Listeners)
+ AgentState.New=function(Listeners)
  {
   return{
-   Buffer:Buffer,
    Listeners:Listeners
   };
  };
@@ -116,7 +142,7 @@
     return true;
    },Concurrency.Delay(function()
    {
-    return Concurrency.Bind(Concurrency.Sleep(2*1000),function()
+    return Concurrency.Bind(Concurrency.Sleep(10*1000),function()
     {
      return Concurrency.Bind(MessageBus.Agent().PostAndAsyncReply(function(r)
      {
@@ -138,7 +164,7 @@
         });
         _this.resume();
        },a$1);
-       console.log((function($1)
+       (MessageBus.Log())((function($1)
        {
         return function($2)
         {
@@ -167,17 +193,17 @@
  };
  MessageBus.CreateStrPair=function(key,value)
  {
-  return MessageBus.CreateKeyValue(key,{
+  return MessageBus.CreateKeyValue(key,new Value({
    $:1,
    $0:value
-  });
+  }));
  };
  MessageBus.CreateNumPair=function(key,value)
  {
-  return MessageBus.CreateKeyValue(key,{
+  return MessageBus.CreateKeyValue(key,new Value({
    $:0,
    $0:value
-  });
+  }));
  };
  MessageBus.CreateKeyValue=function(key,value)
  {
@@ -200,7 +226,7 @@
   };
   SC$1.Agent=MailboxProcessor.Start(function(inbox)
   {
-   var cutBuffer;
+   var cutBuffer,split,update_and_split;
    function loop(state)
    {
     var b;
@@ -209,34 +235,48 @@
     {
      return Concurrency.Bind(inbox.Receive(null),function(a)
      {
-      var m,busKeyValue,newState,newBuf,a$1,p;
-      return a.$==1?loop(AgentState.New(state.Buffer,new List.T({
+      var listenerInfo,time,m,maxTimes,m$1,busKeyValue,m$2;
+      return a.$==1?(listenerInfo=a.$0[0],((MessageBus.Log())((function($1)
+      {
+       return function($2)
+       {
+        return $1("RegisterListener:"+PrintfHelpers.toSafe($2));
+       };
+      }(window.id))(listenerInfo.Name)),loop(AgentState.New(new List.T({
        $:1,
-       $0:a.$0,
+       $0:[listenerInfo,a.$0[2],List.T.Empty],
        $1:state.Listeners
-      }))):a.$==3?(a.$0[1](cutBuffer(a.$0[0],state.Buffer)),loop(state)):a.$==4?(a.$0((m=state.Buffer,m.$==0?(new Date(0,0-1,0)).getTime():List.maxBy(function(item)
+      }))))):a.$==3?(time=a.$0[0],(a.$0[1](Seq.fold(function(acc,state$1)
       {
-       return item.Time;
-      },m).Time)),loop(state)):a.$==0?(busKeyValue=a.$0,(newState=(newBuf=new List.T({
-       $:1,
-       $0:busKeyValue,
-       $1:state.Buffer
-      }),AgentState.New(cutBuffer(List.maxBy(function(item)
+       return!List.contains(state$1,acc)?new List.T({
+        $:1,
+        $0:state$1,
+        $1:acc
+       }):acc;
+      },List.T.Empty,List.concat((m=function(info,a$1,buffer)
       {
-       return item.Time;
-      },newBuf).Time-10*1000,newBuf),state.Listeners)),(a$1=function(a$2,name,callback)
+       return cutBuffer(time,buffer);
+      },List.map(function($1)
       {
-       callback(busKeyValue.Value);
-      },List.iter(function($1)
+       return m($1[0],$1[1],$1[2]);
+      },state.Listeners))))),loop(state))):a.$==4?(maxTimes=(m$1=function(info,a$1,buffer)
       {
-       return a$1($1[0],$1[1],$1[2]);
-      },(p=function(key)
+       return buffer.$==0?(new Date(0,0-1,0)).getTime():List.maxBy(function(item)
+       {
+        return item.Time;
+       },buffer).Time;
+      },List.map(function($1)
       {
-       return key===busKeyValue.Key;
-      },List.filter(function($1)
+       return m$1($1[0],$1[1],$1[2]);
+      },state.Listeners)),(a.$0(maxTimes.$==0?(new Date(0,0-1,0)).getTime():List.max(maxTimes)),loop(state))):a.$==0?(busKeyValue=a.$0,loop(AgentState.New((m$2=function(info,callback,buf)
       {
-       return p($1[0],$1[1],$1[2]);
-      },newState.Listeners))),loop(newState)))):loop(AgentState.get_empty());
+       var listener;
+       listener=window.Array.prototype.slice.call(arguments);
+       return info.Key===busKeyValue.Key?(callback(busKeyValue.Value),[info,callback,update_and_split(info.CacheSize,buf,busKeyValue)]):listener;
+      },List.map(function($1)
+      {
+       return m$2($1[0],$1[1],$1[2]);
+      },state.Listeners))))):loop(AgentState.get_empty());
      });
     });
    }
@@ -250,6 +290,18 @@
       $1:acc
      }):acc;
     },List.T.Empty,buffer);
+   };
+   split=function(maxSize,buffer)
+   {
+    return maxSize<buffer.get_Length()?(List.splitAt(maxSize,buffer))[0]:buffer;
+   };
+   update_and_split=function(maxSize,buffer,value)
+   {
+    return maxSize===1?List.ofArray([value]):split(maxSize,new List.T({
+     $:1,
+     $0:value,
+     $1:buffer
+    }));
    };
    return loop(AgentState.get_empty());
   },null);
@@ -333,19 +385,20 @@
    }:{
     $:0,
     $0:Var.Create$1(m.$0.c)
-   }));
+   }),this.CacheSize);
   }
  },null,InPort);
- InPort.Create=function(key,name,portValue)
+ InPort.Create=function(key,name,portValue,cacheSize)
  {
-  return InPort.New(key,name,portValue);
+  return InPort.New(key,name,portValue,cacheSize);
  };
- InPort.New=function(Key$1,Name,PortValue)
+ InPort.New=function(Key$1,Name,PortValue,CacheSize)
  {
   return new InPort({
    Key:Key$1,
    Name:Name,
-   PortValue:PortValue
+   PortValue:PortValue,
+   CacheSize:CacheSize
   });
  };
  OutPortType=Dashboard.OutPortType=Runtime.Class({
@@ -403,21 +456,32 @@
  Ports.Create=function(info)
  {
   var m;
-  m=function(name,pair)
+  return Ports.CreateWithCache((m=function(name,value)
+  {
+   return[name,value,1];
+  },List.map(function($1)
+  {
+   return m($1[0],$1[1]);
+  },info)));
+ };
+ Ports.CreateWithCache=function(info)
+ {
+  var m;
+  m=function(name,pair,cacheSize)
   {
    var m$1;
    m$1=pair.Value;
    return m$1.$==1?InPort.Create(pair.Key,name,{
     $:1,
     $0:Var.Create$1(m$1.$0)
-   }):InPort.Create(pair.Key,name,{
+   },cacheSize):InPort.Create(pair.Key,name,{
     $:0,
     $0:Var.Create$1(m$1.$0)
-   });
+   },cacheSize);
   };
   return List.map(function($1)
   {
-   return m($1[0],$1[1]);
+   return m($1[0],$1[1],$1[2]);
   },info);
  };
  Worker=Dashboard.Worker=Runtime.Class({
@@ -481,6 +545,14 @@
    return Worker.New(key,this.Name,this.InPorts,this.OutPorts,this.Runner,this.Renderer,this.DataContext,this.RunnerContext);
   }
  },null,Worker);
+ Worker.CreateWithRenderer=function(src)
+ {
+  return Worker.Create(src).WithRenderer(src);
+ };
+ Worker.CreateWithRunner=function(src)
+ {
+  return Worker.Create(src).WithRunner(src);
+ };
  Worker.Create=function(dataContext)
  {
   return Worker.New(Helper.UniqueKey(),Var.Create$1(dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_Name()),dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_InPorts(),dataContext.WebSharper_Community_Dashboard_IWorkerContext$get_OutPorts(),null,null,dataContext,null);
@@ -540,10 +612,10 @@
        disper=worker.InPorts.get_Item(1).get_Number();
        middle=worker.InPorts.get_Item(0).get_Number();
        d=Math.random()*disper+middle;
-       worker.OutPorts.get_Item(0).Trigger({
+       worker.OutPorts.get_Item(0).Trigger(new Value({
         $:0,
         $0:d
-       });
+       }));
        return Concurrency.Zero();
       });
      }));
@@ -686,10 +758,10 @@
       outTempearatur=worker.OutPorts.get_Item(0);
       return Concurrency.Bind(OpenWeather.get(inApiKey.get_String(),inCity.get_String()),function(a)
       {
-       return Concurrency.Combine(a==null?Concurrency.Zero():(console.log("Value generated:"+a.$0.Title),outTempearatur.Trigger({
+       return Concurrency.Combine(a==null?Concurrency.Zero():(console.log("Value generated:"+a.$0.Title),outTempearatur.Trigger(new Value({
         $:0,
         $0:+a.$0.Temperature
-       }),Concurrency.Zero()),Concurrency.Delay(function()
+       })),Concurrency.Zero()),Concurrency.Delay(function()
        {
         return Concurrency.Bind(Concurrency.Sleep(1000*15),function()
         {
@@ -805,7 +877,7 @@
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_InPorts:function()
   {
-   return Ports.Create(List.ofArray([[" in Value",MessageBus.CreateNumber(0)],["cx",this.Cx],["cy",this.Cy],["BufferSize",this.ChartBufferSize]]));
+   return Ports.CreateWithCache(List.ofArray([[" in Value",this.Number,this.ChartBufferSize.Value.get_AsNumber()<<0],["cx",this.Cx,1],["cy",this.Cy,1],["BufferSize",this.ChartBufferSize,1]]));
   },
   WebSharper_Community_Dashboard_IWorkerContext$get_Name:function()
   {
@@ -920,7 +992,7 @@
      while(e.MoveNext())
       (function()
       {
-       var i$1,cell1,cell2,o,outPort,o$1,inPort,_this$1;
+       var i$1,cell1,cell2,o,outPort,o$1,inPort,templateValue,_this$1;
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
@@ -940,9 +1012,15 @@
          return port.Key===cell2.InPortKey;
         },allInPorts),o$1==null?null:{
          $:1,
-         $0:(inPort=o$1.$0,((MessageBus.Log())("Found int port"),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast({
+         $0:(inPort=o$1.$0,((MessageBus.Log())("Found int port"),templateValue=inPort.PortValue.$==1?KeyValue.Create(new Value({
           $:1,
-          $0:[outPort.Key,outPort.Name+"->"+inPort.Name,function(a)
+          $0:""
+         })):KeyValue.Create(new Value({
+          $:0,
+          $0:0
+         })),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast({
+          $:1,
+          $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.Name,inPort.CacheSize),templateValue,function(a)
           {
            inPort.Receive(a);
           }]
@@ -1391,6 +1469,19 @@
    this.Editor.Restore(this.Data,dashEditorData);
    console.log("Connectors restored");
   },
+  Store:function(fncFromWorker)
+  {
+   return[List.map(function(panel)
+   {
+    return panel.get_PanelData();
+   },List.ofSeq(this.PanelContainer.PanelItems)),List.map(function(item)
+   {
+    return[item.Worker.Key,fncFromWorker(item.Worker)];
+   },List.ofSeq(this.Data.EventItems)),List.map(function(item)
+   {
+    return[item.Widget.Key,item.Panel,fncFromWorker(item.Widget)];
+   },List.ofSeq(this.Data.WidgetItems)),this.Editor.get_CopyToRules()];
+  },
   CreatePanel:function(name,cx,key)
   {
    var $this,keyDef,d,c,childContainerContent,panel;
@@ -1454,4 +1545,112 @@
    Dialog:Dialog$1
   });
  };
+ AppModelLib=Dashboard.AppModelLib=Runtime.Class({
+  get_Worker:function()
+  {
+   var src;
+   return this.$==1?Worker.CreateWithRunner(this.$0):this.$==2?Worker.CreateWithRenderer(this.$0):this.$==3?(src=this.$0,Worker.Create(src).WithRunner(src).WithRenderer(src)):Worker.CreateWithRunner(this.$0);
+  }
+ },null,AppModelLib);
+ AppModelLib.FromWorker=function(worker)
+ {
+  var m;
+  m=worker.DataContext;
+  return m instanceof RandomRunner?{
+   $:1,
+   $0:new AppModelLib({
+    $:0,
+    $0:(RandomRunner.get_FromPorts())(worker)
+   })
+  }:m instanceof OpenWeatherRunner?{
+   $:1,
+   $0:new AppModelLib({
+    $:1,
+    $0:(OpenWeatherRunner.get_FromPorts())(worker)
+   })
+  }:m instanceof TextBoxRenderer?{
+   $:1,
+   $0:new AppModelLib({
+    $:2,
+    $0:(TextBoxRenderer.get_FromPorts())(worker)
+   })
+  }:m instanceof ChartRenderer?{
+   $:1,
+   $0:new AppModelLib({
+    $:3,
+    $0:(ChartRenderer.get_FromPorts())(worker)
+   })
+  }:null;
+ };
+ AppModelLib.FromDataContext=function(data)
+ {
+  return data instanceof RandomRunner?{
+   $:1,
+   $0:new AppModelLib({
+    $:0,
+    $0:data
+   })
+  }:data instanceof OpenWeatherRunner?{
+   $:1,
+   $0:new AppModelLib({
+    $:1,
+    $0:data
+   })
+  }:data instanceof TextBoxRenderer?{
+   $:1,
+   $0:new AppModelLib({
+    $:2,
+    $0:data
+   })
+  }:data instanceof ChartRenderer?{
+   $:1,
+   $0:new AppModelLib({
+    $:3,
+    $0:data
+   })
+  }:null;
+ };
+ App.CreateDashboard=function()
+ {
+  SC$2.$cctor();
+  return SC$2.CreateDashboard;
+ };
+ App.Register=function(dashboard)
+ {
+  var register;
+  function registerEvent(data)
+  {
+   var o;
+   register((o=dashboard.Factory,function(a)
+   {
+    o.RegisterEvent(a);
+   }),data);
+  }
+  function registerWidget(data)
+  {
+   var o;
+   register((o=dashboard.Factory,function(a)
+   {
+    o.RegisterWidget(a);
+   }),data);
+  }
+  register=function(fnc,data)
+  {
+   var o;
+   o=AppModelLib.FromDataContext(data),o==null?null:{
+    $:1,
+    $0:fnc(o.$0.get_Worker())
+   };
+  };
+  registerEvent(OpenWeatherRunner.Create("London",""));
+  registerEvent(RandomRunner.Create(50,5));
+  registerWidget(TextBoxRenderer.get_Create());
+  registerWidget(ChartRenderer.Create(300,100,50));
+ };
+ SC$2.$cctor=Runtime.Cctor(function()
+ {
+  var dashboard;
+  SC$2.CreateDashboard=(dashboard=Dashboard$1.Create(PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")])),(App.Register(dashboard),dashboard));
+  SC$2.$cctor=window.ignore;
+ });
 }());

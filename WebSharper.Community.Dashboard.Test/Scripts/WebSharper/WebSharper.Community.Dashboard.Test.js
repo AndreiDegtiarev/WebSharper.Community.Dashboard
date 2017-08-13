@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,Worker,RandomRunner,OpenWeatherRunner,TextBoxRenderer,ChartRenderer,Operators,List,Dashboard$1,Panel,PanelContainer,LayoutManagers,UI,Next,AttrModule,Doc,MessageBus,console,Var,RuleEntry,Helper,PanelData,RuleContainer,RuleChain,Remoting,AjaxRemotingProvider;
+ var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,UI,Next,Doc,MessageBus,console,Var,App,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain,Remoting,AjaxRemotingProvider;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
@@ -11,26 +11,22 @@
  Client=Test.Client=Test.Client||{};
  IntelliFactory=window.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
- Worker=Dashboard&&Dashboard.Worker;
- RandomRunner=Dashboard&&Dashboard.RandomRunner;
- OpenWeatherRunner=Dashboard&&Dashboard.OpenWeatherRunner;
- TextBoxRenderer=Dashboard&&Dashboard.TextBoxRenderer;
- ChartRenderer=Dashboard&&Dashboard.ChartRenderer;
+ AppModelLib=Dashboard&&Dashboard.AppModelLib;
  Operators=WebSharper&&WebSharper.Operators;
  List=WebSharper&&WebSharper.List;
- Dashboard$1=Dashboard&&Dashboard.Dashboard;
- Panel=Community&&Community.Panel;
- PanelContainer=Panel&&Panel.PanelContainer;
- LayoutManagers=Panel&&Panel.LayoutManagers;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
- AttrModule=Next&&Next.AttrModule;
  Doc=Next&&Next.Doc;
  MessageBus=Dashboard&&Dashboard.MessageBus;
  console=window.console;
  Var=Next&&Next.Var;
+ App=Dashboard&&Dashboard.App;
  RuleEntry=Dashboard&&Dashboard.RuleEntry;
+ Panel=Community&&Community.Panel;
  Helper=Panel&&Panel.Helper;
+ RandomRunner=Dashboard&&Dashboard.RandomRunner;
+ TextBoxRenderer=Dashboard&&Dashboard.TextBoxRenderer;
+ ChartRenderer=Dashboard&&Dashboard.ChartRenderer;
  PanelData=Panel&&Panel.PanelData;
  RuleContainer=Dashboard&&Dashboard.RuleContainer;
  RuleChain=Dashboard&&Dashboard.RuleChain;
@@ -39,8 +35,7 @@
  AppModel=Test.AppModel=Runtime.Class({
   get_Worker:function()
   {
-   var src,src$1,src$2,src$3;
-   return this.$==1?(src=this.$0,Worker.Create(src).WithRunner(src)):this.$==2?(src$1=this.$0,Worker.Create(src$1).WithRenderer(src$1)):this.$==3?(src$2=this.$0,Worker.Create(src$2).WithRunner(src$2).WithRenderer(src$2)):(src$3=this.$0,Worker.Create(src$3).WithRunner(src$3));
+   return this.$0.get_Worker();
   }
  },null,AppModel);
  AppModel.ToWorker=function(data)
@@ -50,36 +45,17 @@
  AppModel.FromWorker=function(worker)
  {
   var m;
-  m=worker.DataContext;
-  return m instanceof Dashboard.RandomRunner?new AppModel({
+  m=AppModelLib.FromWorker(worker);
+  return m!=null&&m.$==1?new AppModel({
    $:0,
-   $0:(RandomRunner.get_FromPorts())(worker)
-  }):m instanceof Dashboard.OpenWeatherRunner?new AppModel({
-   $:1,
-   $0:(OpenWeatherRunner.get_FromPorts())(worker)
-  }):m instanceof Dashboard.TextBoxRenderer?new AppModel({
-   $:2,
-   $0:(TextBoxRenderer.get_FromPorts())(worker)
-  }):m instanceof Dashboard.ChartRenderer?new AppModel({
-   $:3,
-   $0:(ChartRenderer.get_FromPorts())(worker)
-  }):Operators.FailWith("AllTypes FromDataContext unknown type");
+   $0:m.$0
+  }):Operators.FailWith("AllTypes FromWorker unknown type");
  };
  AppModel.FromDataContext=function(data)
  {
-  return data instanceof RandomRunner?new AppModel({
-   $:0,
-   $0:data
-  }):data instanceof OpenWeatherRunner?new AppModel({
-   $:1,
-   $0:data
-  }):data instanceof TextBoxRenderer?new AppModel({
-   $:2,
-   $0:data
-  }):data instanceof ChartRenderer?new AppModel({
-   $:3,
-   $0:data
-  }):Operators.FailWith("AllTypes FromDataContext unknown type");
+  var m;
+  m=AppModelLib.FromDataContext(data);
+  return m!=null&&m.$==1?m.$0:Operators.FailWith("AllTypes FromDataContext unknown type");
  };
  AppData=Test.AppData=Runtime.Class({
   get_RecreateOnServer:function()
@@ -137,48 +113,11 @@
    },this.Widgets)),this.Rules);
   }
  },null,AppData);
- AppData.get_CreateDashboard=function()
- {
-  var dashboard,register;
-  function registerEvent(data)
-  {
-   var o;
-   register(data,(o=dashboard.Factory,function(a)
-   {
-    o.RegisterEvent(a);
-   }));
-  }
-  function registerWidget(data)
-  {
-   var o;
-   register(data,(o=dashboard.Factory,function(a)
-   {
-    o.RegisterWidget(a);
-   }));
-  }
-  dashboard=Dashboard$1.Create(PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")]));
-  register=function(data,fnc)
-  {
-   return fnc(AppModel.ToWorker(data));
-  };
-  registerEvent(OpenWeatherRunner.Create("London",""));
-  registerEvent(RandomRunner.Create(50,5));
-  registerWidget(TextBoxRenderer.get_Create());
-  registerWidget(ChartRenderer.Create(300,100,50));
-  return dashboard;
- };
  AppData.Create=function(dashboard)
  {
-  return AppData.New(List.map(function(panel)
-  {
-   return panel.get_PanelData();
-  },List.ofSeq(dashboard.PanelContainer.PanelItems)),List.map(function(item)
-  {
-   return[item.Worker.Key,AppModel.FromWorker(item.Worker)];
-  },List.ofSeq(dashboard.Data.EventItems)),List.map(function(item)
-  {
-   return[item.Widget.Key,item.Panel,AppModel.FromWorker(item.Widget)];
-  },List.ofSeq(dashboard.Data.WidgetItems)),dashboard.Editor.get_CopyToRules());
+  var p;
+  p=dashboard.Store(AppModel.FromWorker);
+  return AppData.New(p[0],p[1],p[2],p[3]);
  };
  AppData.New=function(PanelData$1,Events,Widgets,Rules)
  {
@@ -201,7 +140,7 @@
    console.log(str);
   });
   fileName=Var.Create$1("D:\\Dashboard.cfg");
-  dashboard=AppData.get_CreateDashboard();
+  dashboard=App.CreateDashboard();
   makeTestConfig=function()
   {
    var panelKey,event,eventWorker,p,p$1;
@@ -215,16 +154,25 @@
    panelKey=Helper.UniqueKey();
    event=new AppModel({
     $:0,
-    $0:RandomRunner.Create(100,50)
+    $0:new AppModelLib({
+     $:0,
+     $0:RandomRunner.Create(100,50)
+    })
    });
    eventWorker=event.get_Worker();
    p=makeWidget(new AppModel({
-    $:2,
-    $0:TextBoxRenderer.get_Create()
+    $:0,
+    $0:new AppModelLib({
+     $:2,
+     $0:TextBoxRenderer.get_Create()
+    })
    }));
    p$1=makeWidget(new AppModel({
-    $:3,
-    $0:ChartRenderer.Create(300,150,50)
+    $:0,
+    $0:new AppModelLib({
+     $:3,
+     $0:ChartRenderer.Create(300,150,50)
+    })
    }));
    AppData.New(List.ofArray([PanelData.Create(panelKey,0,0,List.T.Empty)]),List.ofArray([[eventWorker.Key,event]]),List.ofArray([p[0],p$1[0]]),RuleContainer.New(List.ofArray([RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p[1]])),RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p$1[1]]))]))).Recreate(dashboard);
   };

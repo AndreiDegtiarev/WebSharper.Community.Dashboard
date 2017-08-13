@@ -29,7 +29,11 @@ type RuleContainer =
                                                                allInPorts|> List.tryFind (fun port -> port.Key = cell2.InPortKey)
                                                                |> Option.map (fun inPort ->
                                                                                 MessageBus.Log "Found int port"
-                                                                                MessageBus.Agent.Post (MessageBus.RegisterListener(outPort.Key,outPort.Name+"->"+inPort.Name,inPort.Receive))
+                                                                                let listInfo = MessageBus.ListenerInfo.Create outPort.Key (outPort.Name+"->"+inPort.Name) inPort.CacheSize 
+                                                                                let templateValue = match inPort.PortValue with 
+                                                                                                    |NumberPortValue(_) -> MessageBus.KeyValue.Create (MessageBus.Number(0.0))
+                                                                                                    |StringPortValue(_) -> MessageBus.KeyValue.Create (MessageBus.String(""))
+                                                                                MessageBus.Agent.Post (MessageBus.RegisterListener(listInfo,templateValue,inPort.Receive))
                                                                              ))|>ignore
                      )
 

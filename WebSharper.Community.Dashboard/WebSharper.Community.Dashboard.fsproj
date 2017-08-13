@@ -60,6 +60,7 @@
     <Compile Include="DshData.fs" />
     <Compile Include="DshEditor.fs" />
     <Compile Include="Dashboard.fs" />
+    <Compile Include="AppModelLib.fs" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

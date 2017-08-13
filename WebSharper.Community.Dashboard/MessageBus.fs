@@ -11,9 +11,11 @@ module MessageBus =
     type Value =
     |Number of double
     |String of string
+     member x.AsNumber = match x with |Number(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
 
     type KeyValue = 
         {Key:string;Time:System.DateTime;Value:Value}
+        static member Create value = {Key=Helper.UniqueKey();Time=System.DateTime.UtcNow;Value = value}
 
     let CreateKeyValue key value = {Key=key;Time=System.DateTime.UtcNow;Value=value}
     let CreateNumPair key value = CreateKeyValue key (Number(value))
@@ -21,52 +23,72 @@ module MessageBus =
     let CreateNumber value = CreateNumPair (Helper.UniqueKey()) value
     let CreateString value = CreateStrPair (Helper.UniqueKey()) value
 
+    type ListenerInfo =
+     {Key:string;Name:string;CacheSize:int}
+     static member Create key name cacheSize = {Key = key;Name = name;CacheSize=cacheSize}
+
     type Message =
         | Send of KeyValue
-        | RegisterListener of (string*string*(Value->unit))
+        | RegisterListener of (ListenerInfo*KeyValue*(Value->unit))
         | Clear
         | ReadMessages of (System.DateTime*AsyncReplyChannel<KeyValue list>)
         | LatestMessageTime of (AsyncReplyChannel<System.DateTime>)
 
     type AgentState =
         {
-            Buffer:List<KeyValue>
-            Listeners:List<string*string*(Value->unit)>
+            Listeners:List<ListenerInfo*(Value->unit)*List<KeyValue>>
         }
-        static member empty = {Listeners=List.empty;Buffer=List.empty}
+        static member empty = {Listeners=List.empty}
 
     let Agent = MailboxProcessor<Message>.Start(fun inbox ->
-        let timeDiff = 10.0
+        //let timeDiff = 10.0
         let cutBuffer time buffer=
             buffer |> List.fold (fun acc item -> if item.Time >= time then item::acc else acc) []
+        let split maxSize (buffer:List<KeyValue>) = 
+                        if maxSize < buffer.Length then 
+                            let (new_buffer,rest) =  buffer|> List.splitAt maxSize
+                            new_buffer else buffer
+        let update_and_split maxSize buffer value= 
+            if maxSize = 1 then [value] else value::buffer |> split maxSize
+
 
         let rec loop state = async {
             let! message = inbox.Receive()
             match message with
             | Clear ->
                 return! loop AgentState.empty
-            | RegisterListener listenerInfo ->
-                return! loop {state with Listeners=(listenerInfo::state.Listeners)}
+            | RegisterListener (listenerInfo,startValue,receiver) ->
+                Log(sprintf "RegisterListener:%s" listenerInfo.Name)
+                //let buffer = if listenerInfo.CacheSize = 1 then SingleValue(startValue) else ListenerBuffer(listenerInfo.CacheSize,[])
+                return! loop {state with Listeners=((listenerInfo,receiver,[])::state.Listeners)}
             | ReadMessages (time,channel) ->
-                channel.Reply(state.Buffer |> cutBuffer time)
+                let messages = 
+                    state.Listeners |> List.map (fun (info,_,buffer) -> cutBuffer time buffer) |> List.concat
+                    |> List.fold (fun acc state -> if not (acc |> List.contains state) then state::acc else acc) []
+                channel.Reply(messages)
                 return! loop state
             | LatestMessageTime (channel) ->
-                channel.Reply(match state.Buffer with
+                let maxTimes = state.Listeners |> List.map (fun (info,_,buffer) -> match buffer with
+                                                                                   |[] -> System.DateTime(0,0,0)
+                                                                                   |_ -> (buffer |> List.maxBy (fun item -> item.Time)).Time)
+                let maxTime = match maxTimes with
                               | [] ->  System.DateTime(0,0,0)
-                              | buf -> (buf |> List.maxBy (fun item -> item.Time)).Time)
+                              | _ -> maxTimes |> List.max
+                channel.Reply(maxTime)
                 return! loop state
             | Send (busKeyValue) ->
-                let newState = 
-                   let newBuf = busKeyValue::(state.Buffer)
-                   let lastTime = (newBuf |> List.maxBy (fun item -> item.Time)).Time-System.TimeSpan.FromSeconds(timeDiff)
-                   let buf = newBuf |> cutBuffer lastTime
-                   //Log(sprintf "Last time:%s count:%d" (lastTime.ToString()) (buf.Length))
-                   {state with Buffer = buf}
-                //Log(sprintf "Num listeners:%d" newState.Listeners.Length)
-                newState.Listeners |> List.filter (fun (key,_,_)  -> key = busKeyValue.Key) |> List.iter (fun (_,name,callback) -> 
-                                                                                                         //"Message send from:"+name |> Log
-                                                                                                         callback (busKeyValue.Value))
-                return! loop newState
+                //Log(sprintf "Num listeners:%d" state.Listeners.Length)
+                let listeners = 
+                    state.Listeners 
+                    //|> List.filter (fun (info,_,_)  -> info.Key = busKeyValue.Key) 
+                    |> List.map (fun listener -> let  (info,callback,buf) = listener
+                                                 if info.Key = busKeyValue.Key then 
+                                                     //sprintf "Message send from:%s CacheSize:%d BufSize:%d" info.Name info.CacheSize buf.Length|> Log
+                                                     callback (busKeyValue.Value)
+                                                     (info,callback,update_and_split (info.CacheSize) buf busKeyValue )
+                                                 else listener
+                               )
+                return! loop {Listeners=listeners}
 
         }
         loop AgentState.empty
@@ -81,6 +103,6 @@ module MessageBus =
                 let! latestTime = Agent.PostAndAsyncReply(fun r -> LatestMessageTime(r))
                 let! messages=GetMessages latestTime
                 messages |> List.iter (fun message -> Agent.Post(Send(message)))
-                Console.Log(sprintf "Values from server requested messages received:%d" (messages.Length))
+                Log(sprintf "Values from server requested messages received:%d" (messages.Length))
         }|> Async.Start
 

@@ -81,7 +81,14 @@ type Dashboard =
                           //.WithOnAfterRender(afterRenderFncDef)
         x.PanelContainer.AddPanel panel
         //childContainerContent
-        panel   
+        panel  
+    member x.Store fncFromWorker  =
+            let panelData = x.PanelContainer.PanelItems |>List.ofSeq |>List.map (fun panel -> panel.PanelData)
+            let events=x.Data.EventItems   |>List.ofSeq |> List.map (fun item -> (item.Worker.Key,fncFromWorker item.Worker))
+            let widgets=x.Data.WidgetItems |>List.ofSeq |> List.map (fun item -> (item.Widget.Key,item.Panel,fncFromWorker item.Widget))
+            let rules = x.Editor.CopyToRules
+            (panelData,events,widgets,rules)
+
     member x.Restore panelList events widgets dashEditorData =
         x.PanelContainer.PanelItems.Clear()
         x.Data.Clear

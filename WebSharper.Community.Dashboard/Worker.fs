@@ -37,9 +37,11 @@ and
                DataContext = dataContext 
                RunnerContext = None                   
            }
+   static member CreateWithRunner src = Worker.Create(src).WithRunner(src)
+   static member CreateWithRenderer src = Worker.Create(src).WithRenderer(src)
    member x.WithKey(key) = {x with Key=key}
-   member x.WithRunner(runner) = {x with Runner=Some(runner)}
-   member x.WithRenderer(renderer) = {x with Renderer=Some(renderer)}
+   member x.WithRunner(runner:IRunner) = {x with Runner=Some(runner)}
+   member x.WithRenderer(renderer:IRenderer) = {x with Renderer=Some(renderer)}
    member x.WithStartRunner()  = 
           match x.Runner with
           |Some(runner) -> {x with RunnerContext=runner.Run(x)}
@@ -74,7 +76,8 @@ and
  [<JavaScript>] IRunner = 
     abstract Run:(Worker->Option<IRunnerContext>)
 and
- [<JavaScript>] IRenderer = abstract Render:(Worker->Doc)
+ [<JavaScript>] IRenderer = 
+    abstract Render:(Worker->Doc)
 
 [<JavaScript>]
 module Workers = 

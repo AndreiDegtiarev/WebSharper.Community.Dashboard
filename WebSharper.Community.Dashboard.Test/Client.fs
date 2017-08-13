@@ -16,19 +16,19 @@ module Client =
     let Main () =
         MessageBus.Log <- (fun str -> Console.Log(str))
         let fileName = Var.Create "D:\\Dashboard.cfg"
-        let dashboard = AppData.CreateDashboard
+        let dashboard = App.CreateDashboard
         let makeTestConfig()= 
             let appData=AppData.Create dashboard
             let panelKey = Helper.UniqueKey()
-            let event = RandomSource(RandomRunner.Create 100.0 50.0)
+            let event = AppLib(RandomSource(RandomRunner.Create 100.0 50.0))
             let eventWorker = event.Worker
             let eventPair = (eventWorker.Key,event)
             let makeWidget (widget:AppModel) = 
                 let widgetWorker = widget.Worker
                 let widgetPair = (widgetWorker.Key,panelKey,widget)
                 (widgetPair,{InPortKey = widgetWorker.InPorts.[0].Key;OutPortKey="";WorkerKey=widgetWorker.Key})
-            let (txtPair,textWorker) = makeWidget (TextWidget(TextBoxRenderer.Create))
-            let (chartPair,chartWorker) = makeWidget (ChartWidget(ChartRenderer.Create 300.0 150.0 50.0))
+            let (txtPair,textWorker) = makeWidget (AppLib(TextWidget(TextBoxRenderer.Create)))
+            let (chartPair,chartWorker) = makeWidget (AppLib(ChartWidget(ChartRenderer.Create 300.0 150.0 50.0)))
             {appData with PanelData = [ PanelData.Create panelKey 0.0 0.0 []]
                           Events = [eventPair]
                           Widgets = [txtPair;chartPair]

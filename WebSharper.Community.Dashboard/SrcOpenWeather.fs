@@ -47,8 +47,8 @@ module OpenWeather =
 type OpenWeatherRunner =
  {
         Name:string 
-        OpenWeatherCity:MessageBus.KeyValue
-        OpenWeatherApiKey:MessageBus.KeyValue
+        OpenWeatherCity:MessageBus.Message
+        OpenWeatherApiKey:MessageBus.Message
         OutPortKey:string
  }
  static member Create city apikey = {

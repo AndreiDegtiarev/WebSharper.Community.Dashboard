@@ -30,6 +30,8 @@ type AppData =
                           (x.Widgets |>List.map (fun (key,keyPanel,widget) -> (key,keyPanel,widget.Worker)))
                           x.Rules
     member x.RecreateOnClient (dashboard:Dashboard) =
+        MessageBus.Role <- MessageBus.Client
+        MessageBus.Agent.Post(MessageBus.RegisterServerCallback(MessageBus.SendToServer))
         dashboard.Restore x.PanelData 
                           (x.Events |> List.map (fun (key,event) -> (key,event.Worker)))
                           (x.Widgets |>List.map (fun (key,keyPanel,widget) -> (key,keyPanel,widget.Worker)))

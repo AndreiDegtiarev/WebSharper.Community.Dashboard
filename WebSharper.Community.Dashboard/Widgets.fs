@@ -23,10 +23,10 @@ type ChartRunnerContext =
 type ChartRenderer =
   {
     Name:string
-    Number:MessageBus.KeyValue
-    Cx:MessageBus.KeyValue
-    Cy:MessageBus.KeyValue
-    ChartBufferSize:MessageBus.KeyValue
+    Number:MessageBus.Message
+    Cx:MessageBus.Message
+    Cy:MessageBus.Message
+    ChartBufferSize:MessageBus.Message
   }
   static member Create cx cy bufferSize = {
                                             Name = "Chart"
@@ -87,7 +87,7 @@ type ChartRenderer =
 type TextBoxRenderer =
   {
     Name:string
-    TextBoxValue:MessageBus.KeyValue
+    TextBoxValue:MessageBus.Message
   }
   static member Create = {Name="Text";TextBoxValue=MessageBus.CreateNumber 0.0}
   static member FromPorts = (fun worker -> {TextBoxValue=worker.InPorts.[0].NumberValue;Name = worker.Name.Value})
@@ -104,4 +104,33 @@ type TextBoxRenderer =
                                              textView strView
                             ] :> Doc)
 
+[<JavaScript>]
+type ButtonRenderer =
+  {
+    Name:string
+    ButtonName:MessageBus.Message
+    State:MessageBus.Message
+    OutPortKey:string
+  }
+  static member Create = {Name="Button";
+                          ButtonName=MessageBus.CreateString "Button"
+                          State=MessageBus.CreateNumber 0.0
+                          OutPortKey=Helper.UniqueKey()
+                          }
+  static member FromPorts = (fun worker -> {ButtonName=worker.InPorts.[0].StringValue
+                                            State = worker.InPorts.[1].BooleanValue
+                                            OutPortKey=worker.OutPorts.[0].Key
+                                            Name = worker.Name.Value})
+  interface IWorkerContext with
+    override x.Name = x.Name
+    override x.InPorts =  [("Caption",x.ButtonName)
+                           ("State",x.State)] |> Ports.Create 
+    override x.OutPorts = [OutPort.CreateNumber x.OutPortKey "Button value"]
+
+  interface IRenderer with
+    override x.Render  = (fun worker -> 
+                            let name = worker.InPorts.[0].String 
+                            let boolVar = worker.InPorts.[1].BooleanVar
+                            Doc.ButtonView name [] boolVar.View (fun state -> worker.OutPorts.[0].Trigger (MessageBus.Boolean(state))) :> Doc
+                            )
 

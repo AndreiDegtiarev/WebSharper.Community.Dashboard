@@ -10,7 +10,7 @@ open WebSharper.Community.PropertyGrid
 
 
 [<JavaScript>]
-type DshEditorCellItem =
+type RulesCellItem =
     {
         Key:Key
         OptInPort : Var<Option<InPort> >
@@ -75,10 +75,10 @@ type DshEditorCellItem =
               ]
     
 [<JavaScript>]
-type DshEditorRowItem =
+type RulesRowItem =
     {
         Key:Key
-        CellItems : ListModel<Key,DshEditorCellItem>
+        CellItems : ListModel<Key,RulesCellItem>
     }
     static member Create children=
         {
@@ -90,12 +90,12 @@ type DshEditorRowItem =
                       let renderExistentCells= ListModel.View x.CellItems
                                                |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> item.Render data reconnectFnc)
                       tr[ renderExistentCells
-                          Helper.IconNormal "add" (fun _ -> x.CellItems.Add (DshEditorCellItem.Create) )
+                          Helper.IconNormal "add" (fun _ -> x.CellItems.Add (RulesCellItem.Create) )
                         ]
 [<JavaScript>]
-type DshEditor =
+type RulesEditor =
     {
-        RowItems:ListModel<Key,DshEditorRowItem>
+        RowItems:ListModel<Key,RulesRowItem>
     }
     static member Create  =
         {
@@ -123,9 +123,9 @@ type DshEditor =
         let allInPorts = Workers.allInPorts allWorkers
 
         rules.RuleContainer |> List.iter (fun rowData -> 
-                                            let row = DshEditorRowItem.Create []
+                                            let row = RulesRowItem.Create []
                                             rowData.RuleChain |> List.iter (fun cellData ->
-                                                                                    let cell = DshEditorCellItem.Create 
+                                                                                    let cell = RulesCellItem.Create 
                                                                                     cell.OptWorker.Value <- data.WorkItems |> List.ofSeq |> List.tryFind (fun item ->  item.Worker.Key = cellData.WorkerKey)
                                                                                     cell.OptInPort.Value <- allInPorts |> List.tryFind (fun port ->  port.Key = cellData.InPortKey)
                                                                                     cell.OptOutPort.Value <- allOutPorts |> List.tryFind (fun port ->  port.Key = cellData.OutPortKey)

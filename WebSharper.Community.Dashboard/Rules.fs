@@ -31,8 +31,9 @@ type RuleContainer =
                                                                                 MessageBus.Log "Found int port"
                                                                                 let listInfo = MessageBus.ListenerInfo.Create outPort.Key (outPort.Name+"->"+inPort.Name) inPort.CacheSize 
                                                                                 let templateValue = match inPort.PortValue with 
-                                                                                                    |NumberPortValue(_) -> MessageBus.KeyValue.Create (MessageBus.Number(0.0))
-                                                                                                    |StringPortValue(_) -> MessageBus.KeyValue.Create (MessageBus.String(""))
+                                                                                                    |NumberPortValue(_) -> MessageBus.Message.Create (MessageBus.Number(0.0))
+                                                                                                    |StringPortValue(_) -> MessageBus.Message.Create (MessageBus.String(""))
+                                                                                                    |BooleanPortValue(_) -> MessageBus.Message.Create (MessageBus.Boolean(false))
                                                                                 MessageBus.Agent.Post (MessageBus.RegisterListener(listInfo,templateValue,inPort.Receive))
                                                                              ))|>ignore
                      )

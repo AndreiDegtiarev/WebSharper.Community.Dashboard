@@ -15,19 +15,34 @@ type Dashboard =
         Factory : Factory
         Data:DshData
         PanelContainer:PanelContainer
-        Editor: DshEditor
+        RulesEditor: RulesEditor
         PropertyGrid : PropertyGrid
         Dialog : Dialog
+        EditorSelector : WindowSelector
     }
-    static member Create panelContainer=
+    static member Create (panelContainer:PanelContainer)=
         let dialog = Dialog.Create
+        let rulesEditor =  RulesEditor.Create
+        let data = DshData.Create
+        let propertyGrid = PropertyGrid.Create
+        let editorSelector = WindowSelector.Create "root"
+                                                  [(Var.Create "Board",panelContainer.Render)
+                                                   (Var.Create "Events",EventsEditor.Render data propertyGrid)
+                                                   (Var.Create "Rules",rulesEditor.Render data)
+                                                  ] None
+//        editorSelector.AppenGroup "Panels" [(Var.Create "panel1",panelContainer.Render)] None
+//        editorSelector.AppenGroup "Events" [(Var.Create "event1",EventsEditor.Render data propertyGrid)] (Some((fun _ ->
+//                                                                                                                   data.EventGroups.Add(EventsGroupItem.Create)
+//                                                                                                                   (Var.Create "event1",EventsEditor.Render data propertyGrid))))
+//        editorSelector.AppenGroup "Rules" [(Var.Create "rules1",rulesEditor.Render data)] None
         {
            Factory = Factory.Create
-           Data = DshData.Create
+           Data = data
            PanelContainer=panelContainer
            Dialog = dialog
-           Editor = DshEditor.Create
-           PropertyGrid = PropertyGrid.Create
+           RulesEditor = rulesEditor
+           PropertyGrid = propertyGrid
+           EditorSelector = editorSelector
         }
     member x.RegisterWidget key panelKey (toPanelContainer:PanelContainer) worker = 
         x.Data.RegisterWidget key panelKey worker 
@@ -86,7 +101,7 @@ type Dashboard =
             let panelData = x.PanelContainer.PanelItems |>List.ofSeq |>List.map (fun panel -> panel.PanelData)
             let events=x.Data.EventItems   |>List.ofSeq |> List.map (fun item -> (item.Worker.Key,fncFromWorker item.Worker))
             let widgets=x.Data.WidgetItems |>List.ofSeq |> List.map (fun item -> (item.Widget.Key,item.Panel,fncFromWorker item.Widget))
-            let rules = x.Editor.CopyToRules
+            let rules = x.RulesEditor.CopyToRules
             (panelData,events,widgets,rules)
 
     member x.Restore panelList events widgets dashEditorData =
@@ -104,33 +119,12 @@ type Dashboard =
                                 let panel = x.PanelContainer.PanelItems |>List.ofSeq |> List.find (fun entry -> entry.Key = panelKey)
                                 x.RegisterWidget key panelKey panel.Children (widget.WithStartRunner()))
         Console.Log("Widgets restored")   
-        x.Editor.Restore (x.Data) dashEditorData
+        x.RulesEditor.Restore (x.Data) dashEditorData
         Console.Log("Connectors restored")   
         //x.Data.WorkItems |> List.ofSeq |> List.iter (fun worker -> worker.Worker.Runner |> Option.map(fun runner -> runner.Run worker.Worker) |> ignore)
         
     member x.Render=
-        let eventsRender =
-            table[
-                    ListModel.View x.Data.EventItems
-                    |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [iAttr (Helper.AttrsClick 
-                                                                                       (fun _ ->item.Worker.Properties |> x.PropertyGrid.Edit))
-                                                                            [textView item.Worker.Name.View]])
-                  ]
-        let container varValue content = let varVis=Var.Create varValue 
-                                         (varVis,divAttr[Attr.DynamicStyle "display" (View.Map (fun (isVisible) -> if isVisible then "initial" else "none")  varVis.View) ]
-                                                        [content])
-        let containers = ["Board",  container true x.PanelContainer.Render
-                          "Events", container false eventsRender
-                          "Rules",  container false (x.Editor.Render x.Data)
-                         ]
-        let menu=containers |> List.map (fun (name,(varVis,targetDiv)) ->tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (isVisible) -> if isVisible then "#FB8C00" else "#7D4600")  varVis.View) 
-                                                                                   Attr.Style "cursor" "pointer"
-                                                                                   on.click (fun elem _->[] |> x.PropertyGrid.Edit
-                                                                                                         containers
-                                                                                                         |>List.iter (fun (_,(varBool,_)) -> if varBool<> varVis then varBool.Value <- false else varBool.Value <- true)
-                                                                                            )
-                                                                                 ][text name]]  :> Doc )
-        let containerDivs = containers |> List.map (fun (_,(_,targetDiv)) -> targetDiv :> Doc)
+
         div [
             table[
                 tr[
@@ -141,22 +135,20 @@ type Dashboard =
                                        [
                                             tr[td[Helper.IconNormal "dehaze" (fun _ -> ())]]
                                             tr[td[Helper.IconNormal "add" (fun _ -> 
-                                                                let (_,(varBoolDash,_)) = containers.[0]
-                                                                let (_,(varBoolSrc,_)) = containers.[1]
-                                                                let (_,(varBoolEdit,_)) = containers.[2]
-                                                                if varBoolSrc.Value then
+                                                                let selIndex = x.EditorSelector.SelectedIndex
+                                                                if selIndex = 1 then
                                                                     let items = x.Factory.EventItems|>List.ofSeq
                                                                     let selected=Var.Create (items.Head)
                                                                     x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ ->  let event = selected.Value.Worker.CloneAndRun
                                                                                                                         x.Data.RegisterEvent (Helper.UniqueKey()) event)
-                                                                else if varBoolDash.Value then
+                                                                else if selIndex = 0 then
                                                                     x.CreatePanel("Panel",700)|>ignore
-                                                                else if varBoolEdit.Value then
-                                                                    x.Editor.RowItems.Add (DshEditorRowItem.Create [DshEditorCellItem.Create]) 
+                                                                else if selIndex = 2 then
+                                                                    x.RulesEditor.RowItems.Add (RulesRowItem.Create [RulesCellItem.Create;RulesCellItem.Create]) 
                                                              )]]
                                        ]
-                                       menu
+                                       [x.EditorSelector.RenderMenu]
                                        [     
                                             tr[td[]]
                                             tr[td[x.PropertyGrid.Render]]
@@ -164,7 +156,7 @@ type Dashboard =
                                     ])
 
                       ]
-                    td containerDivs
+                    td [x.EditorSelector.Render] 
                  ]
             ]
             div[x.Dialog.Render]

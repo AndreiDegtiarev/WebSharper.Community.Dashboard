@@ -4,14 +4,15 @@ open WebSharper
 open WebSharper.JavaScript
 open WebSharper.UI.Next
 open WebSharper.Community.PropertyGrid
+open WebSharper.Community.Panel
 
 
 [<JavaScript>]
 type RandomRunner =
  {
         Name:string
-        MiddleValue:MessageBus.KeyValue
-        Dispersion:MessageBus.KeyValue
+        MiddleValue:MessageBus.Message
+        Dispersion:MessageBus.Message
         OutPortKey:string
  }
  member x.WithMiddleValue(value) = {x with MiddleValue = MessageBus.CreateNumber value}
@@ -19,7 +20,7 @@ type RandomRunner =
                                                 Name = "Random"
                                                 MiddleValue=MessageBus.CreateNumber middleValue
                                                 Dispersion=MessageBus.CreateNumber dispersion
-                                                OutPortKey=System.Guid.NewGuid().ToString()
+                                                OutPortKey=Helper.UniqueKey()
                                                }
  static member FromPorts = (fun worker -> {
                                              MiddleValue=worker.InPorts.[0].NumberValue 

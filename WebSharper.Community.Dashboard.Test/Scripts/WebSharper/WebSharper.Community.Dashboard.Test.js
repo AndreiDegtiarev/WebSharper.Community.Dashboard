@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,UI,Next,Doc,MessageBus,console,Var,App,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain,Remoting,AjaxRemotingProvider;
+ var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,MessageBus,Remoting,AjaxRemotingProvider,UI,Next,Doc,console,Var,App,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain;
  WebSharper=window.WebSharper=window.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
@@ -14,10 +14,12 @@
  AppModelLib=Dashboard&&Dashboard.AppModelLib;
  Operators=WebSharper&&WebSharper.Operators;
  List=WebSharper&&WebSharper.List;
+ MessageBus=Dashboard&&Dashboard.MessageBus;
+ Remoting=WebSharper&&WebSharper.Remoting;
+ AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Doc=Next&&Next.Doc;
- MessageBus=Dashboard&&Dashboard.MessageBus;
  console=window.console;
  Var=Next&&Next.Var;
  App=Dashboard&&Dashboard.App;
@@ -30,8 +32,6 @@
  PanelData=Panel&&Panel.PanelData;
  RuleContainer=Dashboard&&Dashboard.RuleContainer;
  RuleChain=Dashboard&&Dashboard.RuleChain;
- Remoting=WebSharper&&WebSharper.Remoting;
- AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  AppModel=Test.AppModel=Runtime.Class({
   get_Worker:function()
   {
@@ -80,7 +80,17 @@
   },
   RecreateOnClient:function(dashboard)
   {
-   var m,m$1;
+   var _this,m,m$1;
+   MessageBus.set_Role(MessageBus.Role.Client);
+   _this=MessageBus.Agent();
+   _this.mailbox.AddLast({
+    $:3,
+    $0:function(m$2)
+    {
+     (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.SendToServer:-1358505674",[m$2]);
+    }
+   });
+   _this.resume();
    dashboard.Restore(this.PanelData,(m=function(key,event)
    {
     return[key,event.get_Worker()];
@@ -163,14 +173,14 @@
    p=makeWidget(new AppModel({
     $:0,
     $0:new AppModelLib({
-     $:2,
+     $:3,
      $0:TextBoxRenderer.get_Create()
     })
    }));
    p$1=makeWidget(new AppModel({
     $:0,
     $0:new AppModelLib({
-     $:3,
+     $:4,
      $0:ChartRenderer.Create(300,150,50)
     })
    }));

@@ -23,6 +23,7 @@ module Server =
     [<Rpc>]
     let RecreateOnServer (data:AppData) = 
         MessageBus.Log <- (fun str -> System.Diagnostics.Debug.WriteLine(str))
+        MessageBus.Role <- MessageBus.Server
         data.RecreateOnServer
 
 

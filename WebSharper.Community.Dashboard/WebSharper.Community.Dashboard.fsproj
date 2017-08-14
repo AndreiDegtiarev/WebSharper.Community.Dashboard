@@ -54,11 +54,14 @@
     <Compile Include="Worker.fs" />
     <Compile Include="Source.fs" />
     <Compile Include="SrcOpenWeather.fs" />
+    <Compile Include="Database.fs" />
     <Compile Include="Widgets.fs" />
     <Compile Include="Rules.fs" />
     <Compile Include="Factory.fs" />
     <Compile Include="DshData.fs" />
-    <Compile Include="DshEditor.fs" />
+    <Compile Include="EventsEditor.fs" />
+    <Compile Include="RulesEditor.fs" />
+    <Compile Include="WindowSelector.fs" />
     <Compile Include="Dashboard.fs" />
     <Compile Include="AppModelLib.fs" />
     <Content Include="packages.config" />

@@ -1,8 +1,9 @@
 (function()
 {
  "use strict";
- var WebSharper,UI,Next,CSharp,ViewExtensions,DocExtension,Client,Helpers,RouteMapBuilder,RouteItemParsers,View,Doc,Var,List,IntelliFactory,Runtime,RouteMap,Seq,Unchecked,Arrays,Collections,FSharpMap,Option,Map,Nullable,Operators;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,UI,Next,CSharp,ViewExtensions,DocExtension,Client,Helpers,RouteMapBuilder,RouteItemParsers,View,Doc,Var,List,IntelliFactory,Runtime,RouteMap,Seq,Unchecked,Arrays,Collections,Map,Nullable,Operators,FSharpMap,Option;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  UI=WebSharper.UI=WebSharper.UI||{};
  Next=UI.Next=UI.Next||{};
  CSharp=Next.CSharp=Next.CSharp||{};
@@ -16,18 +17,18 @@
  Doc=Next&&Next.Doc;
  Var=Next&&Next.Var;
  List=WebSharper&&WebSharper.List;
- IntelliFactory=window.IntelliFactory;
+ IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  RouteMap=Next&&Next.RouteMap;
  Seq=WebSharper&&WebSharper.Seq;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Arrays=WebSharper&&WebSharper.Arrays;
  Collections=WebSharper&&WebSharper.Collections;
- FSharpMap=Collections&&Collections.FSharpMap;
- Option=WebSharper&&WebSharper.Option;
  Map=Collections&&Collections.Map;
  Nullable=WebSharper&&WebSharper.Nullable;
  Operators=WebSharper&&WebSharper.Operators;
+ FSharpMap=Collections&&Collections.FSharpMap;
+ Option=WebSharper&&WebSharper.Option;
  ViewExtensions.UpdateWhile=function(va,a,vb)
  {
   return View.UpdateWhile(a,vb,va);
@@ -52,21 +53,22 @@
  RouteMapBuilder=Client.RouteMapBuilder=Runtime.Class({
   Install:function()
   {
-   var _var,renders,m;
-   _var=RouteMap.Install(this.ToRouteMap());
-   renders=(m=function(f,r)
+   var _var,renders;
+   function m(f,r)
    {
     return f(function(d)
     {
      return Var.Set(_var,d);
     },r);
-   },List.map(function($1)
+   }
+   _var=RouteMap.Install(this.ToRouteMap());
+   renders=List.map(function($1)
    {
     return function($2)
     {
      return m($1,$2);
     };
-   },List.rev(this.renders)));
+   },List.rev(this.renders));
    return Doc.BindView(function(r)
    {
     return Seq.pick(function(f)
@@ -129,18 +131,18 @@
  {
   var x,m;
   x=a[0];
-  return x.$==1?(m=(new window.RegExp("^[0-9](?:\\.[0-9]*)?$")).exec(x.$0),Unchecked.Equals(m,null)?null:{
+  return x.$==1?(m=(new Global.RegExp("^[0-9](?:\\.[0-9]*)?$")).exec(x.$0),Unchecked.Equals(m,null)?null:{
    $:1,
-   $0:[window.parseFloat(Arrays.get(m,0)),x.$1]
+   $0:[Global.parseFloat(Arrays.get(m,0)),x.$1]
   }):null;
  };
  RouteItemParsers["System.Int32"]=function(a)
  {
   var x,m;
   x=a[0];
-  return x.$==1?(m=(new window.RegExp("^[0-9]+$")).exec(x.$0),Unchecked.Equals(m,null)?null:{
+  return x.$==1?(m=(new Global.RegExp("^[0-9]+$")).exec(x.$0),Unchecked.Equals(m,null)?null:{
    $:1,
-   $0:[window.parseInt(Arrays.get(m,0),window.$1),x.$1]
+   $0:[Global.parseInt(Arrays.get(m,0),Global.$1),x.$1]
   }):null;
  };
  RouteItemParsers["System.String"]=function(a)
@@ -156,56 +158,60 @@
  {
   return function(value)
   {
-   var map,m,f,g,m$1;
-   return shape.$==1?(map=[new FSharpMap.New([])],[List.append(Option.toList(shape.$1),List.ofSeq((m=function(name,queryItem,a,link)
+   var map,f;
+   function m(name,queryItem,a,link)
    {
     var p,v,m$2,v$1,v$2,v$3;
     return Unchecked.Equals(queryItem,0)?(p=link(value[name]),(map[0]=Map.FoldBack(function($1,$2,$3)
     {
      return $3.Add($1,$2);
     },p[1],map[0]),p[0])):Unchecked.Equals(queryItem,1)?(map[0]=(v=List.head((link(value[name]))[0]),map[0].Add(name,v)),List.T.Empty):Unchecked.Equals(queryItem,2)?(m$2=value[name],m$2!=null&&m$2.$==1?map[0]=(v$1=List.head((link(m$2.$0))[0]),map[0].Add(name,v$1)):void 0,List.T.Empty):Unchecked.Equals(queryItem,3)?(v$2=value[name],(v$2!=null?map[0]=(v$3=List.head((link(Nullable.get(v$2)))[0]),map[0].Add(name,v$3)):void 0,List.T.Empty)):Operators.FailWith("invalid QueryItem enum value");
-   },Seq.collect(function($1)
+   }
+   function g(t)
    {
-    return m($1[0],$1[1],$1[2],$1[3]);
-   },shape.$2)))),map[0]]):shape.$==2?[new List.T({
-    $:1,
-    $0:window.String(Seq.length(value)),
-    $1:List.ofSeq(Seq.collect((f=shape.$2,(g=function(t)
-    {
-     return t[0];
-    },function(x)
-    {
-     return g(f(x));
-    })),value))
-   }),new FSharpMap.New([])]:shape.$==3?[List.ofSeq(Seq.concat(((m$1=function(a,link)
+    return t[0];
+   }
+   function m$1(a,link)
    {
     return function(x)
     {
      return(link(x))[0];
     };
-   },(Runtime.Curried3(Seq.map2))(function($1,$2)
+   }
+   return shape.$==1?(map=[new FSharpMap.New([])],[List.append(Option.toList(shape.$1),List.ofSeq(Seq.collect(function($1)
+   {
+    return m($1[0],$1[1],$1[2],$1[3]);
+   },shape.$2))),map[0]]):shape.$==2?[new List.T({
+    $:1,
+    $0:Global.String(Seq.length(value)),
+    $1:List.ofSeq(Seq.collect((f=shape.$2,function(x)
+    {
+     return g(f(x));
+    }),value))
+   }),new FSharpMap.New([])]:shape.$==3?[List.ofSeq(Seq.concat((((Runtime.Curried3(Seq.map2))(function($1,$2)
    {
     return(function($3)
     {
      return m$1($3[0],$3[1]);
     }($1))($2);
-   }))(shape.$0))(value))),new FSharpMap.New([])]:[List.ofArray([window.String(value)]),new FSharpMap.New([])];
+   }))(shape.$0))(value))),new FSharpMap.New([])]:[List.ofArray([Global.String(value)]),new FSharpMap.New([])];
   };
  };
  RouteItemParsers.ParseRoute=function(shape)
  {
-  var f,g,b;
-  f=RouteItemParsers.ParseShape(shape);
-  g=(b=function($1,$2)
+  var f,g;
+  function b($1,$2)
   {
    return $2.$==0?{
     $:1,
     $0:$1
    }:null;
-  },function(o)
+  }
+  f=RouteItemParsers.ParseShape(shape);
+  g=function(o)
   {
    return o==null?null:b.apply(null,o.$0);
-  });
+  };
   return function(x)
   {
    return g(f(x));
@@ -215,12 +221,11 @@
  {
   return function(t)
   {
-   var path,query,$1,fromArray,parseItem,o,length,rest,arr,t$1,o$1,f;
+   var path,query,$1,fromArray,parseItem,o,length,rest,arr,t$1,o$1;
    function parseArgs(init,rest$1,args)
    {
-    var v,o$2,f$1;
-    v=init();
-    o$2=((f$1=function(rest$2,t$2)
+    var v,o$2;
+    function f$1(rest$2,t$2)
     {
      var name,queryItem,parse,rest$3,m,m$1,m$2,m$3,m$4,m$5;
      name=t$2[0];
@@ -248,7 +253,9 @@
       $:1,
       $0:rest$3
      })):Operators.FailWith("invalid QueryItem enum value")):null;
-    },(Runtime.Curried3(Arrays.fold))(f$1))({
+    }
+    v=init();
+    o$2=(((Runtime.Curried3(Arrays.fold))(f$1))({
      $:1,
      $0:rest$1
     }))(args);
@@ -256,6 +263,14 @@
      $:1,
      $0:[v,o$2.$0]
     };
+   }
+   function f(rest$1,t$2)
+   {
+    var o$2,parsed,rest$2;
+    return rest$1==null?null:(o$2=t$2[0]([rest$1.$0,query]),o$2==null?null:{
+     $:1,
+     $0:(parsed=o$2.$0[0],(rest$2=o$2.$0[1],(t$1.push(parsed),rest$2)))
+    });
    }
    path=t[0];
    query=t[1];
@@ -280,14 +295,7 @@
        else
         return null;
       }
-   }(0,rest))))))):shape.$==3?(t$1=[],(o$1=((f=function(rest$1,t$2)
-   {
-    var o$2,parsed,rest$2;
-    return rest$1==null?null:(o$2=t$2[0]([rest$1.$0,query]),o$2==null?null:{
-     $:1,
-     $0:(parsed=o$2.$0[0],(rest$2=o$2.$0[1],(t$1.push(parsed),rest$2)))
-    });
-   },(Runtime.Curried3(Arrays.fold))(f))({
+   }(0,rest))))))):shape.$==3?(t$1=[],(o$1=(((Runtime.Curried3(Arrays.fold))(f))({
     $:1,
     $0:path
    }))(shape.$0),o$1==null?null:{

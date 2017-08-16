@@ -1,15 +1,16 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,MessageBus,Remoting,AjaxRemotingProvider,UI,Next,Doc,console,Var,App,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,MessageBus,Remoting,AjaxRemotingProvider,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain,App,UI,Next,Doc,console,Var;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
  Test=Dashboard.Test=Dashboard.Test||{};
  AppModel=Test.AppModel=Test.AppModel||{};
  AppData=Test.AppData=Test.AppData||{};
  Client=Test.Client=Test.Client||{};
- IntelliFactory=window.IntelliFactory;
+ IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  AppModelLib=Dashboard&&Dashboard.AppModelLib;
  Operators=WebSharper&&WebSharper.Operators;
@@ -17,12 +18,6 @@
  MessageBus=Dashboard&&Dashboard.MessageBus;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
- UI=WebSharper&&WebSharper.UI;
- Next=UI&&UI.Next;
- Doc=Next&&Next.Doc;
- console=window.console;
- Var=Next&&Next.Var;
- App=Dashboard&&Dashboard.App;
  RuleEntry=Dashboard&&Dashboard.RuleEntry;
  Panel=Community&&Community.Panel;
  Helper=Panel&&Panel.Helper;
@@ -32,6 +27,12 @@
  PanelData=Panel&&Panel.PanelData;
  RuleContainer=Dashboard&&Dashboard.RuleContainer;
  RuleChain=Dashboard&&Dashboard.RuleChain;
+ App=Dashboard&&Dashboard.App;
+ UI=WebSharper&&WebSharper.UI;
+ Next=UI&&UI.Next;
+ Doc=Next&&Next.Doc;
+ console=Global.console;
+ Var=Next&&Next.Var;
  AppModel=Test.AppModel=Runtime.Class({
   get_Worker:function()
   {
@@ -60,79 +61,116 @@
  AppData=Test.AppData=Runtime.Class({
   get_RecreateOnServer:function()
   {
-   var m,m$1;
-   this.Rules.Reconnect(List.map(function(worker)
+   var allWorkers;
+   function m(a$1,gr)
+   {
+    return gr;
+   }
+   function m$1(a$1,gr)
+   {
+    return gr;
+   }
+   function m$2(a$1,a$2,gr)
+   {
+    return gr;
+   }
+   function m$3(a$1,a$2,gr)
+   {
+    return gr;
+   }
+   function a(grName,rules)
+   {
+    rules.Reconnect(allWorkers);
+   }
+   allWorkers=List.map(function(worker)
    {
     return worker.WithStartRunner();
-   },List.append((m=function(a,event)
-   {
-    return event.get_Worker();
-   },List.map(function($1)
+   },List.append(List.map(function($1)
    {
     return m($1[0],$1[1]);
-   },this.Events)),(m$1=function(a,a$1,widget)
+   },List.concat(List.map(function($1)
    {
-    return widget.get_Worker();
-   },List.map(function($1)
+    return m$1($1[0],$1[1]);
+   },this.RecreateEvents(Global.id)))),List.map(function($1)
    {
-    return m$1($1[0],$1[1],$1[2]);
-   },this.Widgets)))));
+    return m$2($1[0],$1[1],$1[2]);
+   },List.concat(List.map(function($1)
+   {
+    return m$3($1[0],$1[1],$1[2]);
+   },this.get_RecreateWidgets())))));
+   List.iter(function($1)
+   {
+    return a($1[0],$1[1]);
+   },this.Rules);
   },
-  RecreateOnClient:function(dashboard)
+  RecreateOnClient:function(dashboard,panelContainerCreator)
   {
-   var _this,m,m$1;
+   var _this;
    MessageBus.set_Role(MessageBus.Role.Client);
    _this=MessageBus.Agent();
    _this.mailbox.AddLast({
     $:3,
-    $0:function(m$2)
+    $0:function(m)
     {
-     (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.SendToServer:-1358505674",[m$2]);
+     (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.SendToServer:-1358505674",[m]);
     }
    });
    _this.resume();
-   dashboard.Restore(this.PanelData,(m=function(key,event)
-   {
-    return[key,event.get_Worker()];
-   },List.map(function($1)
-   {
-    return m($1[0],$1[1]);
-   },this.Events)),(m$1=function(key,keyPanel,widget)
-   {
-    return[key,keyPanel,widget.get_Worker()];
-   },List.map(function($1)
-   {
-    return m$1($1[0],$1[1],$1[2]);
-   },this.Widgets)),this.Rules);
+   dashboard.Restore(panelContainerCreator,this.RecreateEvents(Global.id),this.get_RecreateWidgets(),this.Rules);
   },
-  Recreate:function(dashboard)
+  Recreate:function(dashboard,panelContainerCreator)
   {
-   var m,m$1;
-   dashboard.Restore(this.PanelData,(m=function(key,event)
+   dashboard.Restore(panelContainerCreator,this.RecreateEvents(function(worker)
    {
-    return[key,event.get_Worker().WithStartRunner()];
-   },List.map(function($1)
+    return worker.WithStartRunner();
+   }),this.get_RecreateWidgets(),this.Rules);
+  },
+  get_RecreateWidgets:function()
+  {
+   function m(grName,panelData,gr)
+   {
+    function m$1(key,keyPanel,widget)
+    {
+     return[key,keyPanel,widget.get_Worker()];
+    }
+    return[grName,panelData,List.map(function($1)
+    {
+     return m$1($1[0],$1[1],$1[2]);
+    },gr)];
+   }
+   return List.map(function($1)
+   {
+    return m($1[0],$1[1],$1[2]);
+   },this.Widgets);
+  },
+  RecreateEvents:function(fnc)
+  {
+   function m(grName,gr)
+   {
+    function m$1(key,event)
+    {
+     return[key,fnc(event.get_Worker())];
+    }
+    return[grName,List.map(function($1)
+    {
+     return m$1($1[0],$1[1]);
+    },gr)];
+   }
+   return List.map(function($1)
    {
     return m($1[0],$1[1]);
-   },this.Events)),(m$1=function(key,keyPanel,widget)
-   {
-    return[key,keyPanel,widget.get_Worker()];
-   },List.map(function($1)
-   {
-    return m$1($1[0],$1[1],$1[2]);
-   },this.Widgets)),this.Rules);
+   },this.Events);
   }
  },null,AppData);
  AppData.Create=function(dashboard)
  {
   var p;
   p=dashboard.Store(AppModel.FromWorker);
-  return AppData.New(p[0],p[1],p[2],p[3]);
+  return AppData.New(p[0],p[1],p[2]);
  };
- AppData.New=function(PanelData$1,Events,Widgets,Rules)
+ AppData.New=function(Events,Widgets,Rules)
  {
   return new AppData({
-   PanelData:PanelData$1,
    Events:Events,
    Widgets:Widgets,
    Rules:Rules
@@ -140,20 +178,10 @@
  };
  Client.Main=function()
  {
-  var fileName,dashboard,makeTestConfig;
-  function tbCellC(content)
+  var fileName,dashboard;
+  function makeTestConfig()
   {
-   return Doc.Element("td",[],content);
-  }
-  MessageBus.set_Log(function(str)
-  {
-   console.log(str);
-  });
-  fileName=Var.Create$1("D:\\Dashboard.cfg");
-  dashboard=App.CreateDashboard();
-  makeTestConfig=function()
-  {
-   var panelKey,event,eventWorker,p,p$1;
+   var panelKey,event,eventWorker,p,p$1,panelData;
    function makeWidget(widget)
    {
     var widgetWorker;
@@ -184,8 +212,22 @@
      $0:ChartRenderer.Create(300,150,50)
     })
    }));
-   AppData.New(List.ofArray([PanelData.Create(panelKey,0,0,List.T.Empty)]),List.ofArray([[eventWorker.Key,event]]),List.ofArray([p[0],p$1[0]]),RuleContainer.New(List.ofArray([RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p[1]])),RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p$1[1]]))]))).Recreate(dashboard);
-  };
+   panelData=List.ofArray([PanelData.Create(panelKey,0,0,List.T.Empty)]);
+   AppData.New(List.ofArray([["main",List.ofArray([[eventWorker.Key,event]])]]),List.ofArray([["main",panelData,List.ofArray([p[0],p$1[0]])]]),List.ofArray([["main",RuleContainer.New(List.ofArray([RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p[1]])),RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p$1[1]]))]))]])).Recreate(dashboard,function()
+   {
+    return App.PanelContainerCreator();
+   });
+  }
+  function tbCellC(content)
+  {
+   return Doc.Element("td",[],content);
+  }
+  MessageBus.set_Log(function(str)
+  {
+   console.log(str);
+  });
+  fileName=Var.Create$1("D:\\Dashboard.cfg");
+  dashboard=App.CreateDashboard();
   return Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[tbCellC(List.ofArray([Helper.TxtIconNormal("build","Sample configuration",function()
   {
    makeTestConfig();
@@ -194,12 +236,18 @@
    (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.SaveToFile:-1567987319",[fileName.c,AppData.Create(dashboard)]);
   })])),tbCellC(List.ofArray([Helper.TxtIconNormal("unarchive","Download  and run on client",function()
   {
-   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:-133840407",[fileName.c]).Recreate(dashboard);
+   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:-133840407",[fileName.c]).Recreate(dashboard,function()
+   {
+    return App.PanelContainerCreator();
+   });
   })])),tbCellC(List.ofArray([Helper.TxtIconNormal("cloud_upload","Download and run on server",function()
   {
    var data;
    data=(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:-133840407",[fileName.c]);
-   data.RecreateOnClient(dashboard);
+   data.RecreateOnClient(dashboard,function()
+   {
+    return App.PanelContainerCreator();
+   });
    (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:-1126735520",[data]);
    MessageBus.RunServerRequests();
   })]))])]),dashboard.get_Render()]);

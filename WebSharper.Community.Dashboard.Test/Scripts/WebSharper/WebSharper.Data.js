@@ -1,14 +1,15 @@
 (function()
 {
  "use strict";
- var WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Strings,Guid,Concurrency,$,List,JavaScript,Pervasives$1,Arrays,IntelliFactory,Runtime$1,Operators,Array,Unchecked;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Strings,Guid,Concurrency,$,List,JavaScript,Pervasives$1,Arrays,IntelliFactory,Runtime$1,Operators,Array,Unchecked;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  Data=WebSharper.Data=WebSharper.Data||{};
  Pervasives=Data.Pervasives=Data.Pervasives||{};
  WBRuntime=Data.WBRuntime=Data.WBRuntime||{};
  WorldBankCountry=WBRuntime.WorldBankCountry=WBRuntime.WorldBankCountry||{};
  WorldBankRuntime=WBRuntime.WorldBankRuntime=WBRuntime.WorldBankRuntime||{};
- FSharp=window.FSharp=window.FSharp||{};
+ FSharp=Global.FSharp=Global.FSharp||{};
  Data$1=FSharp.Data=FSharp.Data||{};
  Runtime=Data$1.Runtime=Data$1.Runtime||{};
  WorldBank=Runtime.WorldBank=Runtime.WorldBank||{};
@@ -19,20 +20,20 @@
  Strings=WebSharper&&WebSharper.Strings;
  Guid=WebSharper&&WebSharper.Guid;
  Concurrency=WebSharper&&WebSharper.Concurrency;
- $=window.jQuery;
+ $=Global.jQuery;
  List=WebSharper&&WebSharper.List;
  JavaScript=WebSharper&&WebSharper.JavaScript;
  Pervasives$1=JavaScript&&JavaScript.Pervasives;
  Arrays=WebSharper&&WebSharper.Arrays;
- IntelliFactory=window.IntelliFactory;
+ IntelliFactory=Global.IntelliFactory;
  Runtime$1=IntelliFactory&&IntelliFactory.Runtime;
  Operators=WebSharper&&WebSharper.Operators;
- Array=window.Array;
+ Array=Global.Array;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Pervasives.randomFunctionName=function()
  {
   var c;
-  return Strings.ReplaceChar((c=Guid.NewGuid(),window.String(c)).toLowerCase(),45,95);
+  return Strings.ReplaceChar((c=Guid.NewGuid(),Global.String(c)).toLowerCase(),45,95);
  };
  WorldBankCountry.New=function(Context,Code,Name)
  {
@@ -48,45 +49,48 @@
   {
    var guid,r;
    guid=Pervasives.randomFunctionName();
-   $.ajax((r={},r.url=WBRuntime.worldBankUrl(country.Context,List.ofArray(["countries",country.Code,"indicators",indicator]),List.ofArray([["date","1900:2050"],["format","jsonp"]])),r.dataType="jsonp",r.jsonp="prefix",r.jsonpCallback="jsonp"+guid,r.error=function(jqXHR,textStatus,error)
    {
-    return ko(window.Error(textStatus+error));
-   },r.success=function(data)
-   {
-    return ok(Pervasives$1.NewFromSeq(Arrays.choose(function(e)
+    $.ajax((r={},r.url=WBRuntime.worldBankUrl(country.Context,List.ofArray(["countries",country.Code,"indicators",indicator]),List.ofArray([["date","1900:2050"],["format","jsonp"]])),r.dataType="jsonp",r.jsonp="prefix",r.jsonpCallback="jsonp"+guid,r.error=function(jqXHR,textStatus,error)
     {
-     return e.value==null?null:{
-      $:1,
-      $0:[e.date,e.value]
-     };
-    },Arrays.get(data,1)).slice().reverse()));
-   },r));
+     return ko(Global.Error(textStatus+error));
+    },r.success=function(data)
+    {
+     return ok(Pervasives$1.NewFromSeq(Arrays.choose(function(e)
+     {
+      return e.value==null?null:{
+       $:1,
+       $0:[e.date,e.value]
+      };
+     },Arrays.get(data,1)).slice().reverse()));
+    },r));
+    return;
+   }
   });
  };
- WorldBankRuntime.GetIndicators=window.id;
+ WorldBankRuntime.GetIndicators=Global.id;
  WorldBankRuntime.GetCountry=function(countries,code,name)
  {
   return WorldBankCountry.New(countries,code,name);
  };
  WBRuntime.worldBankUrl=function(wb,functions,props)
  {
-  var m;
+  function m(key,value)
+  {
+   return"&"+key+"="+Global.encodeURIComponent(value);
+  }
   return wb.serviceUrl+"/"+Strings.concat("",List.map(function(m$1)
   {
-   return"/"+window.encodeURIComponent(m$1);
-  },functions))+"?per_page=1000"+Strings.concat("",(m=function(key,value)
-  {
-   return"&"+key+"="+window.encodeURIComponent(value);
-  },List.map(function($1)
+   return"/"+Global.encodeURIComponent(m$1);
+  },functions))+"?per_page=1000"+Strings.concat("",List.map(function($1)
   {
    return m($1[0],$1[1]);
-  },props)));
+  },props));
  };
  Indicator=WorldBank.Indicator=Runtime$1.Class({
   TryGetValueAt:function(year)
   {
    var e;
-   e=this[window.String(year)];
+   e=this[Global.String(year)];
    return e==void 0?null:{
     $:1,
     $0:e
@@ -96,7 +100,7 @@
  JSRuntime.GetArrayChildByTypeTag=function(value,cultureStr,tagCode)
  {
   var arr;
-  arr=JSRuntime.GetArrayChildrenByTypeTag(value,cultureStr,tagCode,window.id);
+  arr=JSRuntime.GetArrayChildrenByTypeTag(value,cultureStr,tagCode,Global.id);
   return Arrays.length(arr)===1?Arrays.get(arr,0):Operators.FailWith("JSON mismatch: Expected single value, but found multiple.");
  };
  JSRuntime.TryGetArrayChildByTypeTag=function(doc,cultureStr,tagCode,mapping)
@@ -119,11 +123,10 @@
  };
  JSRuntime.GetArrayChildrenByTypeTag=function(doc,cultureStr,tagCode,mapping)
  {
-  var f;
-  return Array.isArray(doc)?Arrays.map((f=window.id,function(x)
+  return Array.isArray(doc)?Arrays.map(function(x)
   {
-   return mapping(f(x));
-  }),Arrays.choose(function(v)
+   return mapping(Global.id(x));
+  },Arrays.choose(function(v)
   {
    return JSRuntime.matchTag(tagCode,v);
   },doc)):Operators.FailWith("JSON mismatch: Expected Array node");
@@ -137,7 +140,7 @@
   }:Unchecked.Equals(typeof value,"number")&&tagCode==="Number"?{
    $:1,
    $0:value
-  }:Unchecked.Equals(typeof value,"string")&&tagCode==="Number"?(v=1*value,window.isNaN(v)?null:{
+  }:Unchecked.Equals(typeof value,"string")&&tagCode==="Number"?(v=1*value,Global.isNaN(v)?null:{
    $:1,
    $0:v
   }):Unchecked.Equals(typeof value,"string")&&tagCode==="String"?{
@@ -169,8 +172,7 @@
  };
  IO.asyncReadTextAtRuntime=function(forFSI,defaultResolutionFolder,resolutionFolder,formatName,encodingStr,uri)
  {
-  var a;
-  a=function(ok,ko)
+  function a(ok,ko)
   {
    var p,l,settings,r,fn;
    p=(l=uri.toLowerCase(),Strings.StartsWith(l,"jsonp|")?[uri.substring(6),true]:Strings.StartsWith(l,"json|")?[uri.substring(5),false]:[uri,false]);
@@ -179,11 +181,11 @@
     return ok(data);
    },r.error=function(a$1,a$2,err)
    {
-    return ko(window.Error(err));
+    return ko(Global.Error(err));
    },r);
    p[1]?(fn=Pervasives.randomFunctionName(),settings.dataType="jsonp",settings.jsonp="prefix",settings.jsonpCallback="jsonp"+fn):void 0;
    $.ajax(p[0],settings);
-  };
+  }
   return Concurrency.FromContinuations(function($1,$2,$3)
   {
    return a.apply(null,[$1,$2,$3]);

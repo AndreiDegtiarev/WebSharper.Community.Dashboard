@@ -11,9 +11,9 @@ open WebSharper.Community.Panel
 [<JavaScript>]
 module EventsEditor =
 
-    let Render data (propGrid:PropertyGrid)= 
+    let Render (eventItems:ListModel<Key,WorkerItem>) (propGrid:PropertyGrid)= 
             table[
-                    ListModel.View data.EventItems
+                    ListModel.View eventItems
                     |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [iAttr (Helper.AttrsClick 
                                                                                        (fun _ ->item.Worker.Properties |> propGrid.Edit))
                                                                             [textView item.Worker.Name.View]])

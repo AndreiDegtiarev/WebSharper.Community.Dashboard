@@ -1,8 +1,9 @@
 (function()
 {
  "use strict";
- var WebSharper,Collections,BalancedTree,Tree,Pair,MapUtil,FSharpMap,Map,FSharpSet,Set,ListEnumerator,List,ResizeArray,LinkedListEnumerator,LinkedList,Grouping,FsComparer,ProjectionComparer,CompoundComparer,ReverseComparer,OrderedEnumerable,Linq,Arrays,Seq,Unchecked,List$1,IntelliFactory,Runtime,Enumerator,Operators,HashSet,Dictionary,Nullable;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,Collections,BalancedTree,Tree,Pair,MapUtil,FSharpMap,Map,FSharpSet,Set,ListEnumerator,List,ResizeArray,LinkedListEnumerator,LinkedList,Grouping,FsComparer,ProjectionComparer,CompoundComparer,ReverseComparer,OrderedEnumerable,Linq,Arrays,Seq,Unchecked,List$1,IntelliFactory,Runtime,Enumerator,Operators,HashSet,Dictionary,Nullable;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  Collections=WebSharper.Collections=WebSharper.Collections||{};
  BalancedTree=Collections.BalancedTree=Collections.BalancedTree||{};
  Tree=BalancedTree.Tree=BalancedTree.Tree||{};
@@ -28,7 +29,7 @@
  Seq=WebSharper&&WebSharper.Seq;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  List$1=WebSharper&&WebSharper.List;
- IntelliFactory=window.IntelliFactory;
+ IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Enumerator=WebSharper&&WebSharper.Enumerator;
  Operators=WebSharper&&WebSharper.Operators;
@@ -123,8 +124,7 @@
  };
  BalancedTree.Enumerate=function(flip,t)
  {
-  var gen;
-  gen=function(t$1,spine)
+  function gen(t$1,spine)
   {
    var t$2;
    while(true)
@@ -154,7 +154,7 @@
         $1:spine
        });
       }
-  };
+  }
   return Seq.unfold(function($1)
   {
    return gen($1[0],$1[1]);
@@ -536,9 +536,7 @@
    this.i=this.i+1;
    return this.i<Arrays.length(this.arr);
   },
-  Dispose:function()
-  {
-  },
+  Dispose:Global.ignore,
   Current:function()
   {
    return Arrays.get(this.arr,this.i);
@@ -662,15 +660,11 @@
  },List);
  ResizeArray.splice=function(arr,index,howMany,items)
  {
-  return window.Array.prototype.splice.apply(arr,[index,howMany].concat(items));
+  return Global.Array.prototype.splice.apply(arr,[index,howMany].concat(items));
  };
  LinkedListEnumerator=Collections.LinkedListEnumerator=Runtime.Class({
-  Reset:function()
-  {
-  },
-  Dispose:function()
-  {
-  },
+  Reset:Global.ignore,
+  Dispose:Global.ignore,
   MoveNext:function()
   {
    this.c=this.c.n;
@@ -1210,14 +1204,15 @@
  };
  Linq.Single=function(_this,predicate)
  {
-  var x,f;
-  x=((f=function(state,cur)
+  var x;
+  function f(state,cur)
   {
    return predicate(cur)?state!=null?Operators.InvalidOp("Sequence contains more than one matching element"):{
     $:1,
     $0:cur
    }:state;
-  },(Runtime.Curried3(Seq.fold))(f))(null))(_this);
+  }
+  x=(((Runtime.Curried3(Seq.fold))(f))(null))(_this);
   return x!=null&&x.$==1?x.$0:Operators.InvalidOp("Sequence contains no elements");
  };
  Linq.SequenceEqual=function(_this,second,comparer)
@@ -1256,14 +1251,13 @@
  };
  Linq.SelectMany=function(_this,selector,collectionSelector)
  {
-  var m;
-  m=function(t,cs)
+  function m(t,cs)
   {
    return Seq.map(function(c)
    {
     return collectionSelector(t,c);
    },cs);
-  };
+  }
   return Seq.collect(function($1)
   {
    return m($1[0],$1[1]);
@@ -1274,14 +1268,13 @@
  };
  Linq.SelectMany$1=function(_this,selector,collectionSelector)
  {
-  var m;
-  m=function(t,cs)
+  function m(t,cs)
   {
    return Seq.map(function(c)
    {
     return collectionSelector(t,c);
    },cs);
-  };
+  }
   return Seq.collect(function($1)
   {
    return m($1[0],$1[1]);
@@ -1362,14 +1355,14 @@
  };
  Linq.LastPred=function(_this,predicate)
  {
-  var f;
-  return((f=function(acc,elt)
+  function f(acc,elt)
   {
    return predicate(elt)?{
     $:1,
     $0:elt
    }:acc;
-  },(Runtime.Curried3(Seq.fold))(f))(null))(_this);
+  }
+  return(((Runtime.Curried3(Seq.fold))(f))(null))(_this);
  };
  Linq.Join=function(outer,inner,outerKeySelector,innerKeySelector,resultSelector,comparer)
  {
@@ -1594,7 +1587,7 @@
        x.push((c$1=e.Current(),Nullable.get(c$1)));
       }
     }
-   return Arrays.length(x)===0?null:Seq.sum(x)/window.Number(Arrays.length(x));
+   return Arrays.length(x)===0?null:Seq.sum(x)/Global.Number(Arrays.length(x));
   }
   finally
   {

@@ -38,7 +38,7 @@ type SelectorGroup =
             SelectorItems = items
             ChildCreatator = childCreator
         }
-    member x.RenderMenu offset (selectedItemVar:Var<SelectorItem>) = 
+    member x.RenderMenu offset (selectedItemVar:Var<Option<SelectorItem>>) = 
      let plus = 
        match x.ChildCreatator with
        |Some(fnc) -> tr[td[Helper.IconSmall "add" (fun _ ->let (name,renderer) = fnc()
@@ -48,9 +48,12 @@ type SelectorGroup =
      table[
        ListModel.View x.SelectorItems
        |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> let mapName = item.Name.View |> View.Map (fun name -> offset + name)
-                                                            tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (selItem:SelectorItem) -> if selItem.Key = item.Key then "#FB8C00" else "#7D4600")  selectedItemVar.View) 
+                                                            tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (selItemVar:Option<SelectorItem>) -> 
+                                                                                                                match selItemVar with 
+                                                                                                                |Some(selItem) -> if selItem.Key = item.Key then "#FB8C00" else "#7D4600" 
+                                                                                                                |None -> "#7D4600")  selectedItemVar.View) 
                                                                       Attr.Style "cursor" "pointer"
-                                                                      on.click (fun elem _-> selectedItemVar.Value <- item)
+                                                                      on.click (fun elem _-> selectedItemVar.Value <- Some(item))
                                                                       
                                                                       ][textView  mapName]] )  
        plus
@@ -58,32 +61,43 @@ type SelectorGroup =
 [<JavaScript>]
 type WindowSelector =
     {
-        SelectedItem:Var<SelectorItem>
+        OptSelectedItem:Var<Option<SelectorItem> >
         SelectorGroups:ListModel<Key,SelectorGroup>
     }
-    static member Create  name config childCreator =
-        let group = SelectorGroup.Create name config childCreator
+    static member Create  = 
         {
-            SelectorGroups =  ListModel.Create (fun item ->item.Key) [group]
-            SelectedItem=Var.Create (group.SelectorItems |> List.ofSeq |> List.head)
+            SelectorGroups =  ListModel.Create (fun item ->item.Key) []
+            OptSelectedItem = Var.Create None
         }
+    member x.ClearGroups() = 
+            x.OptSelectedItem.Value <- None
+            x.SelectorGroups |> List.ofSeq |> List.iter (fun gr -> gr.SelectorItems.Clear())
+    member x.SelectedItem = match x.OptSelectedItem.Value with | Some(item) -> item | None -> failwith "Something really wrong with WindowSelector"
     member x.AppenGroup name config childCreator =
-        x.SelectorGroups.Add(SelectorGroup.Create name config childCreator)
+            x.SelectorGroups.Add(SelectorGroup.Create name config childCreator)
+
+    member x.SelectedGroup = x.SelectorGroups |> List.ofSeq |> List.find (fun group -> group.SelectorItems |> List.ofSeq |> List.exists (fun entry-> entry.Key = x.SelectedItem.Key)) 
+
+    member x.SelectedGroupIndex = 
+            x.SelectorGroups |> List.ofSeq |> List.findIndex (fun gr -> gr.Key = x.SelectedGroup.Key)
+    member x.SelectedIndexInGroup = 
+            x.SelectedGroup.SelectorItems |> List.ofSeq |> List.findIndex (fun listItem -> listItem.Key = x.SelectedItem.Key)
     member x.SelectedIndex = 
             x.SelectorGroups |> List.ofSeq |> List.map (fun group -> group.SelectorItems |> List.ofSeq) |> List.concat
-            |> List.findIndex (fun listItem -> listItem.Key = x.SelectedItem.Value.Key)
+            |> List.findIndex (fun listItem -> listItem.Key = x.SelectedItem.Key)
+    member x.GroupByIndex index = x.SelectorGroups |> List.ofSeq |> List.item index
     member x.Render = 
-        div[x.SelectedItem.View |> Doc.BindView (fun value -> value.SelectorRenderer)]
+        div[x.OptSelectedItem.View |> Doc.BindView (fun value -> match value with |Some(selector) -> selector.SelectorRenderer :> Doc |None -> Doc.Empty)]
     member x.RenderMenu =     
           if x.SelectorGroups.Length = 1 then
-            (x.SelectorGroups |> List.ofSeq |> List.head).RenderMenu "" x.SelectedItem
+            (x.SelectorGroups |> List.ofSeq |> List.head).RenderMenu "" x.OptSelectedItem
           else
            div[ 
             ListModel.View x.SelectorGroups
             |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun group -> 
                                         div[
                                                textView group.Name.View
-                                               group.RenderMenu "    " x.SelectedItem
+                                               group.RenderMenu "    " x.OptSelectedItem
                                             ]
                                         )
               ]

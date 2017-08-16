@@ -1,17 +1,18 @@
 (function()
 {
  "use strict";
- var IntelliFactory,Reactive,Disposable,Observer,HotStream,Reactive$1,Reactive$2,SC$1,Runtime,WebSharper,Control,FSharpEvent,Util,List,Collections,Dictionary,Seq;
- IntelliFactory=window.IntelliFactory=window.IntelliFactory||{};
+ var Global,IntelliFactory,Reactive,Disposable,Observer,HotStream,Reactive$1,Reactive$2,SC$1,Runtime,WebSharper,Control,FSharpEvent,Util,List,Collections,Dictionary,Seq;
+ Global=window;
+ IntelliFactory=Global.IntelliFactory=Global.IntelliFactory||{};
  Reactive=IntelliFactory.Reactive=IntelliFactory.Reactive||{};
  Disposable=Reactive.Disposable=Reactive.Disposable||{};
  Observer=Reactive.Observer=Reactive.Observer||{};
  HotStream=Reactive.HotStream=Reactive.HotStream||{};
  Reactive$1=Reactive.Reactive=Reactive.Reactive||{};
  Reactive$2=Reactive$1.Reactive=Reactive$1.Reactive||{};
- SC$1=window.StartupCode$IntelliFactory_Reactive$Reactive=window.StartupCode$IntelliFactory_Reactive$Reactive||{};
+ SC$1=Global.StartupCode$IntelliFactory_Reactive$Reactive=Global.StartupCode$IntelliFactory_Reactive$Reactive||{};
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
- WebSharper=window.WebSharper;
+ WebSharper=Global.WebSharper;
  Control=WebSharper&&WebSharper.Control;
  FSharpEvent=Control&&Control.FSharpEvent;
  Util=WebSharper&&WebSharper.Util;
@@ -174,7 +175,7 @@
     });
    }):Reactive$1.Return(List.T.Empty);
   }
-  return Reactive$1.Select(sequence(List.ofSeq(ios)),window.id);
+  return Reactive$1.Select(sequence(List.ofSeq(ios)),Global.id);
  };
  Reactive$1.CollectLatest=function(outer)
  {
@@ -225,9 +226,7 @@
    Subscribe:function(o)
    {
     var disp,d;
-    disp=[function()
-    {
-    }];
+    disp=[Global.ignore];
     d=io.Subscribe(Util.observer(function(o1)
     {
      var d$1;
@@ -280,28 +279,24 @@
   return{
    Subscribe:function(o)
    {
-    var lv1s,lv2s,update,d1,d2;
-    lv1s=[];
-    lv2s=[];
-    update=function()
+    var lv1s,lv2s,d1,d2;
+    function update()
     {
      if(lv1s.length>0&&lv2s.length>0)
       o.OnNext(f(lv1s.shift(),lv2s.shift()));
-    };
+    }
+    lv1s=[];
+    lv2s=[];
     d1=io1.Subscribe(Observer.New(function(x)
     {
      lv1s.push(x);
      update();
-    },function()
-    {
-    }));
+    },Global.ignore));
     d2=io2.Subscribe(Observer.New(function(y)
     {
      lv2s.push(y);
      update();
-    },function()
-    {
-    }));
+    },Global.ignore));
     return Disposable.New(function()
     {
      d1.Dispose();
@@ -315,16 +310,16 @@
   return{
    Subscribe:function(o)
    {
-    var lv1,lv2,update,d1,d2;
-    lv1=[null];
-    lv2=[null];
-    update=function()
+    var lv1,lv2,d1,d2;
+    function update()
     {
      var $1,$2;
      $1=lv1[0];
      $2=lv2[0];
      $1!=null&&$1.$==1?$2!=null&&$2.$==1?o.OnNext(f($1.$0,$2.$0)):void 0:void 0;
-    };
+    }
+    lv1=[null];
+    lv2=[null];
     d1=io1.Subscribe(Observer.New(function(x)
     {
      lv1[0]={
@@ -332,9 +327,7 @@
       $0:x
      };
      update();
-    },function()
-    {
-    }));
+    },Global.ignore));
     d2=io2.Subscribe(Observer.New(function(y)
     {
      lv2[0]={
@@ -342,9 +335,7 @@
       $0:y
      };
      update();
-    },function()
-    {
-    }));
+    },Global.ignore));
     return Disposable.New(function()
     {
      d1.Dispose();
@@ -360,9 +351,7 @@
    {
     var i,$1;
     for(i=start,$1=start+count;i<=$1;i++)o.OnNext(i);
-    return Disposable.New(function()
-    {
-    });
+    return Disposable.New(Global.ignore);
    }
   };
  };
@@ -482,9 +471,7 @@
   return{
    Subscribe:function()
    {
-    return Disposable.New(function()
-    {
-    });
+    return Disposable.New(Global.ignore);
    }
   };
  };
@@ -495,15 +482,13 @@
    {
     o.OnNext(x);
     o.OnCompleted();
-    return Disposable.New(function()
-    {
-    });
+    return Disposable.New(Global.ignore);
    }
   };
  };
  SC$1.$cctor=Runtime.Cctor(function()
  {
   SC$1.Default=new Reactive$2.New();
-  SC$1.$cctor=window.ignore;
+  SC$1.$cctor=Global.ignore;
  });
 }());

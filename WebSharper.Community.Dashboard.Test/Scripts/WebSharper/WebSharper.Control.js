@@ -1,15 +1,16 @@
 (function()
 {
  "use strict";
- var WebSharper,Control,Observer,Message,HotStream,HotStream$1,Observable,Microsoft,FSharp,Control$1,ObservableModule,Event,Event$1,DelegateEvent,DelegateEvent$1,FSharpEvent,FSharpDelegateEvent,EventModule,MailboxProcessor,IntelliFactory,Runtime,Util,List,Seq,Unchecked,Arrays,Collections,List$1,Concurrency,TimeoutException,Operators,LinkedList;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,Control,Observer,Message,HotStream,HotStream$1,Observable,Microsoft,FSharp,Control$1,ObservableModule,Event,Event$1,DelegateEvent,DelegateEvent$1,FSharpEvent,FSharpDelegateEvent,EventModule,MailboxProcessor,IntelliFactory,Runtime,Util,List,Seq,Unchecked,Arrays,Collections,List$1,Concurrency,TimeoutException,Operators,LinkedList;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  Control=WebSharper.Control=WebSharper.Control||{};
  Observer=Control.Observer=Control.Observer||{};
  Message=Observer.Message=Observer.Message||{};
  HotStream=Control.HotStream=Control.HotStream||{};
  HotStream$1=HotStream.HotStream=HotStream.HotStream||{};
  Observable=Control.Observable=Control.Observable||{};
- Microsoft=window.Microsoft=window.Microsoft||{};
+ Microsoft=Global.Microsoft=Global.Microsoft||{};
  FSharp=Microsoft.FSharp=Microsoft.FSharp||{};
  Control$1=FSharp.Control=FSharp.Control||{};
  ObservableModule=Control$1.ObservableModule=Control$1.ObservableModule||{};
@@ -21,7 +22,7 @@
  FSharpDelegateEvent=Control.FSharpDelegateEvent=Control.FSharpDelegateEvent||{};
  EventModule=Control$1.EventModule=Control$1.EventModule||{};
  MailboxProcessor=Control.MailboxProcessor=Control.MailboxProcessor||{};
- IntelliFactory=window.IntelliFactory;
+ IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Util=WebSharper&&WebSharper.Util;
  List=WebSharper&&WebSharper.List;
@@ -141,10 +142,13 @@
   return{
    Subscribe:function(o)
    {
-    var disp,d,dispose;
-    disp=[function()
+    var disp,d;
+    function dispose()
     {
-    }];
+     disp[0]();
+     d.Dispose();
+    }
+    disp=[Global.ignore];
     d=io.Subscribe(Util.observer(function(o1)
     {
      var d$1;
@@ -158,11 +162,6 @@
       d$1.Dispose();
      };
     }));
-    dispose=function()
-    {
-     disp[0]();
-     d.Dispose();
-    };
     return{
      Dispose:function()
      {
@@ -203,10 +202,8 @@
   return{
    Subscribe:function(o)
    {
-    var lv1,lv2,update,d1,d2,dispose;
-    lv1=[null];
-    lv2=[null];
-    update=function()
+    var lv1,lv2,d1,d2;
+    function update()
     {
      var $1,$2,v1,v2;
      $1=lv1[0];
@@ -221,7 +218,14 @@
      {
       o.OnError(a);
      })):void 0:void 0;
-    };
+    }
+    function dispose()
+    {
+     d1.Dispose();
+     d2.Dispose();
+    }
+    lv1=[null];
+    lv2=[null];
     d1=io1.Subscribe(Observer.New(function(x)
     {
      lv1[0]={
@@ -229,11 +233,7 @@
       $0:x
      };
      update();
-    },function(v)
-    {
-    },function()
-    {
-    }));
+    },Global.ignore,Global.ignore));
     d2=io2.Subscribe(Observer.New(function(y)
     {
      lv2[0]={
@@ -241,16 +241,7 @@
       $0:y
      };
      update();
-    },function(v)
-    {
-    },function()
-    {
-    }));
-    dispose=function()
-    {
-     d1.Dispose();
-     d2.Dispose();
-    };
+    },Global.ignore,Global.ignore));
     return{
      Dispose:function()
      {
@@ -265,11 +256,11 @@
   return{
    Subscribe:function(o)
    {
-    var dispose,i,$1;
-    for(i=start,$1=start+count;i<=$1;i++)o.OnNext(i);
-    dispose=function()
+    var i,$1;
+    function dispose()
     {
-    };
+    }
+    for(i=start,$1=start+count;i<=$1;i++)o.OnNext(i);
     return{
      Dispose:function()
      {
@@ -284,25 +275,23 @@
   return{
    Subscribe:function(o)
    {
-    var innerDisp,outerDisp,d;
+    var innerDisp,outerDisp;
+    function d()
+    {
+     innerDisp[0]!=null?innerDisp[0].$0.Dispose():void 0;
+     outerDisp.Dispose();
+    }
     innerDisp=[null];
     outerDisp=io1.Subscribe(Observer.New(function(a)
     {
      o.OnNext(a);
-    },function(v)
-    {
-    },function()
+    },Global.ignore,function()
     {
      innerDisp[0]={
       $:1,
       $0:io2.Subscribe(o)
      };
     }));
-    d=function()
-    {
-     innerDisp[0]!=null?innerDisp[0].$0.Dispose():void 0;
-     outerDisp.Dispose();
-    };
     return{
      Dispose:function()
      {
@@ -317,15 +306,18 @@
   return{
    Subscribe:function(o)
    {
-    var completed1,completed2,disp1,disp2,dispose;
+    var completed1,completed2,disp1,disp2;
+    function dispose()
+    {
+     disp1.Dispose();
+     disp2.Dispose();
+    }
     completed1=[false];
     completed2=[false];
     disp1=io1.Subscribe(Observer.New(function(a)
     {
      o.OnNext(a);
-    },function(v)
-    {
-    },function()
+    },Global.ignore,function()
     {
      completed1[0]=true;
      completed1[0]&&completed2[0]?o.OnCompleted():void 0;
@@ -333,18 +325,11 @@
     disp2=io2.Subscribe(Observer.New(function(a)
     {
      o.OnNext(a);
-    },function(v)
-    {
-    },function()
+    },Global.ignore,function()
     {
      completed2[0]=true;
      completed1[0]&&completed2[0]?o.OnCompleted():void 0;
     }));
-    dispose=function()
-    {
-     disp1.Dispose();
-     disp2.Dispose();
-    };
     return{
      Dispose:function()
      {
@@ -382,20 +367,20 @@
    {
     return io.Subscribe(Observer.New(function(v)
     {
-     var a;
+     function a(a$1)
+     {
+      o1.OnNext(a$1);
+     }
      Observable.Protect(function()
      {
       return f(v);
-     },(a=function(a$1)
-     {
-      o1.OnNext(a$1);
      },function(o)
      {
       if(o==null)
        ;
       else
        a(o.$0);
-     }),function(a$1)
+     },function(a$1)
      {
       o1.OnError(a$1);
      });
@@ -416,23 +401,23 @@
    {
     return io.Subscribe(Observer.New(function(v)
     {
-     var a;
+     function a(a$1)
+     {
+      o1.OnNext(a$1);
+     }
      Observable.Protect(function()
      {
       return f(v)?{
        $:1,
        $0:v
       }:null;
-     },(a=function(a$1)
-     {
-      o1.OnNext(a$1);
      },function(o)
      {
       if(o==null)
        ;
       else
        a(o.$0);
-     }),function(a$1)
+     },function(a$1)
      {
       o1.OnError(a$1);
      });
@@ -497,10 +482,9 @@
   return{
    Subscribe:function()
    {
-    var dispose;
-    dispose=function()
+    function dispose()
     {
-    };
+    }
     return{
      Dispose:function()
      {
@@ -515,12 +499,11 @@
   return{
    Subscribe:function(o)
    {
-    var dispose;
+    function dispose()
+    {
+    }
     o.OnNext(x);
     o.OnCompleted();
-    dispose=function()
-    {
-    };
     return{
      Dispose:function()
      {
@@ -601,14 +584,14 @@
  };
  ObservableModule.Partition=function(f,e)
  {
-  var g;
-  return[Observable.Filter(f,e),Observable.Filter((g=function(v)
+  function g(v)
   {
    return!v;
-  },function(x)
+  }
+  return[Observable.Filter(f,e),Observable.Filter(function(x)
   {
    return g(f(x));
-  }),e)];
+  },e)];
  };
  ObservableModule.Pairwise=function(e)
  {
@@ -639,17 +622,17 @@
  Event$1=Event.Event=Runtime.Class({
   Subscribe$1:function(observer)
   {
-   var $this,h,dispose;
-   $this=this;
-   h=function(a,x)
+   var $this;
+   function h(a,x)
    {
     return observer.OnNext(x);
-   };
-   this.AddHandler$1(h);
-   dispose=function()
+   }
+   function dispose()
    {
     $this.RemoveHandler$1(h);
-   };
+   }
+   $this=this;
+   this.AddHandler$1(h);
    return{
     Dispose:function()
     {
@@ -688,9 +671,7 @@
   {
    return this.Subscribe$1(observer);
   },
-  Dispose:function()
-  {
-  }
+  Dispose:Global.ignore
  },null,Event$1);
  Event$1.New=function(Handlers)
  {
@@ -726,9 +707,7 @@
   {
    this.AddHandler$1(x);
   },
-  Dispose:function()
-  {
-  }
+  Dispose:Global.ignore
  },null,DelegateEvent$1);
  DelegateEvent$1.New=function(Handlers)
  {
@@ -778,14 +757,14 @@
  };
  EventModule.Partition=function(f,e)
  {
-  var g;
-  return[EventModule.Filter(f,e),EventModule.Filter((g=function(v)
+  function g(v)
   {
    return!v;
-  },function(x)
+  }
+  return[EventModule.Filter(f,e),EventModule.Filter(function(x)
   {
    return g(f(x));
-  }),e)];
+  },e)];
  };
  EventModule.Pairwise=function(e)
  {
@@ -897,22 +876,8 @@
    b=null;
    return Concurrency.Delay(function()
    {
-    var m,m$1,found,a,m$2;
-    m$1=$this.mailbox.n;
-    found=null;
-    while(!Unchecked.Equals(m$1,null))
-     {
-      m$2=scanner(m$1.v);
-      m$2==null?m$1=m$1.n:($this.mailbox.Remove$1(m$1),m$1=null,found=m$2);
-     }
-    m=found;
-    return m!=null&&m.$==1?Concurrency.Bind(m.$0,function(a$1)
-    {
-     return Concurrency.Return({
-      $:1,
-      $0:a$1
-     });
-    }):(a=function(ok)
+    var m,m$1,found,m$2;
+    function a(ok)
     {
      var waiting,pending;
      if(timeout$1<0)
@@ -952,7 +917,7 @@
           m$3=scanner($this.mailbox.n.v);
           return m$3!=null&&m$3.$==1?($this.mailbox.RemoveFirst(),Concurrency.Bind(m$3.$0,function(a$1)
           {
-           return waiting[0]?(waiting[0]=false,window.clearTimeout(pending),ok({
+           return waiting[0]?(waiting[0]=false,Global.clearTimeout(pending),ok({
             $:1,
             $0:a$1
            }),Concurrency.Zero()):Concurrency.Zero();
@@ -961,7 +926,7 @@
         };
        }
        waiting=[true];
-       pending=window.setTimeout(function()
+       pending=Global.setTimeout(function()
        {
         if(waiting[0])
          {
@@ -972,10 +937,25 @@
        },timeout$1);
        scanNext$1();
       }
-    },Concurrency.FromContinuations(function($1,$2,$3)
+    }
+    m$1=$this.mailbox.n;
+    found=null;
+    while(!Unchecked.Equals(m$1,null))
+     {
+      m$2=scanner(m$1.v);
+      m$2==null?m$1=m$1.n:($this.mailbox.Remove$1(m$1),m$1=null,found=m$2);
+     }
+    m=found;
+    return m!=null&&m.$==1?Concurrency.Bind(m.$0,function(a$1)
+    {
+     return Concurrency.Return({
+      $:1,
+      $0:a$1
+     });
+    }):Concurrency.FromContinuations(function($1,$2,$3)
     {
      return a.apply(null,[$1,$2,$3]);
-    }));
+    });
    });
   },
   PostAndAsyncReply:function(msgf,timeout)
@@ -998,24 +978,23 @@
   },
   PostAndTryAsyncReply:function(msgf,timeout)
   {
-   var $this,timeout$1,d,a;
-   $this=this;
-   timeout$1=(d=this.get_DefaultTimeout(),timeout==null?d:timeout.$0);
-   a=function(ok)
+   var $this,timeout$1,d;
+   function a(ok)
    {
-    var f,waiting;
+    var waiting;
     if(timeout$1<0)
      {
-      $this.mailbox.AddLast(msgf((f=function(a$1)
+      function f(a$1)
       {
        return{
         $:1,
         $0:a$1
        };
-      },function(x)
+      }
+      $this.mailbox.AddLast(msgf(function(x)
       {
        return ok(f(x));
-      })));
+      }));
       $this.resume();
      }
     else
@@ -1033,7 +1012,7 @@
         }
       }));
       $this.resume();
-      window.setTimeout(function()
+      Global.setTimeout(function()
       {
        if(waiting[0])
         {
@@ -1042,7 +1021,9 @@
         }
       },timeout$1);
      }
-   };
+   }
+   $this=this;
+   timeout$1=(d=this.get_DefaultTimeout(),timeout==null?d:timeout.$0);
    return Concurrency.FromContinuations(function($1,$2,$3)
    {
     return a.apply(null,[$1,$2,$3]);
@@ -1072,10 +1053,8 @@
   },
   TryReceive:function(timeout)
   {
-   var $this,timeout$1,d,a;
-   $this=this;
-   timeout$1=(d=this.get_DefaultTimeout(),timeout==null?d:timeout.$0);
-   a=function(ok)
+   var $this,timeout$1,d;
+   function a(ok)
    {
     var b,waiting,pending,b$1;
     if(Unchecked.Equals($this.mailbox.n,null))
@@ -1097,7 +1076,7 @@
      else
       {
        waiting=[true];
-       pending=window.setTimeout(function()
+       pending=Global.setTimeout(function()
        {
         if(waiting[0])
          {
@@ -1110,7 +1089,7 @@
         $:1,
         $0:(b$1=null,Concurrency.Delay(function()
         {
-         return waiting[0]?(waiting[0]=false,window.clearTimeout(pending),ok({
+         return waiting[0]?(waiting[0]=false,Global.clearTimeout(pending),ok({
           $:1,
           $0:$this.dequeue()
          }),Concurrency.Zero()):Concurrency.Zero();
@@ -1123,7 +1102,9 @@
       $:1,
       $0:$this.dequeue()
      });
-   };
+   }
+   $this=this;
+   timeout$1=(d=this.get_DefaultTimeout(),timeout==null?d:timeout.$0);
    return Concurrency.FromContinuations(function($1,$2,$3)
    {
     return a.apply(null,[$1,$2,$3]);
@@ -1178,7 +1159,11 @@
  };
  MailboxProcessor.New=Runtime.Ctor(function(initial,token)
  {
-  var $this,m,callback;
+  var $this,m;
+  function callback(u)
+  {
+   return $this.resume();
+  }
   $this=this;
   this.initial=initial;
   this.token=token;
@@ -1187,13 +1172,10 @@
   this.mailbox=new LinkedList.New();
   this.savedCont=null;
   m=this.token;
-  m==null?void 0:(callback=function()
-  {
-   return $this.resume();
-  },Concurrency.Register(m.$0,function()
+  m==null?void 0:Concurrency.Register(m.$0,function()
   {
    callback();
-  }));
+  });
   this.DefaultTimeout=-1;
  },MailboxProcessor);
 }());

@@ -1,8 +1,9 @@
 (function()
 {
  "use strict";
- var WebSharper,Charting,Pervasives,Color,Seq,Reactive,Charts,DataType,ChartConfig,SeriesChartConfig,ColorConfig,PolarData,LineChart,BarChart,RadarChart,PolarAreaChart,PieChart,DoughnutChart,CompositeChart,Chart,LiveChart,SC$1,Renderers,ChartJsInternal,BatchUpdater,ChartJs,SC$2,IntelliFactory,Runtime,Seq$1,List,Reactive$1,Reactive$2,Util,Control,FSharpEvent,Random,Arrays,Chart$1,Operators,Option,Slice,UI,Next,Doc,AttrProxy,AttrModule;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,Charting,Pervasives,Color,Seq,Reactive,Charts,DataType,ChartConfig,SeriesChartConfig,ColorConfig,PolarData,LineChart,BarChart,RadarChart,PolarAreaChart,PieChart,DoughnutChart,CompositeChart,Chart,LiveChart,SC$1,Renderers,ChartJsInternal,BatchUpdater,ChartJs,SC$2,IntelliFactory,Runtime,Seq$1,List,Reactive$1,Reactive$2,Util,Control,FSharpEvent,Random,Arrays,Chart$1,Operators,Option,Slice,UI,Next,Doc,AttrProxy,AttrModule;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  Charting=WebSharper.Charting=WebSharper.Charting||{};
  Pervasives=Charting.Pervasives=Charting.Pervasives||{};
  Color=Pervasives.Color=Pervasives.Color||{};
@@ -23,13 +24,13 @@
  CompositeChart=Charts.CompositeChart=Charts.CompositeChart||{};
  Chart=Charting.Chart=Charting.Chart||{};
  LiveChart=Charting.LiveChart=Charting.LiveChart||{};
- SC$1=window.StartupCode$WebSharper_Charting$Charts=window.StartupCode$WebSharper_Charting$Charts||{};
+ SC$1=Global.StartupCode$WebSharper_Charting$Charts=Global.StartupCode$WebSharper_Charting$Charts||{};
  Renderers=Charting.Renderers=Charting.Renderers||{};
  ChartJsInternal=Renderers.ChartJsInternal=Renderers.ChartJsInternal||{};
  BatchUpdater=ChartJsInternal.BatchUpdater=ChartJsInternal.BatchUpdater||{};
  ChartJs=Renderers.ChartJs=Renderers.ChartJs||{};
- SC$2=window.StartupCode$WebSharper_Charting$Renderers=window.StartupCode$WebSharper_Charting$Renderers||{};
- IntelliFactory=window.IntelliFactory;
+ SC$2=Global.StartupCode$WebSharper_Charting$Renderers=Global.StartupCode$WebSharper_Charting$Renderers||{};
+ IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Seq$1=WebSharper&&WebSharper.Seq;
  List=WebSharper&&WebSharper.List;
@@ -40,7 +41,7 @@
  FSharpEvent=Control&&Control.FSharpEvent;
  Random=WebSharper&&WebSharper.Random;
  Arrays=WebSharper&&WebSharper.Arrays;
- Chart$1=window.Chart;
+ Chart$1=Global.Chart;
  Operators=WebSharper&&WebSharper.Operators;
  Option=WebSharper&&WebSharper.Option;
  Slice=WebSharper&&WebSharper.Slice;
@@ -54,8 +55,8 @@
   {
    return this.$==1?this.$0:this.$==2?this.$0:(((((Runtime.Curried(function($1,$2,$3,$4,$5)
    {
-    return $1("rgba("+window.String($2)+", "+window.String($3)+", "+window.String($4)+", "+$5.toFixed(6)+")");
-   },5))(window.id))(this.$0))(this.$1))(this.$2))(this.$3);
+    return $1("rgba("+Global.String($2)+", "+Global.String($3)+", "+Global.String($4)+", "+$5.toFixed(6)+")");
+   },5))(Global.id))(this.$0))(this.$1))(this.$2))(this.$3);
   }
  },null,Color);
  Seq.headOption=function(s)
@@ -105,15 +106,14 @@
  };
  Pervasives.withIndex=function(s)
  {
-  return Seq$1.zip(Seq$1.initInfinite(window.String),s);
+  return Seq$1.zip(Seq$1.initInfinite(Global.String),s);
  };
  Pervasives.streamWithLabel=function(stream)
  {
-  var f;
-  f=function($1,$2)
+  function f($1,$2)
   {
-   return[window.String($1),$2];
-  };
+   return[Global.String($1),$2];
+  }
   return Reactive$2.Select(Reactive$2.Aggregate(stream,[0,0],function($1,$2)
   {
    return(function(t)
@@ -342,7 +342,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(data,props);
   },
-  cst:window.id,
+  cst:Global.id,
   get_DataSet:function()
   {
    return this.dataset;
@@ -542,7 +542,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(props,data);
   },
-  cst:window.id,
+  cst:Global.id,
   WebSharper_Charting_Charts_IChart_1$WithTitle:function(title)
   {
    return new PolarAreaChart.New(this.dataset,ChartConfig.New(title));
@@ -587,7 +587,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(props,data);
   },
-  cst:window.id,
+  cst:Global.id,
   WebSharper_Charting_Charts_IChart_1$WithTitle:function(title)
   {
    return new PieChart.New(this.dataset,ChartConfig.New(title));
@@ -632,7 +632,7 @@
   {
    this.WebSharper_Charting_Charts_IMutableChart_2$UpdateData(props,data);
   },
-  cst:window.id,
+  cst:Global.id,
   WebSharper_Charting_Charts_IChart_1$WithTitle:function(title)
   {
    return new DoughnutChart.New(this.dataset,ChartConfig.New(title));
@@ -937,7 +937,7 @@
     return PolarData.New(data,p[0],p[1],label);
    };
   });
-  SC$1.$cctor=window.ignore;
+  SC$1.$cctor=Global.ignore;
  });
  BatchUpdater=ChartJsInternal.BatchUpdater=Runtime.Class({
   Update:function(updater)
@@ -951,10 +951,10 @@
    }
    $this=this;
    o=this.handle[0];
-   o==null?void 0:window.clearTimeout(o.$0);
+   o==null?void 0:Global.clearTimeout(o.$0);
    this.count[0]<this.maxCount?(this.count[0]++,this.handle[0]={
     $:1,
-    $0:window.setTimeout(doUpdate,this.interval)
+    $0:Global.setTimeout(doUpdate,this.interval)
    }):doUpdate();
   }
  },null,BatchUpdater);
@@ -982,7 +982,7 @@
      },m.$0)
     };
    },chart.get_Charts()),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
-   rendered=new window.Chart(canvas,{
+   rendered=new Global.Chart(canvas,{
     type:"radar",
     data:{
      datasets:Arrays.ofSeq(Seq$1.map(function(chart$1)
@@ -991,12 +991,12 @@
       initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
       r={};
       r.label=chart$1.get__Config().Title;
-      r.backgroundColor=window.String(chart$1.get__SeriesConfig().FillColor);
-      r.borderColor=window.String(chart$1.get__SeriesConfig().StrokeColor);
-      r.pointBackgroundColor=window.String(chart$1.get__ColorConfig().PointColor);
-      r.pointHoverBackgroundColor=window.String(chart$1.get__ColorConfig().PointHighlightFill);
-      r.pointHoverBorderColor=window.String(chart$1.get__ColorConfig().PointHighlightStroke);
-      r.pointBorderColor=window.String(chart$1.get__ColorConfig().PointStrokeColor);
+      r.backgroundColor=Global.String(chart$1.get__SeriesConfig().FillColor);
+      r.borderColor=Global.String(chart$1.get__SeriesConfig().StrokeColor);
+      r.pointBackgroundColor=Global.String(chart$1.get__ColorConfig().PointColor);
+      r.pointHoverBackgroundColor=Global.String(chart$1.get__ColorConfig().PointHighlightFill);
+      r.pointHoverBorderColor=Global.String(chart$1.get__ColorConfig().PointHighlightStroke);
+      r.pointBorderColor=Global.String(chart$1.get__ColorConfig().PointStrokeColor);
       r.data=Arrays.map(function(t)
       {
        return t[1];
@@ -1069,7 +1069,7 @@
      },m.$0)
     };
    },chart.get_Charts()),Seq$1.length(e)>0?Seq$1.maxBy(Seq$1.length,e):[]);
-   rendered=new window.Chart(canvas,{
+   rendered=new Global.Chart(canvas,{
     type:"bar",
     data:{
      datasets:Arrays.ofSeq(Seq$1.map(function(chart$1)
@@ -1078,8 +1078,8 @@
       initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
       r={};
       r.label=chart$1.get__Config().Title;
-      r.backgroundColor=window.String(chart$1.get__SeriesConfig().FillColor);
-      r.borderColor=window.String(chart$1.get__SeriesConfig().StrokeColor);
+      r.backgroundColor=Global.String(chart$1.get__SeriesConfig().FillColor);
+      r.borderColor=Global.String(chart$1.get__SeriesConfig().StrokeColor);
       r.data=Arrays.map(function(t)
       {
        return t[1];
@@ -1139,14 +1139,15 @@
  {
   return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var labels,e,m,rendered;
-   labels=(e=Seq$1.map((m=function(t)
+   var labels,e,rendered;
+   function m(t)
    {
     return t[0];
-   },function(s)
+   }
+   labels=(e=Seq$1.map(function(s)
    {
     return Seq$1.map(m,s);
-   }),Seq$1.choose(function(chart$1)
+   },Seq$1.choose(function(chart$1)
    {
     var m$1;
     m$1=chart$1.get_DataSet();
@@ -1164,12 +1165,12 @@
       initials=ChartJsInternal.mkInitial(chart$1.get_DataSet(),window$1);
       r={};
       r.label=chart$1.get__Config().Title;
-      r.backgroundColor=window.String(chart$1.get__SeriesConfig().FillColor);
-      r.borderColor=window.String(chart$1.get__SeriesConfig().StrokeColor);
-      r.pointBackgroundColor=window.String(chart$1.get__ColorConfig().PointColor);
-      r.pointHoverBackgroundColor=window.String(chart$1.get__ColorConfig().PointHighlightFill);
-      r.pointHoverBorderColor=window.String(chart$1.get__ColorConfig().PointHighlightStroke);
-      r.pointBorderColor=window.String(chart$1.get__ColorConfig().PointStrokeColor);
+      r.backgroundColor=Global.String(chart$1.get__SeriesConfig().FillColor);
+      r.borderColor=Global.String(chart$1.get__SeriesConfig().StrokeColor);
+      r.pointBackgroundColor=Global.String(chart$1.get__ColorConfig().PointColor);
+      r.pointHoverBackgroundColor=Global.String(chart$1.get__ColorConfig().PointHighlightFill);
+      r.pointHoverBorderColor=Global.String(chart$1.get__ColorConfig().PointHighlightStroke);
+      r.pointBorderColor=Global.String(chart$1.get__ColorConfig().PointStrokeColor);
       r.data=Arrays.map(function(t)
       {
        return t[1];
@@ -1231,7 +1232,11 @@
   size=[0];
   streams.Subscribe(Util.observer(function(data)
   {
-   var window$2,arr,a,o;
+   var window$2,arr,o;
+   function a(i,a$1)
+   {
+    Arrays.set(arr,i,a$1[1]);
+   }
    window$1==null?void 0:(window$2=window$1.$0,size[0]>=window$2?remove(window$2,size[0]):void 0);
    arr=Arrays.ofSeq(Seq$1.delay(function()
    {
@@ -1240,10 +1245,6 @@
      return 0;
     },Operators.range(1,l));
    }));
-   a=function(i,a$1)
-   {
-    Arrays.set(arr,i,a$1[1]);
-   };
    Seq$1.iter(function($1)
    {
     return a($1[0],$1[1]);
@@ -1258,7 +1259,7 @@
  };
  ChartJsInternal.extractStreams=function(dataSet)
  {
-  return Reactive.SequenceOnlyNew(Seq$1.choose(window.id,Seq$1.mapi(function(i,data)
+  return Reactive.SequenceOnlyNew(Seq$1.choose(Global.id,Seq$1.mapi(function(i,data)
   {
    return data.$==0?null:{
     $:1,
@@ -1273,19 +1274,26 @@
  {
   return ChartJsInternal.withNewCanvas(size,function(canvas)
   {
-   var initial,toBGColor,toHBGColor,toValue,toLabel,rendered,r,r$1,r$2,a;
+   var initial,toBGColor,toHBGColor,toValue,toLabel,rendered,r,r$1,r$2;
+   function a(i,$1)
+   {
+    var s;
+    s=Arrays.get(rendered.data.datasets,0).data;
+    s[i]=$1(Arrays.get(s,i));
+    rendered.update();
+   }
    initial=ChartJsInternal.mkInitial(chart.WebSharper_Charting_Charts_IPolarAreaChart_1$get_DataSet(),null);
    toBGColor=Arrays.map(function(e)
    {
-    return window.String(e.Color);
+    return Global.String(e.Color);
    },initial);
    toHBGColor=Arrays.map(function(e)
    {
-    return window.String(e.Highlight);
+    return Global.String(e.Highlight);
    },initial);
    toValue=Arrays.map(function(e)
    {
-    return window.Number(e.Value);
+    return Global.Number(e.Value);
    },initial);
    toLabel=Arrays.map(function(e)
    {
@@ -1340,13 +1348,6 @@
     labels[Arrays.length(labels)]=polardata.Label;
     return rendered.update();
    });
-   a=function(i,$1)
-   {
-    var s;
-    s=Arrays.get(rendered.data.datasets,0).data;
-    s[i]=$1(Arrays.get(s,i));
-    rendered.update();
-   };
    return chart.WebSharper_Charting_Charts_IMutableChart_2$OnUpdate(function($1)
    {
     return a($1[0],$1[1]);
@@ -1362,7 +1363,7 @@
    rendered=new Chart$1(canvas,{
     type:"radar",
     data:{
-     datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=window.String(chart.get__SeriesConfig().FillColor),r.borderColor=window.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=window.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=window.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=window.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=window.String(chart.get__ColorConfig().PointStrokeColor),r.data=Arrays.map(function(t)
+     datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=Global.String(chart.get__SeriesConfig().FillColor),r.borderColor=Global.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=Global.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=Global.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=Global.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=Global.String(chart.get__ColorConfig().PointStrokeColor),r.data=Arrays.map(function(t)
      {
       return t[1];
      },initial),r)],
@@ -1421,7 +1422,7 @@
    rendered=new Chart$1(canvas,{
     type:"bar",
     data:{
-     datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=window.String(chart.get__SeriesConfig().FillColor),r.borderColor=window.String(chart.get__SeriesConfig().StrokeColor),r.data=Arrays.map(function(t)
+     datasets:[(r={},r.label=chart.get__Config().Title,r.backgroundColor=Global.String(chart.get__SeriesConfig().FillColor),r.borderColor=Global.String(chart.get__SeriesConfig().StrokeColor),r.data=Arrays.map(function(t)
      {
       return t[1];
      },initial),r)],
@@ -1480,7 +1481,7 @@
    rendered=Chart$1.Line(canvas,{
     type:"line",
     data:{
-     datasets:[(r={},r.label=chart.get__Config().Title,r.fill=chart.get__SeriesConfig().IsFilled,r.backgroundColor=window.String(chart.get__SeriesConfig().FillColor),r.borderColor=window.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=window.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=window.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=window.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=window.String(chart.get__ColorConfig().PointStrokeColor),r.data=Arrays.map(function(t)
+     datasets:[(r={},r.label=chart.get__Config().Title,r.fill=chart.get__SeriesConfig().IsFilled,r.backgroundColor=Global.String(chart.get__SeriesConfig().FillColor),r.borderColor=Global.String(chart.get__SeriesConfig().StrokeColor),r.pointBackgroundColor=Global.String(chart.get__ColorConfig().PointColor),r.pointHoverBackgroundColor=Global.String(chart.get__ColorConfig().PointHighlightFill),r.pointHoverBorderColor=Global.String(chart.get__ColorConfig().PointHighlightStroke),r.pointBorderColor=Global.String(chart.get__ColorConfig().PointStrokeColor),r.data=Arrays.map(function(t)
      {
       return t[1];
      },initial),r)],
@@ -1562,7 +1563,7 @@
   var width,height;
   width=size.$0;
   height=size.$1;
-  return Doc.Element("div",[AttrProxy.Create("width",window.String(width)),AttrProxy.Create("height",window.String(height)),AttrModule.Style("width",window.String(width)+"px"),AttrModule.Style("height",window.String(height)+"px")],[Doc.Element("canvas",[AttrModule.OnAfterRender(function(el)
+  return Doc.Element("div",[AttrProxy.Create("width",Global.String(width)),AttrProxy.Create("height",Global.String(height)),AttrModule.Style("width",Global.String(width)+"px"),AttrModule.Style("height",Global.String(height)+"px")],[Doc.Element("canvas",[AttrModule.OnAfterRender(function(el)
   {
    var ctx;
    ctx=el.getContext("2d");
@@ -1573,13 +1574,13 @@
  };
  ChartJsInternal.registerUpdater=function(mChart,upd,fin)
  {
-  var bu,a;
-  bu=new BatchUpdater.New(null,null);
-  a=function($1,$2)
+  var bu;
+  function a($1,$2)
   {
    upd($1,$2);
    bu.Update(fin);
-  };
+  }
+  bu=new BatchUpdater.New(null,null);
   mChart.WebSharper_Charting_Charts_IMutableChart_2$OnUpdate(function($1)
   {
    return a($1[0],$1[1]);
@@ -1651,6 +1652,6 @@
    $0:500,
    $1:200
   };
-  SC$2.$cctor=window.ignore;
+  SC$2.$cctor=Global.ignore;
  });
 }());

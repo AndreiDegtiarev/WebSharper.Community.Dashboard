@@ -58,15 +58,15 @@ module App =
         TextBoxRenderer.Create                |> registerWidget
         ChartRenderer.Create 300.0 100.0 50.0 |> registerWidget
         ButtonRenderer.Create                 |> registerWidget
- 
+    let PanelContainerCreator=(fun _ -> 
+                                let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
+                                PanelContainer.Create
+                                     .WithLayoutManager(layoutManager)
+                                     .WithWidth(800.0).WithHeight(420.0)
+                                     .WithAttributes([Attr.Style "border" "1px solid white"
+                                                      //Attr.Style "position" "absolute"
+                                                     ]))
     let CreateDashboard =
-        let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
-        let panelContainer=PanelContainer.Create
-                                         .WithLayoutManager(layoutManager)
-                                         .WithWidth(800.0).WithHeight(420.0)
-                                         .WithAttributes([Attr.Style "border" "1px solid white"
-                                                          //Attr.Style "position" "absolute"
-                                                         ])
-        let dashboard = Dashboard.Create panelContainer
+        let dashboard = Dashboard.Create PanelContainerCreator
         dashboard |> Register 
         dashboard

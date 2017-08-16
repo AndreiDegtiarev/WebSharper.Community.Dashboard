@@ -27,44 +27,69 @@ type EventsGroupItem =
       Name:Var<string>
       EventItems : ListModel<Key,WorkerItem>
     }
-    static member Create  =
+    static member Create  name=
         {
             Key=Key.Fresh()
-            Name=Var.Create "Events"
+            Name=Var.Create name
             EventItems = ListModel.Create (fun item ->item.Key) []
+        }
+[<JavaScript>]
+type WidgetsGroupItem = 
+    {
+      Key:Key
+      Name:Var<string>
+      WidgetItems : ListModel<Key,WidgetItem>
+      PanelContainer:PanelContainer
+    }
+    static member Create  name panelContainer =
+        {
+            Key=Key.Fresh()
+            Name=Var.Create name
+            WidgetItems = ListModel.Create (fun item ->item.Key) []
+            PanelContainer = panelContainer
+        }
+[<JavaScript>]
+type RulesGroupItem = 
+    {
+      Key:Key
+      Name:Var<string>
+      RulesRowItems:ListModel<Key,RulesRowItem>
+    }
+    static member Create  name =
+        {
+            Key=Key.Fresh()
+            Name=Var.Create name
+            RulesRowItems = ListModel.Create (fun item ->item.Key) []
         }
 
 [<JavaScript>]
 type DshData =
     {
         WorkItems : ListModel<Key,WorkerItem>
-        WidgetItems : ListModel<Key,WidgetItem>
-        EventItems : ListModel<Key,WorkerItem>
+        WidgetGroups : ListModel<Key,WidgetsGroupItem>
         EventGroups : ListModel<Key,EventsGroupItem>
+        RulesGroups : ListModel<Key,RulesGroupItem>
     }
     static member Create =
         {
             WorkItems = ListModel.Create (fun item ->item.Key) []
-            WidgetItems = ListModel.Create (fun item ->item.Key) []
-            EventItems = ListModel.Create (fun item ->item.Key) []
+            WidgetGroups = ListModel.Create (fun item ->item.Key) []
             EventGroups = ListModel.Create (fun item ->item.Key) []
+            RulesGroups = ListModel.Create (fun item ->item.Key) []
         }
     member x.Clear = 
         x.WorkItems.Clear()
-        x.WidgetItems.Clear()
-        x.EventItems.Clear()
+        x.WidgetGroups.Clear()
         x.EventGroups.Clear()
-    member x.RegisterEvent key (event:Worker) = 
-        let item = WorkerItem.Create (event.WithKey(key))
-        x.EventItems.Add item
-        x.WorkItems.Add item
-    member x.RegisterEventInGroup key (group:EventsGroupItem) (event:Worker) = 
+        x.RulesGroups.Clear()
+    member x.RegisterEvent key (group:EventsGroupItem) (event:Worker) = 
         let item = WorkerItem.Create (event.WithKey(key))
         group.EventItems.Add item
         x.WorkItems.Add item
-    member x.RegisterWidget key panel (widget:Worker) = 
+    member x.RegisterWidget key group panel (widget:Worker) = 
         let widget_key = widget.WithKey(key)
         let item = WidgetItem.Create panel (widget_key)
-        x.WidgetItems.Add item
+        group.WidgetItems.Add item
         x.WorkItems.Add (WorkerItem.Create widget_key)
+
 

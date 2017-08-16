@@ -1,8 +1,9 @@
 (function()
 {
  "use strict";
- var WebSharper,Community,Dashboard,MessageBus,Role,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$1,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,WidgetItem,EventsGroupItem,DshData,EventsEditor,RulesCellItem,RulesRowItem,RulesEditor,SelectorItem,SelectorGroup,WindowSelector,Dashboard$1,AppModelLib,App,SC$2,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,PrintfHelpers,Seq,UI,Next,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,View,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,Community,Dashboard,MessageBus,Role,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$1,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,SelectorItem,SelectorGroup,WindowSelector,RulesCellItem,RulesRowItem,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,EventsEditor,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$2,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,View,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
  MessageBus=Dashboard.MessageBus=Dashboard.MessageBus||{};
@@ -12,7 +13,7 @@
  ListenerInfo=MessageBus.ListenerInfo=MessageBus.ListenerInfo||{};
  AgentMessage=MessageBus.AgentMessage=MessageBus.AgentMessage||{};
  AgentState=MessageBus.AgentState=MessageBus.AgentState||{};
- SC$1=window.StartupCode$WebSharper_Community_Dashboard$MessageBus=window.StartupCode$WebSharper_Community_Dashboard$MessageBus||{};
+ SC$1=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus||{};
  InPort=Dashboard.InPort=Dashboard.InPort||{};
  OutPortType=Dashboard.OutPortType=Dashboard.OutPortType||{};
  OutPort=Dashboard.OutPort=Dashboard.OutPort||{};
@@ -33,34 +34,37 @@
  RuleContainer=Dashboard.RuleContainer=Dashboard.RuleContainer||{};
  WorkerItem=Dashboard.WorkerItem=Dashboard.WorkerItem||{};
  Factory=Dashboard.Factory=Dashboard.Factory||{};
- WidgetItem=Dashboard.WidgetItem=Dashboard.WidgetItem||{};
- EventsGroupItem=Dashboard.EventsGroupItem=Dashboard.EventsGroupItem||{};
- DshData=Dashboard.DshData=Dashboard.DshData||{};
- EventsEditor=Dashboard.EventsEditor=Dashboard.EventsEditor||{};
- RulesCellItem=Dashboard.RulesCellItem=Dashboard.RulesCellItem||{};
- RulesRowItem=Dashboard.RulesRowItem=Dashboard.RulesRowItem||{};
- RulesEditor=Dashboard.RulesEditor=Dashboard.RulesEditor||{};
  SelectorItem=Dashboard.SelectorItem=Dashboard.SelectorItem||{};
  SelectorGroup=Dashboard.SelectorGroup=Dashboard.SelectorGroup||{};
  WindowSelector=Dashboard.WindowSelector=Dashboard.WindowSelector||{};
+ RulesCellItem=Dashboard.RulesCellItem=Dashboard.RulesCellItem||{};
+ RulesRowItem=Dashboard.RulesRowItem=Dashboard.RulesRowItem||{};
+ WidgetItem=Dashboard.WidgetItem=Dashboard.WidgetItem||{};
+ EventsGroupItem=Dashboard.EventsGroupItem=Dashboard.EventsGroupItem||{};
+ WidgetsGroupItem=Dashboard.WidgetsGroupItem=Dashboard.WidgetsGroupItem||{};
+ RulesGroupItem=Dashboard.RulesGroupItem=Dashboard.RulesGroupItem||{};
+ DshData=Dashboard.DshData=Dashboard.DshData||{};
+ EventsEditor=Dashboard.EventsEditor=Dashboard.EventsEditor||{};
+ RulesEditor=Dashboard.RulesEditor=Dashboard.RulesEditor||{};
+ DshHelper=Dashboard.DshHelper=Dashboard.DshHelper||{};
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
  AppModelLib=Dashboard.AppModelLib=Dashboard.AppModelLib||{};
  App=Dashboard.App=Dashboard.App||{};
- SC$2=window.StartupCode$WebSharper_Community_Dashboard$AppModelLib=window.StartupCode$WebSharper_Community_Dashboard$AppModelLib||{};
- IntelliFactory=window.IntelliFactory;
+ SC$2=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib||{};
+ IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Operators=WebSharper&&WebSharper.Operators;
  Panel=Community&&Community.Panel;
  Helper=Panel&&Panel.Helper;
- Date=window.Date;
+ Date=Global.Date;
  List=WebSharper&&WebSharper.List;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  Control=WebSharper&&WebSharper.Control;
  MailboxProcessor=Control&&Control.MailboxProcessor;
- PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  Seq=WebSharper&&WebSharper.Seq;
+ PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Var=Next&&Next.Var;
@@ -70,15 +74,15 @@
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Doc=Next&&Next.Doc;
  Random=WebSharper&&WebSharper.Random;
- Math=window.Math;
- console=window.console;
+ Math=Global.Math;
+ console=Global.console;
  Data=WebSharper&&WebSharper.Data;
  TxtRuntime=Data&&Data.TxtRuntime;
- FSharp=window.FSharp;
+ FSharp=Global.FSharp;
  Data$1=FSharp&&FSharp.Data;
  Runtime$1=Data$1&&Data$1.Runtime;
  IO=Runtime$1&&Runtime$1.IO;
- JSON=window.JSON;
+ JSON=Global.JSON;
  Arrays=WebSharper&&WebSharper.Arrays;
  View=Next&&Next.View;
  Charting=WebSharper&&WebSharper.Charting;
@@ -183,9 +187,9 @@
        {
         return function($2)
         {
-         return $1("Values from server requested messages received:"+window.String($2));
+         return $1("Values from server requested messages received:"+Global.String($2));
         };
-       }(window.id))(a$1.get_Length()));
+       }(Global.id))(a$1.get_Length()));
        return Concurrency.Zero();
       });
      });
@@ -254,12 +258,45 @@
  SC$1.$cctor=Runtime.Cctor(function()
  {
   SC$1.Role=Role.Server;
-  SC$1.Log=function()
-  {
-  };
+  SC$1.Log=Global.ignore;
   SC$1.Agent=MailboxProcessor.Start(function(inbox)
   {
-   var cutBuffer,split,update_and_split,send_to_listeners;
+   function cutBuffer(time,buffer)
+   {
+    return Seq.fold(function(acc,item)
+    {
+     return item.Time>=time?new List.T({
+      $:1,
+      $0:item,
+      $1:acc
+     }):acc;
+    },List.T.Empty,buffer);
+   }
+   function split(maxSize,buffer)
+   {
+    return maxSize<buffer.get_Length()?(List.splitAt(maxSize,buffer))[0]:buffer;
+   }
+   function update_and_split(maxSize,buffer,value)
+   {
+    return maxSize===1?List.ofArray([value]):split(maxSize,new List.T({
+     $:1,
+     $0:value,
+     $1:buffer
+    }));
+   }
+   function send_to_listeners(message,listeners)
+   {
+    function m(info,callback,buf)
+    {
+     var listener;
+     listener=Global.Array.prototype.slice.call(arguments);
+     return info.Key===message.Key?(callback(message),[info,callback,update_and_split(info.CacheSize,buf,message)]):listener;
+    }
+    return List.map(function($1)
+    {
+     return m($1[0],$1[1],$1[2]);
+    },listeners);
+   }
    function loop(state)
    {
     var b;
@@ -268,14 +305,25 @@
     {
      return Concurrency.Bind(inbox.Receive(null),function(a)
      {
-      var listenerInfo,time,m,maxTimes,m$1,busKeyValue,o;
+      var listenerInfo,time,maxTimes,busKeyValue,o;
+      function m(info,a$1,buffer)
+      {
+       return cutBuffer(time,buffer);
+      }
+      function m$1(info,a$1,buffer)
+      {
+       return buffer.$==0?(new Date(0,0-1,0)).getTime():List.maxBy(function(item)
+       {
+        return item.Time;
+       },buffer).Time;
+      }
       return a.$==2?(listenerInfo=a.$0[0],((MessageBus.Log())((function($1)
       {
        return function($2)
        {
         return $1("RegisterListener:"+PrintfHelpers.toSafe($2));
        };
-      }(window.id))(listenerInfo.Name)),loop(AgentState.New(state.ServerCallback,new List.T({
+      }(Global.id))(listenerInfo.Name)),loop(AgentState.New(state.ServerCallback,new List.T({
        $:1,
        $0:[listenerInfo,a.$0[2],List.T.Empty],
        $1:state.Listeners
@@ -289,65 +337,19 @@
         $0:state$1,
         $1:acc
        }):acc;
-      },List.T.Empty,List.concat((m=function(info,a$1,buffer)
-      {
-       return cutBuffer(time,buffer);
-      },List.map(function($1)
+      },List.T.Empty,List.concat(List.map(function($1)
       {
        return m($1[0],$1[1],$1[2]);
-      },state.Listeners))))),loop(state))):a.$==6?(maxTimes=(m$1=function(info,a$1,buffer)
-      {
-       return buffer.$==0?(new Date(0,0-1,0)).getTime():List.maxBy(function(item)
-       {
-        return item.Time;
-       },buffer).Time;
-      },List.map(function($1)
+      },state.Listeners)))),loop(state))):a.$==6?(maxTimes=List.map(function($1)
       {
        return m$1($1[0],$1[1],$1[2]);
-      },state.Listeners)),(a.$0(maxTimes.$==0?(new Date(0,0-1,0)).getTime():List.max(maxTimes)),loop(state))):a.$==1?loop(AgentState.New(state.ServerCallback,send_to_listeners(a.$0,state.Listeners))):a.$==0?(busKeyValue=a.$0,(o=state.ServerCallback,o==null?void 0:o.$0(busKeyValue),loop(AgentState.New(state.ServerCallback,send_to_listeners(busKeyValue,state.Listeners))))):loop(AgentState.get_empty());
+      },state.Listeners),(a.$0(maxTimes.$==0?(new Date(0,0-1,0)).getTime():List.max(maxTimes)),loop(state))):a.$==1?loop(AgentState.New(state.ServerCallback,send_to_listeners(a.$0,state.Listeners))):a.$==0?(busKeyValue=a.$0,(o=state.ServerCallback,o==null?void 0:o.$0(busKeyValue),loop(AgentState.New(state.ServerCallback,send_to_listeners(busKeyValue,state.Listeners))))):loop(AgentState.get_empty());
      });
     });
    }
-   cutBuffer=function(time,buffer)
-   {
-    return Seq.fold(function(acc,item)
-    {
-     return item.Time>=time?new List.T({
-      $:1,
-      $0:item,
-      $1:acc
-     }):acc;
-    },List.T.Empty,buffer);
-   };
-   split=function(maxSize,buffer)
-   {
-    return maxSize<buffer.get_Length()?(List.splitAt(maxSize,buffer))[0]:buffer;
-   };
-   update_and_split=function(maxSize,buffer,value)
-   {
-    return maxSize===1?List.ofArray([value]):split(maxSize,new List.T({
-     $:1,
-     $0:value,
-     $1:buffer
-    }));
-   };
-   send_to_listeners=function(message,listeners)
-   {
-    var m;
-    m=function(info,callback,buf)
-    {
-     var listener;
-     listener=window.Array.prototype.slice.call(arguments);
-     return info.Key===message.Key?(callback(message),[info,callback,update_and_split(info.CacheSize,buf,message)]):listener;
-    };
-    return List.map(function($1)
-    {
-     return m($1[0],$1[1],$1[2]);
-    },listeners);
-   };
    return loop(AgentState.get_empty());
   },null);
-  SC$1.$cctor=window.ignore;
+  SC$1.$cctor=Global.ignore;
  });
  InPort=Dashboard.InPort=Runtime.Class({
   Equals:function(y)
@@ -365,7 +367,7 @@
   },
   get_BooleanVar:function()
   {
-   return this.ExtractPortBooleanValue(window.id);
+   return this.ExtractPortBooleanValue(Global.id);
   },
   get_Boolean:function()
   {
@@ -391,7 +393,7 @@
   },
   get_StringVar:function()
   {
-   return this.ExtractPortStringValue(window.id);
+   return this.ExtractPortStringValue(Global.id);
   },
   get_String:function()
   {
@@ -417,7 +419,7 @@
   },
   get_NumberVar:function()
   {
-   return this.ExtractPortNumberValue(window.id);
+   return this.ExtractPortNumberValue(Global.id);
   },
   get_Number:function()
   {
@@ -453,7 +455,7 @@
   get_Clone:function()
   {
    var c,m;
-   return InPort.New((c=Guid.NewGuid(),window.String(c)),this.Name,(m=this.PortValue,m.$==1?{
+   return InPort.New((c=Guid.NewGuid(),Global.String(c)),this.Name,(m=this.PortValue,m.$==1?{
     $:1,
     $0:[Var.Create$1(m.$0[0].c),Var.Create$1(m.$0[1].c)]
    }:m.$==2?{
@@ -545,19 +547,18 @@
  };
  Ports.Create=function(info)
  {
-  var m;
-  return Ports.CreateWithCache((m=function(name,value)
+  function m(name,value)
   {
    return[name,value,1];
-  },List.map(function($1)
+  }
+  return Ports.CreateWithCache(List.map(function($1)
   {
    return m($1[0],$1[1]);
-  },info)));
+  },info));
  };
  Ports.CreateWithCache=function(info)
  {
-  var m;
-  m=function(name,pair,cacheSize)
+  function m(name,pair,cacheSize)
   {
    var m$1,value,value$1,value$2;
    m$1=pair.Value;
@@ -580,7 +581,7 @@
      $0:value$2
     }))),Var.Create$1(value$2)]
    },cacheSize));
-  };
+  }
   return List.map(function($1)
   {
    return m($1[0],$1[1],$1[2]);
@@ -778,11 +779,11 @@
    request=(((Runtime.Curried3(function($1,$2,$3)
    {
     return $1("http://api.openweathermap.org/data/2.5/weather?q="+PrintfHelpers.toSafe($2)+"&units=metric&appid="+PrintfHelpers.toSafe($3));
-   }))(window.id))(city))(key);
+   }))(Global.id))(city))(key);
    console.log("get key city "+request);
    return Concurrency.TryWith(Concurrency.Delay(function()
    {
-    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\Andrey\\Private\\VS_Projects\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
+    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\AEAFrame\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
     {
      return Unchecked.Equals(typeof t,"string")?JSON.parse(t):t;
     }),function(a)
@@ -794,7 +795,7 @@
       $0:(head=o.$0,Forecast.New((((Runtime.Curried3(function($1,$2,$3)
       {
        return $1(PrintfHelpers.toSafe($2)+", "+PrintfHelpers.toSafe($3));
-      }))(window.id))((opt=(prop="name",prop in a?{
+      }))(Global.id))((opt=(prop="name",prop in a?{
        $:1,
        $0:a[prop]
       }:null),opt==null?null:opt.$0)))((opt$1=(x=a.sys,(prop$1="country",prop$1 in x?{
@@ -809,7 +810,7 @@
        {
         return $1("http://openweathermap.org/img/w/"+PrintfHelpers.toSafe($2)+".png");
        };
-      }(window.id))((opt$3=(prop$3="icon",prop$3 in head?{
+      }(Global.id))((opt$3=(prop$3="icon",prop$3 in head?{
        $:1,
        $0:head[prop$3]
       }:null),opt$3==null?null:opt$3.$0)),(v=(x$1=a.main,(prop$4="temp",prop$4 in x$1?{
@@ -898,7 +899,7 @@
  OpenWeatherRunner.Create=function(city,apikey)
  {
   var c;
-  return OpenWeatherRunner.New("OpenWeatherMap",MessageBus.CreateString(city),MessageBus.CreateString(apikey),(c=Guid.NewGuid(),window.String(c)));
+  return OpenWeatherRunner.New("OpenWeatherMap",MessageBus.CreateString(city),MessageBus.CreateString(apikey),(c=Guid.NewGuid(),Global.String(c)));
  };
  OpenWeatherRunner.New=function(Name,OpenWeatherCity,OpenWeatherApiKey,OutPortKey)
  {
@@ -920,7 +921,7 @@
      text=((((Runtime.Curried(function($1,$2,$3,$4)
      {
       return $1(PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3)+" "+$4.toFixed(6));
-     },4))(window.id))(value.Key))(window.String(value.Time)))(value.Value.get_AsNumber());
+     },4))(Global.id))(value.Key))(Global.String(value.Time)))(value.Value.get_AsNumber());
      (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.ServerDatabase.WriteLine:2078881569",[worker.InPorts.get_Item(1).get_String(),text]);
      worker.OutPorts.get_Item(0).TriggerWithKey(value);
     },worker.InPorts.get_Item(0).get_KeyValueVar().v);
@@ -1069,7 +1070,7 @@
     {
      var c;
      c=value<<0;
-     return window.String(c);
+     return Global.String(c);
     },worker.InPorts.get_Item(0).get_NumberVar().v);
     return Doc.Element("div",[AttrModule.Class("bigvalue")],[Doc.TextView(strView)]);
    };
@@ -1177,7 +1178,7 @@
     (MessageBus.Log())((((Runtime.Curried3(function($1,$2,$3)
     {
      return $1(PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
-    }))(window.id))(inPort.Name))(inPort.Key));
+    }))(Global.id))(inPort.Name))(inPort.Key));
    },allInPorts);
    _this=MessageBus.Agent();
    _this.mailbox.AddLast(AgentMessage.Clear);
@@ -1197,40 +1198,43 @@
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
-       o=Seq.tryFind(function(port)
        {
-        return port.Key===cell1.OutPortKey;
-       },allOutPorts),o==null?null:{
-        $:1,
-        $0:(outPort=o.$0,((MessageBus.Log())((function($1)
+        o=Seq.tryFind(function(port)
         {
-         return function($2)
-         {
-          return $1("Found out port "+PrintfHelpers.toSafe($2));
-         };
-        }(window.id))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
-        {
-         return port.Key===cell2.InPortKey;
-        },allInPorts),o$1==null?null:{
+         return port.Key===cell1.OutPortKey;
+        },allOutPorts),o==null?null:{
          $:1,
-         $0:(inPort=o$1.$0,((MessageBus.Log())("Found int port"),templateValue=(m=inPort.PortValue,m.$==1?Message.Create(new Value({
-          $:1,
-          $0:""
-         })):m.$==2?Message.Create(new Value({
-          $:2,
-          $0:false
-         })):Message.Create(new Value({
-          $:0,
-          $0:0
-         }))),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast({
-          $:2,
-          $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.Name,inPort.CacheSize),templateValue,function(a)
+         $0:(outPort=o.$0,((MessageBus.Log())((function($1)
+         {
+          return function($2)
           {
-           inPort.Receive(a);
-          }]
-         }),_this$1.resume()))
-        }))
-       };
+           return $1("Found out port "+PrintfHelpers.toSafe($2));
+          };
+         }(Global.id))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
+         {
+          return port.Key===cell2.InPortKey;
+         },allInPorts),o$1==null?null:{
+          $:1,
+          $0:(inPort=o$1.$0,((MessageBus.Log())("Found int port"),templateValue=(m=inPort.PortValue,m.$==1?Message.Create(new Value({
+           $:1,
+           $0:""
+          })):m.$==2?Message.Create(new Value({
+           $:2,
+           $0:false
+          })):Message.Create(new Value({
+           $:0,
+           $0:0
+          }))),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast({
+           $:2,
+           $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.Name,inPort.CacheSize),templateValue,function(a)
+           {
+            inPort.Receive(a);
+           }]
+          }),_this$1.resume()))
+         }))
+        };
+        return;
+       }
       }());
     }
     finally
@@ -1285,103 +1289,179 @@
    WidgetItems:WidgetItems
   });
  };
- WidgetItem.Create=function(panel,widget)
+ SelectorItem.Create=function(name,renderer)
  {
-  return WidgetItem.New(Key.Fresh(),panel,widget);
+  return SelectorItem.New(Key.Fresh(),name,renderer);
  };
- WidgetItem.New=function(Key$1,Panel$2,Widget)
- {
-  return{
-   Key:Key$1,
-   Panel:Panel$2,
-   Widget:Widget
-  };
- };
- EventsGroupItem.get_Create=function()
- {
-  return EventsGroupItem.New(Key.Fresh(),Var.Create$1("Events"),ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty));
- };
- EventsGroupItem.New=function(Key$1,Name,EventItems)
+ SelectorItem.New=function(Key$1,Name,SelectorRenderer)
  {
   return{
    Key:Key$1,
    Name:Name,
-   EventItems:EventItems
+   SelectorRenderer:SelectorRenderer
   };
  };
- DshData=Dashboard.DshData=Runtime.Class({
-  RegisterWidget:function(key,panel,widget)
+ SelectorGroup=Dashboard.SelectorGroup=Runtime.Class({
+  RenderMenu:function(offset,selectedItemVar)
   {
-   var widget_key;
-   widget_key=widget.WithKey(key);
-   this.WidgetItems.Append(WidgetItem.Create(panel,widget_key));
-   this.WorkItems.Append(WorkerItem.Create(widget_key));
-  },
-  RegisterEventInGroup:function(key,group,event)
-  {
-   var item;
-   item=WorkerItem.Create(event.WithKey(key));
-   group.EventItems.Append(item);
-   this.WorkItems.Append(item);
-  },
-  RegisterEvent:function(key,event)
-  {
-   var item;
-   item=WorkerItem.Create(event.WithKey(key));
-   this.EventItems.Append(item);
-   this.WorkItems.Append(item);
-  },
-  get_Clear:function()
-  {
-   this.WorkItems.Clear();
-   this.WidgetItems.Clear();
-   this.EventItems.Clear();
-   this.EventGroups.Clear();
+   var $this,plus,m,fnc;
+   $this=this;
+   plus=(m=this.ChildCreatator,m==null?Doc.Element("tr",[],[]):(fnc=m.$0,Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconSmall("add",function()
+   {
+    var p;
+    p=fnc();
+    $this.SelectorItems.Append(SelectorItem.Create(p[0],p[1]));
+   })])])));
+   return Doc.Element("table",[],[Doc.ConvertBy(function(m$1)
+   {
+    return m$1.Key;
+   },function(item)
+   {
+    var mapName;
+    mapName=View.Map(function(name)
+    {
+     return offset+name;
+    },item.Name.v);
+    return Doc.Element("tr",[],[Doc.Element("td",[AttrModule.DynamicStyle("Color",View.Map(function(selItemVar)
+    {
+     return selItemVar==null?"#7D4600":Unchecked.Equals(selItemVar.$0.Key,item.Key)?"#FB8C00":"#7D4600";
+    },selectedItemVar.v)),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+    {
+     return function()
+     {
+      return Var.Set(selectedItemVar,{
+       $:1,
+       $0:item
+      });
+     };
+    })],[Doc.TextView(mapName)])]);
+   },this.SelectorItems.v),plus]);
   }
- },null,DshData);
- DshData.get_Create=function()
+ },null,SelectorGroup);
+ SelectorGroup.Create=function(name,config,childCreator)
  {
-  return DshData.New(ListModel.Create(function(item)
+  var items;
+  items=ListModel.Create(function(item)
   {
    return item.Key;
-  },List.T.Empty),ListModel.Create(function(item)
+  },List.map(function($1)
   {
-   return item.Key;
-  },List.T.Empty),ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty),ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty));
+   return SelectorItem.Create($1[0],$1[1]);
+  },config));
+  return SelectorGroup.New(Key.Fresh(),Var.Create$1(name),items,childCreator);
  };
- DshData.New=function(WorkItems,WidgetItems,EventItems,EventGroups)
+ SelectorGroup.New=function(Key$1,Name,SelectorItems,ChildCreatator)
  {
-  return new DshData({
-   WorkItems:WorkItems,
-   WidgetItems:WidgetItems,
-   EventItems:EventItems,
-   EventGroups:EventGroups
+  return new SelectorGroup({
+   Key:Key$1,
+   Name:Name,
+   SelectorItems:SelectorItems,
+   ChildCreatator:ChildCreatator
   });
  };
- EventsEditor.Render=function(data,propGrid)
- {
-  return Doc.Element("table",[],[Doc.ConvertBy(function(m)
+ WindowSelector=Dashboard.WindowSelector=Runtime.Class({
+  get_RenderMenu:function()
   {
-   return m.Key;
-  },function(item)
-  {
-   return Doc.Element("tr",[],[Doc.Element("i",Helper.AttrsClick(function()
+   var $this;
+   $this=this;
+   return this.SelectorGroups.get_Length()===1?List.head(List.ofSeq(this.SelectorGroups)).RenderMenu("",this.OptSelectedItem):Doc.Element("div",[],[Doc.ConvertBy(function(m)
    {
-    propGrid.Edit(item.Worker.get_Properties());
-   }),[Doc.TextView(item.Worker.Name.v)])]);
-  },data.EventItems.v)]);
+    return m.Key;
+   },function(group)
+   {
+    return Doc.Element("div",[],[Doc.TextView(group.Name.v),group.RenderMenu("    ",$this.OptSelectedItem)]);
+   },this.SelectorGroups.v)]);
+  },
+  get_Render:function()
+  {
+   return Doc.Element("div",[],[Doc.BindView(function(value)
+   {
+    return value==null?Doc.Empty():value.$0.SelectorRenderer;
+   },this.OptSelectedItem.v)]);
+  },
+  GroupByIndex:function(index)
+  {
+   return Seq.nth(index,List.ofSeq(this.SelectorGroups));
+  },
+  get_SelectedIndex:function()
+  {
+   var $this;
+   $this=this;
+   return Seq.findIndex(function(listItem)
+   {
+    return Unchecked.Equals(listItem.Key,$this.get_SelectedItem().Key);
+   },List.concat(List.map(function(group)
+   {
+    return List.ofSeq(group.SelectorItems);
+   },List.ofSeq(this.SelectorGroups))));
+  },
+  get_SelectedIndexInGroup:function()
+  {
+   var $this;
+   $this=this;
+   return Seq.findIndex(function(listItem)
+   {
+    return Unchecked.Equals(listItem.Key,$this.get_SelectedItem().Key);
+   },List.ofSeq(this.get_SelectedGroup().SelectorItems));
+  },
+  get_SelectedGroupIndex:function()
+  {
+   var $this;
+   $this=this;
+   return Seq.findIndex(function(gr)
+   {
+    return Unchecked.Equals(gr.Key,$this.get_SelectedGroup().Key);
+   },List.ofSeq(this.SelectorGroups));
+  },
+  get_SelectedGroup:function()
+  {
+   var $this;
+   $this=this;
+   return Seq.find(function(group)
+   {
+    return List.exists(function(entry)
+    {
+     return Unchecked.Equals(entry.Key,$this.get_SelectedItem().Key);
+    },List.ofSeq(group.SelectorItems));
+   },List.ofSeq(this.SelectorGroups));
+  },
+  AppenGroup:function(name,config,childCreator)
+  {
+   this.SelectorGroups.Append(SelectorGroup.Create(name,config,childCreator));
+  },
+  get_SelectedItem:function()
+  {
+   var m;
+   m=this.OptSelectedItem.c;
+   return m==null?Operators.FailWith("Something really wrong with WindowSelector"):m.$0;
+  },
+  ClearGroups:function()
+  {
+   Var.Set(this.OptSelectedItem,null);
+   List.iter(function(gr)
+   {
+    gr.SelectorItems.Clear();
+   },List.ofSeq(this.SelectorGroups));
+  }
+ },null,WindowSelector);
+ WindowSelector.get_Create=function()
+ {
+  var S;
+  S=ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty);
+  return WindowSelector.New(Var.Create$1(null),S);
+ };
+ WindowSelector.New=function(OptSelectedItem,SelectorGroups)
+ {
+  return new WindowSelector({
+   OptSelectedItem:OptSelectedItem,
+   SelectorGroups:SelectorGroups
+  });
  };
  RulesCellItem=Dashboard.RulesCellItem=Runtime.Class({
-  Render:function(data,reconnectFnc)
+  Render:function(workItems,reconnectFnc)
   {
    var $this,workerSelector,inPorts,outPorts,items;
    $this=this;
@@ -1440,7 +1520,7 @@
       };
      },List.ofSeq(itemSeq))
     });
-   },data.WorkItems.v),Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.SelectDyn([AttrModule.Class("form-control")],function(item)
+   },workItems.v),Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.SelectDyn([AttrModule.Class("form-control")],function(item)
    {
     return Option.fold(function(a,port)
     {
@@ -1506,300 +1586,344 @@
    CellItems:CellItems
   });
  };
- RulesEditor=Dashboard.RulesEditor=Runtime.Class({
-  Render:function(data)
-  {
-   var $this,reconnectFnc;
-   $this=this;
-   reconnectFnc=function()
-   {
-    var x;
-    x=List.map(function(item)
-    {
-     return item.Worker;
-    },List.ofSeq(data.WorkItems));
-    $this.get_CopyToRules().Reconnect(x);
-   };
-   return Doc.Element("table",[],[Doc.ConvertBy(function(m)
-   {
-    return m.Key;
-   },function(item)
-   {
-    return Doc.Element("tr",[],[item.Render(data,function()
-    {
-     reconnectFnc();
-    })]);
-   },this.RowItems.v)]);
-  },
-  Restore:function(data,rules)
-  {
-   var $this,allWorkers,allOutPorts,allInPorts;
-   $this=this;
-   this.RowItems.Clear();
-   allWorkers=List.map(function(item)
-   {
-    return item.Worker;
-   },List.ofSeq(data.WorkItems));
-   allOutPorts=Workers.allOutPorts(allWorkers);
-   allInPorts=Workers.allInPorts(allWorkers);
-   List.iter(function(rowData)
-   {
-    var row;
-    row=RulesRowItem.Create([]);
-    List.iter(function(cellData)
-    {
-     var cell;
-     cell=RulesCellItem.get_Create();
-     Var.Set(cell.OptWorker,Seq.tryFind(function(item)
-     {
-      return item.Worker.Key===cellData.WorkerKey;
-     },List.ofSeq(data.WorkItems)));
-     Var.Set(cell.OptInPort,Seq.tryFind(function(port)
-     {
-      return port.Key===cellData.InPortKey;
-     },allInPorts));
-     Var.Set(cell.OptOutPort,Seq.tryFind(function(port)
-     {
-      return port.Key===cellData.OutPortKey;
-     },allOutPorts));
-     row.CellItems.Append(cell);
-    },rowData.RuleChain);
-    $this.RowItems.Append(row);
-   },rules.RuleContainer);
-   rules.Reconnect(allWorkers);
-  },
-  get_CopyToRules:function()
-  {
-   return RuleContainer.New(List.map(function(row)
-   {
-    return RuleChain.New(List.map(function(cell)
-    {
-     var m,m$1,m$2;
-     return RuleEntry.New((m=cell.OptInPort.c,m==null?"":m.$0.Key),(m$1=cell.OptOutPort.c,m$1==null?"":m$1.$0.Key),(m$2=cell.OptWorker.c,m$2==null?"":m$2.$0.Worker.Key));
-    },List.ofSeq(row.CellItems)));
-   },List.ofSeq(this.RowItems)));
-  }
- },null,RulesEditor);
- RulesEditor.get_Create=function()
+ WidgetItem.Create=function(panel,widget)
  {
-  return RulesEditor.New(ListModel.Create(function(item)
+  return WidgetItem.New(Key.Fresh(),panel,widget);
+ };
+ WidgetItem.New=function(Key$1,Panel$2,Widget)
+ {
+  return{
+   Key:Key$1,
+   Panel:Panel$2,
+   Widget:Widget
+  };
+ };
+ EventsGroupItem.Create=function(name)
+ {
+  return EventsGroupItem.New(Key.Fresh(),Var.Create$1(name),ListModel.Create(function(item)
   {
    return item.Key;
   },List.T.Empty));
  };
- RulesEditor.New=function(RowItems)
- {
-  return new RulesEditor({
-   RowItems:RowItems
-  });
- };
- SelectorItem.Create=function(name,renderer)
- {
-  return SelectorItem.New(Key.Fresh(),name,renderer);
- };
- SelectorItem.New=function(Key$1,Name,SelectorRenderer)
+ EventsGroupItem.New=function(Key$1,Name,EventItems)
  {
   return{
    Key:Key$1,
    Name:Name,
-   SelectorRenderer:SelectorRenderer
+   EventItems:EventItems
   };
  };
- SelectorGroup=Dashboard.SelectorGroup=Runtime.Class({
-  RenderMenu:function(offset,selectedItemVar)
-  {
-   var $this,plus,m,fnc;
-   $this=this;
-   plus=(m=this.ChildCreatator,m==null?Doc.Element("tr",[],[]):(fnc=m.$0,Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconSmall("add",function()
-   {
-    var p;
-    p=fnc();
-    $this.SelectorItems.Append(SelectorItem.Create(p[0],p[1]));
-   })])])));
-   return Doc.Element("table",[],[Doc.ConvertBy(function(m$1)
-   {
-    return m$1.Key;
-   },function(item)
-   {
-    var mapName;
-    mapName=View.Map(function(name)
-    {
-     return offset+name;
-    },item.Name.v);
-    return Doc.Element("tr",[],[Doc.Element("td",[AttrModule.DynamicStyle("Color",View.Map(function(selItem)
-    {
-     return Unchecked.Equals(selItem.Key,item.Key)?"#FB8C00":"#7D4600";
-    },selectedItemVar.v)),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
-    {
-     return function()
-     {
-      return Var.Set(selectedItemVar,item);
-     };
-    })],[Doc.TextView(mapName)])]);
-   },this.SelectorItems.v),plus]);
-  }
- },null,SelectorGroup);
- SelectorGroup.Create=function(name,config,childCreator)
+ WidgetsGroupItem.Create=function(name,panelContainer)
  {
-  var items;
-  items=ListModel.Create(function(item)
+  return WidgetsGroupItem.New(Key.Fresh(),Var.Create$1(name),ListModel.Create(function(item)
   {
    return item.Key;
-  },List.map(function($1)
-  {
-   return SelectorItem.Create($1[0],$1[1]);
-  },config));
-  return SelectorGroup.New(Key.Fresh(),Var.Create$1(name),items,childCreator);
+  },List.T.Empty),panelContainer);
  };
- SelectorGroup.New=function(Key$1,Name,SelectorItems,ChildCreatator)
+ WidgetsGroupItem.New=function(Key$1,Name,WidgetItems,PanelContainer$1)
  {
-  return new SelectorGroup({
+  return{
    Key:Key$1,
    Name:Name,
-   SelectorItems:SelectorItems,
-   ChildCreatator:ChildCreatator
-  });
+   WidgetItems:WidgetItems,
+   PanelContainer:PanelContainer$1
+  };
  };
- WindowSelector=Dashboard.WindowSelector=Runtime.Class({
-  get_RenderMenu:function()
-  {
-   var $this;
-   $this=this;
-   return this.SelectorGroups.get_Length()===1?List.head(List.ofSeq(this.SelectorGroups)).RenderMenu("",this.SelectedItem):Doc.Element("div",[],[Doc.ConvertBy(function(m)
-   {
-    return m.Key;
-   },function(group)
-   {
-    return Doc.Element("div",[],[Doc.TextView(group.Name.v),group.RenderMenu("    ",$this.SelectedItem)]);
-   },this.SelectorGroups.v)]);
-  },
-  get_Render:function()
-  {
-   return Doc.Element("div",[],[Doc.BindView(function(value)
-   {
-    return value.SelectorRenderer;
-   },this.SelectedItem.v)]);
-  },
-  get_SelectedIndex:function()
-  {
-   var $this;
-   $this=this;
-   return Seq.findIndex(function(listItem)
-   {
-    return Unchecked.Equals(listItem.Key,$this.SelectedItem.c.Key);
-   },List.concat(List.map(function(group)
-   {
-    return List.ofSeq(group.SelectorItems);
-   },List.ofSeq(this.SelectorGroups))));
-  },
-  AppenGroup:function(name,config,childCreator)
-  {
-   this.SelectorGroups.Append(SelectorGroup.Create(name,config,childCreator));
-  }
- },null,WindowSelector);
- WindowSelector.Create=function(name,config,childCreator)
+ RulesGroupItem.Create=function(name)
  {
-  var group,S;
-  group=SelectorGroup.Create(name,config,childCreator);
-  S=ListModel.Create(function(item)
+  return RulesGroupItem.New(Key.Fresh(),Var.Create$1(name),ListModel.Create(function(item)
   {
    return item.Key;
-  },List.ofArray([group]));
-  return WindowSelector.New(Var.Create$1(List.head(List.ofSeq(group.SelectorItems))),S);
+  },List.T.Empty));
  };
- WindowSelector.New=function(SelectedItem,SelectorGroups)
+ RulesGroupItem.New=function(Key$1,Name,RulesRowItems)
  {
-  return new WindowSelector({
-   SelectedItem:SelectedItem,
-   SelectorGroups:SelectorGroups
+  return{
+   Key:Key$1,
+   Name:Name,
+   RulesRowItems:RulesRowItems
+  };
+ };
+ DshData=Dashboard.DshData=Runtime.Class({
+  RegisterWidget:function(key,group,panel,widget)
+  {
+   var widget_key;
+   widget_key=widget.WithKey(key);
+   group.WidgetItems.Append(WidgetItem.Create(panel,widget_key));
+   this.WorkItems.Append(WorkerItem.Create(widget_key));
+  },
+  RegisterEvent:function(key,group,event)
+  {
+   var item;
+   item=WorkerItem.Create(event.WithKey(key));
+   group.EventItems.Append(item);
+   this.WorkItems.Append(item);
+  },
+  get_Clear:function()
+  {
+   this.WorkItems.Clear();
+   this.WidgetGroups.Clear();
+   this.EventGroups.Clear();
+   this.RulesGroups.Clear();
+  }
+ },null,DshData);
+ DshData.get_Create=function()
+ {
+  return DshData.New(ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty),ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty),ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty),ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty));
+ };
+ DshData.New=function(WorkItems,WidgetGroups,EventGroups,RulesGroups)
+ {
+  return new DshData({
+   WorkItems:WorkItems,
+   WidgetGroups:WidgetGroups,
+   EventGroups:EventGroups,
+   RulesGroups:RulesGroups
   });
+ };
+ EventsEditor.Render=function(eventItems,propGrid)
+ {
+  return Doc.Element("table",[],[Doc.ConvertBy(function(m)
+  {
+   return m.Key;
+  },function(item)
+  {
+   return Doc.Element("tr",[],[Doc.Element("i",Helper.AttrsClick(function()
+   {
+    propGrid.Edit(item.Worker.get_Properties());
+   }),[Doc.TextView(item.Worker.Name.v)])]);
+  },eventItems.v)]);
+ };
+ RulesEditor.Render=function(data,rowItems)
+ {
+  function reconnectFnc()
+  {
+   var x;
+   x=List.map(function(item)
+   {
+    return item.Worker;
+   },List.ofSeq(data.WorkItems));
+   RulesEditor.CopyToRules(rowItems).Reconnect(x);
+  }
+  return Doc.Element("table",[],[Doc.ConvertBy(function(m)
+  {
+   return m.Key;
+  },function(item)
+  {
+   return Doc.Element("tr",[],[item.Render(data.WorkItems,function()
+   {
+    reconnectFnc();
+   })]);
+  },rowItems.v)]);
+ };
+ RulesEditor.Restore=function(data,rowItems,rules)
+ {
+  var allWorkers,allOutPorts,allInPorts;
+  rowItems.Clear();
+  allWorkers=List.map(function(item)
+  {
+   return item.Worker;
+  },List.ofSeq(data.WorkItems));
+  allOutPorts=Workers.allOutPorts(allWorkers);
+  allInPorts=Workers.allInPorts(allWorkers);
+  List.iter(function(rowData)
+  {
+   var row;
+   row=RulesRowItem.Create([]);
+   List.iter(function(cellData)
+   {
+    var cell;
+    cell=RulesCellItem.get_Create();
+    Var.Set(cell.OptWorker,Seq.tryFind(function(item)
+    {
+     return item.Worker.Key===cellData.WorkerKey;
+    },List.ofSeq(data.WorkItems)));
+    Var.Set(cell.OptInPort,Seq.tryFind(function(port)
+    {
+     return port.Key===cellData.InPortKey;
+    },allInPorts));
+    Var.Set(cell.OptOutPort,Seq.tryFind(function(port)
+    {
+     return port.Key===cellData.OutPortKey;
+    },allOutPorts));
+    row.CellItems.Append(cell);
+   },rowData.RuleChain);
+   rowItems.Append(row);
+  },rules.RuleContainer);
+  rules.Reconnect(allWorkers);
+ };
+ RulesEditor.CopyToRules=function(rowItems)
+ {
+  return RuleContainer.New(List.map(function(row)
+  {
+   return RuleChain.New(List.map(function(cell)
+   {
+    var m,m$1,m$2;
+    return RuleEntry.New((m=cell.OptInPort.c,m==null?"":m.$0.Key),(m$1=cell.OptOutPort.c,m$1==null?"":m$1.$0.Key),(m$2=cell.OptWorker.c,m$2==null?"":m$2.$0.Worker.Key));
+   },List.ofSeq(row.CellItems)));
+  },List.ofSeq(rowItems)));
+ };
+ DshHelper.RulesGroupCreator=function(data,a)
+ {
+  var grItem;
+  grItem=RulesGroupItem.Create("rules"+Global.String(List.length(List.ofSeq(data.RulesGroups))+1));
+  data.RulesGroups.Append(grItem);
+  return[grItem.Name,RulesEditor.Render(data,grItem.RulesRowItems)];
+ };
+ DshHelper.EventsGroupCreator=function(data,propertyGrid,a)
+ {
+  var grItem;
+  grItem=EventsGroupItem.Create("event"+Global.String(List.length(List.ofSeq(data.EventGroups))+1));
+  data.EventGroups.Append(grItem);
+  return[grItem.Name,EventsEditor.Render(grItem.EventItems,propertyGrid)];
+ };
+ DshHelper.PanelGroupCreator=function(data,panelContainerCreator,a)
+ {
+  var number,panelContainer,grItem;
+  number=List.length(List.ofSeq(data.WidgetGroups))+1;
+  panelContainer=panelContainerCreator();
+  grItem=WidgetsGroupItem.Create("panel"+Global.String(number),panelContainer);
+  data.WidgetGroups.Append(grItem);
+  return[grItem.Name,panelContainer.get_Render()];
  };
  Dashboard$1=Dashboard.Dashboard=Runtime.Class({
   get_Render:function()
   {
    var $this;
    $this=this;
-   return Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Doc.Element("table",[],Seq.concat([List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("dehaze",function()
+   return Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Doc.Element("table",[],Seq.concat([List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("dehaze",Global.ignore)])]),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
    {
-   })])]),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
-   {
-    var selIndex,items,selected;
-    selIndex=$this.EditorSelector.get_SelectedIndex();
+    var selIndex,items,selected,x,x$1;
+    selIndex=$this.EditorSelector.get_SelectedGroupIndex();
     selIndex===1?(items=List.ofSeq($this.Factory.EventItems),selected=Var.Create$1(List.head(items)),$this.Dialog.ShowDialog("Select source",Doc.Element("div",[],[Doc.Select([AttrModule.Class("form-control")],function(item)
     {
      return item.Worker.Name.c;
     },items,selected)]),function()
     {
-     var a;
-     a=selected.c.Worker.get_CloneAndRun();
-     $this.Data.RegisterEvent(Helper.UniqueKey(),a);
-    })):selIndex===0?$this.CreatePanel("Panel",700,null):selIndex===2?$this.RulesEditor.RowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
+     var event,a,x$2;
+     event=selected.c.Worker.get_CloneAndRun();
+     a=(x$2=List.ofSeq($this.Data.EventGroups),Seq.nth($this.EditorSelector.get_SelectedIndexInGroup(),x$2));
+     $this.Data.RegisterEvent(Helper.UniqueKey(),a,event);
+    })):selIndex===0?$this.CreatePanel((x=List.ofSeq($this.Data.WidgetGroups),Seq.nth($this.EditorSelector.get_SelectedIndexInGroup(),x)),"Panel",700,null):selIndex===2?(x$1=List.ofSeq($this.Data.RulesGroups),Seq.nth($this.EditorSelector.get_SelectedIndexInGroup(),x$1)).RulesRowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
    })])])]),List.ofArray([this.EditorSelector.get_RenderMenu()]),List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[this.PropertyGrid.get_Render()])])])]))]),Doc.Element("td",[],[this.EditorSelector.get_Render()])])]),Doc.Element("div",[],[this.Dialog.get_Render()])]);
   },
-  Restore:function(panelList,events,widgets,dashEditorData)
+  Restore:function(panelCreator,events,widgets,rules)
   {
-   var $this,a,a$1;
+   var $this,gSelectorPanels,gSelectorEvents,gSelectorRules;
    $this=this;
-   this.PanelContainer.PanelItems.Clear();
+   this.EditorSelector.ClearGroups();
    this.Data.get_Clear();
-   List.iter(function(panelConfig)
+   gSelectorPanels=this.EditorSelector.GroupByIndex(0);
+   gSelectorEvents=this.EditorSelector.GroupByIndex(1);
+   gSelectorRules=this.EditorSelector.GroupByIndex(2);
+   List.iteri(function(ind,t)
    {
-    var panel;
-    panel=$this.CreatePanel("Panel",700,{
-     $:1,
-     $0:panelConfig.Key
-    });
-    Var.Set(panel.Left,panelConfig.Left);
-    Var.Set(panel.Top,panelConfig.Top);
-   },panelList);
-   a=function(key,event)
-   {
-    $this.Data.RegisterEvent(key,event);
-   };
-   List.iter(function($1)
-   {
-    return a($1[0],$1[1]);
-   },events);
-   console.log("Events restored");
-   a$1=function(key,panelKey,widget)
-   {
-    $this.RegisterWidget(key,panelKey,Seq.find(function(entry)
+    var p,grNameVar,grItem;
+    function a(key,panelKey,widget)
     {
-     return entry.Key===panelKey;
-    },List.ofSeq($this.PanelContainer.PanelItems)).Children,widget.WithStartRunner());
-   };
-   List.iter(function($1)
-   {
-    return a$1($1[0],$1[1],$1[2]);
+     $this.RegisterWidget(key,grItem,panelKey,Seq.find(function(entry)
+     {
+      return entry.Key===panelKey;
+     },List.ofSeq(grItem.PanelContainer.PanelItems)).Children,widget.WithStartRunner());
+    }
+    p=DshHelper.PanelGroupCreator($this.Data,panelCreator,null);
+    grNameVar=p[0];
+    Var.Set(grNameVar,t[0]);
+    gSelectorPanels.SelectorItems.Append(SelectorItem.Create(grNameVar,p[1]));
+    grItem=Seq.nth(ind,List.ofSeq($this.Data.WidgetGroups));
+    List.iter(function(panelConfig)
+    {
+     var panel;
+     panel=$this.CreatePanel(grItem,"Panel",700,{
+      $:1,
+      $0:panelConfig.Key
+     });
+     Var.Set(panel.Left,panelConfig.Left);
+     Var.Set(panel.Top,panelConfig.Top);
+    },t[1]);
+    return List.iter(function($1)
+    {
+     return a($1[0],$1[1],$1[2]);
+    },t[2]);
    },widgets);
    console.log("Widgets restored");
-   this.RulesEditor.Restore(this.Data,dashEditorData);
+   List.iteri(function(ind,t)
+   {
+    var p,grNameVar,grItem;
+    function a(key,event)
+    {
+     $this.Data.RegisterEvent(key,grItem,event);
+    }
+    p=DshHelper.EventsGroupCreator($this.Data,$this.PropertyGrid,null);
+    grNameVar=p[0];
+    Var.Set(grNameVar,t[0]);
+    gSelectorEvents.SelectorItems.Append(SelectorItem.Create(grNameVar,p[1]));
+    grItem=Seq.nth(ind,List.ofSeq($this.Data.EventGroups));
+    return List.iter(function($1)
+    {
+     return a($1[0],$1[1]);
+    },t[1]);
+   },events);
+   console.log("Events restored");
+   List.iteri(function(ind,t)
+   {
+    var p,grNameVar;
+    p=DshHelper.RulesGroupCreator($this.Data,null);
+    grNameVar=p[0];
+    Var.Set(grNameVar,t[0]);
+    gSelectorRules.SelectorItems.Append(SelectorItem.Create(grNameVar,p[1]));
+    return RulesEditor.Restore($this.Data,Seq.nth(ind,List.ofSeq($this.Data.RulesGroups)).RulesRowItems,t[1]);
+   },rules);
+   Var.Set(this.EditorSelector.OptSelectedItem,{
+    $:1,
+    $0:List.head(List.ofSeq(this.EditorSelector.GroupByIndex(0).SelectorItems))
+   });
    console.log("Connectors restored");
   },
   Store:function(fncFromWorker)
   {
-   return[List.map(function(panel)
+   return[List.map(function(gr)
    {
-    return panel.get_PanelData();
-   },List.ofSeq(this.PanelContainer.PanelItems)),List.map(function(item)
+    return[gr.Name.c,List.map(function(item)
+    {
+     return[item.Worker.Key,fncFromWorker(item.Worker)];
+    },List.ofSeq(gr.EventItems))];
+   },List.ofSeq(this.Data.EventGroups)),List.map(function(gr)
    {
-    return[item.Worker.Key,fncFromWorker(item.Worker)];
-   },List.ofSeq(this.Data.EventItems)),List.map(function(item)
+    return[gr.Name.c,List.map(function(panel)
+    {
+     return panel.get_PanelData();
+    },List.ofSeq(gr.PanelContainer.PanelItems)),List.map(function(item)
+    {
+     return[item.Widget.Key,item.Panel,fncFromWorker(item.Widget)];
+    },List.ofSeq(gr.WidgetItems))];
+   },List.ofSeq(this.Data.WidgetGroups)),List.map(function(gr)
    {
-    return[item.Widget.Key,item.Panel,fncFromWorker(item.Widget)];
-   },List.ofSeq(this.Data.WidgetItems)),this.RulesEditor.get_CopyToRules()];
+    return[gr.Name.c,RulesEditor.CopyToRules(gr.RulesRowItems)];
+   },List.ofSeq(this.Data.RulesGroups))];
   },
-  CreatePanel:function(name,cx,key)
+  CreatePanel:function(group,name,cx,key)
   {
    var $this,keyDef,d,c,childContainerContent,panel;
    $this=this;
-   Doc.ConvertBy(this.Data.WidgetItems.key,function(item)
+   Doc.ConvertBy(group.WidgetItems.key,function(item)
    {
     return Doc.Element("div",[],[Doc.TextView(item.Widget.Name.v)]);
-   },this.Data.WidgetItems.v);
-   keyDef=(d=(c=Guid.NewGuid(),window.String(c)),key==null?d:key.$0);
+   },group.WidgetItems.v);
+   keyDef=(d=(c=Guid.NewGuid(),Global.String(c)),key==null?d:key.$0);
    childContainerContent=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.StackPanelLayoutManager()).WithAttributes([AttrModule.Style("border","1px solid white"),AttrModule.Style("display","flex")]);
-   panel=Panel$1.get_Create().WithKey(keyDef).WithPannelAttrs([AttrModule.Style("Width",window.String(cx)+"px"),AttrModule.Style("position","absolute")]).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel$1)
+   panel=Panel$1.get_Create().WithKey(keyDef).WithPannelAttrs([AttrModule.Style("Width",Global.String(cx)+"px"),AttrModule.Style("position","absolute")]).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel$1)
    {
     var items,selected;
     items=List.ofSeq($this.Factory.WidgetItems);
@@ -1810,7 +1934,7 @@
     },items,selected)]),function()
     {
      console.log("Dialog.IsOK");
-     $this.RegisterWidget(Helper.UniqueKey(),panel$1.Key,panel$1.Children,selected.c.Worker.get_CloneAndRun());
+     $this.RegisterWidget(Helper.UniqueKey(),group,panel$1.Key,panel$1.Children,selected.c.Worker.get_CloneAndRun());
     });
    }),TitleButton.New("edit",function(panel$1)
    {
@@ -1821,37 +1945,62 @@
     },List.filter(function(item)
     {
      return item.Panel===panel$1.Key;
-    },List.ofSeq($this.Data.WidgetItems)))));
+    },List.ofSeq(group.WidgetItems)))));
    }),TitleButton.New("clear",function(panel$1)
    {
-    $this.PanelContainer.PanelItems.Remove($this.PanelContainer.FindPanelItem(panel$1));
+    group.PanelContainer.PanelItems.Remove(group.PanelContainer.FindPanelItem(panel$1));
    })])).WithChildPanelContainer(childContainerContent);
-   this.PanelContainer.AddPanel(panel);
+   group.PanelContainer.AddPanel(panel);
    return panel;
   },
-  RegisterWidget:function(key,panelKey,toPanelContainer,worker)
+  RegisterWidget:function(key,group,panelKey,toPanelContainer,worker)
   {
-   this.Data.RegisterWidget(key,panelKey,worker);
+   this.Data.RegisterWidget(key,group,panelKey,worker);
    toPanelContainer.AddPanel(Panel$1.get_Create().WithTitle(false).WithPanelContent(worker.get_Render()));
   }
  },null,Dashboard$1);
- Dashboard$1.Create=function(panelContainer)
+ Dashboard$1.Create=function(panelContainerCreator)
  {
-  var dialog,rulesEditor,data,propertyGrid,editorSelector;
+  var dialog,data,propertyGrid,editorSelector;
+  function panelGroupCreator()
+  {
+   return DshHelper.PanelGroupCreator(data,panelContainerCreator,void 0);
+  }
+  function eventsGroupCreator()
+  {
+   return DshHelper.EventsGroupCreator(data,propertyGrid,void 0);
+  }
+  function rulesGroupCreator()
+  {
+   return DshHelper.RulesGroupCreator(data,void 0);
+  }
   dialog=Dialog.get_Create();
-  rulesEditor=RulesEditor.get_Create();
   data=DshData.get_Create();
   propertyGrid=PropertyGrid$1.get_Create();
-  editorSelector=WindowSelector.Create("root",List.ofArray([[Var.Create$1("Board"),panelContainer.get_Render()],[Var.Create$1("Events"),EventsEditor.Render(data,propertyGrid)],[Var.Create$1("Rules"),rulesEditor.Render(data)]]),null);
-  return Dashboard$1.New(Factory.get_Create(),data,panelContainer,rulesEditor,propertyGrid,dialog,editorSelector);
+  editorSelector=WindowSelector.get_Create();
+  editorSelector.AppenGroup("Panels",List.ofArray([panelGroupCreator()]),{
+   $:1,
+   $0:panelGroupCreator
+  });
+  editorSelector.AppenGroup("Events",List.ofArray([eventsGroupCreator()]),{
+   $:1,
+   $0:eventsGroupCreator
+  });
+  editorSelector.AppenGroup("Rules",List.ofArray([rulesGroupCreator()]),{
+   $:1,
+   $0:rulesGroupCreator
+  });
+  Var.Set(editorSelector.OptSelectedItem,{
+   $:1,
+   $0:List.head(List.ofSeq(editorSelector.GroupByIndex(0).SelectorItems))
+  });
+  return Dashboard$1.New(Factory.get_Create(),data,propertyGrid,dialog,editorSelector);
  };
- Dashboard$1.New=function(Factory$1,Data$2,PanelContainer$1,RulesEditor$1,PropertyGrid$2,Dialog$1,EditorSelector)
+ Dashboard$1.New=function(Factory$1,Data$2,PropertyGrid$2,Dialog$1,EditorSelector)
  {
   return new Dashboard$1({
    Factory:Factory$1,
    Data:Data$2,
-   PanelContainer:PanelContainer$1,
-   RulesEditor:RulesEditor$1,
    PropertyGrid:PropertyGrid$2,
    Dialog:Dialog$1,
    EditorSelector:EditorSelector
@@ -1951,9 +2100,23 @@
   SC$2.$cctor();
   return SC$2.CreateDashboard;
  };
+ App.PanelContainerCreator=function(a)
+ {
+  return PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")]);
+ };
  App.Register=function(dashboard)
  {
-  var register;
+  function register(fnc,data)
+  {
+   var o;
+   {
+    o=AppModelLib.FromDataContext(data),o==null?null:{
+     $:1,
+     $0:fnc(o.$0.get_Worker())
+    };
+    return;
+   }
+  }
   function registerEvent(data)
   {
    var o;
@@ -1970,14 +2133,6 @@
     o.RegisterWidget(a);
    }),data);
   }
-  register=function(fnc,data)
-  {
-   var o;
-   o=AppModelLib.FromDataContext(data),o==null?null:{
-    $:1,
-    $0:fnc(o.$0.get_Worker())
-   };
-  };
   registerEvent(OpenWeatherRunner.Create("London",""));
   registerEvent(RandomRunner.Create(50,5));
   registerEvent(DatabaseRunner.get_Create());
@@ -1988,7 +2143,10 @@
  SC$2.$cctor=Runtime.Cctor(function()
  {
   var dashboard;
-  SC$2.CreateDashboard=(dashboard=Dashboard$1.Create(PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")])),(App.Register(dashboard),dashboard));
-  SC$2.$cctor=window.ignore;
+  SC$2.CreateDashboard=(dashboard=Dashboard$1.Create(function()
+  {
+   return App.PanelContainerCreator();
+  }),(App.Register(dashboard),dashboard));
+  SC$2.$cctor=Global.ignore;
  });
 }());

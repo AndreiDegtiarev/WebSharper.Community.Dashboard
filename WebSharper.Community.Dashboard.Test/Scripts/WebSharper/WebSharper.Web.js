@@ -1,22 +1,23 @@
 (function()
 {
  "use strict";
- var WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,IntelliFactory,Runtime,Collections,Dictionary,FSharpMap,Unchecked,Arrays,Operators,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
- WebSharper=window.WebSharper=window.WebSharper||{};
+ var Global,WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,IntelliFactory,Runtime,Collections,Dictionary,FSharpMap,Unchecked,Operators,Arrays,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
+ Global=window;
+ WebSharper=Global.WebSharper=Global.WebSharper||{};
  Json=WebSharper.Json=WebSharper.Json||{};
  Provider=Json.Provider=Json.Provider||{};
  Web=WebSharper.Web=WebSharper.Web||{};
  Control=Web.Control=Web.Control||{};
  FSharpInlineControl=Web.FSharpInlineControl=Web.FSharpInlineControl||{};
  InlineControl=Web.InlineControl=Web.InlineControl||{};
- IntelliFactory=window.IntelliFactory;
+ IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Collections=WebSharper&&WebSharper.Collections;
  Dictionary=Collections&&Collections.Dictionary;
  FSharpMap=Collections&&Collections.FSharpMap;
  Unchecked=WebSharper&&WebSharper.Unchecked;
- Arrays=WebSharper&&WebSharper.Arrays;
  Operators=WebSharper&&WebSharper.Operators;
+ Arrays=WebSharper&&WebSharper.Arrays;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
  List=WebSharper&&WebSharper.List;
@@ -60,15 +61,37 @@
   {
    return function(x)
    {
-    var tag,tagName,p,a,o,r,k;
+    var tag,tagName,o,r,k;
+    function p(name,a$1)
+    {
+     return name===tagName;
+    }
+    function a(from,to,dec,kind)
+    {
+     var r$1;
+     if(from===null)
+      {
+       r$1=(dec(null))(x);
+       to?delete r$1[discr]:void 0;
+       o.$0=r$1;
+      }
+     else
+      if(Unchecked.Equals(kind,0))
+       o[from]=(dec(null))(x[to]);
+      else
+       if(Unchecked.Equals(kind,1))
+        o[from]=x.hasOwnProperty(to)?{
+         $:1,
+         $0:(dec(null))(x[to])
+        }:null;
+       else
+        Operators.FailWith("Invalid field option kind");
+    }
     if(typeof x==="object"&&x!=null)
      {
       o=t===void 0?{}:new t();
       if(Unchecked.Equals(typeof discr,"string"))
-       tag=(tagName=x[discr],p=function(name)
-       {
-        return name===tagName;
-       },Arrays.findIndex(function($1)
+       tag=(tagName=x[discr],Arrays.findIndex(function($1)
        {
         return p($1[0],$1[1]);
        },cases));
@@ -83,27 +106,6 @@
         tag=r[0];
        }
       o.$=tag;
-      a=function(from,to,dec,kind)
-      {
-       var r$1;
-       if(from===null)
-        {
-         r$1=(dec(null))(x);
-         to?delete r$1[discr]:void 0;
-         o.$0=r$1;
-        }
-       else
-        if(Unchecked.Equals(kind,0))
-         o[from]=(dec(null))(x[to]);
-        else
-         if(Unchecked.Equals(kind,1))
-          o[from]=x.hasOwnProperty(to)?{
-           $:1,
-           $0:(dec(null))(x[to])
-          }:null;
-         else
-          Operators.FailWith("Invalid field option kind");
-      };
       Arrays.iter(function($1)
       {
        return a($1[0],$1[1],$1[2],$1[3]);
@@ -121,9 +123,8 @@
   {
    return function(x)
    {
-    var o,a;
-    o=t===void 0?{}:new t();
-    a=function(name,dec,kind)
+    var o;
+    function a(name,dec,kind)
     {
      if(Unchecked.Equals(kind,0))
      {
@@ -146,7 +147,8 @@
        }
        else
         Operators.FailWith("Invalid field option kind");
-    };
+    }
+    o=t===void 0?{}:new t();
     Arrays.iter(function($1)
     {
      return a($1[0],$1[1],$1[2]);
@@ -170,7 +172,7 @@
  });
  Provider.DecodeDateTime=Runtime.Curried3(function($1,$2,x)
  {
-  return(new window.Date(x)).getTime();
+  return(new Global.Date(x)).getTime();
  });
  Provider.DecodeTuple=function(decs)
  {
@@ -229,8 +231,8 @@
   {
    return function(x)
    {
-    var o,p,a$1;
-    return typeof x==="object"&&x!=null?(o={},(p=Arrays.get(cases,x.$),(Unchecked.Equals(typeof discr,"string")?o[discr]=p[0]:void 0,a$1=function(from,to,enc,kind)
+    var o,p;
+    function a$1(from,to,enc,kind)
     {
      var record,k,m;
      if(from===null)
@@ -254,7 +256,8 @@
         }
        else
         Operators.FailWith("Invalid field option kind");
-    },Arrays.iter(function($1)
+    }
+    return typeof x==="object"&&x!=null?(o={},(p=Arrays.get(cases,x.$),(Unchecked.Equals(typeof discr,"string")?o[discr]=p[0]:void 0,Arrays.iter(function($1)
     {
      return a$1($1[0],$1[1],$1[2],$1[3]);
     },p[1]),o))):x;
@@ -267,9 +270,8 @@
   {
    return function(x)
    {
-    var o,a$1;
-    o={};
-    a$1=function(name,enc,kind)
+    var o;
+    function a$1(name,enc,kind)
     {
      var m;
      if(Unchecked.Equals(kind,0))
@@ -288,7 +290,8 @@
        }
        else
         Operators.FailWith("Invalid field option kind");
-    };
+    }
+    o={};
     Arrays.iter(function($1)
     {
      return a$1($1[0],$1[1],$1[2]);
@@ -310,7 +313,7 @@
  });
  Provider.EncodeDateTime=Runtime.Curried3(function($1,$2,x)
  {
-  return(new window.Date(x)).toISOString();
+  return(new Global.Date(x)).toISOString();
  });
  Provider.EncodeTuple=Runtime.Curried3(function(encs,$1,args)
  {
@@ -335,7 +338,7 @@
    return Arrays.fold(function($1,$2)
    {
     return $1[$2];
-   },window,this.funcName).apply(null,this.args);
+   },Global,this.funcName).apply(null,this.args);
   }
  },Control,FSharpInlineControl);
  InlineControl=Web.InlineControl=Runtime.Class({
@@ -344,7 +347,7 @@
    return Arrays.fold(function($1,$2)
    {
     return $1[$2];
-   },window,this.funcName).apply(null,this.args);
+   },Global,this.funcName).apply(null,this.args);
   }
  },Control,InlineControl);
 }());

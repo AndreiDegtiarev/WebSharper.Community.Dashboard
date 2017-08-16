@@ -29,17 +29,17 @@ module Client =
                 (widgetPair,{InPortKey = widgetWorker.InPorts.[0].Key;OutPortKey="";WorkerKey=widgetWorker.Key})
             let (txtPair,textWorker) = makeWidget (AppLib(TextWidget(TextBoxRenderer.Create)))
             let (chartPair,chartWorker) = makeWidget (AppLib(ChartWidget(ChartRenderer.Create 300.0 150.0 50.0)))
-            {appData with PanelData = [ PanelData.Create panelKey 0.0 0.0 []]
-                          Events = [eventPair]
-                          Widgets = [txtPair;chartPair]
-                          Rules = {RuleContainer =
+            let panelData = [ PanelData.Create panelKey 0.0 0.0 []]
+            {appData with Events = [("main",[eventPair])]
+                          Widgets = [("main",panelData,[txtPair;chartPair])]
+                          Rules = [("main",{RuleContainer =
                                                     [
                                                      {RuleChain = [{InPortKey = eventWorker.InPorts.[0].Key;OutPortKey=eventWorker.OutPorts.[0].Key;WorkerKey=eventWorker.Key}
                                                                    textWorker]}
                                                      {RuleChain = [{InPortKey = eventWorker.InPorts.[0].Key;OutPortKey=eventWorker.OutPorts.[0].Key;WorkerKey=eventWorker.Key}
                                                                    chartWorker]}
-                                                    ]}
-            }.Recreate dashboard
+                                                    ]})]
+            }.Recreate dashboard (App.PanelContainerCreator)
         let tbCellC content =td content
         div[
            table [
@@ -54,12 +54,12 @@ module Client =
                                                 )]
                         tbCellC[Helper.TxtIconNormal "unarchive" "Download  and run on client" (fun _ ->  
                                           let data =  Server.LoadFromFile(fileName.Value)
-                                          data.Recreate dashboard
+                                          data.Recreate dashboard (App.PanelContainerCreator)
                                     )]
                         tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  
                                           let data =  Server.LoadFromFile(fileName.Value)
-                                          data.RecreateOnClient dashboard
-                                          Server.RecreateOnServer (data)
+                                          data.RecreateOnClient dashboard (App.PanelContainerCreator)
+                                          Server.RecreateOnServer data
                                           MessageBus.RunServerRequests()
                                           
                                     )]

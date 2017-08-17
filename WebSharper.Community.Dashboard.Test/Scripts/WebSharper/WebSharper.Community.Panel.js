@@ -212,7 +212,10 @@
       return $1($2.toFixed(6)+"px");
      };
     }(Global.id))(y);
-   },this.Top.v))])]),[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",attrWidth,[this.IsWithTitle?Doc.Element("div",titleAttrsUpdated,[titleContentUpdated]):Doc.Element("div",[],[])])]),Doc.Element("tr",[],[Doc.Element("td",[],[this.PanelContent,this.Children.get_Render()])])])]);
+   },this.Top.v))])]),[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",attrWidth,[Doc.EmbedView(View.Map(function(is)
+   {
+    return is?Doc.Element("div",titleAttrsUpdated,[titleContentUpdated]):Doc.Element("div",[],[]);
+   },this.IsWithTitle.v))])]),Doc.Element("tr",[],[Doc.Element("td",[],[this.PanelContent,this.Children.get_Render()])])])]);
    Var.Set(this.Element,resDiv.elt);
    return resDiv.OnAfterRender(function()
    {
@@ -293,7 +296,7 @@
  Panel$1.get_Create=function()
  {
   var c;
-  return Panel$1.New((c=Guid.NewGuid(),Global.String(c)),Var.Create$1(0),Var.Create$1(0),0,0,Var.Create$1(null),Global.ignore,List.T.Empty,true,List.ofArray([AttrModule.Class("panelTitle")]),Doc.Element("div",[],[]),List.T.Empty,Doc.Element("div",[],[]),PanelContainer.get_Create(),"",Global.ignore,List.T.Empty);
+  return Panel$1.New((c=Guid.NewGuid(),Global.String(c)),Var.Create$1(0),Var.Create$1(0),0,0,Var.Create$1(null),Global.ignore,List.T.Empty,Var.Create$1(true),List.ofArray([AttrModule.Class("panelTitle")]),Doc.Element("div",[],[]),List.T.Empty,Doc.Element("div",[],[]),PanelContainer.get_Create(),"",Global.ignore,List.T.Empty);
  };
  Panel$1.New=function(Key,Left,Top,Width,Height,Element,Relayout,PannelAttrs,IsWithTitle,TitleAttrs,TitleContent,TitleButtons,PanelContent,Children,InternalName,onAfterRender,Properties)
  {

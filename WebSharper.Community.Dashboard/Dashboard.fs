@@ -28,6 +28,11 @@ module internal DshHelper =
                                 data.RulesGroups.Add(grItem)
                                 //(Var.Create "rules1",renderer data)
                                 (grItem.Name,RulesEditor.Render data (grItem.RulesRowItems)))
+
+type DashboardMode =
+|DashboardRun
+|DashboardEdit
+
 [<JavaScript>]
 type Dashboard =
     {
@@ -35,38 +40,51 @@ type Dashboard =
         Data:DshData
         PropertyGrid : PropertyGrid
         Dialog : Dialog
-        EditorSelector : WindowSelector
+        EditorSelectorRun : WindowSelector
+        EditorSelectorEdit : WindowSelector
+        Mode:Var<DashboardMode>
+        PanelTitleVisibility:Var<bool>
     }
     static member Create (panelContainerCreator:(unit->PanelContainer))=
         let dialog = Dialog.Create
         let data = DshData.Create
         let propertyGrid = PropertyGrid.Create
-        let editorSelector = WindowSelector.Create 
-
+        let editorSelectorRun = WindowSelector.Create
+        let editorSelectorEdit = WindowSelector.Create
+                                   .WithGroupOnClick(fun gr -> MessageBus.Log "WithGroupOnClick"
+                                                               gr.SelectorItems |> List.ofSeq |> List.mapi (fun ind item -> Properties.string ((ind+1).ToString()) item.Name) |> propertyGrid.Edit)
+                                   .WithItemOnSelected(fun item -> MessageBus.Log "WithItemOnSelected"
+                                                                   List.empty |> propertyGrid.Edit)
+                                   .WithItemOnCreated(fun grInd item -> if grInd = 0 then (editorSelectorRun.SelectorGroups |> List.ofSeq |> List.head).SelectorItems.Add(item)) 
         let panelGroupCreator = DshHelper.PanelGroupCreator data panelContainerCreator
-        editorSelector.AppenGroup "Panels" [panelGroupCreator()] (Some(panelGroupCreator))
+        let firstPanel = panelGroupCreator()
+        editorSelectorEdit.AppenGroup "Panels" [firstPanel] (Some(panelGroupCreator))
+        editorSelectorRun.AppenGroup "Panels" [firstPanel] None
 
         let eventsGroupCreator = DshHelper.EventsGroupCreator data propertyGrid
-        editorSelector.AppenGroup "Events" [eventsGroupCreator()] (Some(eventsGroupCreator))
+        editorSelectorEdit.AppenGroup "Events" [eventsGroupCreator()] (Some(eventsGroupCreator))
 
         let rulesGroupCreator = DshHelper.RulesGroupCreator data
-        editorSelector.AppenGroup "Rules" [rulesGroupCreator()] (Some(rulesGroupCreator))
-        editorSelector.OptSelectedItem.Value <- Some((editorSelector.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
+        editorSelectorEdit.AppenGroup "Rules" [rulesGroupCreator()] (Some(rulesGroupCreator))
+        editorSelectorEdit.OptSelectedItem.Value <- Some((editorSelectorEdit.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
+        editorSelectorRun.OptSelectedItem.Value <- Some((editorSelectorRun.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
         {
            Factory = Factory.Create
            Data = data
            Dialog = dialog
            PropertyGrid = propertyGrid
-           EditorSelector = editorSelector
+           EditorSelectorEdit = editorSelectorEdit
+           EditorSelectorRun = editorSelectorRun
+           Mode = Var.Create DashboardRun
+           PanelTitleVisibility=Var.Create false
         }
 
     member x.RegisterWidget key group panelKey (toPanelContainer:PanelContainer) worker = 
         x.Data.RegisterWidget key group panelKey worker 
         let panel = Panel.Create
-                         .WithTitle(false)
+                         //.WithTitle(false)
                          .WithPanelContent(worker.Render)
-                        // .WithProperties ((SourceProperty(x.Data,worker) :>IProperty)::worker.Properties) 
-
+        panel.IsWithTitle.Value <- false
         toPanelContainer.AddPanel panel
     member x.CreatePanel(group,name,cx,?key) = //,?afterRenderFnc) = 
         let renderWidgets= group.WidgetItems.View
@@ -74,7 +92,6 @@ type Dashboard =
                                                                                 let nameView = item.Widget.Name.View
                                                                                 div[textView nameView])           
 
-        //let afterRenderFncDef = defaultArg afterRenderFnc (fun _->())
         let keyDef = defaultArg key (System.Guid.NewGuid().ToString())
         let childContainerContent = PanelContainer.Create
                                                   .WithLayoutManager(LayoutManagers.StackPanelLayoutManager)
@@ -86,6 +103,7 @@ type Dashboard =
                          .WithPannelAttrs([Attr.Style "Width" (cx.ToString()+"px")
                                            Attr.Style "position" "absolute"
                                           ])
+                         .WithTitle(x.PanelTitleVisibility)
                          .WithTitleContent(text (name))
                          .WithTitleButtons(
                                       [
@@ -105,11 +123,9 @@ type Dashboard =
                                                                          |> List.map (fun item -> item.Widget.Properties)
                                                                          |> List.concat
                                                                          |> x.PropertyGrid.Edit)}
-                                                                         //x.PropertyGrid |> panel.EditProperties
                                         {Icon="clear";Action=(fun panel->group.PanelContainer.PanelItems.Remove(group.PanelContainer.FindPanelItem panel))}
                                       ])
                           .WithChildPanelContainer(childContainerContent)
-                          //.WithOnAfterRender(afterRenderFncDef)
         group.PanelContainer.AddPanel panel
         panel  
     member x.Store fncFromWorker  =
@@ -123,16 +139,19 @@ type Dashboard =
             (events,widgets,rules)
 
     member x.Restore panelCreator events widgets rules =
-        x.EditorSelector.ClearGroups()
+        x.EditorSelectorRun.ClearGroups()
+        x.EditorSelectorEdit.ClearGroups()
         x.Data.Clear
 
-        let gSelectorPanels=x.EditorSelector.GroupByIndex 0
-        let gSelectorEvents=x.EditorSelector.GroupByIndex 1
-        let gSelectorRules=x.EditorSelector.GroupByIndex 2
+        let gSelectorPanelsRun=x.EditorSelectorRun.GroupByIndex 0
+        let gSelectorPanelsEdit=x.EditorSelectorEdit.GroupByIndex 0
+        let gSelectorEvents=x.EditorSelectorEdit.GroupByIndex 1
+        let gSelectorRules=x.EditorSelectorEdit.GroupByIndex 2
         widgets |> List.iteri (fun ind (grName,panelList,gr) -> 
                                 let (grNameVar,renderer) = DshHelper.PanelGroupCreator x.Data panelCreator ()
                                 grNameVar.Value <- grName
-                                gSelectorPanels.SelectorItems.Add (SelectorItem.Create grNameVar renderer)
+                                gSelectorPanelsEdit.SelectorItems.Add (SelectorItem.Create grNameVar renderer)
+                                gSelectorPanelsRun.SelectorItems.Add (SelectorItem.Create grNameVar renderer)
                                 let grItem = x.Data.WidgetGroups |> List.ofSeq |> List.item ind
                                 panelList
                                 |> List.iter(fun (panelConfig:PanelData) -> 
@@ -159,48 +178,62 @@ type Dashboard =
                                 RulesEditor.Restore x.Data grItem.RulesRowItems rulesData
                                 ) 
 
-        x.EditorSelector.OptSelectedItem.Value <- Some((x.EditorSelector.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
+        x.EditorSelectorEdit.OptSelectedItem.Value <- Some((x.EditorSelectorEdit.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
+        x.EditorSelectorRun.OptSelectedItem.Value <- Some((x.EditorSelectorRun.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
         Console.Log("Connectors restored")   
         
     member x.Render=
+        x.Mode.View |> View.Map (fun mode -> 
+          match mode with 
+          |DashboardRun -> div[table [tr[
+                                            tdAttr [Attr.Style "vertical-align" "top"]
+                                                   [Helper.IconNormal "dehaze" (fun _ -> x.PanelTitleVisibility.Value <- true
+                                                                                         x.Mode.Value <- DashboardEdit)
+                                                    x.EditorSelectorRun.RenderMenu
+                                              ]
+                                            td [x.EditorSelectorRun.Render] 
+                                        ]
+                                     ]
+                              ]
+          |DashboardEdit -> 
+            div [
+                table[
+                    tr[
+                        tdAttr [Attr.Style "vertical-align" "top"][
+                            table
+                                     (Seq.concat
+                                        [
+                                           [
+                                                tr[td[Helper.IconNormal "dehaze" (fun _ ->x.PanelTitleVisibility.Value <- false 
+                                                                                          x.Mode.Value <- DashboardRun)]]
+                                                tr[td[Helper.IconNormal "add" (fun _ -> 
+                                                                    let selIndex = x.EditorSelectorEdit.SelectedGroupIndex
+                                                                    if selIndex = 1 then
+                                                                        let items = x.Factory.EventItems|>List.ofSeq
+                                                                        let selected=Var.Create (items.Head)
+                                                                        x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
+                                                                                                                 (fun _ ->  let event = selected.Value.Worker.CloneAndRun
+                                                                                                                            let group = x.Data.EventGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
+                                                                                                                            x.Data.RegisterEvent (Helper.UniqueKey()) group event)
+                                                                    else if selIndex = 0 then
+                                                                        let group = x.Data.WidgetGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
+                                                                        x.CreatePanel(group,"Panel",700)|>ignore
+                                                                    else if selIndex = 2 then
+                                                                        let group = x.Data.RulesGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
+                                                                        group.RulesRowItems.Add (RulesRowItem.Create [RulesCellItem.Create;RulesCellItem.Create]) 
+                                                                 )]]
+                                           ]
+                                           [x.EditorSelectorEdit.RenderMenu]
+                                           [     
+                                                tr[td[]]
+                                                tr[td[x.PropertyGrid.Render]]
+                                           ]
+                                        ])
 
-        div [
-            table[
-                tr[
-                    tdAttr [Attr.Style "vertical-align" "top"][
-                        table
-                                 (Seq.concat
-                                    [
-                                       [
-                                            tr[td[Helper.IconNormal "dehaze" (fun _ -> ())]]
-                                            tr[td[Helper.IconNormal "add" (fun _ -> 
-                                                                let selIndex = x.EditorSelector.SelectedGroupIndex
-                                                                if selIndex = 1 then
-                                                                    let items = x.Factory.EventItems|>List.ofSeq
-                                                                    let selected=Var.Create (items.Head)
-                                                                    x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
-                                                                                                             (fun _ ->  let event = selected.Value.Worker.CloneAndRun
-                                                                                                                        let group = x.Data.EventGroups |> List.ofSeq |> List.item (x.EditorSelector.SelectedIndexInGroup)
-                                                                                                                        x.Data.RegisterEvent (Helper.UniqueKey()) group event)
-                                                                else if selIndex = 0 then
-                                                                    let group = x.Data.WidgetGroups |> List.ofSeq |> List.item (x.EditorSelector.SelectedIndexInGroup)
-                                                                    x.CreatePanel(group,"Panel",700)|>ignore
-                                                                else if selIndex = 2 then
-                                                                    let group = x.Data.RulesGroups |> List.ofSeq |> List.item (x.EditorSelector.SelectedIndexInGroup)
-                                                                    group.RulesRowItems.Add (RulesRowItem.Create [RulesCellItem.Create;RulesCellItem.Create]) 
-                                                             )]]
-                                       ]
-                                       [x.EditorSelector.RenderMenu]
-                                       [     
-                                            tr[td[]]
-                                            tr[td[x.PropertyGrid.Render]]
-                                       ]
-                                    ])
-
-                      ]
-                    td [x.EditorSelector.Render] 
-                 ]
-            ]
-            div[x.Dialog.Render]
-         ]
+                          ]
+                        td [x.EditorSelectorEdit.Render] 
+                     ]
+                ]
+                div[x.Dialog.Render]
+             ]) |> Doc.EmbedView
 

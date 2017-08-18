@@ -59,7 +59,7 @@ type ChartRenderer =
                                     let values = let queue=Queue<double>()
                                                  data|>Seq.iter (fun entry -> queue.Enqueue(entry))
                                                  queue
-                                    let chart = Charting.Chart.Line(data).WithFillColor(Color.Name "white")
+                                    let chart = Charting.Chart.Line(data).WithFill(false).WithStrokeColor(Color.Hex "#FB8C00").WithPointColor(Color.Name "black")
 
                                     Some({LineChart=chart;Queue=values} :> IRunnerContext)
                         )
@@ -79,7 +79,13 @@ type ChartRenderer =
                             let cx = worker.InPorts.[1].Number
                             let cy = worker.InPorts.[2].Number
                             let chart = worker.RunnerContext.Value :?> ChartRunnerContext
-                            Renderers.ChartJs.Render(chart.LineChart, Size=Size((int) cx, (int) cy)) :> Doc
+                            let config = ChartJs.CommonChartConfig(Title=ChartJs.TitleConfig(Display = false),
+                                                                   Legend = ChartJs.LegendConfig(Display = false),
+                                                                   Elements = ChartJs.ElementConfig(Point=ChartJs.PointConfig(Radius = 0.0)
+                                                                                                    ,Line = ChartJs.LineConfig(BorderWidth = 1.0)
+                                                                                                   )
+                                                                   )
+                            Renderers.ChartJs.Render(chart.LineChart, Size=Size((int) cx, (int) cy),Config=config) :> Doc
                              )
 
 

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,MessageBus,Remoting,AjaxRemotingProvider,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain,App,UI,Next,Doc,console,Var;
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,MessageBus,Remoting,AjaxRemotingProvider,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain,App,UI,Next,Doc,console,Var,Strings;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -33,6 +33,7 @@
  Doc=Next&&Next.Doc;
  console=Global.console;
  Var=Next&&Next.Var;
+ Strings=WebSharper&&WebSharper.Strings;
  AppModel=Test.AppModel=Runtime.Class({
   get_Worker:function()
   {
@@ -176,7 +177,7 @@
    Rules:Rules
   });
  };
- Client.Main=function()
+ Client.Main=function(config)
  {
   var fileName,dashboard;
   function makeTestConfig()
@@ -218,6 +219,17 @@
     return App.PanelContainerCreator();
    });
   }
+  function loadOnServer(configName)
+  {
+   var data;
+   data=(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:-133840407",[configName]);
+   data.RecreateOnClient(dashboard,function()
+   {
+    return App.PanelContainerCreator();
+   });
+   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:-1126735520",[data]);
+   MessageBus.RunServerRequests();
+  }
   function tbCellC(content)
   {
    return Doc.Element("td",[],content);
@@ -226,9 +238,9 @@
   {
    console.log(str);
   });
-  fileName=Var.Create$1("D:\\Dashboard.cfg");
+  fileName=Var.Create$1("Dashboard");
   dashboard=App.CreateDashboard();
-  return Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[tbCellC(List.ofArray([Helper.TxtIconNormal("build","Sample configuration",function()
+  return Doc.Element("div",[],[dashboard.Render(Doc.Element("div",[],[tbCellC(List.ofArray([Helper.TxtIconNormal("build","Sample configuration",function()
   {
    makeTestConfig();
   })])),tbCellC(List.ofArray([Doc.TextNode("File name"),Doc.Input([],fileName)])),tbCellC(List.ofArray([Helper.TxtIconNormal("archive","Upload",function()
@@ -242,14 +254,11 @@
    });
   })])),tbCellC(List.ofArray([Helper.TxtIconNormal("cloud_upload","Download and run on server",function()
   {
-   var data;
-   data=(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:-133840407",[fileName.c]);
-   data.RecreateOnClient(dashboard,function()
-   {
-    return App.PanelContainerCreator();
-   });
-   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:-1126735520",[data]);
-   MessageBus.RunServerRequests();
-  })]))])]),dashboard.get_Render()]);
+   loadOnServer(fileName.c);
+  })]))]))]).OnAfterRender(function()
+  {
+   if(!Strings.IsNullOrWhiteSpace(config.ConfigurationName))
+    loadOnServer(config.ConfigurationName);
+  });
  };
 }());

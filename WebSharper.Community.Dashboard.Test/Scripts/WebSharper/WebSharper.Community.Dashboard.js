@@ -975,7 +975,7 @@
   {
    return function(worker)
    {
-    var chartBufferSize,context;
+    var chartBufferSize,context,r,r$1,r$2,r$3,r$4,r$5;
     chartBufferSize=worker.InPorts.get_Item(3).get_Number()<<0;
     context=worker.RunnerContext.$0;
     View.Sink(function(value)
@@ -997,7 +997,10 @@
       $0:worker.InPorts.get_Item(1).get_Number()<<0,
       $1:worker.InPorts.get_Item(2).get_Number()<<0
      }
-    },null,null);
+    },{
+     $:1,
+     $0:(r={},r.title=(r$1={},r$1.display=false,r$1),r.legend=(r$2={},r$2.display=false,r$2),r.elements=(r$3={},r$3.point=(r$4={},r$4.radius=0,r$4),r$3.line=(r$5={},r$5.borderWidth=1,r$5),r$3),r)
+    },null);
    };
   },
   WebSharper_Community_Dashboard_IRunner$get_Run:function()
@@ -1019,9 +1022,12 @@
     },data),queue));
     return{
      $:1,
-     $0:ChartRunnerContext.New(Chart.Line(data).__WithFillColor(new Pervasives.Color({
+     $0:ChartRunnerContext.New(Chart.Line(data).WithFill(false).__WithStrokeColor(new Pervasives.Color({
+      $:1,
+      $0:"#FB8C00"
+     })).__WithPointColor(new Pervasives.Color({
       $:2,
-      $0:"white"
+      $0:"black"
      })),values)
     };
    };
@@ -1832,7 +1838,7 @@
   return[grItem.Name,panelContainer.get_Render()];
  };
  Dashboard$1=Dashboard.Dashboard=Runtime.Class({
-  get_Render:function()
+  Render:function(menu)
   {
    var $this;
    $this=this;
@@ -1844,7 +1850,7 @@
      Var.Set($this.Mode,{
       $:0
      });
-    })])]),Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("add",function()
+    })])])]),List.ofArray([$this.EditorSelectorEdit.get_RenderMenu()]),List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[$this.PropertyGrid.get_Render()])])])]))]),Doc.Element("td",[AttrModule.Style("vertical-align","top")],[menu,Helper.IconNormal("add",function()
     {
      var selIndex,items,selected,x,x$1;
      selIndex=$this.EditorSelectorEdit.get_SelectedGroupIndex();
@@ -1858,13 +1864,13 @@
       a=(x$2=List.ofSeq($this.Data.EventGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$2));
       $this.Data.RegisterEvent(Helper.UniqueKey(),a,event);
      })):selIndex===0?$this.CreatePanel((x=List.ofSeq($this.Data.WidgetGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x)),"Panel",700,null):selIndex===2?(x$1=List.ofSeq($this.Data.RulesGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$1)).RulesRowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
-    })])])]),List.ofArray([$this.EditorSelectorEdit.get_RenderMenu()]),List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[$this.PropertyGrid.get_Render()])])])]))]),Doc.Element("td",[],[$this.EditorSelectorEdit.get_Render()])])]),Doc.Element("div",[],[$this.Dialog.get_Render()])]):Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Helper.IconNormal("dehaze",function()
+    }),$this.EditorSelectorEdit.get_Render()])])]),Doc.Element("div",[],[$this.Dialog.get_Render()])]):Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Helper.IconNormal("dehaze",function()
     {
      Var.Set($this.PanelTitleVisibility,true);
      Var.Set($this.Mode,{
       $:1
      });
-    }),$this.EditorSelectorRun.get_RenderMenu()]),Doc.Element("td",[],[$this.EditorSelectorRun.get_Render()])])])]);
+    }),$this.EditorSelectorRun.GroupByIndex(0).SelectorItems.get_Length()>1?$this.EditorSelectorRun.get_RenderMenu():Doc.Element("div",[],[])]),Doc.Element("td",[],[$this.EditorSelectorRun.get_Render()])])])]);
    },this.Mode.v));
   },
   Restore:function(panelCreator,events,widgets,rules)

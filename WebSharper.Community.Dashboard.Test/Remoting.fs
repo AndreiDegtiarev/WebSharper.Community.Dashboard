@@ -4,7 +4,7 @@ open WebSharper
 open WebSharper.Community.Dashboard
 
 module Server =
-    
+    let mutable RootFolder =""
     [<Rpc>]
     let DoSomething input =
         let R (s: string) = System.String(Array.rev(s.ToCharArray()))
@@ -14,10 +14,10 @@ module Server =
     [<Rpc>]
     let SaveToFile (fileName:string, data:AppData) = 
         let json = Json.Serialize<AppData> data
-        System.IO.File.WriteAllText(fileName,json)
+        System.IO.File.WriteAllText(System.IO.Path.Combine(RootFolder,fileName+".cfg"),json)
     [<Rpc>]
     let LoadFromFile (fileName:string) = 
-        let json = System.IO.File.ReadAllText(fileName)
+        let json = System.IO.File.ReadAllText(System.IO.Path.Combine(RootFolder,fileName+".cfg"))
         let data = Json.Deserialize<AppData> json
         data
     [<Rpc>]

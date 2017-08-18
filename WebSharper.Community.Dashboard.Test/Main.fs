@@ -36,10 +36,11 @@ module Templating =
 
 module Site =
     open WebSharper.UI.Next.Html
+    open System.Web
 
-    let HomePage ctx =
+    let HomePage ctx configName=
         Templating.Main ctx EndPoint.Home "Home" [
-            div [client <@ Client.Main() @>]
+            div [client <@ Client.Main(configName) @>]
         ]
 
     let AboutPage ctx =
@@ -50,9 +51,11 @@ module Site =
 
     [<Website>]
     let Main =
-       // let dashboard = AppData.CreateDashboard
-        Application.MultiPage (fun ctx endpoint ->
+        Application.MultiPage (fun (ctx:Context<EndPoint>) endpoint ->
+            Server.RootFolder <- System.IO.Path.Combine(ctx.RootFolder,"Data")
+            let queryParams = HttpUtility.ParseQueryString ctx.RequestUri.Query
+            let configName = queryParams.["Config"]
             match endpoint with
-            | EndPoint.Home -> HomePage ctx
+            | EndPoint.Home -> HomePage ctx (StartConfiguration.Create configName)
             | EndPoint.About -> AboutPage ctx
         )

@@ -82,7 +82,6 @@ type Dashboard =
     member x.RegisterWidget key group panelKey (toPanelContainer:PanelContainer) worker = 
         x.Data.RegisterWidget key group panelKey worker 
         let panel = Panel.Create
-                         //.WithTitle(false)
                          .WithPanelContent(worker.Render)
         panel.IsWithTitle.Value <- false
         toPanelContainer.AddPanel panel
@@ -182,21 +181,21 @@ type Dashboard =
         x.EditorSelectorRun.OptSelectedItem.Value <- Some((x.EditorSelectorRun.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
         Console.Log("Connectors restored")   
         
-    member x.Render=
+    member x.Render menu=
         x.Mode.View |> View.Map (fun mode -> 
           match mode with 
           |DashboardRun -> div[table [tr[
                                             tdAttr [Attr.Style "vertical-align" "top"]
                                                    [Helper.IconNormal "dehaze" (fun _ -> x.PanelTitleVisibility.Value <- true
                                                                                          x.Mode.Value <- DashboardEdit)
-                                                    x.EditorSelectorRun.RenderMenu
+                                                    (if (x.EditorSelectorRun.GroupByIndex 0).SelectorItems.Length > 1 then x.EditorSelectorRun.RenderMenu else div[]) 
                                               ]
                                             td [x.EditorSelectorRun.Render] 
                                         ]
                                      ]
                               ]
           |DashboardEdit -> 
-            div [
+            div[
                 table[
                     tr[
                         tdAttr [Attr.Style "vertical-align" "top"][
@@ -206,22 +205,6 @@ type Dashboard =
                                            [
                                                 tr[td[Helper.IconNormal "dehaze" (fun _ ->x.PanelTitleVisibility.Value <- false 
                                                                                           x.Mode.Value <- DashboardRun)]]
-                                                tr[td[Helper.IconNormal "add" (fun _ -> 
-                                                                    let selIndex = x.EditorSelectorEdit.SelectedGroupIndex
-                                                                    if selIndex = 1 then
-                                                                        let items = x.Factory.EventItems|>List.ofSeq
-                                                                        let selected=Var.Create (items.Head)
-                                                                        x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
-                                                                                                                 (fun _ ->  let event = selected.Value.Worker.CloneAndRun
-                                                                                                                            let group = x.Data.EventGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
-                                                                                                                            x.Data.RegisterEvent (Helper.UniqueKey()) group event)
-                                                                    else if selIndex = 0 then
-                                                                        let group = x.Data.WidgetGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
-                                                                        x.CreatePanel(group,"Panel",700)|>ignore
-                                                                    else if selIndex = 2 then
-                                                                        let group = x.Data.RulesGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
-                                                                        group.RulesRowItems.Add (RulesRowItem.Create [RulesCellItem.Create;RulesCellItem.Create]) 
-                                                                 )]]
                                            ]
                                            [x.EditorSelectorEdit.RenderMenu]
                                            [     
@@ -231,7 +214,26 @@ type Dashboard =
                                         ])
 
                           ]
-                        td [x.EditorSelectorEdit.Render] 
+                        tdAttr[Attr.Style "vertical-align" "top"][
+                               menu
+                               Helper.IconNormal "add" (fun _ ->
+                                           let selIndex = x.EditorSelectorEdit.SelectedGroupIndex
+                                           if selIndex = 1 then
+                                               let items = x.Factory.EventItems|>List.ofSeq
+                                               let selected=Var.Create (items.Head)
+                                               x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
+                                                                                        (fun _ ->  let event = selected.Value.Worker.CloneAndRun
+                                                                                                   let group = x.Data.EventGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
+                                                                                                   x.Data.RegisterEvent (Helper.UniqueKey()) group event)
+                                           else if selIndex = 0 then
+                                               let group = x.Data.WidgetGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
+                                               x.CreatePanel(group,"Panel",700)|>ignore
+                                           else if selIndex = 2 then
+                                               let group = x.Data.RulesGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
+                                               group.RulesRowItems.Add (RulesRowItem.Create [RulesCellItem.Create;RulesCellItem.Create]) 
+                                    )
+                               x.EditorSelectorEdit.Render
+                           ] 
                      ]
                 ]
                 div[x.Dialog.Render]

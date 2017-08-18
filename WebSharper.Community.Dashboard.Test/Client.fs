@@ -9,13 +9,17 @@ open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
 open FSharp.Data
 
+type StartConfiguration = 
+        {ConfigurationName:string}
+        static member Create config = {ConfigurationName=config}
+
 [<Require(typeof<WebSharper.Community.PropertyGrid.Resources.StyleResource>)>]
 [<JavaScript>]
 module Client =
 
-    let Main () =
+    let Main (config:StartConfiguration) =
         MessageBus.Log <- (fun str -> Console.Log(str))
-        let fileName = Var.Create "D:\\Dashboard.cfg"
+        let fileName = Var.Create "Dashboard"
         let dashboard = App.CreateDashboard
         let makeTestConfig()= 
             let appData=AppData.Create dashboard
@@ -40,31 +44,28 @@ module Client =
                                                                    chartWorker]}
                                                     ]})]
             }.Recreate dashboard (App.PanelContainerCreator)
-        let tbCellC content =td content
-        div[
-           table [
-                      tr[
-                        tbCellC[Helper.TxtIconNormal "build" "Sample configuration" (fun _ ->  
-                                          makeTestConfig())]
-                        tbCellC [text "File name"
-                                 Doc.Input [] fileName]
-                        tbCellC[Helper.TxtIconNormal "archive" "Upload" (fun _ ->  
-                                                      let data =  AppData.Create dashboard
-                                                      Server.SaveToFile(fileName.Value,data)
-                                                )]
-                        tbCellC[Helper.TxtIconNormal "unarchive" "Download  and run on client" (fun _ ->  
-                                          let data =  Server.LoadFromFile(fileName.Value)
-                                          data.Recreate dashboard (App.PanelContainerCreator)
-                                    )]
-                        tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  
-                                          let data =  Server.LoadFromFile(fileName.Value)
-                                          data.RecreateOnClient dashboard (App.PanelContainerCreator)
-                                          Server.RecreateOnServer data
-                                          MessageBus.RunServerRequests()
-                                          
-                                    )]
-                        ]
-           ]
-           dashboard.Render
+        let loadOnServer (configName)= 
+            let data =  Server.LoadFromFile(configName)
+            data.RecreateOnClient dashboard (App.PanelContainerCreator)
+            Server.RecreateOnServer data
+            MessageBus.RunServerRequests()
 
-        ]
+        let tbCellC content =td content
+        let menu =
+           div[
+            tbCellC[Helper.TxtIconNormal "build" "Sample configuration" (fun _ ->  
+                              makeTestConfig())]
+            tbCellC [text "File name"
+                     Doc.Input [] fileName]
+            tbCellC[Helper.TxtIconNormal "archive" "Upload" (fun _ ->  
+                                          let data =  AppData.Create dashboard
+                                          Server.SaveToFile(fileName.Value,data)
+                                    )]
+            tbCellC[Helper.TxtIconNormal "unarchive" "Download  and run on client" (fun _ ->  
+                              let data =  Server.LoadFromFile(fileName.Value)
+                              data.Recreate dashboard (App.PanelContainerCreator)
+                        )]
+            tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer(fileName.Value))]
+          ]
+        div[dashboard.Render menu
+        ].OnAfterRender (fun _ -> if not (System.String.IsNullOrWhiteSpace(config.ConfigurationName)) then loadOnServer(config.ConfigurationName))

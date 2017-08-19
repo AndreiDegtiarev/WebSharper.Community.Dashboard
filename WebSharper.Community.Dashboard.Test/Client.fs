@@ -68,4 +68,6 @@ module Client =
             tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer(fileName.Value))]
           ]
         div[dashboard.Render menu
-        ].OnAfterRender (fun _ -> if not (System.String.IsNullOrWhiteSpace(config.ConfigurationName)) then loadOnServer(config.ConfigurationName))
+        ].OnAfterRender (fun _ -> try
+                                    if not (System.String.IsNullOrWhiteSpace(config.ConfigurationName)) then loadOnServer(config.ConfigurationName)
+                                  with _ -> ())

@@ -257,8 +257,14 @@
    loadOnServer(fileName.c);
   })]))]))]).OnAfterRender(function()
   {
-   if(!Strings.IsNullOrWhiteSpace(config.ConfigurationName))
-    loadOnServer(config.ConfigurationName);
+   try
+   {
+    !Strings.IsNullOrWhiteSpace(config.ConfigurationName)?loadOnServer(config.ConfigurationName):null;
+   }
+   catch(m)
+   {
+    null;
+   }
   });
  };
 }());

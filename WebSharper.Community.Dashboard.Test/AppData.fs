@@ -18,6 +18,12 @@ type AppData =
         x.Events |> List.map (fun (grName,gr) -> (grName,gr|>List.map (fun (key,event) -> (key,event.Worker |> fnc))))
     member x.RecreateWidgets = 
         x.Widgets |> List.map (fun (grName,panelData,gr) -> (grName,panelData,gr|>List.map (fun (key,keyPanel,widget) -> (key,keyPanel,widget.Worker))))
+    static member empty = 
+        {
+            Events = []
+            Widgets = []
+            Rules = []
+        }
     static member Create (dashboard:Dashboard) = 
         let (events,widgets,rules) = dashboard.Store (AppModel.FromWorker)
         {
@@ -31,7 +37,7 @@ type AppData =
                           (x.RecreateWidgets)
                           x.Rules
     member x.RecreateOnClient (dashboard:Dashboard) panelContainerCreator=
-        MessageBus.Role <- MessageBus.Client
+        Environment.Role <- Environment.Client
         MessageBus.Agent.Post(MessageBus.RegisterServerCallback(MessageBus.SendToServer))
         dashboard.Restore panelContainerCreator 
                           (x.RecreateEvents (fun worker -> worker))
@@ -42,3 +48,4 @@ type AppData =
         let allWidgets = x.RecreateWidgets |> List.map (fun (_,_,gr)->gr) |> List.concat |> List.map (fun (_,_,gr)->gr)
         let allWorkers = allEvents@allWidgets |> List.map (fun worker -> worker.WithStartRunner())
         x.Rules |> List.iter (fun (grName,rules) -> allWorkers |> rules.Reconnect)
+        allEvents

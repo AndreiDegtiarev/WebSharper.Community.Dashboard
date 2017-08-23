@@ -23,8 +23,8 @@ type RandomRunner =
                                                 OutPortKey=Helper.UniqueKey()
                                                }
  static member FromPorts = (fun worker -> {
-                                             MiddleValue=worker.InPorts.[0].NumberValue 
-                                             Dispersion=worker.InPorts.[1].NumberValue
+                                             MiddleValue=worker.InPorts.[0].PortValue.Value
+                                             Dispersion=worker.InPorts.[1].PortValue.Value
                                              OutPortKey=worker.OutPorts.[0].Key
                                              Name = worker.Name.Value
                                           })

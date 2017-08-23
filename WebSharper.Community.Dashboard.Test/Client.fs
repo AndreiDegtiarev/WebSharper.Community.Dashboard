@@ -18,7 +18,7 @@ type StartConfiguration =
 module Client =
 
     let Main (config:StartConfiguration) =
-        MessageBus.Log <- (fun str -> Console.Log(str))
+        Environment.Log <- (fun str -> Console.Log(str))
         let fileName = Var.Create "Dashboard"
         let dashboard = App.CreateDashboard
         let makeTestConfig()= 
@@ -47,7 +47,7 @@ module Client =
         let loadOnServer (configName)= 
             let data =  Server.LoadFromFile(configName)
             data.RecreateOnClient dashboard (App.PanelContainerCreator)
-            Server.RecreateOnServer data
+            Server.RecreateOnServer data |> ignore
             MessageBus.RunServerRequests()
 
         let tbCellC content =td content

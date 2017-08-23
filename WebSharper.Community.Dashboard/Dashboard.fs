@@ -51,9 +51,9 @@ type Dashboard =
         let propertyGrid = PropertyGrid.Create
         let editorSelectorRun = WindowSelector.Create
         let editorSelectorEdit = WindowSelector.Create
-                                   .WithGroupOnClick(fun gr -> MessageBus.Log "WithGroupOnClick"
+                                   .WithGroupOnClick(fun gr -> //Environment.Log "WithGroupOnClick"
                                                                gr.SelectorItems |> List.ofSeq |> List.mapi (fun ind item -> Properties.string ((ind+1).ToString()) item.Name) |> propertyGrid.Edit)
-                                   .WithItemOnSelected(fun item -> MessageBus.Log "WithItemOnSelected"
+                                   .WithItemOnSelected(fun item -> //Environment.Log "WithItemOnSelected"
                                                                    List.empty |> propertyGrid.Edit)
                                    .WithItemOnCreated(fun grInd item -> if grInd = 0 then (editorSelectorRun.SelectorGroups |> List.ofSeq |> List.head).SelectorItems.Add(item)) 
         let panelGroupCreator = DshHelper.PanelGroupCreator data panelContainerCreator
@@ -176,9 +176,12 @@ type Dashboard =
                                 let grItem = x.Data.RulesGroups |> List.ofSeq |> List.item ind
                                 RulesEditor.Restore x.Data grItem.RulesRowItems rulesData
                                 ) 
-
-        x.EditorSelectorEdit.OptSelectedItem.Value <- Some((x.EditorSelectorEdit.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
-        x.EditorSelectorRun.OptSelectedItem.Value <- Some((x.EditorSelectorRun.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
+        if x.Data.WidgetGroups.Length > 0 then
+            x.EditorSelectorEdit.OptSelectedItem.Value <- Some((x.EditorSelectorEdit.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
+            x.EditorSelectorRun.OptSelectedItem.Value <- Some((x.EditorSelectorRun.GroupByIndex 0).SelectorItems |> List.ofSeq |> List.head)
+        else 
+            x.EditorSelectorEdit.OptSelectedItem.Value <- None
+            x.EditorSelectorRun.OptSelectedItem.Value <- None
         Console.Log("Connectors restored")   
         
     member x.Render menu=

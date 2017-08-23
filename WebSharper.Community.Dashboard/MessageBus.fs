@@ -7,18 +7,16 @@ open WebSharper.Community.Panel
 
 [<JavaScript>]
 module MessageBus =
-    type Role =
-    |Client
-    |Server
 
-    let mutable Role:Role = Server
-    let mutable Log:(string->unit) =(fun _ ->())
+    let log=Environment.Log
 
     type Value =
     |Number of double
     |String of string
     |Boolean of bool
-     member x.AsNumber = match x with |Number(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
+     member x.AsNumber  = match x with |Number(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
+     member x.AsString  = match x with |String(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
+     member x.AsBoolean = match x with |Boolean(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
 
     type Message = 
         {Key:string;Time:System.DateTime;Value:Value}
@@ -67,7 +65,7 @@ module MessageBus =
                     //|> List.filter (fun (info,_,_)  -> info.Key = busKeyValue.Key) 
                     |> List.map (fun listener -> let  (info,callback,buf) = listener
                                                  if info.Key = message.Key then 
-                                                     //sprintf "Message send from:%s CacheSize:%d BufSize:%d" info.Name info.CacheSize buf.Length|> Log
+                                                     //sprintf "Message send from:%s CacheSize:%d BufSize:%d" info.Name info.CacheSize (buf|>List.length)|> Log
                                                      callback (message)
                                                      (info,callback,update_and_split (info.CacheSize) buf message )
                                                  else listener )
@@ -78,7 +76,7 @@ module MessageBus =
             | Clear ->
                 return! loop AgentState.empty
             | RegisterListener (listenerInfo,startValue,receiver) ->
-                Log(sprintf "RegisterListener:%s" listenerInfo.Name)
+                sprintf "RegisterListener:%s %s" listenerInfo.Name listenerInfo.Key |> log
                 //let buffer = if listenerInfo.CacheSize = 1 then SingleValue(startValue) else ListenerBuffer(listenerInfo.CacheSize,[])
                 return! loop {state with Listeners=((listenerInfo,receiver,[])::state.Listeners)}
             | RegisterServerCallback (fnc) -> return! loop {state with ServerCallback=Some(fnc)}
@@ -86,6 +84,7 @@ module MessageBus =
                 let messages = 
                     state.Listeners |> List.map (fun (info,_,buffer) -> cutBuffer time buffer) |> List.concat
                     |> List.fold (fun acc state -> if not (acc |> List.contains state) then state::acc else acc) []
+                //Log(sprintf "ReadMessages:%d" messages.Length)
                 channel.Reply(messages)
                 return! loop state
             | LatestMessageTime (channel) ->
@@ -100,7 +99,7 @@ module MessageBus =
             | SendOnlyToClient (busKeyValue) ->
                 return! loop {state with Listeners=state.Listeners |> send_to_listeners busKeyValue}
             | Send (busKeyValue) ->
-                //Log(sprintf "Num listeners:%d" state.Listeners.Length)
+                //log(sprintf "Num listeners:%d" state.Listeners.Length)
                 state.ServerCallback |> Option.map(fun fncServer -> fncServer busKeyValue) |> ignore
                 return! loop {state with Listeners=state.Listeners |> send_to_listeners busKeyValue}
 
@@ -120,6 +119,7 @@ module MessageBus =
                 let! latestTime = Agent.PostAndAsyncReply(fun r -> LatestMessageTime(r))
                 let! messages=GetMessages latestTime
                 messages |> List.iter (fun message -> Agent.Post(SendOnlyToClient(message)))
-                Log(sprintf "Values from server requested messages received:%d" (messages.Length))
+                if messages.Length > 0 then
+                    sprintf "Values from server requested messages received:%d" (messages.Length) |> log
         }|> Async.Start
 

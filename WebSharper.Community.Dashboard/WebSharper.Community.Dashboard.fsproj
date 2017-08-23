@@ -49,6 +49,7 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Environment.fs" />
     <Compile Include="MessageBus.fs" />
     <Compile Include="Port.fs" />
     <Compile Include="Worker.fs" />
@@ -73,7 +74,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\Zafir.UI.Next.4.0.162.71-beta9\lib\net40\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\packages\HtmlAgilityPack.1.5.2-beta6\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IntelliFactory.Reactive">

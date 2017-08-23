@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,MessageBus,Remoting,AjaxRemotingProvider,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain,App,UI,Next,Doc,console,Var,Strings;
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,AppData,Client,IntelliFactory,Runtime,AppModelLib,Operators,List,Environment,MessageBus,Remoting,AjaxRemotingProvider,RuleEntry,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,PanelData,RuleContainer,RuleChain,App,UI,Next,Doc,console,Var,Strings;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -15,6 +15,7 @@
  AppModelLib=Dashboard&&Dashboard.AppModelLib;
  Operators=WebSharper&&WebSharper.Operators;
  List=WebSharper&&WebSharper.List;
+ Environment=Dashboard&&Dashboard.Environment;
  MessageBus=Dashboard&&Dashboard.MessageBus;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
@@ -62,7 +63,7 @@
  AppData=Test.AppData=Runtime.Class({
   get_RecreateOnServer:function()
   {
-   var allWorkers;
+   var allEvents,allWorkers;
    function m(a$1,gr)
    {
     return gr;
@@ -83,16 +84,17 @@
    {
     rules.Reconnect(allWorkers);
    }
-   allWorkers=List.map(function(worker)
-   {
-    return worker.WithStartRunner();
-   },List.append(List.map(function($1)
+   allEvents=List.map(function($1)
    {
     return m($1[0],$1[1]);
    },List.concat(List.map(function($1)
    {
     return m$1($1[0],$1[1]);
-   },this.RecreateEvents(Global.id)))),List.map(function($1)
+   },this.RecreateEvents(Global.id))));
+   allWorkers=List.map(function(worker)
+   {
+    return worker.WithStartRunner();
+   },List.append(allEvents,List.map(function($1)
    {
     return m$2($1[0],$1[1],$1[2]);
    },List.concat(List.map(function($1)
@@ -103,11 +105,12 @@
    {
     return a($1[0],$1[1]);
    },this.Rules);
+   return allEvents;
   },
   RecreateOnClient:function(dashboard,panelContainerCreator)
   {
    var _this;
-   MessageBus.set_Role(MessageBus.Role.Client);
+   Environment.set_Role(Environment.Role.Client);
    _this=MessageBus.Agent();
    _this.mailbox.AddLast({
     $:3,
@@ -169,6 +172,10 @@
   p=dashboard.Store(AppModel.FromWorker);
   return AppData.New(p[0],p[1],p[2]);
  };
+ AppData.get_empty=function()
+ {
+  return AppData.New(List.T.Empty,List.T.Empty,List.T.Empty);
+ };
  AppData.New=function(Events,Widgets,Rules)
  {
   return new AppData({
@@ -227,14 +234,14 @@
    {
     return App.PanelContainerCreator();
    });
-   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:-1126735520",[data]);
+   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:1994187327",[data]);
    MessageBus.RunServerRequests();
   }
   function tbCellC(content)
   {
    return Doc.Element("td",[],content);
   }
-  MessageBus.set_Log(function(str)
+  Environment.set_Log(function(str)
   {
    console.log(str);
   });

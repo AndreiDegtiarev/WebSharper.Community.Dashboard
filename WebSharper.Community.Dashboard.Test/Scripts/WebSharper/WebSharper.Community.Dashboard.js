@@ -1,19 +1,21 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,MessageBus,Role,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$1,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,SelectorItem,SelectorGroup,WindowSelector,RulesCellItem,RulesRowItem,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,EventsEditor,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$2,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,View,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunnerContext,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,SelectorItem,SelectorGroup,WindowSelector,RulesCellItem,RulesRowItem,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,EventsEditor,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$3,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Dashboard=Community.Dashboard=Community.Dashboard||{};
+ Environment=Dashboard.Environment=Dashboard.Environment||{};
+ Role=Environment.Role=Environment.Role||{};
+ SC$1=Global.StartupCode$WebSharper_Community_Dashboard$Environment=Global.StartupCode$WebSharper_Community_Dashboard$Environment||{};
  MessageBus=Dashboard.MessageBus=Dashboard.MessageBus||{};
- Role=MessageBus.Role=MessageBus.Role||{};
  Value=MessageBus.Value=MessageBus.Value||{};
  Message=MessageBus.Message=MessageBus.Message||{};
  ListenerInfo=MessageBus.ListenerInfo=MessageBus.ListenerInfo||{};
  AgentMessage=MessageBus.AgentMessage=MessageBus.AgentMessage||{};
  AgentState=MessageBus.AgentState=MessageBus.AgentState||{};
- SC$1=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus||{};
+ SC$2=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus||{};
  InPort=Dashboard.InPort=Dashboard.InPort||{};
  OutPortType=Dashboard.OutPortType=Dashboard.OutPortType||{};
  OutPort=Dashboard.OutPort=Dashboard.OutPort||{};
@@ -24,6 +26,7 @@
  OpenWeather=Dashboard.OpenWeather=Dashboard.OpenWeather||{};
  Forecast=OpenWeather.Forecast=OpenWeather.Forecast||{};
  OpenWeatherRunner=Dashboard.OpenWeatherRunner=Dashboard.OpenWeatherRunner||{};
+ DatabaseRunnerContext=Dashboard.DatabaseRunnerContext=Dashboard.DatabaseRunnerContext||{};
  DatabaseRunner=Dashboard.DatabaseRunner=Dashboard.DatabaseRunner||{};
  ChartRunnerContext=Dashboard.ChartRunnerContext=Dashboard.ChartRunnerContext||{};
  ChartRenderer=Dashboard.ChartRenderer=Dashboard.ChartRenderer||{};
@@ -50,7 +53,7 @@
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
  AppModelLib=Dashboard.AppModelLib=Dashboard.AppModelLib||{};
  App=Dashboard.App=Dashboard.App||{};
- SC$2=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib||{};
+ SC$3=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib||{};
  IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Operators=WebSharper&&WebSharper.Operators;
@@ -67,6 +70,7 @@
  PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
+ View=Next&&Next.View;
  Var=Next&&Next.Var;
  PropertyGrid=Community&&Community.PropertyGrid;
  Properties=PropertyGrid&&PropertyGrid.Properties;
@@ -84,7 +88,6 @@
  IO=Runtime$1&&Runtime$1.IO;
  JSON=Global.JSON;
  Arrays=WebSharper&&WebSharper.Arrays;
- View=Next&&Next.View;
  Charting=WebSharper&&WebSharper.Charting;
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
@@ -107,7 +110,52 @@
  Role.Client={
   $:0
  };
+ Environment.DataDirectory=function()
+ {
+  SC$1.$cctor();
+  return SC$1.DataDirectory;
+ };
+ Environment.set_DataDirectory=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.DataDirectory=$1;
+ };
+ Environment.Log=function()
+ {
+  SC$1.$cctor();
+  return SC$1.Log;
+ };
+ Environment.set_Log=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.Log=$1;
+ };
+ Environment.Role$1=function()
+ {
+  SC$1.$cctor();
+  return SC$1.Role;
+ };
+ Environment.set_Role=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.Role=$1;
+ };
+ SC$1.$cctor=Runtime.Cctor(function()
+ {
+  SC$1.Role=Role.Server;
+  SC$1.Log=Global.ignore;
+  SC$1.DataDirectory="";
+  SC$1.$cctor=Global.ignore;
+ });
  Value=MessageBus.Value=Runtime.Class({
+  get_AsBoolean:function()
+  {
+   return this.$==2?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+  },
+  get_AsString:function()
+  {
+   return this.$==1?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+  },
   get_AsNumber:function()
   {
    return this.$==0?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
@@ -173,6 +221,7 @@
      {
       return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:1550733476",[a]),function(a$1)
       {
+       var x;
        List.iter(function(message)
        {
         var _this;
@@ -183,14 +232,13 @@
         });
         _this.resume();
        },a$1);
-       (MessageBus.Log())((function($1)
+       return a$1.get_Length()>0?(x=(function($1)
        {
         return function($2)
         {
          return $1("Values from server requested messages received:"+Global.String($2));
         };
-       }(Global.id))(a$1.get_Length()));
-       return Concurrency.Zero();
+       }(Global.id))(a$1.get_Length()),(MessageBus.log())(x),Concurrency.Zero()):Concurrency.Zero();
       });
      });
     });
@@ -199,8 +247,8 @@
  };
  MessageBus.Agent=function()
  {
-  SC$1.$cctor();
-  return SC$1.Agent;
+  SC$2.$cctor();
+  return SC$2.Agent;
  };
  MessageBus.CreateString=function(value)
  {
@@ -235,31 +283,15 @@
  {
   return Message.New(key,Date.now(),value);
  };
- MessageBus.Log=function()
+ MessageBus.log=function()
  {
-  SC$1.$cctor();
-  return SC$1.Log;
+  SC$2.$cctor();
+  return SC$2.log;
  };
- MessageBus.set_Log=function($1)
+ SC$2.$cctor=Runtime.Cctor(function()
  {
-  SC$1.$cctor();
-  SC$1.Log=$1;
- };
- MessageBus.Role$1=function()
- {
-  SC$1.$cctor();
-  return SC$1.Role;
- };
- MessageBus.set_Role=function($1)
- {
-  SC$1.$cctor();
-  SC$1.Role=$1;
- };
- SC$1.$cctor=Runtime.Cctor(function()
- {
-  SC$1.Role=Role.Server;
-  SC$1.Log=Global.ignore;
-  SC$1.Agent=MailboxProcessor.Start(function(inbox)
+  SC$2.log=Environment.Log();
+  SC$2.Agent=MailboxProcessor.Start(function(inbox)
   {
    function cutBuffer(time,buffer)
    {
@@ -305,7 +337,7 @@
     {
      return Concurrency.Bind(inbox.Receive(null),function(a)
      {
-      var listenerInfo,time,maxTimes,busKeyValue,o;
+      var listenerInfo,x,time,maxTimes,busKeyValue,o;
       function m(info,a$1,buffer)
       {
        return cutBuffer(time,buffer);
@@ -317,13 +349,10 @@
         return item.Time;
        },buffer).Time;
       }
-      return a.$==2?(listenerInfo=a.$0[0],((MessageBus.Log())((function($1)
+      return a.$==2?(listenerInfo=a.$0[0],(x=(((Runtime.Curried3(function($1,$2,$3)
       {
-       return function($2)
-       {
-        return $1("RegisterListener:"+PrintfHelpers.toSafe($2));
-       };
-      }(Global.id))(listenerInfo.Name)),loop(AgentState.New(state.ServerCallback,new List.T({
+       return $1("RegisterListener:"+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
+      }))(Global.id))(listenerInfo.Name))(listenerInfo.Key),(MessageBus.log())(x),loop(AgentState.New(state.ServerCallback,new List.T({
        $:1,
        $0:[listenerInfo,a.$0[2],List.T.Empty],
        $1:state.Listeners
@@ -349,122 +378,82 @@
    }
    return loop(AgentState.get_empty());
   },null);
-  SC$1.$cctor=Global.ignore;
+  SC$2.$cctor=Global.ignore;
  });
  InPort=Dashboard.InPort=Runtime.Class({
   Equals:function(y)
   {
    return y instanceof InPort&&this.Name===y.Name;
   },
-  get_BooleanValue:function()
+  get_BooleanView:function()
   {
-   var $this;
-   $this=this;
-   return this.ExtractPortBooleanValue(function(variable)
+   return View.Map(function(value)
    {
-    return MessageBus.CreateBooleanPair($this.Key,variable.c);
-   });
-  },
-  get_BooleanVar:function()
-  {
-   return this.ExtractPortBooleanValue(Global.id);
+    return value.Value.get_AsBoolean();
+   },this.PortValue.v);
   },
   get_Boolean:function()
   {
-   return this.ExtractPortBooleanValue(function(variable)
+   return this.PortValue.c.Value.get_AsBoolean();
+  },
+  get_StringView:function()
+  {
+   return View.Map(function(value)
    {
-    return variable.c;
-   });
-  },
-  ExtractPortBooleanValue:function(fnc)
-  {
-   var m;
-   m=this.PortValue;
-   return m.$==2?fnc(m.$0[1]):Operators.FailWith("unexpected type");
-  },
-  get_StringValue:function()
-  {
-   var $this;
-   $this=this;
-   return this.ExtractPortStringValue(function(variable)
-   {
-    return MessageBus.CreateStrPair($this.Key,variable.c);
-   });
-  },
-  get_StringVar:function()
-  {
-   return this.ExtractPortStringValue(Global.id);
+    return value.Value.get_AsString();
+   },this.PortValue.v);
   },
   get_String:function()
   {
-   return this.ExtractPortStringValue(function(variable)
+   return this.PortValue.c.Value.get_AsString();
+  },
+  get_NumberView:function()
+  {
+   return View.Map(function(value)
    {
-    return variable.c;
-   });
-  },
-  ExtractPortStringValue:function(fnc)
-  {
-   var m;
-   m=this.PortValue;
-   return m.$==1?fnc(m.$0[1]):Operators.FailWith("unexpected type");
-  },
-  get_NumberValue:function()
-  {
-   var $this;
-   $this=this;
-   return this.ExtractPortNumberValue(function(variable)
-   {
-    return MessageBus.CreateNumPair($this.Key,variable.c);
-   });
-  },
-  get_NumberVar:function()
-  {
-   return this.ExtractPortNumberValue(Global.id);
+    return value.Value.get_AsNumber();
+   },this.PortValue.v);
   },
   get_Number:function()
   {
-   return this.ExtractPortNumberValue(function(variable)
-   {
-    return variable.c;
-   });
-  },
-  ExtractPortNumberValue:function(fnc)
-  {
-   var m;
-   m=this.PortValue;
-   return m.$==0?fnc(m.$0[1]):Operators.FailWith("unexpected type");
+   return this.PortValue.c.Value.get_AsNumber();
   },
   Receive:function(value)
   {
-   var m,m$1,m$2,m$3;
-   m=this.PortValue;
-   m.$==1?(m$1=value.Value,m$1.$==1?Var.Set(m.$0[1],m$1.$0):Operators.FailWith("incompatible types")):m.$==2?(m$2=value.Value,m$2.$==2?Var.Set(m.$0[1],m$2.$0):Operators.FailWith("incompatible types")):(m$3=value.Value,m$3.$==0?Var.Set(m.$0[1],m$3.$0):Operators.FailWith("incompatible types"));
-  },
-  get_KeyValueVar:function()
-  {
-   var m;
-   m=this.PortValue;
-   return m.$==1?m.$0[0]:m.$==2?m.$0[0]:m.$0[0];
+   Var.Set(this.PortValue,value);
   },
   get_Property:function()
   {
-   var m;
-   m=this.PortValue;
-   return m.$==1?Properties.string(this.Name,m.$0[1]):m.$==2?Properties.check(this.Name,m.$0[1]):Properties["double"](this.Name,m.$0[1]);
+   var $this,m,_var,_var$1,_var$2;
+   $this=this;
+   m=this.PortValue.c.Value;
+   return m.$==1?(_var=Var.Create$1(this.get_String()),(View.Sink(function(number)
+   {
+    var i;
+    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+     $:1,
+     $0:number
+    }))));
+   },_var.v),Properties.string(this.Name,_var))):m.$==2?(_var$1=Var.Create$1(this.get_Boolean()),(View.Sink(function(number)
+   {
+    var i;
+    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+     $:2,
+     $0:number
+    }))));
+   },_var$1.v),Properties.check(this.Name,_var$1))):(_var$2=Var.Create$1(this.get_Number()),(View.Sink(function(number)
+   {
+    var i;
+    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+     $:0,
+     $0:number
+    }))));
+   },_var$2.v),Properties["double"](this.Name,_var$2)));
   },
   get_Clone:function()
   {
-   var c,m;
-   return InPort.New((c=Guid.NewGuid(),Global.String(c)),this.Name,(m=this.PortValue,m.$==1?{
-    $:1,
-    $0:[Var.Create$1(m.$0[0].c),Var.Create$1(m.$0[1].c)]
-   }:m.$==2?{
-    $:2,
-    $0:[Var.Create$1(m.$0[0].c),Var.Create$1(m.$0[1].c)]
-   }:{
-    $:0,
-    $0:[Var.Create$1(m.$0[0].c),Var.Create$1(m.$0[1].c)]
-   }),this.CacheSize);
+   var c;
+   return InPort.New((c=Guid.NewGuid(),Global.String(c)),this.Name,Var.Create$1(this.PortValue.c),this.CacheSize);
   }
  },null,InPort);
  InPort.Create=function(key,name,portValue,cacheSize)
@@ -483,7 +472,7 @@
  OutPortType=Dashboard.OutPortType=Runtime.Class({
   IsCompatible:function(inPort)
   {
-   return this.$==1?inPort.PortValue.$==1&&true:this.$==2?inPort.PortValue.$==2&&true:inPort.PortValue.$==0&&true;
+   return this.$==1?inPort.PortValue.c.Value.$==1&&true:this.$==2?inPort.PortValue.c.Value.$==2&&true:inPort.PortValue.c.Value.$==0&&true;
   }
  },null,OutPortType);
  OutPortType.BooleanOutPort=new OutPortType({
@@ -560,27 +549,18 @@
  {
   function m(name,pair,cacheSize)
   {
-   var m$1,value,value$1,value$2;
+   var m$1;
    m$1=pair.Value;
-   return m$1.$==1?(value=m$1.$0,InPort.Create(pair.Key,name,{
+   return m$1.$==1?InPort.Create(pair.Key,name,Var.Create$1(Message.Create(new Value({
     $:1,
-    $0:[Var.Create$1(Message.Create(new Value({
-     $:1,
-     $0:value
-    }))),Var.Create$1(value)]
-   },cacheSize)):m$1.$==2?(value$1=m$1.$0,InPort.Create(pair.Key,name,{
+    $0:m$1.$0
+   }))),cacheSize):m$1.$==2?InPort.Create(pair.Key,name,Var.Create$1(Message.Create(new Value({
     $:2,
-    $0:[Var.Create$1(Message.Create(new Value({
-     $:2,
-     $0:value$1
-    }))),Var.Create$1(value$1)]
-   },cacheSize)):(value$2=m$1.$0,InPort.Create(pair.Key,name,{
+    $0:m$1.$0
+   }))),cacheSize):InPort.Create(pair.Key,name,Var.Create$1(Message.Create(new Value({
     $:0,
-    $0:[Var.Create$1(Message.Create(new Value({
-     $:0,
-     $0:value$2
-    }))),Var.Create$1(value$2)]
-   },cacheSize));
+    $0:m$1.$0
+   }))),cacheSize);
   }
   return List.map(function($1)
   {
@@ -743,7 +723,7 @@
  {
   return function(worker)
   {
-   return RandomRunner.New(worker.Name.c,worker.InPorts.get_Item(0).get_NumberValue(),worker.InPorts.get_Item(1).get_NumberValue(),worker.OutPorts.get_Item(0).Key);
+   return RandomRunner.New(worker.Name.c,worker.InPorts.get_Item(0).PortValue.c,worker.InPorts.get_Item(1).PortValue.c,worker.OutPorts.get_Item(0).Key);
   };
  };
  RandomRunner.Create=function(middleValue,dispersion)
@@ -893,7 +873,7 @@
  {
   return function(worker)
   {
-   return OpenWeatherRunner.New(worker.Name.c,worker.InPorts.get_Item(0).get_StringValue(),worker.InPorts.get_Item(1).get_StringValue(),worker.OutPorts.get_Item(0).Key);
+   return OpenWeatherRunner.New(worker.Name.c,worker.InPorts.get_Item(0).PortValue.c,worker.InPorts.get_Item(1).PortValue.c,worker.OutPorts.get_Item(0).Key);
   };
  };
  OpenWeatherRunner.Create=function(city,apikey)
@@ -910,6 +890,12 @@
    OutPortKey:OutPortKey
   });
  };
+ DatabaseRunnerContext.New=function(DatabaseRunnerRun)
+ {
+  return{
+   DatabaseRunnerRun:DatabaseRunnerRun
+  };
+ };
  DatabaseRunner=Dashboard.DatabaseRunner=Runtime.Class({
   WebSharper_Community_Dashboard_IRunner$get_Run:function()
   {
@@ -924,7 +910,7 @@
      },4))(Global.id))(value.Key))(Global.String(value.Time)))(value.Value.get_AsNumber());
      (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.ServerDatabase.WriteLine:2078881569",[worker.InPorts.get_Item(1).get_String(),text]);
      worker.OutPorts.get_Item(0).TriggerWithKey(value);
-    },worker.InPorts.get_Item(0).get_KeyValueVar().v);
+    },worker.InPorts.get_Item(0).PortValue.v);
     return null;
    };
   },
@@ -946,8 +932,8 @@
   return function(worker)
   {
    var I;
-   I=worker.InPorts.get_Item(0).get_NumberValue();
-   return DatabaseRunner.New(worker.Name.c,worker.InPorts.get_Item(1).get_StringValue(),I,worker.OutPorts.get_Item(0).Key);
+   I=worker.InPorts.get_Item(0).PortValue.c;
+   return DatabaseRunner.New(worker.Name.c,worker.InPorts.get_Item(1).PortValue.c,I,worker.OutPorts.get_Item(0).Key);
   };
  };
  DatabaseRunner.get_Create=function()
@@ -989,7 +975,7 @@
        return entry;
       });
      },context.Queue);
-    },worker.InPorts.get_Item(0).get_NumberVar().v);
+    },worker.InPorts.get_Item(0).get_NumberView());
     return ChartJs.Render$8(worker.RunnerContext.$0.LineChart,{
      $:1,
      $0:{
@@ -1049,7 +1035,7 @@
  {
   return function(worker)
   {
-   return ChartRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).get_NumberValue(),worker.InPorts.get_Item(1).get_NumberValue(),worker.InPorts.get_Item(2).get_NumberValue(),worker.InPorts.get_Item(3).get_NumberValue());
+   return ChartRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).PortValue.c,worker.InPorts.get_Item(1).PortValue.c,worker.InPorts.get_Item(2).PortValue.c,worker.InPorts.get_Item(3).PortValue.c);
   };
  };
  ChartRenderer.Create=function(cx,cy,bufferSize)
@@ -1077,7 +1063,7 @@
      var c;
      c=value<<0;
      return Global.String(c);
-    },worker.InPorts.get_Item(0).get_NumberVar().v);
+    },worker.InPorts.get_Item(0).get_NumberView());
     return Doc.Element("div",[AttrModule.Class("bigvalue")],[Doc.TextView(strView)]);
    };
   },
@@ -1098,7 +1084,7 @@
  {
   return function(worker)
   {
-   return TextBoxRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).get_NumberValue());
+   return TextBoxRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).PortValue.c);
   };
  };
  TextBoxRenderer.get_Create=function()
@@ -1117,7 +1103,7 @@
   {
    return function(worker)
    {
-    return Doc.ButtonView(worker.InPorts.get_Item(0).get_String(),[],worker.InPorts.get_Item(1).get_BooleanVar().v,function(state)
+    return Doc.ButtonView(worker.InPorts.get_Item(0).get_String(),[],worker.InPorts.get_Item(1).get_BooleanView(),function(state)
     {
      worker.OutPorts.get_Item(0).Trigger(new Value({
       $:2,
@@ -1143,7 +1129,7 @@
  {
   return function(worker)
   {
-   return ButtonRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).get_StringValue(),worker.InPorts.get_Item(1).get_BooleanValue(),worker.OutPorts.get_Item(0).Key);
+   return ButtonRenderer.New(worker.Name.c,worker.InPorts.get_Item(0).PortValue.c,worker.InPorts.get_Item(1).PortValue.c,worker.OutPorts.get_Item(0).Key);
   };
  };
  ButtonRenderer.get_Create=function()
@@ -1181,7 +1167,7 @@
    allInPorts=Workers.allInPorts(workers);
    List.iter(function(inPort)
    {
-    (MessageBus.Log())((((Runtime.Curried3(function($1,$2,$3)
+    (Environment.Log())((((Runtime.Curried3(function($1,$2,$3)
     {
      return $1(PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
     }))(Global.id))(inPort.Name))(inPort.Key));
@@ -1210,7 +1196,7 @@
          return port.Key===cell1.OutPortKey;
         },allOutPorts),o==null?null:{
          $:1,
-         $0:(outPort=o.$0,((MessageBus.Log())((function($1)
+         $0:(outPort=o.$0,((Environment.Log())((function($1)
          {
           return function($2)
           {
@@ -1221,7 +1207,7 @@
           return port.Key===cell2.InPortKey;
          },allInPorts),o$1==null?null:{
           $:1,
-          $0:(inPort=o$1.$0,((MessageBus.Log())("Found int port"),templateValue=(m=inPort.PortValue,m.$==1?Message.Create(new Value({
+          $0:(inPort=o$1.$0,((Environment.Log())("Found int port"),templateValue=(m=inPort.PortValue.c.Value,m.$==1?Message.Create(new Value({
            $:1,
            $0:""
           })):m.$==2?Message.Create(new Value({
@@ -1345,6 +1331,10 @@
      };
     })],[Doc.Element("div",[AttrModule.Style("margin-left","10px"),AttrModule.Style("margin-right","5px")],[Doc.TextView(mapName)])])]);
    },this.SelectorItems.v),plus]);
+  },
+  ItemByIndex:function(ind)
+  {
+   return List.head(List.ofSeq(this.SelectorItems));
   }
  },null,SelectorGroup);
  SelectorGroup.Create=function(name,config,childCreator,itemOnCreated,itemOnSelected)
@@ -1944,14 +1934,13 @@
     gSelectorRules.SelectorItems.Append(SelectorItem.Create(grNameVar,p[1]));
     return RulesEditor.Restore($this.Data,Seq.nth(ind,List.ofSeq($this.Data.RulesGroups)).RulesRowItems,t[1]);
    },rules);
-   Var.Set(this.EditorSelectorEdit.OptSelectedItem,{
+   this.Data.WidgetGroups.get_Length()>0?(Var.Set(this.EditorSelectorEdit.OptSelectedItem,{
     $:1,
     $0:List.head(List.ofSeq(this.EditorSelectorEdit.GroupByIndex(0).SelectorItems))
-   });
-   Var.Set(this.EditorSelectorRun.OptSelectedItem,{
+   }),Var.Set(this.EditorSelectorRun.OptSelectedItem,{
     $:1,
     $0:List.head(List.ofSeq(this.EditorSelectorRun.GroupByIndex(0).SelectorItems))
-   });
+   })):(Var.Set(this.EditorSelectorEdit.OptSelectedItem,null),Var.Set(this.EditorSelectorRun.OptSelectedItem,null));
    console.log("Connectors restored");
   },
   Store:function(fncFromWorker)
@@ -2046,7 +2035,6 @@
   editorSelectorRun=WindowSelector.get_Create();
   editorSelectorEdit=WindowSelector.get_Create().WithGroupOnClick(function(gr)
   {
-   (MessageBus.Log())("WithGroupOnClick");
    propertyGrid.Edit(List.mapi(function(ind,item)
    {
     var c;
@@ -2054,7 +2042,6 @@
    },List.ofSeq(gr.SelectorItems)));
   }).WithItemOnSelected(function()
   {
-   (MessageBus.Log())("WithItemOnSelected");
    propertyGrid.Edit(List.T.Empty);
   }).WithItemOnCreated(function(grInd)
   {
@@ -2193,8 +2180,8 @@
  };
  App.CreateDashboard=function()
  {
-  SC$2.$cctor();
-  return SC$2.CreateDashboard;
+  SC$3.$cctor();
+  return SC$3.CreateDashboard;
  };
  App.PanelContainerCreator=function(a)
  {
@@ -2236,13 +2223,13 @@
   registerWidget(ChartRenderer.Create(300,100,50));
   registerWidget(ButtonRenderer.get_Create());
  };
- SC$2.$cctor=Runtime.Cctor(function()
+ SC$3.$cctor=Runtime.Cctor(function()
  {
   var dashboard;
-  SC$2.CreateDashboard=(dashboard=Dashboard$1.Create(function()
+  SC$3.CreateDashboard=(dashboard=Dashboard$1.Create(function()
   {
    return App.PanelContainerCreator();
   }),(App.Register(dashboard),dashboard));
-  SC$2.$cctor=Global.ignore;
+  SC$3.$cctor=Global.ignore;
  });
 }());

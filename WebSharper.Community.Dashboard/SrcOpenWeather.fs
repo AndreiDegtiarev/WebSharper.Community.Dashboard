@@ -58,8 +58,8 @@ type OpenWeatherRunner =
                                         OutPortKey = System.Guid.NewGuid().ToString()
                                      }
  static member FromPorts = (fun worker -> {
-                                             OpenWeatherCity=worker.InPorts.[0].StringValue 
-                                             OpenWeatherApiKey=worker.InPorts.[1].StringValue 
+                                             OpenWeatherCity=worker.InPorts.[0].PortValue.Value 
+                                             OpenWeatherApiKey=worker.InPorts.[1].PortValue.Value  
                                              OutPortKey=worker.OutPorts.[0].Key
                                              Name = worker.Name.Value
                                           }

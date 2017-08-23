@@ -4,6 +4,7 @@ open WebSharper
 open WebSharper.Sitelets
 open WebSharper.UI.Next
 open WebSharper.UI.Next.Server
+open WebSharper.Community.Dashboard
 
 type EndPoint =
     | [<EndPoint "/">] Home
@@ -52,7 +53,7 @@ module Site =
     [<Website>]
     let Main =
         Application.MultiPage (fun (ctx:Context<EndPoint>) endpoint ->
-            Server.RootFolder <- System.IO.Path.Combine(ctx.RootFolder,"Data")
+            Environment.DataDirectory <- System.IO.Path.Combine(ctx.RootFolder,"Data")
             let queryParams = HttpUtility.ParseQueryString ctx.RequestUri.Query
             let configName = queryParams.["Config"]
             match endpoint with

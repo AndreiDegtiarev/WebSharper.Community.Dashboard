@@ -42,6 +42,7 @@ type SelectorGroup =
             ItemOnCreated  = itemOnCreated
             ItemOnSelected = itemOnSelected
         }
+    member x.ItemByIndex ind = x.SelectorItems |> List.ofSeq |> List.head
     member x.RenderMenu offset (selectedItemVar:Var<Option<SelectorItem>>) = 
      let plus = 
        match x.ChildCreatator with

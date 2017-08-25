@@ -21,6 +21,7 @@ module MessageBus =
     type Message = 
         {Key:string;Time:System.DateTime;Value:Value}
         static member Create value = {Key=Helper.UniqueKey();Time=System.DateTime.UtcNow;Value = value}
+        member x.WithKey key = {x with Key = key} 
 
     let CreateKeyValue key value = {Key=key;Time=System.DateTime.UtcNow;Value=value}
     let CreateNumPair key value = CreateKeyValue key (Number(value))

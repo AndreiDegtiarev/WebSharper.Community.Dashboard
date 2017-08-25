@@ -30,7 +30,7 @@ type InPort =  {Key:string;Name:string;PortValue:Var<MessageBus.Message>;CacheSi
                                                      var.View |> View.Sink (fun number -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Boolean(number)})
                                                      Properties.check  x.Name var
 
-               member x.Receive value = x.PortValue.Value <- value
+               member x.Receive (value:MessageBus.Message) = x.PortValue.Value <- value.WithKey(x.Key)
 
                member x.Number = x.PortValue.Value.Value.AsNumber
                member x.NumberView = x.PortValue.View  |> View.Map (fun value -> value.Value.AsNumber ) 

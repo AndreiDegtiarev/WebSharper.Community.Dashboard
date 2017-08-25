@@ -161,17 +161,23 @@
    return this.$==0?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
   }
  },null,Value);
+ Message=MessageBus.Message=Runtime.Class({
+  WithKey:function(key)
+  {
+   return Message.New(key,this.Time,this.Value);
+  }
+ },null,Message);
  Message.Create=function(value)
  {
   return Message.New(Helper.UniqueKey(),Date.now(),value);
  };
  Message.New=function(Key$1,Time,Value$1)
  {
-  return{
+  return new Message({
    Key:Key$1,
    Time:Time,
    Value:Value$1
-  };
+  });
  };
  ListenerInfo.Create=function(key,name,cacheSize)
  {
@@ -420,7 +426,7 @@
   },
   Receive:function(value)
   {
-   Var.Set(this.PortValue,value);
+   Var.Set(this.PortValue,value.WithKey(this.Key));
   },
   get_Property:function()
   {

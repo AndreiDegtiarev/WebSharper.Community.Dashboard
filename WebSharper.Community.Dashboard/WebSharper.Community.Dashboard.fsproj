@@ -66,6 +66,7 @@
     <Compile Include="RulesEditor.fs" />
     <Compile Include="Dashboard.fs" />
     <Compile Include="AppModelLib.fs" />
+    <Compile Include="AppData.fs" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +88,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />

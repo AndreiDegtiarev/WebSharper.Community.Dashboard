@@ -10,10 +10,10 @@ open WebSharper.Community.Panel
 [<JavaScript>]
 type AppModel =
     |AppLib of AppModelLib
-    member x.Worker =
-        match x with 
-        |AppLib(src) -> src.Worker
 
+    static member ToWorker appData = 
+        match appData with 
+        |AppLib(src) -> src.Worker
     static member FromDataContext (data:IWorkerContext)=
         match data |> AppModelLib.FromDataContext with
         |Some(appModel) -> appModel

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunnerContext,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,SelectorItem,SelectorGroup,WindowSelector,RulesCellItem,RulesRowItem,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,EventsEditor,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$3,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPort,OutPortType,OutPort,Ports,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunnerContext,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,SelectorItem,SelectorGroup,WindowSelector,RulesCellItem,RulesRowItem,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,EventsEditor,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -54,6 +54,8 @@
  AppModelLib=Dashboard.AppModelLib=Dashboard.AppModelLib||{};
  App=Dashboard.App=Dashboard.App||{};
  SC$3=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib||{};
+ AppDataHelper=Dashboard.AppDataHelper=Dashboard.AppDataHelper||{};
+ AppData=Dashboard.AppData=Dashboard.AppData||{};
  IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Operators=WebSharper&&WebSharper.Operators;
@@ -266,26 +268,26 @@
  };
  MessageBus.CreateBooleanPair=function(key,value)
  {
-  return MessageBus.CreateKeyValue(key,new Value({
+  return MessageBus.CreateMessage(key,new Value({
    $:2,
    $0:value
   }));
  };
  MessageBus.CreateStrPair=function(key,value)
  {
-  return MessageBus.CreateKeyValue(key,new Value({
+  return MessageBus.CreateMessage(key,new Value({
    $:1,
    $0:value
   }));
  };
  MessageBus.CreateNumPair=function(key,value)
  {
-  return MessageBus.CreateKeyValue(key,new Value({
+  return MessageBus.CreateMessage(key,new Value({
    $:0,
    $0:value
   }));
  };
- MessageBus.CreateKeyValue=function(key,value)
+ MessageBus.CreateMessage=function(key,value)
  {
   return Message.New(key,Date.now(),value);
  };
@@ -303,7 +305,8 @@
    {
     return Seq.fold(function(acc,item)
     {
-     return item.Time>=time?new List.T({
+     var c;
+     return(c=item.Time-time,c/1000)>0.01?new List.T({
       $:1,
       $0:item,
       $1:acc
@@ -343,7 +346,7 @@
     {
      return Concurrency.Bind(inbox.Receive(null),function(a)
      {
-      var listenerInfo,x,time,maxTimes,busKeyValue,o;
+      var listenerInfo,x,time,maxTimes,message,o;
       function m(info,a$1,buffer)
       {
        return cutBuffer(time,buffer);
@@ -378,7 +381,7 @@
       },state.Listeners)))),loop(state))):a.$==6?(maxTimes=List.map(function($1)
       {
        return m$1($1[0],$1[1],$1[2]);
-      },state.Listeners),(a.$0(maxTimes.$==0?(new Date(0,0-1,0)).getTime():List.max(maxTimes)),loop(state))):a.$==1?loop(AgentState.New(state.ServerCallback,send_to_listeners(a.$0,state.Listeners))):a.$==0?(busKeyValue=a.$0,(o=state.ServerCallback,o==null?void 0:o.$0(busKeyValue),loop(AgentState.New(state.ServerCallback,send_to_listeners(busKeyValue,state.Listeners))))):loop(AgentState.get_empty());
+      },state.Listeners),(a.$0(maxTimes.$==0?(new Date(0,0-1,0)).getTime():List.max(maxTimes)),loop(state))):a.$==1?loop(AgentState.New(state.ServerCallback,send_to_listeners(a.$0,state.Listeners))):a.$==0?(message=a.$0,(o=state.ServerCallback,o==null?void 0:o.$0(message),loop(AgentState.New(state.ServerCallback,send_to_listeners(message,state.Listeners))))):loop(AgentState.get_empty());
      });
     });
    }
@@ -511,7 +514,7 @@
    _this=MessageBus.Agent();
    _this.mailbox.AddLast({
     $:0,
-    $0:MessageBus.CreateKeyValue(this.Key,value)
+    $0:MessageBus.CreateMessage(this.Key,value)
    });
    _this.resume();
   },
@@ -555,18 +558,7 @@
  {
   function m(name,pair,cacheSize)
   {
-   var m$1;
-   m$1=pair.Value;
-   return m$1.$==1?InPort.Create(pair.Key,name,Var.Create$1(Message.Create(new Value({
-    $:1,
-    $0:m$1.$0
-   }))),cacheSize):m$1.$==2?InPort.Create(pair.Key,name,Var.Create$1(Message.Create(new Value({
-    $:2,
-    $0:m$1.$0
-   }))),cacheSize):InPort.Create(pair.Key,name,Var.Create$1(Message.Create(new Value({
-    $:0,
-    $0:m$1.$0
-   }))),cacheSize);
+   return InPort.Create(pair.Key,name,Var.Create$1(Message.Create(pair.Value)),cacheSize);
   }
   return List.map(function($1)
   {
@@ -1168,7 +1160,8 @@
  RuleContainer=Dashboard.RuleContainer=Runtime.Class({
   Reconnect:function(workers)
   {
-   var allOutPorts,allInPorts,_this;
+   var log,allOutPorts,allInPorts,_this;
+   log=Environment.Log();
    allOutPorts=Workers.allOutPorts(workers);
    allInPorts=Workers.allInPorts(workers);
    List.iter(function(inPort)
@@ -1202,18 +1195,15 @@
          return port.Key===cell1.OutPortKey;
         },allOutPorts),o==null?null:{
          $:1,
-         $0:(outPort=o.$0,((Environment.Log())((function($1)
+         $0:(outPort=o.$0,(log((((Runtime.Curried3(function($1,$2,$3)
          {
-          return function($2)
-          {
-           return $1("Found out port "+PrintfHelpers.toSafe($2));
-          };
-         }(Global.id))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
+          return $1("Found outPort "+PrintfHelpers.toSafe($2)+" try to find inPort:"+PrintfHelpers.toSafe($3));
+         }))(Global.id))(cell1.OutPortKey))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
          {
           return port.Key===cell2.InPortKey;
          },allInPorts),o$1==null?null:{
           $:1,
-          $0:(inPort=o$1.$0,((Environment.Log())("Found int port"),templateValue=(m=inPort.PortValue.c.Value,m.$==1?Message.Create(new Value({
+          $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Key)):void 0,templateValue=(m=inPort.PortValue.c.Value,m.$==1?Message.Create(new Value({
            $:1,
            $0:""
           })):m.$==2?Message.Create(new Value({
@@ -2238,4 +2228,140 @@
   }),(App.Register(dashboard),dashboard));
   SC$3.$cctor=Global.ignore;
  });
+ AppDataHelper.RecreatWidgetsOnServer=function(toWorker,widgets)
+ {
+  function m(a,a$1,gr)
+  {
+   return gr;
+  }
+  function m$1(a,a$1,gr)
+  {
+   return gr;
+  }
+  return List.map(function($1)
+  {
+   return m($1[0],$1[1],$1[2]);
+  },List.concat(List.map(function($1)
+  {
+   return m$1($1[0],$1[1],$1[2]);
+  },AppDataHelper.RecreateWidgets(toWorker,widgets))));
+ };
+ AppDataHelper.RecreateEventsOnServer=function(toWorker,events)
+ {
+  function m(a,gr)
+  {
+   return gr;
+  }
+  function m$1(a,gr)
+  {
+   return gr;
+  }
+  return List.map(function($1)
+  {
+   return m($1[0],$1[1]);
+  },List.concat(List.map(function($1)
+  {
+   return m$1($1[0],$1[1]);
+  },AppDataHelper.RecreateEvents(Global.id,toWorker,events))));
+ };
+ AppDataHelper.RecreateOnClient=function(eventsStarter,dashboard,panelContainerCreator,toWorker,c,c$1,c$2)
+ {
+  var _this;
+  Environment.set_Role(Role.Client);
+  _this=MessageBus.Agent();
+  _this.mailbox.AddLast({
+   $:3,
+   $0:function(m)
+   {
+    (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.SendToServer:-1358505674",[m]);
+   }
+  });
+  _this.resume();
+  dashboard.Restore(panelContainerCreator,AppDataHelper.RecreateEvents(eventsStarter,toWorker,c),AppDataHelper.RecreateWidgets(toWorker,c$1),c$2);
+ };
+ AppDataHelper.RecreateWidgets=function(toWorker,widgets)
+ {
+  function m(grName,panelData,gr)
+  {
+   function m$1(key,keyPanel,widget)
+   {
+    return[key,keyPanel,toWorker(widget)];
+   }
+   return[grName,panelData,List.map(function($1)
+   {
+    return m$1($1[0],$1[1],$1[2]);
+   },gr)];
+  }
+  return List.map(function($1)
+  {
+   return m($1[0],$1[1],$1[2]);
+  },widgets);
+ };
+ AppDataHelper.RecreateEvents=function(fnc,toWorker,events)
+ {
+  function m(grName,gr)
+  {
+   function m$1(key,event)
+   {
+    return[key,fnc(toWorker(event))];
+   }
+   return[grName,List.map(function($1)
+   {
+    return m$1($1[0],$1[1]);
+   },gr)];
+  }
+  return List.map(function($1)
+  {
+   return m($1[0],$1[1]);
+  },events);
+ };
+ AppData=Dashboard.AppData=Runtime.Class({
+  RecreateOnServer:function(toWorker)
+  {
+   var allEvents,allWorkers;
+   function a(grName,rules)
+   {
+    rules.Reconnect(allWorkers);
+   }
+   allEvents=AppDataHelper.RecreateEventsOnServer(toWorker,this.Events);
+   allWorkers=List.map(function(worker)
+   {
+    return worker.WithStartRunner();
+   },List.append(allEvents,AppDataHelper.RecreatWidgetsOnServer(toWorker,this.Widgets)));
+   List.iter(function($1)
+   {
+    return a($1[0],$1[1]);
+   },this.Rules);
+   return allEvents;
+  },
+  RecreateOnClientEventsRunning:function(dashboard,panelContainerCreator,toWorker)
+  {
+   AppDataHelper.RecreateOnClient(function(worker)
+   {
+    return worker.WithStartRunner();
+   },dashboard,panelContainerCreator,toWorker,this.Events,this.Widgets,this.Rules);
+  },
+  RecreateOnClientEventsNotRunning:function(dashboard,panelContainerCreator,toWorker)
+  {
+   AppDataHelper.RecreateOnClient(Global.id,dashboard,panelContainerCreator,toWorker,this.Events,this.Widgets,this.Rules);
+  }
+ },null,AppData);
+ AppData.Create=function(dashboard,fromWorker)
+ {
+  var p;
+  p=dashboard.Store(fromWorker);
+  return AppData.New(p[0],p[1],p[2]);
+ };
+ AppData.empty=function()
+ {
+  return AppData.New(List.T.Empty,List.T.Empty,List.T.Empty);
+ };
+ AppData.New=function(Events,Widgets,Rules)
+ {
+  return new AppData({
+   Events:Events,
+   Widgets:Widgets,
+   Rules:Rules
+  });
+ };
 }());

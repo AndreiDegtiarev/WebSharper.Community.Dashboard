@@ -1,5 +1,6 @@
 ﻿namespace WebSharper.Community.Dashboard
 
+open System
 open WebSharper
 open WebSharper.JavaScript
 open FSharp.Data
@@ -23,10 +24,10 @@ module MessageBus =
         static member Create value = {Key=Helper.UniqueKey();Time=System.DateTime.UtcNow;Value = value}
         member x.WithKey key = {x with Key = key} 
 
-    let CreateKeyValue key value = {Key=key;Time=System.DateTime.UtcNow;Value=value}
-    let CreateNumPair key value = CreateKeyValue key (Number(value))
-    let CreateStrPair key value = CreateKeyValue key (String(value))
-    let CreateBooleanPair key value = CreateKeyValue key (Boolean(value))
+    let CreateMessage key value = {Key=key;Time=System.DateTime.UtcNow;Value=value}
+    let CreateNumPair key value = CreateMessage key (Number(value))
+    let CreateStrPair key value = CreateMessage key (String(value))
+    let CreateBooleanPair key value = CreateMessage key (Boolean(value))
     let CreateNumber value = CreateNumPair (Helper.UniqueKey()) value
     let CreateString value = CreateStrPair (Helper.UniqueKey()) value
 
@@ -51,9 +52,9 @@ module MessageBus =
         static member empty = {Listeners=List.empty;ServerCallback=None}
 
     let Agent = MailboxProcessor<AgentMessage>.Start(fun inbox ->
-        //let timeDiff = 10.0
-        let cutBuffer time buffer=
-            buffer |> List.fold (fun acc item -> if item.Time >= time then item::acc else acc) []
+        let cutBuffer (time:DateTime) buffer=
+            buffer |> List.fold (fun acc item -> //sprintf "%s %s  %f %b" (item.Time.ToLongTimeString()) (time.ToLongTimeString())  ((item.Time - time).TotalSeconds) ((item.Time - time).TotalSeconds > 0.0) |> log
+                                                if (item.Time - time).TotalSeconds > 0.01 then item::acc else acc) []
         let split maxSize (buffer:List<Message>) = 
                         if maxSize < buffer.Length then 
                             let (new_buffer,rest) =  buffer|> List.splitAt maxSize
@@ -96,13 +97,14 @@ module MessageBus =
                               | [] ->  System.DateTime(0,0,0)
                               | _ -> maxTimes |> List.max
                 channel.Reply(maxTime)
+                //sprintf "Max time:%s" (maxTime.ToString()) |> log
                 return! loop state
-            | SendOnlyToClient (busKeyValue) ->
-                return! loop {state with Listeners=state.Listeners |> send_to_listeners busKeyValue}
-            | Send (busKeyValue) ->
-                //log(sprintf "Num listeners:%d" state.Listeners.Length)
-                state.ServerCallback |> Option.map(fun fncServer -> fncServer busKeyValue) |> ignore
-                return! loop {state with Listeners=state.Listeners |> send_to_listeners busKeyValue}
+            | SendOnlyToClient (message) ->
+                return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
+            | Send (message) ->
+                //sprintf "Num listeners:%d msg:%s" state.Listeners.Length message.Key |> log
+                state.ServerCallback |> Option.map(fun fncServer -> fncServer message) |> ignore
+                return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
 
         }
         loop AgentState.empty
@@ -117,10 +119,12 @@ module MessageBus =
         async {
             while true do
                 do! Async.Sleep (2*1000)
+                //"Ask for server messages" |> log
                 let! latestTime = Agent.PostAndAsyncReply(fun r -> LatestMessageTime(r))
                 let! messages=GetMessages latestTime
                 messages |> List.iter (fun message -> Agent.Post(SendOnlyToClient(message)))
                 if messages.Length > 0 then
+                    //messages |> List.iter (fun msg ->sprintf "%s %s" msg.Key (msg.Time.ToString()) |> log) 
                     sprintf "Values from server requested messages received:%d" (messages.Length) |> log
         }|> Async.Start
 

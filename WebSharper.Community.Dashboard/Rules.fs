@@ -13,6 +13,7 @@ type RuleChain =
 type RuleContainer =
     {RuleContainer:RuleChain list}
     member x.Reconnect workers = 
+        let log = Environment.Log
         let allOutPorts = Workers.allOutPorts workers
         let allInPorts = Workers.allInPorts workers
         allInPorts |> List.iter (fun inPort ->  Environment.Log(sprintf "%s %s" inPort.Name inPort.Key))
@@ -25,10 +26,12 @@ type RuleContainer =
                                  let cell1=cells.[i-1]
                                  let cell2=cells.[i]
                                  allOutPorts|> List.tryFind (fun port -> port.Key = cell1.OutPortKey)
-                                 |> Option.map (fun outPort -> Environment.Log(sprintf "Found out port %s" cell2.InPortKey)
+                                 |> Option.map (fun outPort -> sprintf "Found outPort %s try to find inPort:%s" cell1.OutPortKey cell2.InPortKey |> log
                                                                allInPorts|> List.tryFind (fun port -> port.Key = cell2.InPortKey)
                                                                |> Option.map (fun inPort ->
-                                                                                Environment.Log "Found int port"
+                                                                                "Found inPort"|> log
+                                                                                if inPort.PortValue.Value.Key <> inPort.Key then
+                                                                                    inPort.PortValue.Value <- inPort.PortValue.Value.WithKey(inPort.Key)
                                                                                 let listInfo = MessageBus.ListenerInfo.Create outPort.Key (outPort.Name+"->"+inPort.Name) inPort.CacheSize 
                                                                                 let templateValue = match inPort.PortValue.Value.Value with 
                                                                                                     |MessageBus.Number(_) -> MessageBus.Message.Create (MessageBus.Number(0.0))

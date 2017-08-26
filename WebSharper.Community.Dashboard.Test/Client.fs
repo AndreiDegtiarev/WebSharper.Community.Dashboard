@@ -19,16 +19,17 @@ module Client =
 
     let Main (config:StartConfiguration) =
         Environment.Log <- (fun str -> Console.Log(str))
+        let log = Environment.Log
         let fileName = Var.Create "Dashboard"
         let dashboard = App.CreateDashboard
         let makeTestConfig()= 
-            let appData=AppData.Create dashboard
+            let appData=AppData<AppModel>.Create dashboard AppModel.FromWorker
             let panelKey = Helper.UniqueKey()
             let event = AppLib(RandomSource(RandomRunner.Create 100.0 50.0))
-            let eventWorker = event.Worker
+            let eventWorker = event |> AppModel.ToWorker
             let eventPair = (eventWorker.Key,event)
             let makeWidget (widget:AppModel) = 
-                let widgetWorker = widget.Worker
+                let widgetWorker = widget |> AppModel.ToWorker
                 let widgetPair = (widgetWorker.Key,panelKey,widget)
                 (widgetPair,{InPortKey = widgetWorker.InPorts.[0].Key;OutPortKey="";WorkerKey=widgetWorker.Key})
             let (txtPair,textWorker) = makeWidget (AppLib(TextWidget(TextBoxRenderer.Create)))
@@ -43,11 +44,13 @@ module Client =
                                                      {RuleChain = [{InPortKey = eventWorker.InPorts.[0].Key;OutPortKey=eventWorker.OutPorts.[0].Key;WorkerKey=eventWorker.Key}
                                                                    chartWorker]}
                                                     ]})]
-            }.Recreate dashboard (App.PanelContainerCreator)
+            }.RecreateOnClientEventsRunning dashboard (App.PanelContainerCreator) (AppModel.ToWorker:AppModel->Worker)
         let loadOnServer (configName)= 
             let data =  Server.LoadFromFile(configName)
-            data.RecreateOnClient dashboard (App.PanelContainerCreator)
+            data.RecreateOnClientEventsNotRunning dashboard (App.PanelContainerCreator) 
+                                                  (AppModel.ToWorker:AppModel->Worker)
             Server.RecreateOnServer data |> ignore
+            "Server recreated" |> log
             MessageBus.RunServerRequests()
 
         let tbCellC content =td content
@@ -58,12 +61,15 @@ module Client =
             tbCellC [text "File name"
                      Doc.Input [] fileName]
             tbCellC[Helper.TxtIconNormal "archive" "Upload" (fun _ ->  
-                                          let data =  AppData.Create dashboard
+                                          let data =  AppData<AppModel>.Create dashboard (AppModel.FromWorker)
                                           Server.SaveToFile(fileName.Value,data)
                                     )]
             tbCellC[Helper.TxtIconNormal "unarchive" "Download  and run on client" (fun _ ->  
-                              let data =  Server.LoadFromFile(fileName.Value)
-                              data.Recreate dashboard (App.PanelContainerCreator)
+                              Server.LoadFromFile(fileName.Value)
+                               .RecreateOnClientEventsRunning 
+                                           dashboard (App.PanelContainerCreator) 
+                                           (AppModel.ToWorker:AppModel->Worker)
+
                         )]
             tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer(fileName.Value))]
           ]

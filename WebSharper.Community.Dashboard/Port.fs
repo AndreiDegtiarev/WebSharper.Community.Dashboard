@@ -59,7 +59,7 @@ and
            static member CreateNumber key name = OutPort.Create key name NumberOutPort
            static member CreateString key name = OutPort.Create key name StringOutPort
            member x.Clone = {x with Key=Helper.UniqueKey()}
-           member x.Trigger value = MessageBus.Agent.Post (MessageBus.Send(MessageBus.CreateKeyValue x.Key value))
+           member x.Trigger value = MessageBus.Agent.Post (MessageBus.Send(MessageBus.CreateMessage x.Key value))
            member x.TriggerWithKey value = MessageBus.Agent.Post (MessageBus.Send(value))
            override x.Equals y = match y with
                                  | :? OutPort as yPort -> x.Name = yPort.Name
@@ -69,10 +69,7 @@ module Ports =
     let CreateWithCache (info:(string*MessageBus.Message*int) list)= 
                         info
                         |> List.map (fun  (name,pair:MessageBus.Message,cacheSize) ->
-                            match pair.Value with
-                            |MessageBus.Number(value) -> InPort.Create pair.Key name (Var.Create (MessageBus.Message.Create (MessageBus.Number(value)))) cacheSize
-                            |MessageBus.String(value) -> InPort.Create pair.Key name (Var.Create (MessageBus.Message.Create (MessageBus.String(value)))) cacheSize
-                            |MessageBus.Boolean(value) ->InPort.Create pair.Key name (Var.Create (MessageBus.Message.Create (MessageBus.Boolean(value)))) cacheSize
+                            InPort.Create pair.Key name (Var.Create (MessageBus.Message.Create (pair.Value))) cacheSize
                         )
     let Create info = CreateWithCache (info |> List.map (fun (name,value) -> (name,value,1)))                     
 

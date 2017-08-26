@@ -6,18 +6,18 @@ open WebSharper.Community.Dashboard
 module Server =
      
     [<Rpc>]
-    let SaveToFile (fileName:string, data:AppData) = 
-        let json = Json.Serialize<AppData> data
+    let SaveToFile (fileName:string, data:AppData<AppModel>) = 
+        let json = Json.Serialize<AppData<AppModel>> data
         System.IO.File.WriteAllText(System.IO.Path.Combine(Environment.DataDirectory,fileName+".cfg"),json)
     [<Rpc>]
     let LoadFromFile (fileName:string) = 
         let json = System.IO.File.ReadAllText(System.IO.Path.Combine(Environment.DataDirectory,fileName+".cfg"))
-        let data = Json.Deserialize<AppData> json
+        let data = Json.Deserialize<AppData<AppModel>> json
         data
     [<Rpc>]
-    let RecreateOnServer (data:AppData) = 
+    let RecreateOnServer (data:AppData<AppModel>) = 
         Environment.Log <- (fun str -> System.Diagnostics.Debug.WriteLine(str))
         Environment.Role <- Environment.Server
-        data.RecreateOnServer
+        data.RecreateOnServer (AppModel.ToWorker:AppModel->Worker) |> ignore
 
 

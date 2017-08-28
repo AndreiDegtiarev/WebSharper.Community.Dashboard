@@ -112,7 +112,9 @@ type Dashboard =
                                                                         x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 Console.Log("Dialog.IsOK")
-                                                                                                                x.RegisterWidget (Helper.UniqueKey()) group panel.Key  panel.Children selected.Value.Worker.CloneAndRun
+                                                                                                                let widget = selected.Value.Worker.Clone
+                                                                                                                widget.StartRunner()
+                                                                                                                x.RegisterWidget (Helper.UniqueKey()) group panel.Key panel.Children widget
                                                                                                              )
                                                                        ))}
                                         {Icon="edit"; Action=(fun panel->Console.Log("Edit")
@@ -136,11 +138,10 @@ type Dashboard =
             match fncFromWorkerOpt widget with
             |Some(appModel) -> (widget.Key,panel,appModel)::acc
             |None -> acc
-        let events=x.Data.EventGroups|> List.ofSeq |> List.map (fun gr ->
-                           (gr.Name.Value,gr.EventItems |>List.ofSeq |> List.fold (fun acc item -> fncFromWorker acc item.Worker)[]))
+        let events=x.Data.EventGroups|> List.ofSeq |> List.map (fun gr -> (gr.Name.Value,gr.EventItems |>List.ofSeq |> List.fold (fun acc item ->  fncFromWorker acc item.Worker)[] |> List.rev))
         let widgets=x.Data.WidgetGroups|> List.ofSeq |> List.map (fun gr ->
                            let panelData = gr.PanelContainer.PanelItems |>List.ofSeq |>List.map (fun panel -> panel.PanelData)
-                           (gr.Name.Value,panelData,gr.WidgetItems |>List.ofSeq |> List.fold (fun acc item -> fncFromWidget acc item.Panel item.Widget)[]))
+                           (gr.Name.Value,panelData,gr.WidgetItems |>List.ofSeq |> List.fold (fun acc item ->  fncFromWidget acc item.Panel item.Widget)[] |> List.rev))
         let rules = x.Data.RulesGroups|> List.ofSeq |> List.map (fun gr ->
                            (gr.Name.Value,RulesEditor.CopyToRules gr.RulesRowItems))
         (events,widgets,rules)
@@ -166,9 +167,10 @@ type Dashboard =
                                                      panel.Left.Value <- panelConfig.Left
                                                      panel.Top.Value <- panelConfig.Top
                                             )
-                                gr |> List.iter (fun (key,panelKey,widget:Worker) ->
+                                gr |> List.iter (fun (key,panelKey,widget:Worker) ->        
                                                     let panel = grItem.PanelContainer.PanelItems |>List.ofSeq |> List.find (fun entry -> entry.Key = panelKey)
-                                                    x.RegisterWidget key grItem panelKey panel.Children (widget.WithStartRunner())))
+                                                    x.RegisterWidget key grItem panelKey panel.Children (widget.StartRunner()
+                                                                                                         widget)))
         Console.Log("Widgets restored")   
         events |> List.iteri (fun ind (grName,gr) -> 
                                 let (grNameVar,renderer) = DshHelper.EventsGroupCreator x.Data x.PropertyGrid ()
@@ -191,7 +193,9 @@ type Dashboard =
             x.EditorSelectorEdit.OptSelectedItem.Value <- None
             x.EditorSelectorRun.OptSelectedItem.Value <- None
         Console.Log("Connectors restored")   
-        
+        let allEvents = x.Data.EventGroups |> List.ofSeq |> List.map (fun gr -> gr.EventItems |> List.ofSeq |> List.map (fun item -> item.Worker)) |> List.concat
+        let allWidgets = x.Data.WidgetGroups |> List.ofSeq |> List.map (fun gr -> gr.WidgetItems |> List.ofSeq |> List.map (fun item -> item.Widget)) |> List.concat
+        (allEvents,allWidgets)
     member x.Render menu=
         x.Mode.View |> View.Map (fun mode -> 
           match mode with 
@@ -233,7 +237,8 @@ type Dashboard =
                                                let items = x.Factory.EventItems|>List.ofSeq
                                                let selected=Var.Create (items.Head)
                                                x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
-                                                                                        (fun _ ->  let event = selected.Value.Worker.CloneAndRun
+                                                                                        (fun _ ->  let event = selected.Value.Worker.Clone
+                                                                                                   event.StartRunner()
                                                                                                    let group = x.Data.EventGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
                                                                                                    x.Data.RegisterEvent (Helper.UniqueKey()) group event)
                                            else if selIndex = 0 then

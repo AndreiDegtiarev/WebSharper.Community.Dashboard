@@ -15,17 +15,17 @@ type AppModelLib =
     |TextWidget   of TextBoxRenderer
     |ChartWidget  of ChartRenderer
     |ButtonWidget  of ButtonRenderer
-    static member ToWorker worker=
-        match worker with 
-        |RandomSource(src) -> Worker.CreateWithRunner src
-        |OpenWeatherSource(src) -> Worker.CreateWithRunner src
-        |DatabaseSource(src)   -> Worker.CreateWithRunner src
-        |TextWidget(src)   -> Worker.CreateWithRenderer src
-        |ChartWidget(src)  -> Worker.Create(src).WithRunner(src).WithRenderer(src)
-        |ButtonWidget(src)   -> Worker.CreateWithRenderer src
+    static member ToWorker appModel=
+        match appModel with 
+        |RandomSource(src) ->      src |> Worker.Create 
+        |OpenWeatherSource(src) -> src |> Worker.Create 
+        |DatabaseSource(src)   ->  src |> Worker.Create 
+        |TextWidget(src)   ->      src |> Worker.Create 
+        |ChartWidget(src)  ->      src |> Worker.Create 
+        |ButtonWidget(src)   ->    src |> Worker.Create 
          
     static member FromWorker (worker:Worker)= 
-                            match worker.DataContext with
+                            match worker.Data with
                             | :? RandomRunner      as src -> Some(RandomSource(RandomRunner.FromWorker worker))
                             | :? OpenWeatherRunner as src -> Some(OpenWeatherSource(OpenWeatherRunner.FromWorker worker))
                             | :? DatabaseRunner    as src -> Some(DatabaseSource(DatabaseRunner.FromWorker worker))
@@ -37,19 +37,19 @@ type AppModelLib =
 
 [<JavaScript>]          
 module App =
-    let Register fnc fromWorker toWorker data = data |> Worker.Create |> fromWorker |> Option.map (fun appModel -> appModel |> toWorker |> fnc |> ignore) |>ignore
-    let RegisterEventGeneral  dashboard fromWorker toWorker data = data |> Register (dashboard.Factory.RegisterEvent)  fromWorker toWorker
-    let RegisterWidgetGeneral dashboard  fromWorker toWorker data = data |> Register (dashboard.Factory.RegisterWidget) fromWorker toWorker
-    let RegisterAppModelLib  fromWorker toWorker dashboard = 
-        // AppModelLib.FromWorker AppModelLib.ToWorker because of Runner and Renderer registration
-        let registerEvent  data = data |> RegisterEventGeneral dashboard  fromWorker toWorker
-        let registerWidget data = data |> RegisterWidgetGeneral dashboard fromWorker toWorker
+    let Register fnc data = data |> Worker.Create |> fnc
+    let RegisterEventGeneral  dashboard data = data |> Register (dashboard.Factory.RegisterEvent) 
+    let RegisterWidgetGeneral dashboard data = data |> Register (dashboard.Factory.RegisterWidget)
+
+    let RegisterAppModelLib dashboard = 
+        let registerEvent  data = data |> RegisterEventGeneral dashboard 
+        let registerWidget data = data |> RegisterWidgetGeneral dashboard
 
         OpenWeatherRunner.Create "London" ""  |> registerEvent
         RandomRunner.Create                   |> registerEvent
         DatabaseRunner.Create                 |> registerEvent
         TextBoxRenderer.Create                |> registerWidget
-        ChartRenderer.Create 300.0 100.0 50.0 |> registerWidget
+        ChartRenderer.Create 300.0 150.0 50.0 |> registerWidget
         ButtonRenderer.Create                 |> registerWidget
         dashboard
     let PanelContainerCreator=(fun _ -> 
@@ -60,6 +60,6 @@ module App =
                                      .WithAttributes([Attr.Style "border" "1px solid white"
                                                       //Attr.Style "position" "absolute"
                                                      ]))
-    let CreateDashboard fromWorker toWorker =
+    let CreateDashboard =
         let dashboard = Dashboard.Create PanelContainerCreator
-        dashboard |> RegisterAppModelLib fromWorker toWorker
+        dashboard |> RegisterAppModelLib

@@ -16,7 +16,8 @@ type RuleContainer =
         let log = Environment.Log
         let allOutPorts = Workers.allOutPorts workers
         let allInPorts = Workers.allInPorts workers
-        allInPorts |> List.iter (fun inPort ->  Environment.Log(sprintf "%s %s" inPort.Name inPort.Data.Key))
+        allInPorts |> List.iter (fun inPort ->  Environment.Log(sprintf "InPort: %s %s" inPort.Name inPort.Data.Key))
+        allOutPorts |> List.iter (fun port ->  Environment.Log(sprintf "outPort: %s %s" port.Name port.Key))
         MessageBus.Agent.Post MessageBus.Clear
         x.RuleContainer
         |> List.ofSeq

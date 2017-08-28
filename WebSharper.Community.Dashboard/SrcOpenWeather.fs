@@ -58,25 +58,26 @@ type OpenWeatherRunner =
  static member FromWorker = (fun (worker:Worker) -> {OpenWeatherRunnerData = worker.ToData}
                            )
  
- interface IWorkerContext with
+ interface IWorkerData with
       override x.Data = x.OpenWeatherRunnerData
- interface IRunner with
-    override x.Run= (fun worker -> 
-                     async {
-                         while true do
-                             let inCity=worker.InPorts.[0]
-                             let inApiKey=worker.InPorts.[1]
-                             let outTempearatur=worker.OutPorts.[0]
-                             let api = inApiKey.String
-                             let crCity = inCity.String
-                             let! response = OpenWeather.get api crCity
-                             match response with
-                             |Some(res) -> 
-                                 Console.Log ("Value generated:"+response.Value.Title)
-                                 MessageBus.Number((double)response.Value.Temperature) |> outTempearatur.Trigger 
-                                 //Ports.NumTrigger outTempearatur ((double)response.Value.Temperature)
-                             |None -> ()
-                             do! Async.Sleep (1000*15)
-                     }
-                     |> Async.Start
-                     None)
+      override x.Run = Some(fun worker -> 
+                                async {
+                                    while true do
+                                        let inCity=worker.InPorts.[0]
+                                        let inApiKey=worker.InPorts.[1]
+                                        let outTempearatur=worker.OutPorts.[0]
+                                        let api = inApiKey.String
+                                        let crCity = inCity.String
+                                        let! response = OpenWeather.get api crCity
+                                        match response with
+                                        |Some(res) -> 
+                                            Console.Log ("Value generated:"+response.Value.Title)
+                                            MessageBus.Number((double)response.Value.Temperature) |> outTempearatur.Trigger 
+                                            //Ports.NumTrigger outTempearatur ((double)response.Value.Temperature)
+                                        |None -> ()
+                                        do! Async.Sleep (1000*15)
+                                }
+                                |> Async.Start
+                                None)
+      override x.Render = None
+

@@ -103,7 +103,7 @@ module MessageBus =
             | SendOnlyToClient (message) ->
                 return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
             | Send (message) ->
-                //sprintf "Num listeners:%d msg:%s" state.Listeners.Length message.Key |> log
+                sprintf "Num listeners:%d msg:%s" state.Listeners.Length message.Key |> log
                 state.ServerCallback |> Option.map(fun fncServer -> fncServer message) |> ignore
                 return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
 

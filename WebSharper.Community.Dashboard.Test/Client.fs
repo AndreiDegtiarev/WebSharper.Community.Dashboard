@@ -20,10 +20,9 @@ module Client =
     let Main (config:StartConfiguration) =
         Environment.Log <- (fun str -> Console.Log(str))
         let fromWorker = AppModel.FromWorker
-        let toWorker = AppModel.ToWorker
         let log = Environment.Log
         let fileName = Var.Create "Dashboard"
-        let dashboard = App.CreateDashboard fromWorker toWorker 
+        let dashboard = App.CreateDashboard
         let makeTestConfig()= 
             let appData=AppData<AppModel>.Create dashboard fromWorker
             let panelKey = Helper.UniqueKey()

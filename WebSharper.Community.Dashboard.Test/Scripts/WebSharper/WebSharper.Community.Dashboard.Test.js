@@ -112,7 +112,7 @@
   });
   log=Environment.Log();
   fileName=Var.Create$1("Dashboard");
-  dashboard=App.CreateDashboard(AppModel.FromWorker,AppModel.ToWorker);
+  dashboard=App.CreateDashboard();
   return Doc.Element("div",[],[dashboard.Render(Doc.Element("div",[],[tbCellC(List.ofArray([Helper.TxtIconNormal("build","Sample configuration",function()
   {
    makeTestConfig();

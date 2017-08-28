@@ -8,7 +8,7 @@ open WebSharper.Community.Panel
 [<JavaScript>]
 module internal AppDataHelper =
 
-    let RecreateEvents fnc  toWorker events = events |> List.map (fun (grName,gr) -> (grName,gr|>List.map (fun (key,event) -> (key,event |> toWorker |> fnc))))
+    let RecreateEvents  toWorker events = events |> List.map (fun (grName,gr) -> (grName,gr|>List.map (fun (key,event) -> (key,event |> toWorker))))
 
     let RecreateWidgets toWorker widgets = widgets |> List.map (fun (grName,panelData,gr) -> (grName,panelData,gr|>List.map (fun (key,keyPanel,widget) -> (key,keyPanel,widget |> toWorker))))
 
@@ -16,15 +16,17 @@ module internal AppDataHelper =
         let (events,widgets,rules) = config
         Environment.Role <- Environment.Client
         MessageBus.Agent.Post(MessageBus.RegisterServerCallback(MessageBus.SendToServer))
-        dashboard.Restore panelContainerCreator 
-                          (events |> RecreateEvents eventsStarter toWorker)
-                          (widgets |> RecreateWidgets toWorker)
-                          rules
+        let (allEvents,allWidgets) =
+            dashboard.Restore panelContainerCreator 
+                              (events |> RecreateEvents toWorker)
+                              (widgets |> RecreateWidgets toWorker)
+                              rules
+        allEvents |> List.iter eventsStarter
 
 
     let RecreateEventsOnServer toWorker events =         
         events 
-        |> RecreateEvents (fun worker -> worker)  toWorker 
+        |> RecreateEvents toWorker 
         |> List.map (fun (_,gr)->gr) |> List.concat |> List.map (fun (_,gr)->gr) 
 
     let RecreatWidgetsOnServer toWorker widgets = 
@@ -55,12 +57,13 @@ type AppData<'a> =
             Rules = rules
         }
     member x.RecreateOnClientEventsNotRunning (dashboard:Dashboard) panelContainerCreator  toWorker = 
-            AppDataHelper.RecreateOnClient (fun (worker:Worker) -> worker) (dashboard:Dashboard) panelContainerCreator  toWorker (x.Events,x.Widgets,x.Rules)
+            AppDataHelper.RecreateOnClient (fun (worker:Worker) -> ()) (dashboard:Dashboard) panelContainerCreator  toWorker (x.Events,x.Widgets,x.Rules)
     member x.RecreateOnClientEventsRunning (dashboard:Dashboard) panelContainerCreator  toWorker = 
-            AppDataHelper.RecreateOnClient (fun (worker:Worker) -> worker.WithStartRunner()) (dashboard:Dashboard) panelContainerCreator  toWorker  (x.Events,x.Widgets,x.Rules)
+            AppDataHelper.RecreateOnClient (fun (worker:Worker) -> worker.StartRunner()) (dashboard:Dashboard) panelContainerCreator  toWorker  (x.Events,x.Widgets,x.Rules)
     member x.RecreateOnServer toWorker=
         let allEvents = x.Events |> AppDataHelper.RecreateEventsOnServer toWorker 
         let allWidgets = x.Widgets |> AppDataHelper.RecreatWidgetsOnServer toWorker
-        let allWorkers = allEvents@allWidgets |> List.map (fun (worker:Worker) -> worker.WithStartRunner())
+        let allWorkers = allEvents@allWidgets //|> List.map (fun (worker:Worker) -> worker.WithStartRunner())
         x.Rules |> List.iter (fun (grName,rules:RuleContainer) -> allWorkers |> rules.Reconnect)
+        allWorkers |> List.iter (fun worker -> worker.StartRunner() |> ignore)
         allEvents

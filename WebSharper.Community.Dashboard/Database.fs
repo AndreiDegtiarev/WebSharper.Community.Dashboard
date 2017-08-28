@@ -68,23 +68,26 @@ type DatabaseRunner =
  }
  static member Create  = {
                            DatabaseData =  WorkerData.Create "Database" 
-                                                                    [(" in Value",MessageBus.NumberMessage 100.0)
-                                                                     ("Database name",MessageBus.StringMessage "Database.txt")]
-                                                                    [("Number value",MessageBus.NumberMessage 0.0)]
+                                                              [(" in Value",MessageBus.NumberMessage 100.0)
+                                                               ("Database name",MessageBus.StringMessage "Database.txt")]
+                                                              [("Number value",MessageBus.NumberMessage 0.0)]
                          }
  static member FromWorker = (fun (worker:Worker) -> {DatabaseData = worker.ToData})
- interface IWorkerContext with
+ interface IWorkerData with
       override x.Data = x.DatabaseData
- interface IRunner with
-        override x.Run= (fun worker ->
-                            let file = worker.InPorts.[1].String
-                            ServerDatabase.ReadAllMessages file
-                            |> List.iter (fun msg -> (MessageBus.Agent.Post(MessageBus.Send(msg))))
-                            worker.InPorts.[0].PortValue.View
-                            |> View.Sink (fun value -> 
-                                    ServerDatabase.WriteMessage file value
-                                    worker.OutPorts.[0].Trigger value.Value
-                                )  
-                            None
-                         )
+      override x.Run = Some(fun worker ->
+                                let mutable isFirstCall = true
+                                worker.InPorts.[0].PortValue.View
+                                |> View.Sink (fun value -> 
+                                        let file = worker.InPorts.[1].String
+                                        if isFirstCall then 
+                                            ServerDatabase.ReadAllMessages file
+                                            |> List.iter (fun msg -> (MessageBus.Agent.Post(MessageBus.Send(msg))))
+                                            isFirstCall <- false
+                                        else
+                                            ServerDatabase.WriteMessage file (value.WithKey(worker.OutPorts.[0].Key))
+                                            worker.OutPorts.[0].Trigger value.Value
+                                    )  
+                                None)
+      override x.Render = None
 

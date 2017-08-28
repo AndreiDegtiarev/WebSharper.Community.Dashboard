@@ -36,11 +36,9 @@ type ChartRenderer =
 
   static member FromWorker = (fun (worker:Worker) -> {ChartRendererData = worker.ToData})
 
-  interface IWorkerContext with
-      override x.Data = x.ChartRendererData
-
-  interface IRunner with
-    override x.Run = (fun worker ->
+  interface IWorkerData with
+    override x.Data = x.ChartRendererData
+    override x.Run = Some(fun worker ->
                                     let chartBufferSize = (int) worker.InPorts.[3].Number
                                     let data = [for x in 0 .. chartBufferSize-1 -> (0.0)]
                                     let values = let queue=Queue<double>()
@@ -50,22 +48,20 @@ type ChartRenderer =
 
                                     Some({LineChart=chart;Queue=values} :> IRunnerContext)
                         )
-  interface IRenderer with
-    override x.Render  = (fun worker ->
+    override x.Render  = Some(fun worker ->
                             let chartBufferSize = (int) worker.InPorts.[3].Number
-                            let context = worker.RunnerContext.Value :?> ChartRunnerContext
+                            let chart = worker.RunnerContext.Value.Value :?> ChartRunnerContext
 
                             let inPortNumberView = worker.InPorts.[0].NumberView
                             let observe value =
-                                context.Queue.Enqueue(value)
-                                if context.Queue.Count > chartBufferSize then
-                                    context.Queue.Dequeue()|>ignore
-                                context.Queue|>Seq.iteri (fun ind entry -> context.LineChart.UpdateData(ind, fun e -> entry))
+                                chart.Queue.Enqueue(value)
+                                if chart.Queue.Count > chartBufferSize then
+                                    chart.Queue.Dequeue()|>ignore
+                                chart.Queue|>Seq.iteri (fun ind entry -> chart.LineChart.UpdateData(ind, fun e -> entry))
                             do View.Sink observe inPortNumberView
      
                             let cx = worker.InPorts.[1].Number
                             let cy = worker.InPorts.[2].Number
-                            let chart = worker.RunnerContext.Value :?> ChartRunnerContext
                             let config = ChartJs.CommonChartConfig(Title=ChartJs.TitleConfig(Display = false),
                                                                    Legend = ChartJs.LegendConfig(Display = false),
                                                                    Elements = ChartJs.ElementConfig(Point=ChartJs.PointConfig(Radius = 0.0)
@@ -83,11 +79,10 @@ type TextBoxRenderer =
   }
   static member Create = {TextBoxRendererData = WorkerData.Create "Text" [("in Value",MessageBus.NumberMessage 0.0)] []} 
   static member FromWorker = (fun (worker:Worker) -> {TextBoxRendererData = worker.ToData}) //TextBoxValue=worker.InPorts.[0].PortValue.Value;Name = worker.Name.Value})
-  interface IWorkerContext with
-       override x.Data = x.TextBoxRendererData
-
-  interface IRenderer with
-    override x.Render  = (fun worker -> 
+  interface IWorkerData with
+    override x.Data = x.TextBoxRendererData
+    override x.Run = None
+    override x.Render  = Some(fun worker -> 
                             let strView = worker.InPorts.[0].NumberView |> View.Map (fun value -> ((int)value).ToString())
                             divAttr [Attr.Class "bigvalue"] [
                                              textView strView
@@ -104,13 +99,12 @@ type ButtonRenderer =
                          
   static member FromWorker = (fun (worker:Worker) -> {ButtonRendererData = worker.ToData})
 
-  interface IWorkerContext with
+  interface IWorkerData with
       override x.Data = x.ButtonRendererData
-
-  interface IRenderer with
-    override x.Render  = (fun worker -> 
-                            let name = worker.InPorts.[0].String 
-                            let boolView = worker.InPorts.[1].BooleanView
-                            Doc.ButtonView name [] boolView (fun state -> worker.OutPorts.[0].Trigger (MessageBus.Boolean(state))) :> Doc
+      override x.Run  = None
+      override x.Render  = Some(fun worker -> 
+                                let name = worker.InPorts.[0].String 
+                                let boolView = worker.InPorts.[1].BooleanView
+                                Doc.ButtonView name [] boolView (fun state -> worker.OutPorts.[0].Trigger (MessageBus.Boolean(state))) :> Doc
                             )
 

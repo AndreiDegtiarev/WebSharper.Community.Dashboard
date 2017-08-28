@@ -33,10 +33,6 @@
  console=Global.console;
  Var=Next&&Next.Var;
  Strings=WebSharper&&WebSharper.Strings;
- AppModel.ToWorker=function(data)
- {
-  return AppModel.FromDataContext(data).get_Worker();
- };
  AppModel.FromWorker=function(worker)
  {
   var m;
@@ -46,15 +42,9 @@
    $0:m.$0
   }:Operators.FailWith("AllTypes FromWorker unknown type");
  };
- AppModel.FromDataContext=function(data)
+ AppModel.ToWorker=function(appData)
  {
-  var m;
-  m=AppModelLib.FromDataContext(data);
-  return m!=null&&m.$==1?m.$0:Operators.FailWith("AllTypes FromDataContext unknown type");
- };
- AppModel.ToWorker$1=function(appData)
- {
-  return appData.$0.get_Worker();
+  return AppModelLib.ToWorker(appData.$0);
  };
  Client.Main=function(config)
  {
@@ -65,38 +55,38 @@
    function makeWidget(widget)
    {
     var widgetWorker;
-    widgetWorker=AppModel.ToWorker$1(widget);
-    return[[widgetWorker.Key,panelKey,widget],RuleEntry.New(widgetWorker.InPorts.get_Item(0).Key,"",widgetWorker.Key)];
+    widgetWorker=AppModel.ToWorker(widget);
+    return[[widgetWorker.Key,panelKey,widget],RuleEntry.New(widgetWorker.InPorts.get_Item(0).get_Key(),"",widgetWorker.Key)];
    }
    AppData.Create(dashboard,AppModel.FromWorker);
    panelKey=Helper.UniqueKey();
    event={
     $:0,
-    $0:new AppModelLib({
+    $0:{
      $:0,
-     $0:RandomRunner.Create(100,50)
-    })
+     $0:RandomRunner.get_Create()
+    }
    };
-   eventWorker=AppModel.ToWorker$1(event);
+   eventWorker=AppModel.ToWorker(event);
    p=makeWidget({
     $:0,
-    $0:new AppModelLib({
+    $0:{
      $:3,
      $0:TextBoxRenderer.get_Create()
-    })
+    }
    });
    p$1=makeWidget({
     $:0,
-    $0:new AppModelLib({
+    $0:{
      $:4,
      $0:ChartRenderer.Create(300,150,50)
-    })
+    }
    });
    panelData=List.ofArray([PanelData.Create(panelKey,0,0,List.T.Empty)]);
-   AppData.New(List.ofArray([["main",List.ofArray([[eventWorker.Key,event]])]]),List.ofArray([["main",panelData,List.ofArray([p[0],p$1[0]])]]),List.ofArray([["main",RuleContainer.New(List.ofArray([RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p[1]])),RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).Key,eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p$1[1]]))]))]])).RecreateOnClientEventsRunning(dashboard,function()
+   AppData.New(List.ofArray([["main",List.ofArray([[eventWorker.Key,event]])]]),List.ofArray([["main",panelData,List.ofArray([p[0],p$1[0]])]]),List.ofArray([["main",RuleContainer.New(List.ofArray([RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).get_Key(),eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p[1]])),RuleChain.New(List.ofArray([RuleEntry.New(eventWorker.InPorts.get_Item(0).get_Key(),eventWorker.OutPorts.get_Item(0).Key,eventWorker.Key),p$1[1]]))]))]])).RecreateOnClientEventsRunning(dashboard,function()
    {
     return App.PanelContainerCreator();
-   },AppModel.ToWorker$1);
+   },AppModel.ToWorker);
   }
   function loadOnServer(configName)
   {
@@ -105,7 +95,7 @@
    data.RecreateOnClientEventsNotRunning(dashboard,function()
    {
     return App.PanelContainerCreator();
-   },AppModel.ToWorker$1);
+   },AppModel.ToWorker);
    (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:1430973847",[data]);
    log("Server recreated");
    MessageBus.RunServerRequests();
@@ -132,7 +122,7 @@
    (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:960175932",[fileName.c]).RecreateOnClientEventsRunning(dashboard,function()
    {
     return App.PanelContainerCreator();
-   },AppModel.ToWorker$1);
+   },AppModel.ToWorker);
   })])),tbCellC(List.ofArray([Helper.TxtIconNormal("cloud_upload","Download and run on server",function()
   {
    loadOnServer(fileName.c);

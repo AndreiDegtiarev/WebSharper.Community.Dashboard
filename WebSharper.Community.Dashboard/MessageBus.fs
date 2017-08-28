@@ -23,13 +23,14 @@ module MessageBus =
         {Key:string;Time:System.DateTime;Value:Value}
         static member Create value = {Key=Helper.UniqueKey();Time=System.DateTime.UtcNow;Value = value}
         member x.WithKey key = {x with Key = key} 
+        member x.WithTime time = {x with Time = time} 
 
     let CreateMessage key value = {Key=key;Time=System.DateTime.UtcNow;Value=value}
-    let CreateNumPair key value = CreateMessage key (Number(value))
-    let CreateStrPair key value = CreateMessage key (String(value))
-    let CreateBooleanPair key value = CreateMessage key (Boolean(value))
-    let CreateNumber value = CreateNumPair (Helper.UniqueKey()) value
-    let CreateString value = CreateStrPair (Helper.UniqueKey()) value
+    let NumberKeyMessage key value = CreateMessage key (Number(value))
+    let StringKeyMessage key value = CreateMessage key (String(value))
+    let BooleanKeyMesage key value = CreateMessage key (Boolean(value))
+    let NumberMessage value = NumberKeyMessage (Helper.UniqueKey()) value
+    let StringMessage value = StringKeyMessage (Helper.UniqueKey()) value
 
     type ListenerInfo =
      {Key:string;Name:string;CacheSize:int}

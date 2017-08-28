@@ -13,17 +13,13 @@ type AppModel =
 
     static member ToWorker appData = 
         match appData with 
-        |AppLib(src) -> src.Worker
-    static member FromDataContext (data:IWorkerContext)=
-        match data |> AppModelLib.FromDataContext with
-        |Some(appModel) -> appModel
-        |_ -> failwith("AllTypes FromDataContext unknown type")
-         
+        |AppLib(src) -> AppModelLib.ToWorker src  
+        
     static member FromWorker (worker:Worker)= 
         match worker |> AppModelLib.FromWorker with
         |Some(appModel) -> AppLib(appModel)
         |_ -> failwith("AllTypes FromWorker unknown type") 
-    static member ToWorker data = (data |> AppModel.FromDataContext).Worker
+
 
 
     

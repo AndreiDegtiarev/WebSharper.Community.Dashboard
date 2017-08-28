@@ -6,31 +6,42 @@ open WebSharper.UI.Next
 open WebSharper.Community.PropertyGrid
 open WebSharper.Community.Panel
 
-
+[<JavaScript>]
+type InPortData =  
+    {
+        Key:string
+        Name:string
+        Value:MessageBus.Message
+        CacheSize:int
+    }
+    static member Create name value cacheSize= {Value=value;Key = value.Key;Name=name;CacheSize=cacheSize}
 [<JavaScript;CustomEquality;NoComparison>]
-type InPort =  {Key:string;Name:string;PortValue:Var<MessageBus.Message>;CacheSize:int}
-                static member Create  key name portValue cacheSize = {Key = key;Name = name;PortValue=portValue;CacheSize = cacheSize}
+type InPort =  {Data:InPortData;PortValue:Var<MessageBus.Message>}
+                static member FromData (data:InPortData) = {Data=data;PortValue=Var.Create data.Value}
+                static member ToData port= {port.Data with Value=port.PortValue.Value}
                 override x.Equals y = match y with
-                                      | :? InPort as yPort -> x.Name = yPort.Name
+                                      | :? InPort as yPort -> x.Data.Name = yPort.Data.Name
                                       | _ -> false
                 member x.Clone = {
                                     x with 
-                                        Key=System.Guid.NewGuid().ToString()
+                                        Data={x.Data with Key=System.Guid.NewGuid().ToString()}
                                         PortValue = Var.Create x.PortValue.Value
                                   }
+                member x.Name = x.Data.Name
+                member x.Key = x.Data.Key
                 member x.Property = 
                         match x.PortValue.Value.Value with 
                         |MessageBus.Number(value) ->let var = Var.Create x.Number
                                                     var.View |> View.Sink (fun number -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Number(number)})
-                                                    Properties.double  x.Name var
+                                                    Properties.double  x.Data.Name var
                         |MessageBus.String(value) ->let var = Var.Create x.String 
                                                     var.View |> View.Sink (fun number -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.String(number)})
-                                                    Properties.string  x.Name var
+                                                    Properties.string  x.Data.Name var
                         |MessageBus.Boolean(value) ->let var = Var.Create x.Boolean 
                                                      var.View |> View.Sink (fun number -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Boolean(number)})
-                                                     Properties.check  x.Name var
+                                                     Properties.check  x.Data.Name var
 
-               member x.Receive (value:MessageBus.Message) = x.PortValue.Value <- value.WithKey(x.Key)
+               member x.Receive (value:MessageBus.Message) = x.PortValue.Value <- value; //.WithKey(x.Key)
 
                member x.Number = x.PortValue.Value.Value.AsNumber
                member x.NumberView = x.PortValue.View  |> View.Map (fun value -> value.Value.AsNumber ) 
@@ -40,37 +51,23 @@ type InPort =  {Key:string;Name:string;PortValue:Var<MessageBus.Message>;CacheSi
 
                member x.Boolean = x.PortValue.Value.Value.AsBoolean 
                member x.BooleanView = x.PortValue.View  |> View.Map (fun value -> value.Value.AsBoolean ) 
-and
- [<JavaScript>]
- OutPortType =
- |NumberOutPort
- |StringOutPort
- |BooleanOutPort
- member x.IsCompatible inPort =
-    match x with
-    |NumberOutPort -> match inPort.PortValue.Value.Value with |MessageBus.Number(_)->true | _ ->false
-    |StringOutPort -> match inPort.PortValue.Value.Value with |MessageBus.String(_)->true | _ ->false
-    |BooleanOutPort ->match inPort.PortValue.Value.Value with |MessageBus.Boolean(_)->true | _ ->false
-    
-and
- [<JavaScript;CustomEquality;NoComparison>]
- OutPort = {Key:string;Name:string;Type:OutPortType} 
+
+
+[<JavaScript;CustomEquality;NoComparison>]
+type OutPort = 
+           {Key:string;Name:string;Type:MessageBus.Message} 
            static member Create key name portType = {Key=key;Name = name;Type = portType}
-           static member CreateNumber key name = OutPort.Create key name NumberOutPort
-           static member CreateString key name = OutPort.Create key name StringOutPort
+           static member CreateNumber key name = OutPort.Create key name (MessageBus.NumberMessage 0.0)
+           static member CreateString key name = OutPort.Create key name (MessageBus.StringMessage "")
            member x.Clone = {x with Key=Helper.UniqueKey()}
            member x.Trigger value = MessageBus.Agent.Post (MessageBus.Send(MessageBus.CreateMessage x.Key value))
-           member x.TriggerWithKey value = MessageBus.Agent.Post (MessageBus.Send(value))
+
            override x.Equals y = match y with
                                  | :? OutPort as yPort -> x.Name = yPort.Name
                                  | _ -> false
 [<JavaScript>]
 module Ports = 
-    let CreateWithCache (info:(string*MessageBus.Message*int) list)= 
-                        info
-                        |> List.map (fun  (name,pair:MessageBus.Message,cacheSize) ->
-                            InPort.Create pair.Key name (Var.Create (MessageBus.Message.Create (pair.Value))) cacheSize
-                        )
-    let Create info = CreateWithCache (info |> List.map (fun (name,value) -> (name,value,1)))                     
+   
+    let CreateOut info = info |> List.map(fun (name,msg:MessageBus.Message) -> OutPort.Create msg.Key name msg)                
 
             

@@ -9,10 +9,17 @@ open WebSharper.Community.Panel
 [<JavaScript>]type IRunnerContext = interface end
 
 [<JavaScript>]
+type WorkerData = 
+    {
+        WorkerName:string
+        InPorts:InPortData list
+        OutPorts:(string*MessageBus.Message) list
+    }
+    static member Create name inPorts outPorts = {WorkerName = name; InPorts=inPorts|> List.map (fun (name,msg)->InPortData.Create name msg 1); OutPorts=outPorts}
+    static member CreateWithCache name inPorts outPorts = {WorkerName = name; InPorts=inPorts|> List.map (fun (name,msg,cacheSize)->InPortData.Create name msg cacheSize); OutPorts=outPorts}
+[<JavaScript>]
 type IWorkerContext =
-    abstract Name:string
-    abstract InPorts  : (InPort list)
-    abstract OutPorts : (OutPort list)
+    abstract Data:WorkerData
 and
  [<JavaScript;CustomEquality;NoComparison>] 
  Worker =
@@ -29,9 +36,9 @@ and
    static member Create (dataContext:IWorkerContext) =
            {
                Key = Helper.UniqueKey()
-               Name = Var.Create dataContext.Name
-               InPorts = dataContext.InPorts
-               OutPorts = dataContext.OutPorts
+               Name = Var.Create dataContext.Data.WorkerName
+               InPorts = dataContext.Data.InPorts |> List.map (InPort.FromData)
+               OutPorts = dataContext.Data.OutPorts |> Ports.CreateOut
                Runner = None
                Renderer = None
                DataContext = dataContext 
@@ -46,7 +53,13 @@ and
           match x.Runner with
           |Some(runner) -> {x with RunnerContext=runner.Run(x)}
           |None -> x
-
+//   member x.FromData (config:WorkerData) = {x with Name = Var.Create config.WorkerName
+//                                                   InPorts = config.InPorts |> List.map (InPort.FromData); 
+//                                                   OutPorts = config.OutPorts |> List.map (fun (name,value) -> OutPort.Create value.Key name value)}
+   member x.ToData  =   {WorkerName = x.Name.Value;
+                         InPorts = x.InPorts |> List.map (InPort.ToData)
+                         OutPorts = x.OutPorts |> List.map (fun port-> (port.Name,port.Type))
+                        }
    member x.CloneAndRun =
           let varName = Var.Create x.Name.Value
           let iPorts = x.InPorts |> List.map (fun port -> port.Clone)

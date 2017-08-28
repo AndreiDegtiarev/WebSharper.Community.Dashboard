@@ -22,36 +22,23 @@ type ChartRunnerContext =
 [<JavaScript>]
 type ChartRenderer =
   {
-    Name:string
-    Number:MessageBus.Message
-    Cx:MessageBus.Message
-    Cy:MessageBus.Message
-    ChartBufferSize:MessageBus.Message
+      ChartRendererData:WorkerData
   }
   static member Create cx cy bufferSize = {
-                                            Name = "Chart"
-                                            Number=MessageBus.CreateNumber 0.0
-                                            Cx=MessageBus.CreateNumber cx
-                                            Cy=MessageBus.CreateNumber cy
-                                            ChartBufferSize=MessageBus.CreateNumber bufferSize
+                           ChartRendererData =  WorkerData.CreateWithCache "Chart" 
+                                                                    [(" in Value",MessageBus.NumberMessage 100.0,(int)bufferSize)
+                                                                     ("cx",MessageBus.NumberMessage cx,1)
+                                                                     ("cy",MessageBus.NumberMessage cy,1)
+                                                                     ("BufferSize",MessageBus.NumberMessage bufferSize,1)
+                                                                    ]
+                                                                    []
                                           }
 
-  static member FromPorts = (fun worker -> {
-                                                 Number=worker.InPorts.[0].PortValue.Value
-                                                 Cx=worker.InPorts.[1].PortValue.Value
-                                                 Cy=worker.InPorts.[2].PortValue.Value
-                                                 ChartBufferSize=worker.InPorts.[3].PortValue.Value
-                                                 Name = worker.Name.Value
-                                           })
+  static member FromWorker = (fun (worker:Worker) -> {ChartRendererData = worker.ToData})
+
   interface IWorkerContext with
-    override x.Name = x.Name
-    override x.InPorts =  [
-                             (" in Value",x.Number,(int)x.ChartBufferSize.Value.AsNumber)
-                             ("cx", x.Cx,1)
-                             ("cy", x.Cy,1)
-                             ("BufferSize", x.ChartBufferSize,1)
-                          ]|>Ports.CreateWithCache
-    override x.OutPorts = []
+      override x.Data = x.ChartRendererData
+
   interface IRunner with
     override x.Run = (fun worker ->
                                     let chartBufferSize = (int) worker.InPorts.[3].Number
@@ -92,15 +79,12 @@ type ChartRenderer =
 [<JavaScript>]
 type TextBoxRenderer =
   {
-    Name:string
-    TextBoxValue:MessageBus.Message
+      TextBoxRendererData:WorkerData
   }
-  static member Create = {Name="Text";TextBoxValue=MessageBus.CreateNumber 0.0}
-  static member FromPorts = (fun worker -> {TextBoxValue=worker.InPorts.[0].PortValue.Value;Name = worker.Name.Value})
+  static member Create = {TextBoxRendererData = WorkerData.Create "Text" [("in Value",MessageBus.NumberMessage 0.0)] []} 
+  static member FromWorker = (fun (worker:Worker) -> {TextBoxRendererData = worker.ToData}) //TextBoxValue=worker.InPorts.[0].PortValue.Value;Name = worker.Name.Value})
   interface IWorkerContext with
-    override x.Name = x.Name
-    override x.InPorts =  [("in Value",x.TextBoxValue)] |> Ports.Create 
-    override x.OutPorts = []
+       override x.Data = x.TextBoxRendererData
 
   interface IRenderer with
     override x.Render  = (fun worker -> 
@@ -112,25 +96,16 @@ type TextBoxRenderer =
 [<JavaScript>]
 type ButtonRenderer =
   {
-    Name:string
-    ButtonName:MessageBus.Message
-    State:MessageBus.Message
-    OutPortKey:string
+      ButtonRendererData:WorkerData
   }
-  static member Create = {Name="Button";
-                          ButtonName=MessageBus.CreateString "Button"
-                          State=MessageBus.CreateNumber 0.0
-                          OutPortKey=Helper.UniqueKey()
-                          }
-  static member FromPorts = (fun worker -> {ButtonName=worker.InPorts.[0].PortValue.Value
-                                            State = worker.InPorts.[1].PortValue.Value
-                                            OutPortKey=worker.OutPorts.[0].Key
-                                            Name = worker.Name.Value})
+  static member Create = {ButtonRendererData = WorkerData.Create "Button" [("Caption",MessageBus.StringMessage "Button")
+                                                                           ("State",MessageBus.NumberMessage 0.0)
+                                                                          ][("Button value",MessageBus.NumberMessage 0.0)]}
+                         
+  static member FromWorker = (fun (worker:Worker) -> {ButtonRendererData = worker.ToData})
+
   interface IWorkerContext with
-    override x.Name = x.Name
-    override x.InPorts =  [("Caption",x.ButtonName)
-                           ("State",x.State)] |> Ports.Create 
-    override x.OutPorts = [OutPort.CreateNumber x.OutPortKey "Button value"]
+      override x.Data = x.ButtonRendererData
 
   interface IRenderer with
     override x.Render  = (fun worker -> 

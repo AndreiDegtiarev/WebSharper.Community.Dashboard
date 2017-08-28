@@ -7,6 +7,7 @@ open WebSharper.UI.Next.Client
 open WebSharper.UI.Next.Html
 open FSharp.Data
 open WebSharper.Community.PropertyGrid
+open WebSharper.Community.Panel
 
 [<JavaScript>]
 module OpenWeather =
@@ -46,29 +47,19 @@ module OpenWeather =
 [<JavaScript>]
 type OpenWeatherRunner =
  {
-        Name:string 
-        OpenWeatherCity:MessageBus.Message
-        OpenWeatherApiKey:MessageBus.Message
-        OutPortKey:string
+    OpenWeatherRunnerData:WorkerData
  }
  static member Create city apikey = {
-                                        Name = "OpenWeatherMap"
-                                        OpenWeatherCity = MessageBus.CreateString city;
-                                        OpenWeatherApiKey= MessageBus.CreateString apikey
-                                        OutPortKey = System.Guid.NewGuid().ToString()
+                           OpenWeatherRunnerData =  WorkerData.Create "OpenWeatherMap" 
+                                                                    [("City",MessageBus.StringMessage city)
+                                                                     ("ApiKey",MessageBus.StringMessage apikey)]
+                                                                    [("Temperature",MessageBus.NumberMessage 0.0)]
                                      }
- static member FromPorts = (fun worker -> {
-                                             OpenWeatherCity=worker.InPorts.[0].PortValue.Value 
-                                             OpenWeatherApiKey=worker.InPorts.[1].PortValue.Value  
-                                             OutPortKey=worker.OutPorts.[0].Key
-                                             Name = worker.Name.Value
-                                          }
+ static member FromWorker = (fun (worker:Worker) -> {OpenWeatherRunnerData = worker.ToData}
                            )
  
  interface IWorkerContext with
-    override x.Name = x.Name
-    override x.InPorts = [("City",x.OpenWeatherCity);("ApiKey",x.OpenWeatherApiKey)] |> Ports.Create
-    override x.OutPorts = [OutPort.CreateNumber x.OutPortKey "Temperature"]
+      override x.Data = x.OpenWeatherRunnerData
  interface IRunner with
     override x.Run= (fun worker -> 
                      async {

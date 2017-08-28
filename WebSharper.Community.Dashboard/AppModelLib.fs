@@ -15,45 +15,35 @@ type AppModelLib =
     |TextWidget   of TextBoxRenderer
     |ChartWidget  of ChartRenderer
     |ButtonWidget  of ButtonRenderer
-    member x.Worker =
-        match x with 
+    static member ToWorker worker=
+        match worker with 
         |RandomSource(src) -> Worker.CreateWithRunner src
         |OpenWeatherSource(src) -> Worker.CreateWithRunner src
         |DatabaseSource(src)   -> Worker.CreateWithRunner src
         |TextWidget(src)   -> Worker.CreateWithRenderer src
         |ChartWidget(src)  -> Worker.Create(src).WithRunner(src).WithRenderer(src)
         |ButtonWidget(src)   -> Worker.CreateWithRenderer src
-
-    static member FromDataContext (data:IWorkerContext)=
-        match data with
-        | :? RandomRunner      as src -> Some(RandomSource(src))
-        | :? OpenWeatherRunner as src -> Some(OpenWeatherSource(src))
-        | :? DatabaseRunner    as src -> Some(DatabaseSource(src))
-        | :? TextBoxRenderer   as src -> Some(TextWidget(src))
-        | :? ChartRenderer     as src -> Some(ChartWidget(src))
-        | :? ButtonRenderer    as src -> Some(ButtonWidget(src))
-        | _ -> None 
          
     static member FromWorker (worker:Worker)= 
                             match worker.DataContext with
-                            | :? RandomRunner      as src -> Some(RandomSource(RandomRunner.FromPorts worker))
-                            | :? OpenWeatherRunner as src -> Some(OpenWeatherSource(OpenWeatherRunner.FromPorts worker))
-                            | :? DatabaseRunner    as src -> Some(DatabaseSource(DatabaseRunner.FromPorts worker))
-                            | :? TextBoxRenderer   as src -> Some(TextWidget(TextBoxRenderer.FromPorts worker))
-                            | :? ChartRenderer     as src -> Some(ChartWidget(ChartRenderer.FromPorts worker))
-                            | :? ButtonRenderer    as src -> Some(ButtonWidget(ButtonRenderer.FromPorts worker))
+                            | :? RandomRunner      as src -> Some(RandomSource(RandomRunner.FromWorker worker))
+                            | :? OpenWeatherRunner as src -> Some(OpenWeatherSource(OpenWeatherRunner.FromWorker worker))
+                            | :? DatabaseRunner    as src -> Some(DatabaseSource(DatabaseRunner.FromWorker worker))
+                            | :? TextBoxRenderer   as src -> Some(TextWidget(TextBoxRenderer.FromWorker worker))
+                            | :? ChartRenderer     as src -> Some(ChartWidget(ChartRenderer.FromWorker worker))
+                            | :? ButtonRenderer    as src -> Some(ButtonWidget(ButtonRenderer.FromWorker worker))
                             | _ -> None 
 
 
 [<JavaScript>]          
 module App =
     let Register dashboard = 
-        let register fnc data   = data |> AppModelLib.FromDataContext |> Option.map (fun appObj -> appObj.Worker |> fnc) |> ignore
+        let register fnc data   = data |> Worker.Create |> fnc |> ignore
         let registerEvent  data = data |> register (dashboard.Factory.RegisterEvent)
         let registerWidget data = data |> register (dashboard.Factory.RegisterWidget)
 
         OpenWeatherRunner.Create "London" ""  |> registerEvent
-        RandomRunner.Create 50.0 5.0          |> registerEvent
+        RandomRunner.Create                   |> registerEvent
         DatabaseRunner.Create                 |> registerEvent
         TextBoxRenderer.Create                |> registerWidget
         ChartRenderer.Create 300.0 100.0 50.0 |> registerWidget

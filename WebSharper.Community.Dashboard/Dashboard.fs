@@ -127,15 +127,23 @@ type Dashboard =
                           .WithChildPanelContainer(childContainerContent)
         group.PanelContainer.AddPanel panel
         panel  
-    member x.Store fncFromWorker  =
-            let events=x.Data.EventGroups|> List.ofSeq |> List.map (fun gr ->
-                               (gr.Name.Value,gr.EventItems |>List.ofSeq |> List.map (fun item -> (item.Worker.Key,fncFromWorker item.Worker))))
-            let widgets=x.Data.WidgetGroups|> List.ofSeq |> List.map (fun gr ->
-                               let panelData = gr.PanelContainer.PanelItems |>List.ofSeq |>List.map (fun panel -> panel.PanelData)
-                               (gr.Name.Value,panelData,gr.WidgetItems |>List.ofSeq |> List.map (fun item -> (item.Widget.Key,item.Panel,fncFromWorker item.Widget))))
-            let rules = x.Data.RulesGroups|> List.ofSeq |> List.map (fun gr ->
-                               (gr.Name.Value,RulesEditor.CopyToRules gr.RulesRowItems))
-            (events,widgets,rules)
+    member x.Store fncFromWorkerOpt  =
+        let fncFromWorker  acc (worker:Worker)= 
+            match fncFromWorkerOpt worker with
+            |Some(appModel) -> (worker.Key,appModel)::acc
+            |None -> acc
+        let fncFromWidget  acc panel (widget:Worker)= 
+            match fncFromWorkerOpt widget with
+            |Some(appModel) -> (widget.Key,panel,appModel)::acc
+            |None -> acc
+        let events=x.Data.EventGroups|> List.ofSeq |> List.map (fun gr ->
+                           (gr.Name.Value,gr.EventItems |>List.ofSeq |> List.fold (fun acc item -> fncFromWorker acc item.Worker)[]))
+        let widgets=x.Data.WidgetGroups|> List.ofSeq |> List.map (fun gr ->
+                           let panelData = gr.PanelContainer.PanelItems |>List.ofSeq |>List.map (fun panel -> panel.PanelData)
+                           (gr.Name.Value,panelData,gr.WidgetItems |>List.ofSeq |> List.fold (fun acc item -> fncFromWidget acc item.Panel item.Widget)[]))
+        let rules = x.Data.RulesGroups|> List.ofSeq |> List.map (fun gr ->
+                           (gr.Name.Value,RulesEditor.CopyToRules gr.RulesRowItems))
+        (events,widgets,rules)
 
     member x.Restore panelCreator events widgets rules =
         x.EditorSelectorRun.ClearGroups()

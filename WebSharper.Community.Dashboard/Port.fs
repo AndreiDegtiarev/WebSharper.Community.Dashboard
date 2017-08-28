@@ -22,10 +22,10 @@ type InPort =  {Data:InPortData;PortValue:Var<MessageBus.Message>}
                 override x.Equals y = match y with
                                       | :? InPort as yPort -> x.Data.Name = yPort.Data.Name
                                       | _ -> false
-                member x.Clone = {
-                                    x with 
-                                        Data={x.Data with Key=System.Guid.NewGuid().ToString()}
-                                        PortValue = Var.Create x.PortValue.Value
+                static member Clone port = {
+                                    port with 
+                                        Data={port.Data with Key=System.Guid.NewGuid().ToString()}
+                                        PortValue = Var.Create port.PortValue.Value
                                   }
                 member x.Name = x.Data.Name
                 member x.Key = x.Data.Key
@@ -56,18 +56,14 @@ type InPort =  {Data:InPortData;PortValue:Var<MessageBus.Message>}
 [<JavaScript;CustomEquality;NoComparison>]
 type OutPort = 
            {Key:string;Name:string;Type:MessageBus.Message} 
-           static member Create key name portType = {Key=key;Name = name;Type = portType}
-           static member CreateNumber key name = OutPort.Create key name (MessageBus.NumberMessage 0.0)
-           static member CreateString key name = OutPort.Create key name (MessageBus.StringMessage "")
-           member x.Clone = {x with Key=Helper.UniqueKey()}
+           static member FromData (name,msg:MessageBus.Message) = {Key=msg.Key;Name = name;Type = msg}
+           static member ToData port= (port.Name,port.Type)
+           static member Clone (port:OutPort) = {port with Key=Helper.UniqueKey()}
            member x.Trigger value = MessageBus.Agent.Post (MessageBus.Send(MessageBus.CreateMessage x.Key value))
 
            override x.Equals y = match y with
                                  | :? OutPort as yPort -> x.Name = yPort.Name
                                  | _ -> false
-[<JavaScript>]
-module Ports = 
-   
-    let CreateOut info = info |> List.map(fun (name,msg:MessageBus.Message) -> OutPort.Create msg.Key name msg)                
+               
 
             

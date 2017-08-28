@@ -37,10 +37,13 @@ type AppModelLib =
 
 [<JavaScript>]          
 module App =
-    let Register dashboard = 
-        let register fnc data   = data |> Worker.Create |> fnc |> ignore
-        let registerEvent  data = data |> register (dashboard.Factory.RegisterEvent)
-        let registerWidget data = data |> register (dashboard.Factory.RegisterWidget)
+    let Register fnc fromWorker toWorker data = data |> Worker.Create |> fromWorker |> Option.map (fun appModel -> appModel |> toWorker |> fnc |> ignore) |>ignore
+    let RegisterEventGeneral  dashboard fromWorker toWorker data = data |> Register (dashboard.Factory.RegisterEvent)  fromWorker toWorker
+    let RegisterWidgetGeneral dashboard  fromWorker toWorker data = data |> Register (dashboard.Factory.RegisterWidget) fromWorker toWorker
+    let RegisterAppModelLib  fromWorker toWorker dashboard = 
+        // AppModelLib.FromWorker AppModelLib.ToWorker because of Runner and Renderer registration
+        let registerEvent  data = data |> RegisterEventGeneral dashboard  fromWorker toWorker
+        let registerWidget data = data |> RegisterWidgetGeneral dashboard fromWorker toWorker
 
         OpenWeatherRunner.Create "London" ""  |> registerEvent
         RandomRunner.Create                   |> registerEvent
@@ -48,6 +51,7 @@ module App =
         TextBoxRenderer.Create                |> registerWidget
         ChartRenderer.Create 300.0 100.0 50.0 |> registerWidget
         ButtonRenderer.Create                 |> registerWidget
+        dashboard
     let PanelContainerCreator=(fun _ -> 
                                 let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
                                 PanelContainer.Create
@@ -56,7 +60,6 @@ module App =
                                      .WithAttributes([Attr.Style "border" "1px solid white"
                                                       //Attr.Style "position" "absolute"
                                                      ]))
-    let CreateDashboard =
+    let CreateDashboard fromWorker toWorker =
         let dashboard = Dashboard.Create PanelContainerCreator
-        dashboard |> Register 
-        dashboard
+        dashboard |> RegisterAppModelLib fromWorker toWorker

@@ -15,10 +15,8 @@ type AppModel =
         match appData with 
         |AppLib(src) -> AppModelLib.ToWorker src  
         
-    static member FromWorker (worker:Worker)= 
-        match worker |> AppModelLib.FromWorker with
-        |Some(appModel) -> AppLib(appModel)
-        |_ -> failwith("AllTypes FromWorker unknown type") 
+    static member FromWorker (worker:Worker)= worker |> AppModelLib.FromWorker |> Option.map(fun appModel -> AppLib(appModel))
+
 
 
 

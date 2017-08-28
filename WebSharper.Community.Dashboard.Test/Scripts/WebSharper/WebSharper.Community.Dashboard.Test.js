@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,AppModelLib,Operators,RuleEntry,AppData,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,MessageBus,UI,Next,Doc,Environment,console,Var,Strings;
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,AppModelLib,RuleEntry,AppData,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,MessageBus,UI,Next,Doc,Environment,console,Var,Strings;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -10,7 +10,6 @@
  AppModel=Test.AppModel=Test.AppModel||{};
  Client=Test.Client=Test.Client||{};
  AppModelLib=Dashboard&&Dashboard.AppModelLib;
- Operators=WebSharper&&WebSharper.Operators;
  RuleEntry=Dashboard&&Dashboard.RuleEntry;
  AppData=Dashboard&&Dashboard.AppData;
  Panel=Community&&Community.Panel;
@@ -35,12 +34,15 @@
  Strings=WebSharper&&WebSharper.Strings;
  AppModel.FromWorker=function(worker)
  {
-  var m;
-  m=AppModelLib.FromWorker(worker);
-  return m!=null&&m.$==1?{
-   $:0,
-   $0:m.$0
-  }:Operators.FailWith("AllTypes FromWorker unknown type");
+  var o;
+  o=AppModelLib.FromWorker(worker);
+  return o==null?null:{
+   $:1,
+   $0:{
+    $:0,
+    $0:o.$0
+   }
+  };
  };
  AppModel.ToWorker=function(appData)
  {
@@ -110,7 +112,7 @@
   });
   log=Environment.Log();
   fileName=Var.Create$1("Dashboard");
-  dashboard=App.CreateDashboard();
+  dashboard=App.CreateDashboard(AppModel.FromWorker,AppModel.ToWorker);
   return Doc.Element("div",[],[dashboard.Render(Doc.Element("div",[],[tbCellC(List.ofArray([Helper.TxtIconNormal("build","Sample configuration",function()
   {
    makeTestConfig();

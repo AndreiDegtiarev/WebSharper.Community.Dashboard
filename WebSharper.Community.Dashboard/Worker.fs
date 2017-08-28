@@ -37,15 +37,16 @@ and
            {
                Key = Helper.UniqueKey()
                Name = Var.Create dataContext.Data.WorkerName
-               InPorts = dataContext.Data.InPorts |> List.map (InPort.FromData)
-               OutPorts = dataContext.Data.OutPorts |> Ports.CreateOut
+               InPorts = dataContext.Data.InPorts |> List.map InPort.FromData
+               OutPorts = dataContext.Data.OutPorts |> List.map OutPort.FromData
                Runner = None
                Renderer = None
                DataContext = dataContext 
                RunnerContext = None                   
            }
-   static member CreateWithRunner src = Worker.Create(src).WithRunner(src)
-   static member CreateWithRenderer src = Worker.Create(src).WithRenderer(src)
+   static member CreateWithRunner src =Worker.Create(src).WithRunner(src)
+   static member CreateWithRenderer src = "CreateWithRenderer" |> Environment.Log
+                                          Worker.Create(src).WithRenderer(src)
    member x.WithKey(key) = {x with Key=key}
    member x.WithRunner(runner:IRunner) = {x with Runner=Some(runner)}
    member x.WithRenderer(renderer:IRenderer) = {x with Renderer=Some(renderer)}
@@ -53,17 +54,14 @@ and
           match x.Runner with
           |Some(runner) -> {x with RunnerContext=runner.Run(x)}
           |None -> x
-//   member x.FromData (config:WorkerData) = {x with Name = Var.Create config.WorkerName
-//                                                   InPorts = config.InPorts |> List.map (InPort.FromData); 
-//                                                   OutPorts = config.OutPorts |> List.map (fun (name,value) -> OutPort.Create value.Key name value)}
    member x.ToData  =   {WorkerName = x.Name.Value;
                          InPorts = x.InPorts |> List.map (InPort.ToData)
-                         OutPorts = x.OutPorts |> List.map (fun port-> (port.Name,port.Type))
+                         OutPorts = x.OutPorts |> List.map (OutPort.ToData) 
                         }
    member x.CloneAndRun =
           let varName = Var.Create x.Name.Value
-          let iPorts = x.InPorts |> List.map (fun port -> port.Clone)
-          let oPorts = x.OutPorts |> List.map (fun port -> port.Clone)
+          let iPorts = x.InPorts |> List.map InPort.Clone
+          let oPorts = x.OutPorts |> List.map OutPort.Clone
           let copy =
               {
                        Key = Helper.UniqueKey()

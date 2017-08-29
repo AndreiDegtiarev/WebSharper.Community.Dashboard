@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunnerContext,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,SelectorItem,SelectorGroup,WindowSelector,RulesCellItem,RulesRowItem,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,EventsEditor,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunnerContext,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -37,17 +37,15 @@
  RuleContainer=Dashboard.RuleContainer=Dashboard.RuleContainer||{};
  WorkerItem=Dashboard.WorkerItem=Dashboard.WorkerItem||{};
  Factory=Dashboard.Factory=Dashboard.Factory||{};
- SelectorItem=Dashboard.SelectorItem=Dashboard.SelectorItem||{};
- SelectorGroup=Dashboard.SelectorGroup=Dashboard.SelectorGroup||{};
- WindowSelector=Dashboard.WindowSelector=Dashboard.WindowSelector||{};
  RulesCellItem=Dashboard.RulesCellItem=Dashboard.RulesCellItem||{};
  RulesRowItem=Dashboard.RulesRowItem=Dashboard.RulesRowItem||{};
+ SelectorGroup=Dashboard.SelectorGroup=Dashboard.SelectorGroup||{};
+ WindowSelector=Dashboard.WindowSelector=Dashboard.WindowSelector||{};
  WidgetItem=Dashboard.WidgetItem=Dashboard.WidgetItem||{};
  EventsGroupItem=Dashboard.EventsGroupItem=Dashboard.EventsGroupItem||{};
  WidgetsGroupItem=Dashboard.WidgetsGroupItem=Dashboard.WidgetsGroupItem||{};
  RulesGroupItem=Dashboard.RulesGroupItem=Dashboard.RulesGroupItem||{};
  DshData=Dashboard.DshData=Dashboard.DshData||{};
- EventsEditor=Dashboard.EventsEditor=Dashboard.EventsEditor||{};
  RulesEditor=Dashboard.RulesEditor=Dashboard.RulesEditor||{};
  DshHelper=Dashboard.DshHelper=Dashboard.DshHelper||{};
  Dashboard$1=Dashboard.Dashboard=Dashboard.Dashboard||{};
@@ -100,6 +98,7 @@
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
  Option=WebSharper&&WebSharper.Option;
+ WrapControls=Panel&&Panel.WrapControls;
  PanelContainer=Panel&&Panel.PanelContainer;
  LayoutManagers=Panel&&Panel.LayoutManagers;
  Panel$1=Panel&&Panel.Panel;
@@ -1238,215 +1237,6 @@
    WidgetItems:WidgetItems
   });
  };
- SelectorItem.Create=function(name,renderer)
- {
-  return SelectorItem.New(Key.Fresh(),name,renderer);
- };
- SelectorItem.New=function(Key$1,Name,SelectorRenderer)
- {
-  return{
-   Key:Key$1,
-   Name:Name,
-   SelectorRenderer:SelectorRenderer
-  };
- };
- SelectorGroup=Dashboard.SelectorGroup=Runtime.Class({
-  RenderMenu:function(offset,selectedItemVar)
-  {
-   var $this,plus,m,fnc;
-   $this=this;
-   plus=(m=this.ChildCreatator,m==null?Doc.Element("tr",[],[]):(fnc=m.$0,Doc.Element("tr",[],[Doc.Element("td",[],[Doc.Element("div",[AttrModule.Style("margin-left","20px")],[Helper.IconSmall("add",function()
-   {
-    var p,item;
-    p=fnc();
-    item=SelectorItem.Create(p[0],p[1]);
-    $this.ItemOnCreated(item);
-    $this.SelectorItems.Append(item);
-   })])])])));
-   return Doc.Element("table",[],[Doc.ConvertBy(function(m$1)
-   {
-    return m$1.Key;
-   },function(item)
-   {
-    var mapName;
-    mapName=View.Map(function(name)
-    {
-     return offset+name;
-    },item.Name.v);
-    return Doc.Element("tr",[],[Doc.Element("td",[AttrModule.DynamicStyle("Color",View.Map(function(selItemVar)
-    {
-     return selItemVar==null?"#7D4600":Unchecked.Equals(selItemVar.$0.Key,item.Key)?"#FB8C00":"#7D4600";
-    },selectedItemVar.v)),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
-    {
-     return function()
-     {
-      $this.ItemOnSelected(item);
-      return Var.Set(selectedItemVar,{
-       $:1,
-       $0:item
-      });
-     };
-    })],[Doc.Element("div",[AttrModule.Style("margin-left","10px"),AttrModule.Style("margin-right","5px")],[Doc.TextView(mapName)])])]);
-   },this.SelectorItems.v),plus]);
-  },
-  ItemByIndex:function(ind)
-  {
-   return List.head(List.ofSeq(this.SelectorItems));
-  }
- },null,SelectorGroup);
- SelectorGroup.Create=function(name,config,childCreator,itemOnCreated,itemOnSelected)
- {
-  var items;
-  items=ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.map(function($1)
-  {
-   return SelectorItem.Create($1[0],$1[1]);
-  },config));
-  return SelectorGroup.New(Key.Fresh(),Var.Create$1(name),items,childCreator,itemOnCreated,itemOnSelected);
- };
- SelectorGroup.New=function(Key$1,Name,SelectorItems,ChildCreatator,ItemOnCreated,ItemOnSelected)
- {
-  return new SelectorGroup({
-   Key:Key$1,
-   Name:Name,
-   SelectorItems:SelectorItems,
-   ChildCreatator:ChildCreatator,
-   ItemOnCreated:ItemOnCreated,
-   ItemOnSelected:ItemOnSelected
-  });
- };
- WindowSelector=Dashboard.WindowSelector=Runtime.Class({
-  get_RenderMenu:function()
-  {
-   var $this;
-   $this=this;
-   return this.SelectorGroups.get_Length()===1?List.head(List.ofSeq(this.SelectorGroups)).RenderMenu("",this.OptSelectedItem):Doc.Element("div",[],[Doc.ConvertBy(function(m)
-   {
-    return m.Key;
-   },function(group)
-   {
-    return Doc.Element("div",[],[Doc.Element("div",[AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
-    {
-     return function()
-     {
-      return $this.GroupOnClick(group);
-     };
-    })],[Doc.TextView(group.Name.v)]),group.RenderMenu("    ",$this.OptSelectedItem)]);
-   },this.SelectorGroups.v)]);
-  },
-  get_Render:function()
-  {
-   return Doc.Element("div",[],[Doc.BindView(function(value)
-   {
-    return value==null?Doc.Empty():value.$0.SelectorRenderer;
-   },this.OptSelectedItem.v)]);
-  },
-  GroupByIndex:function(index)
-  {
-   return Seq.nth(index,List.ofSeq(this.SelectorGroups));
-  },
-  get_SelectedIndex:function()
-  {
-   var $this;
-   $this=this;
-   return Seq.findIndex(function(listItem)
-   {
-    return Unchecked.Equals(listItem.Key,$this.get_SelectedItem().Key);
-   },List.concat(List.map(function(group)
-   {
-    return List.ofSeq(group.SelectorItems);
-   },List.ofSeq(this.SelectorGroups))));
-  },
-  get_SelectedIndexInGroup:function()
-  {
-   var $this;
-   $this=this;
-   return Seq.findIndex(function(listItem)
-   {
-    return Unchecked.Equals(listItem.Key,$this.get_SelectedItem().Key);
-   },List.ofSeq(this.get_SelectedGroup().SelectorItems));
-  },
-  get_SelectedGroupIndex:function()
-  {
-   var $this;
-   $this=this;
-   return Seq.findIndex(function(gr)
-   {
-    return Unchecked.Equals(gr.Key,$this.get_SelectedGroup().Key);
-   },List.ofSeq(this.SelectorGroups));
-  },
-  get_SelectedGroup:function()
-  {
-   return this.GroupFromItem(this.get_SelectedItem());
-  },
-  GroupFromItem:function(item)
-  {
-   return Seq.find(function(group)
-   {
-    return List.exists(function(entry)
-    {
-     return Unchecked.Equals(entry.Key,item.Key);
-    },List.ofSeq(group.SelectorItems));
-   },List.ofSeq(this.SelectorGroups));
-  },
-  AppenGroup:function(name,config,childCreator)
-  {
-   this.SelectorGroups.Append(SelectorGroup.Create(name,config,childCreator,this.ItemOnCreated(this.SelectorGroups.get_Length()),this.ItemOnSelected));
-  },
-  get_SelectedItem:function()
-  {
-   var m;
-   m=this.OptSelectedItem.c;
-   return m==null?Operators.FailWith("Something really wrong with WindowSelector"):m.$0;
-  },
-  ClearGroups:function()
-  {
-   Var.Set(this.OptSelectedItem,null);
-   List.iter(function(gr)
-   {
-    gr.SelectorItems.Clear();
-   },List.ofSeq(this.SelectorGroups));
-  },
-  WithItemOnSelected:function(onSelectedFnc)
-  {
-   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,this.ItemOnCreated,this.GroupOnClick,onSelectedFnc);
-  },
-  WithGroupOnClick:function(onClickFnc)
-  {
-   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,this.ItemOnCreated,onClickFnc,this.ItemOnSelected);
-  },
-  WithItemOnCreated:function(onCreatedFnc)
-  {
-   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,onCreatedFnc,this.GroupOnClick,this.ItemOnSelected);
-  }
- },null,WindowSelector);
- WindowSelector.get_Create=function()
- {
-  var S;
-  S=ListModel.Create(function(item)
-  {
-   return item.Key;
-  },List.T.Empty);
-  return WindowSelector.New(Var.Create$1(null),S,function()
-  {
-   return function()
-   {
-    return null;
-   };
-  },Global.ignore,Global.ignore);
- };
- WindowSelector.New=function(OptSelectedItem,SelectorGroups,ItemOnCreated,GroupOnClick,ItemOnSelected)
- {
-  return new WindowSelector({
-   OptSelectedItem:OptSelectedItem,
-   SelectorGroups:SelectorGroups,
-   ItemOnCreated:ItemOnCreated,
-   GroupOnClick:GroupOnClick,
-   ItemOnSelected:ItemOnSelected
-  });
- };
  RulesCellItem=Dashboard.RulesCellItem=Runtime.Class({
   Render:function(workItems,reconnectFnc)
   {
@@ -1573,6 +1363,247 @@
    CellItems:CellItems
   });
  };
+ SelectorGroup=Dashboard.SelectorGroup=Runtime.Class({
+  RenderMenu:function(offset,selectedItemVar,withControls)
+  {
+   var $this,moveItem,i,plus,m,creator;
+   function icons(item)
+   {
+    return List.ofArray([Helper.IconSmall("keyboard_arrow_down",function()
+    {
+     (moveItem(true))(item);
+     ($this.ItemOnMove(item))({
+      $:1
+     });
+    }),Helper.IconSmall("keyboard_arrow_up",function()
+    {
+     (moveItem(false))(item);
+     ($this.ItemOnMove(item))({
+      $:0
+     });
+    }),Helper.IconSmall("clear",function()
+    {
+     $this.SelectorItems.Remove(item);
+     $this.ItemOnDelete(item);
+    })]);
+   }
+   $this=this;
+   moveItem=(i=this.SelectorItems,(Runtime.Curried3(Helper.MoveItemInModelList))(i));
+   plus=(m=this.ItemCreatator,m==null?Doc.Element("tr",[],[]):(creator=m.$0,Doc.Element("tr",[],[Doc.Element("td",[],[Doc.Element("div",[AttrModule.Style("margin-left","20px")],[Helper.IconSmall("add",function()
+   {
+    var item;
+    item=creator();
+    $this.ItemOnCreated(item);
+    $this.SelectorItems.Append(item);
+   })])])])));
+   return Doc.Element("table",[],[Doc.ConvertBy(function(m$1)
+   {
+    return m$1.WebSharper_Community_Dashboard_ISelectorItem$get_Key();
+   },function(item)
+   {
+    var mapName,x,i$1,a;
+    mapName=View.Map(function(name)
+    {
+     return offset+name;
+    },item.WebSharper_Community_Dashboard_ISelectorItem$get_Name().v);
+    return Doc.Element("tr",[],[Doc.Element("td",[AttrModule.DynamicStyle("Color",View.Map(function(selItemVar)
+    {
+     return selItemVar==null?"#7D4600":Unchecked.Equals(selItemVar.$0.WebSharper_Community_Dashboard_ISelectorItem$get_Key(),item.WebSharper_Community_Dashboard_ISelectorItem$get_Key())?"#FB8C00":"#7D4600";
+    },selectedItemVar.v))],[(x=Doc.Element("div",[AttrModule.Style("margin-left","10px"),AttrModule.Style("margin-right","5px"),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+    {
+     return function()
+     {
+      $this.ItemOnSelected(item);
+      return Var.Set(selectedItemVar,{
+       $:1,
+       $0:item
+      });
+     };
+    })],[Doc.TextView(mapName)]),(withControls?(i$1=icons(item),(a=Panel.WrapControlsAligment.Horizontal,function(c)
+    {
+     return WrapControls.Render(i$1,a,c);
+    })):Global.id)(x))])]);
+   },this.SelectorItems.v),plus]);
+  }
+ },null,SelectorGroup);
+ SelectorGroup.Create=function(name,items,itemCreator,itemOnCreated,itemOnSelected,itemOnDelete,itemOnMove)
+ {
+  var modelItems;
+  modelItems=ListModel.Create(function(item)
+  {
+   return item.WebSharper_Community_Dashboard_ISelectorItem$get_Key();
+  },items);
+  return SelectorGroup.New(Key.Fresh(),Var.Create$1(name),modelItems,itemCreator,itemOnCreated,itemOnSelected,itemOnDelete,itemOnMove);
+ };
+ SelectorGroup.New=function(Key$1,Name,SelectorItems,ItemCreatator,ItemOnCreated,ItemOnSelected,ItemOnDelete,ItemOnMove)
+ {
+  return new SelectorGroup({
+   Key:Key$1,
+   Name:Name,
+   SelectorItems:SelectorItems,
+   ItemCreatator:ItemCreatator,
+   ItemOnCreated:ItemOnCreated,
+   ItemOnSelected:ItemOnSelected,
+   ItemOnDelete:ItemOnDelete,
+   ItemOnMove:ItemOnMove
+  });
+ };
+ WindowSelector=Dashboard.WindowSelector=Runtime.Class({
+  get_RenderMenu:function()
+  {
+   var $this;
+   $this=this;
+   return this.SelectorGroups.get_Length()===1?List.head(List.ofSeq(this.SelectorGroups)).RenderMenu("",this.OptSelectedItem,this.IsWithControls):Doc.Element("div",[],[Doc.ConvertBy(function(m)
+   {
+    return m.Key;
+   },function(group)
+   {
+    return Doc.Element("div",[],[Doc.Element("div",[AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+    {
+     return function()
+     {
+      return $this.GroupOnClick(group);
+     };
+    })],[Doc.TextView(group.Name.v)]),group.RenderMenu("    ",$this.OptSelectedItem,$this.IsWithControls)]);
+   },this.SelectorGroups.v)]);
+  },
+  get_Render:function()
+  {
+   return Doc.Element("div",[],[Doc.BindView(function(value)
+   {
+    return value==null?Doc.Empty():value.$0.WebSharper_Community_Dashboard_ISelectorItem$get_Render();
+   },this.OptSelectedItem.v)]);
+  },
+  GroupByIndex:function(index)
+  {
+   return Seq.nth(index,List.ofSeq(this.SelectorGroups));
+  },
+  get_SelectedIndex:function()
+  {
+   var $this;
+   $this=this;
+   return Seq.findIndex(function(listItem)
+   {
+    return Unchecked.Equals(listItem.WebSharper_Community_Dashboard_ISelectorItem$get_Key(),$this.get_SelectedItem().WebSharper_Community_Dashboard_ISelectorItem$get_Key());
+   },List.concat(List.map(function(group)
+   {
+    return List.ofSeq(group.SelectorItems);
+   },List.ofSeq(this.SelectorGroups))));
+  },
+  get_SelectedIndexInGroup:function()
+  {
+   var $this;
+   $this=this;
+   return Seq.findIndex(function(listItem)
+   {
+    return Unchecked.Equals(listItem.WebSharper_Community_Dashboard_ISelectorItem$get_Key(),$this.get_SelectedItem().WebSharper_Community_Dashboard_ISelectorItem$get_Key());
+   },List.ofSeq(this.get_SelectedGroup().SelectorItems));
+  },
+  get_SelectedGroupIndex:function()
+  {
+   var $this;
+   $this=this;
+   return Seq.findIndex(function(gr)
+   {
+    return Unchecked.Equals(gr.Key,$this.get_SelectedGroup().Key);
+   },List.ofSeq(this.SelectorGroups));
+  },
+  get_SelectedGroup:function()
+  {
+   return this.GroupFromItem(this.get_SelectedItem());
+  },
+  GroupFromItem:function(item)
+  {
+   return Seq.find(function(group)
+   {
+    return List.exists(function(entry)
+    {
+     return Unchecked.Equals(entry.WebSharper_Community_Dashboard_ISelectorItem$get_Key(),item.WebSharper_Community_Dashboard_ISelectorItem$get_Key());
+    },List.ofSeq(group.SelectorItems));
+   },List.ofSeq(this.SelectorGroups));
+  },
+  AppenGroup:function(name,config,childCreator)
+  {
+   var ind;
+   ind=this.SelectorGroups.get_Length();
+   this.SelectorGroups.Append(SelectorGroup.Create(name,config,childCreator,this.ItemOnCreated(ind),this.ItemOnSelected,this.ItemOnDeleted(ind),this.ItemOnMove(ind)));
+  },
+  get_SelectedItem:function()
+  {
+   var m;
+   m=this.OptSelectedItem.c;
+   return m==null?Operators.FailWith("Something really wrong with WindowSelector"):m.$0;
+  },
+  ClearGroups:function()
+  {
+   Var.Set(this.OptSelectedItem,null);
+   List.iter(function(gr)
+   {
+    gr.SelectorItems.Clear();
+   },List.ofSeq(this.SelectorGroups));
+  },
+  WithControls:function(withControls)
+  {
+   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,this.ItemOnCreated,this.GroupOnClick,this.ItemOnSelected,this.ItemOnDeleted,this.ItemOnMove,withControls);
+  },
+  WithItemOnMove:function(onMoveFnc)
+  {
+   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,this.ItemOnCreated,this.GroupOnClick,this.ItemOnSelected,this.ItemOnDeleted,onMoveFnc,this.IsWithControls);
+  },
+  WithItemOnDeleted:function(onDeletedFnc)
+  {
+   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,this.ItemOnCreated,this.GroupOnClick,this.ItemOnSelected,onDeletedFnc,this.ItemOnMove,this.IsWithControls);
+  },
+  WithItemOnSelected:function(onSelectedFnc)
+  {
+   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,this.ItemOnCreated,this.GroupOnClick,onSelectedFnc,this.ItemOnDeleted,this.ItemOnMove,this.IsWithControls);
+  },
+  WithGroupOnClick:function(onClickFnc)
+  {
+   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,this.ItemOnCreated,onClickFnc,this.ItemOnSelected,this.ItemOnDeleted,this.ItemOnMove,this.IsWithControls);
+  },
+  WithItemOnCreated:function(onCreatedFnc)
+  {
+   return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,onCreatedFnc,this.GroupOnClick,this.ItemOnSelected,this.ItemOnDeleted,this.ItemOnMove,this.IsWithControls);
+  }
+ },null,WindowSelector);
+ WindowSelector.get_Create=function()
+ {
+  var S;
+  S=ListModel.Create(function(item)
+  {
+   return item.Key;
+  },List.T.Empty);
+  return WindowSelector.New(Var.Create$1(null),S,function()
+  {
+   return function()
+   {
+    return null;
+   };
+  },Global.ignore,Global.ignore,function()
+  {
+   return function()
+   {
+    return null;
+   };
+  },Runtime.Curried3(function($1,$2,$3)
+  {
+   return null;
+  }),false);
+ };
+ WindowSelector.New=function(OptSelectedItem,SelectorGroups,ItemOnCreated,GroupOnClick,ItemOnSelected,ItemOnDeleted,ItemOnMove,IsWithControls)
+ {
+  return new WindowSelector({
+   OptSelectedItem:OptSelectedItem,
+   SelectorGroups:SelectorGroups,
+   ItemOnCreated:ItemOnCreated,
+   GroupOnClick:GroupOnClick,
+   ItemOnSelected:ItemOnSelected,
+   ItemOnDeleted:ItemOnDeleted,
+   ItemOnMove:ItemOnMove,
+   IsWithControls:IsWithControls
+  });
+ };
  WidgetItem.Create=function(panel,widget)
  {
   return WidgetItem.New(Key.Fresh(),panel,widget);
@@ -1585,21 +1616,84 @@
    Widget:Widget
   };
  };
- EventsGroupItem.Create=function(name)
+ EventsGroupItem=Dashboard.EventsGroupItem=Runtime.Class({
+  get_Render:function()
+  {
+   var $this,moveItem,i;
+   function icons(item)
+   {
+    return List.ofArray([Helper.IconSmall("keyboard_arrow_down",function()
+    {
+     (moveItem(true))(item);
+    }),Helper.IconSmall("keyboard_arrow_up",function()
+    {
+     (moveItem(false))(item);
+    }),Helper.IconSmall("clear",function()
+    {
+     $this.EventItems.Remove(item);
+    })]);
+   }
+   $this=this;
+   moveItem=(i=this.EventItems,(Runtime.Curried3(Helper.MoveItemInModelList))(i));
+   return Doc.Element("table",[],[Doc.ConvertBy(function(m)
+   {
+    return m.Key;
+   },function(item)
+   {
+    var x;
+    return Doc.Element("tr",[],[(x=Doc.Element("div",Helper.AttrsClick(function()
+    {
+     $this.PropertyGrid.Edit(item.Worker.get_Properties());
+    }),[Doc.TextView(item.Worker.Name.v)]),WrapControls.Render(icons(item),Panel.WrapControlsAligment.Horizontal,x))]);
+   },this.EventItems.v)]);
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Render:function()
+  {
+   return this.get_Render();
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Name:function()
+  {
+   return this.Name;
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Key:function()
+  {
+   return this.Key;
+  }
+ },null,EventsGroupItem);
+ EventsGroupItem.Create=function(name,propertyGrid)
  {
   return EventsGroupItem.New(Key.Fresh(),Var.Create$1(name),ListModel.Create(function(item)
   {
    return item.Key;
-  },List.T.Empty));
+  },List.T.Empty),propertyGrid);
  };
- EventsGroupItem.New=function(Key$1,Name,EventItems)
+ EventsGroupItem.New=function(Key$1,Name,EventItems,PropertyGrid$2)
  {
-  return{
+  return new EventsGroupItem({
    Key:Key$1,
    Name:Name,
-   EventItems:EventItems
-  };
+   EventItems:EventItems,
+   PropertyGrid:PropertyGrid$2
+  });
  };
+ WidgetsGroupItem=Dashboard.WidgetsGroupItem=Runtime.Class({
+  get_Render:function()
+  {
+   return this.PanelContainer.get_Render();
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Render:function()
+  {
+   return this.get_Render();
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Name:function()
+  {
+   return this.Name;
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Key:function()
+  {
+   return this.Key;
+  }
+ },null,WidgetsGroupItem);
  WidgetsGroupItem.Create=function(name,panelContainer)
  {
   return WidgetsGroupItem.New(Key.Fresh(),Var.Create$1(name),ListModel.Create(function(item)
@@ -1609,27 +1703,50 @@
  };
  WidgetsGroupItem.New=function(Key$1,Name,WidgetItems,PanelContainer$1)
  {
-  return{
+  return new WidgetsGroupItem({
    Key:Key$1,
    Name:Name,
    WidgetItems:WidgetItems,
    PanelContainer:PanelContainer$1
-  };
+  });
  };
- RulesGroupItem.Create=function(name)
+ RulesGroupItem=Dashboard.RulesGroupItem=Runtime.Class({
+  Equals:function(y)
+  {
+   return y instanceof RulesGroupItem&&Unchecked.Equals(this.Key,y.Key);
+  },
+  get_Render:function()
+  {
+   return this.Renderer(this.RulesRowItems);
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Render:function()
+  {
+   return this.get_Render();
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Name:function()
+  {
+   return this.Name;
+  },
+  WebSharper_Community_Dashboard_ISelectorItem$get_Key:function()
+  {
+   return this.Key;
+  }
+ },null,RulesGroupItem);
+ RulesGroupItem.Create=function(name,renderer)
  {
   return RulesGroupItem.New(Key.Fresh(),Var.Create$1(name),ListModel.Create(function(item)
   {
    return item.Key;
-  },List.T.Empty));
+  },List.T.Empty),renderer);
  };
- RulesGroupItem.New=function(Key$1,Name,RulesRowItems)
+ RulesGroupItem.New=function(Key$1,Name,RulesRowItems,Renderer)
  {
-  return{
+  return new RulesGroupItem({
    Key:Key$1,
    Name:Name,
-   RulesRowItems:RulesRowItems
-  };
+   RulesRowItems:RulesRowItems,
+   Renderer:Renderer
+  });
  };
  DshData=Dashboard.DshData=Runtime.Class({
   RegisterWidget:function(key,group,panel,widget)
@@ -1679,21 +1796,25 @@
    RulesGroups:RulesGroups
   });
  };
- EventsEditor.Render=function(eventItems,propGrid)
- {
-  return Doc.Element("table",[],[Doc.ConvertBy(function(m)
-  {
-   return m.Key;
-  },function(item)
-  {
-   return Doc.Element("tr",[],[Doc.Element("i",Helper.AttrsClick(function()
-   {
-    propGrid.Edit(item.Worker.get_Properties());
-   }),[Doc.TextView(item.Worker.Name.v)])]);
-  },eventItems.v)]);
- };
  RulesEditor.Render=function(data,rowItems)
  {
+  function moveItem(i,i$1)
+  {
+   return Helper.MoveItemInModelList(rowItems,i,i$1);
+  }
+  function icons(item)
+  {
+   return List.ofArray([Helper.IconSmall("keyboard_arrow_down",function()
+   {
+    moveItem(true,item);
+   }),Helper.IconSmall("keyboard_arrow_up",function()
+   {
+    moveItem(false,item);
+   }),Helper.IconSmall("clear",function()
+   {
+    rowItems.Remove(item);
+   })]);
+  }
   function reconnectFnc()
   {
    var x;
@@ -1708,10 +1829,11 @@
    return m.Key;
   },function(item)
   {
-   return Doc.Element("tr",[],[item.Render(data.WorkItems,function()
+   var x;
+   return Doc.Element("tr",[],[(x=item.Render(data.WorkItems,function()
    {
     reconnectFnc();
-   })]);
+   }),WrapControls.Render(icons(item),Panel.WrapControlsAligment.Horizontal,x))]);
   },rowItems.v)]);
  };
  RulesEditor.Restore=function(data,rowItems,rules)
@@ -1764,25 +1886,26 @@
  DshHelper.RulesGroupCreator=function(data,a)
  {
   var grItem;
-  grItem=RulesGroupItem.Create("rules"+Global.String(List.length(List.ofSeq(data.RulesGroups))+1));
+  grItem=RulesGroupItem.Create("rules"+Global.String(List.length(List.ofSeq(data.RulesGroups))+1),function(r)
+  {
+   return RulesEditor.Render(data,r);
+  });
   data.RulesGroups.Append(grItem);
-  return[grItem.Name,RulesEditor.Render(data,grItem.RulesRowItems)];
+  return grItem;
  };
  DshHelper.EventsGroupCreator=function(data,propertyGrid,a)
  {
   var grItem;
-  grItem=EventsGroupItem.Create("event"+Global.String(List.length(List.ofSeq(data.EventGroups))+1));
+  grItem=EventsGroupItem.Create("event"+Global.String(List.length(List.ofSeq(data.EventGroups))+1),propertyGrid);
   data.EventGroups.Append(grItem);
-  return[grItem.Name,EventsEditor.Render(grItem.EventItems,propertyGrid)];
+  return grItem;
  };
  DshHelper.PanelGroupCreator=function(data,panelContainerCreator,a)
  {
-  var number,panelContainer,grItem;
-  number=List.length(List.ofSeq(data.WidgetGroups))+1;
-  panelContainer=panelContainerCreator();
-  grItem=WidgetsGroupItem.Create("panel"+Global.String(number),panelContainer);
+  var grItem;
+  grItem=WidgetsGroupItem.Create("panel"+Global.String(List.length(List.ofSeq(data.WidgetGroups))+1),panelContainerCreator());
   data.WidgetGroups.Append(grItem);
-  return[grItem.Name,panelContainer.get_Render()];
+  return grItem;
  };
  Dashboard$1=Dashboard.Dashboard=Runtime.Class({
   Render:function(menu)
@@ -1834,7 +1957,7 @@
    gSelectorRules=this.EditorSelectorEdit.GroupByIndex(2);
    List.iteri(function(ind,t)
    {
-    var p,renderer,grNameVar,grItem;
+    var item,grItem;
     function a(key,panelKey,widget)
     {
      $this.RegisterWidget(key,grItem,panelKey,Seq.find(function(entry)
@@ -1842,12 +1965,10 @@
       return entry.Key===panelKey;
      },List.ofSeq(grItem.PanelContainer.PanelItems)).Children,(widget.StartRunner(),widget));
     }
-    p=DshHelper.PanelGroupCreator($this.Data,panelCreator,null);
-    renderer=p[1];
-    grNameVar=p[0];
-    Var.Set(grNameVar,t[0]);
-    gSelectorPanelsEdit.SelectorItems.Append(SelectorItem.Create(grNameVar,renderer));
-    gSelectorPanelsRun.SelectorItems.Append(SelectorItem.Create(grNameVar,renderer));
+    item=DshHelper.PanelGroupCreator($this.Data,panelCreator,null);
+    Var.Set(item.WebSharper_Community_Dashboard_ISelectorItem$get_Name(),t[0]);
+    gSelectorPanelsEdit.SelectorItems.Append(item);
+    gSelectorPanelsRun.SelectorItems.Append(item);
     grItem=Seq.nth(ind,List.ofSeq($this.Data.WidgetGroups));
     List.iter(function(panelConfig)
     {
@@ -1867,15 +1988,14 @@
    console.log("Widgets restored");
    List.iteri(function(ind,t)
    {
-    var p,grNameVar,grItem;
+    var item,grItem;
     function a(key,event)
     {
      $this.Data.RegisterEvent(key,grItem,event);
     }
-    p=DshHelper.EventsGroupCreator($this.Data,$this.PropertyGrid,null);
-    grNameVar=p[0];
-    Var.Set(grNameVar,t[0]);
-    gSelectorEvents.SelectorItems.Append(SelectorItem.Create(grNameVar,p[1]));
+    item=DshHelper.EventsGroupCreator($this.Data,$this.PropertyGrid,null);
+    Var.Set(item.WebSharper_Community_Dashboard_ISelectorItem$get_Name(),t[0]);
+    gSelectorEvents.SelectorItems.Append(item);
     grItem=Seq.nth(ind,List.ofSeq($this.Data.EventGroups));
     return List.iter(function($1)
     {
@@ -1885,11 +2005,10 @@
    console.log("Events restored");
    List.iteri(function(ind,t)
    {
-    var p,grNameVar;
-    p=DshHelper.RulesGroupCreator($this.Data,null);
-    grNameVar=p[0];
-    Var.Set(grNameVar,t[0]);
-    gSelectorRules.SelectorItems.Append(SelectorItem.Create(grNameVar,p[1]));
+    var item;
+    item=DshHelper.RulesGroupCreator($this.Data,null);
+    Var.Set(item.WebSharper_Community_Dashboard_ISelectorItem$get_Name(),t[0]);
+    gSelectorRules.SelectorItems.Append(item);
     return RulesEditor.Restore($this.Data,Seq.nth(ind,List.ofSeq($this.Data.RulesGroups)).RulesRowItems,t[1]);
    },rules);
    this.Data.WidgetGroups.get_Length()>0?(Var.Set(this.EditorSelectorEdit.OptSelectedItem,{
@@ -1995,6 +2114,10 @@
    }),TitleButton.New("clear",function(panel$1)
    {
     group.PanelContainer.PanelItems.Remove(group.PanelContainer.FindPanelItem(panel$1));
+    group.WidgetItems.RemoveBy(function(item)
+    {
+     return item.Panel===panel$1.Key;
+    });
    })])).WithChildPanelContainer(childContainerContent);
    group.PanelContainer.AddPanel(panel);
    return panel;
@@ -2032,7 +2155,7 @@
    propertyGrid.Edit(List.mapi(function(ind,item)
    {
     var c;
-    return Properties.string((c=ind+1,Global.String(c)),item.Name);
+    return Properties.string((c=ind+1,Global.String(c)),item.WebSharper_Community_Dashboard_ISelectorItem$get_Name());
    },List.ofSeq(gr.SelectorItems)));
   }).WithItemOnSelected(function()
   {
@@ -2043,7 +2166,25 @@
    {
     return grInd===0?List.head(List.ofSeq(editorSelectorRun.SelectorGroups)).SelectorItems.Append(item):null;
    };
-  });
+  }).WithItemOnDeleted(function()
+  {
+   return function()
+   {
+    return null;
+   };
+  }).WithItemOnDeleted(function(grInd)
+  {
+   return function(item)
+   {
+    item instanceof WidgetsGroupItem?data.WidgetGroups.Remove(item):item instanceof EventsGroupItem?data.EventGroups.Remove(item):item instanceof RulesGroupItem?data.RulesGroups.Remove(item):Operators.FailWith("WithItemOnDeleted, type unknown");
+    return grInd===0?List.head(List.ofSeq(editorSelectorRun.SelectorGroups)).SelectorItems.Remove(item):null;
+   };
+  }).WithItemOnMove(Runtime.Curried3(function($1,item,direction)
+  {
+   var isDown;
+   isDown=direction.$==1&&true;
+   return item instanceof WidgetsGroupItem?(Helper.MoveItemInModelList(data.WidgetGroups,isDown,item),Helper.MoveItemInModelList(List.head(List.ofSeq(editorSelectorRun.SelectorGroups)).SelectorItems,isDown,item)):item instanceof EventsGroupItem?Helper.MoveItemInModelList(data.EventGroups,isDown,item):item instanceof RulesGroupItem?Helper.MoveItemInModelList(data.RulesGroups,isDown,item):Operators.FailWith("WithItemOnDeleted, type unknown");
+  })).WithControls(true);
   firstPanel=panelGroupCreator();
   editorSelectorEdit.AppenGroup("Panels",List.ofArray([firstPanel]),{
    $:1,

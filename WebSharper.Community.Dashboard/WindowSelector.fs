@@ -9,46 +9,56 @@ open WebSharper.Community.PropertyGrid
 open WebSharper.Community.Panel
 
 [<JavaScript>]
-type SelectorItem =
-    {
-        Key:Key
-        Name:Var<string>
-        SelectorRenderer:Elt
-    }
-    static member Create name renderer=
-        {
-            Key=Key.Fresh()
-            Name = name
-            SelectorRenderer=renderer
-        }
+type ISelectorItem =  
+    abstract Key:Key
+    abstract Name:Var<string>
+    abstract Render:Elt
 
+type MoveDirection =
+|MoveUp
+|MoveDown
 [<JavaScript>]
 type SelectorGroup =
     {
         Key:Key
         Name:Var<string>
-        SelectorItems:ListModel<Key,SelectorItem>
-        ChildCreatator:Option<(unit->(Var<string>*Elt))>
-        ItemOnCreated:(SelectorItem -> unit)
-        ItemOnSelected:(SelectorItem -> unit)
+        SelectorItems:ListModel<Key,ISelectorItem>
+        ItemCreatator:Option<(unit->ISelectorItem)>
+        ItemOnCreated:(ISelectorItem -> unit)
+        ItemOnSelected:(ISelectorItem -> unit)
+        ItemOnDelete:(ISelectorItem -> unit)
+        ItemOnMove:(ISelectorItem -> MoveDirection -> unit)
     }     
-    static member Create name (config:(Var<string>*Elt) list) childCreator itemOnCreated itemOnSelected =
-        let items = config |> List.map (fun (name,renderer) -> SelectorItem.Create name renderer) |> ListModel.Create (fun item ->item.Key)
+    static member Create name (items:ISelectorItem list) itemCreator itemOnCreated itemOnSelected itemOnDelete itemOnMove=
+        let modelItems = items |> ListModel.Create (fun item ->item.Key)
         {
             Key=Key.Fresh()
             Name = Var.Create name
-            SelectorItems = items
-            ChildCreatator = childCreator
+            SelectorItems = modelItems
+            ItemCreatator = itemCreator
             ItemOnCreated  = itemOnCreated
             ItemOnSelected = itemOnSelected
+            ItemOnDelete = itemOnDelete
+            ItemOnMove = itemOnMove
         }
-    member x.ItemByIndex ind = x.SelectorItems |> List.ofSeq |> List.head
-    member x.RenderMenu offset (selectedItemVar:Var<Option<SelectorItem>>) = 
+//    member x.ItemByIndex ind = x.SelectorItems |> List.ofSeq |> List.head
+    member x.RenderMenu offset (selectedItemVar:Var<Option<ISelectorItem>>) withControls= 
+     let moveItem = Helper.MoveItemInModelList x.SelectorItems
+     let icons item = [
+                    Helper.IconSmall "keyboard_arrow_down" (fun _ ->moveItem true item
+                                                                    x.ItemOnMove item MoveDown)
+                    Helper.IconSmall "keyboard_arrow_up" (fun _ ->moveItem false item
+                                                                  x.ItemOnMove item MoveUp)
+                    Helper.IconSmall "clear" (fun _ ->x.SelectorItems.Remove(item)
+                                                      x.ItemOnDelete(item))
+                 ]
+
+
      let plus = 
-       match x.ChildCreatator with
-       |Some(fnc) -> tr[td[divAttr[Attr.Style "margin-left" "20px"][Helper.IconSmall "add" 
-                                                        (fun _ ->let (name,renderer) = fnc()
-                                                                 let item = SelectorItem.Create name renderer
+       match x.ItemCreatator with
+       |Some(creator) -> tr[td[divAttr[Attr.Style "margin-left" "20px"][Helper.IconSmall "add" 
+                                                        (fun _ ->let item = creator()
+                                                                 //let item = SelectorItem.Create config.Name config.Render
                                                                  x.ItemOnCreated(item)
                                                                  x.SelectorItems.Add (item)
                                                            )]]]
@@ -56,26 +66,31 @@ type SelectorGroup =
      table[
        ListModel.View x.SelectorItems
        |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> let mapName = item.Name.View |> View.Map (fun name -> offset + name)
-                                                            tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (selItemVar:Option<SelectorItem>) -> 
+                                                            tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (selItemVar:Option<ISelectorItem>) -> 
                                                                                                                 match selItemVar with 
                                                                                                                 |Some(selItem) -> if selItem.Key = item.Key then "#FB8C00" else "#7D4600" 
-                                                                                                                |None -> "#7D4600")  selectedItemVar.View) 
-                                                                      Attr.Style "cursor" "pointer"
-                                                                      on.click (fun elem _-> x.ItemOnSelected(item)
-                                                                                             selectedItemVar.Value <- Some(item))
-                                                                      
-                                                                      ][divAttr[Attr.Style "margin-left" "10px"
-                                                                                Attr.Style "margin-right" "5px"][textView  mapName]]] )  
+                                                                                                                |None -> "#7D4600")  selectedItemVar.View)                                                                       
+                                                                      ][(divAttr[Attr.Style "margin-left" "10px"
+                                                                                 Attr.Style "margin-right" "5px"
+                                                                                 Attr.Style "cursor" "pointer"
+                                                                                 on.click (fun elem _-> x.ItemOnSelected(item)
+                                                                                                        selectedItemVar.Value <- Some(item))
+                                                                                 ][textView  mapName])
+                                                                                  |> if withControls then WrapControls.Render (icons item) WrapControlsAligment.Horizontal
+                                                                                    else (fun elt -> elt) ]] )  
        plus
      ]
 [<JavaScript>]
 type WindowSelector =
     {
-        OptSelectedItem:Var<Option<SelectorItem> >
+        OptSelectedItem:Var<Option<ISelectorItem> >
         SelectorGroups:ListModel<Key,SelectorGroup>
-        ItemOnCreated:(int -> SelectorItem -> unit)
+        ItemOnCreated:(int -> ISelectorItem -> unit)
         GroupOnClick:(SelectorGroup -> unit)
-        ItemOnSelected:(SelectorItem -> unit)
+        ItemOnSelected:(ISelectorItem -> unit)
+        ItemOnDeleted:(int->ISelectorItem -> unit)
+        ItemOnMove:(int->ISelectorItem -> MoveDirection -> unit)
+        IsWithControls:bool
     }
     static member Create  = 
         {
@@ -84,19 +99,25 @@ type WindowSelector =
             ItemOnCreated  = (fun _ _ -> ())
             GroupOnClick = (fun _ -> ())
             ItemOnSelected = (fun _ -> ())
+            ItemOnDeleted  = (fun _ _ -> ())
+            ItemOnMove  = (fun _ _ _  -> ())
+            IsWithControls = false
         }
     member x.WithItemOnCreated onCreatedFnc = {x with ItemOnCreated = onCreatedFnc}
     member x.WithGroupOnClick onClickFnc = {x with GroupOnClick = onClickFnc}
     member x.WithItemOnSelected onSelectedFnc = {x with ItemOnSelected = onSelectedFnc}
+    member x.WithItemOnDeleted onDeletedFnc = {x with ItemOnDeleted = onDeletedFnc}
+    member x.WithItemOnMove onMoveFnc = {x with ItemOnMove = onMoveFnc}
+    member x.WithControls withControls = {x with IsWithControls = withControls}
     member x.ClearGroups() = 
             x.OptSelectedItem.Value <- None
             x.SelectorGroups |> List.ofSeq |> List.iter (fun gr -> gr.SelectorItems.Clear())
     member x.SelectedItem = match x.OptSelectedItem.Value with | Some(item) -> item | None -> failwith "Something really wrong with WindowSelector"
     member x.AppenGroup name config childCreator =
             let ind = x.SelectorGroups.Length 
-            x.SelectorGroups.Add(SelectorGroup.Create name config childCreator (x.ItemOnCreated ind) x.ItemOnSelected)
+            x.SelectorGroups.Add(SelectorGroup.Create name config childCreator (x.ItemOnCreated ind) x.ItemOnSelected (x.ItemOnDeleted ind) (x.ItemOnMove ind))
 
-    member x.GroupFromItem (item:SelectorItem) = x.SelectorGroups |> List.ofSeq |> List.find (fun group -> group.SelectorItems |> List.ofSeq |> List.exists (fun entry-> entry.Key = item.Key)) 
+    member x.GroupFromItem (item:ISelectorItem) = x.SelectorGroups |> List.ofSeq |> List.find (fun group -> group.SelectorItems |> List.ofSeq |> List.exists (fun entry-> entry.Key = item.Key)) 
 
     member x.SelectedGroup = x.GroupFromItem (x.SelectedItem)
 
@@ -109,10 +130,10 @@ type WindowSelector =
             |> List.findIndex (fun listItem -> listItem.Key = x.SelectedItem.Key)
     member x.GroupByIndex index = x.SelectorGroups |> List.ofSeq |> List.item index
     member x.Render = 
-        div[x.OptSelectedItem.View |> Doc.BindView (fun value -> match value with |Some(selector) -> selector.SelectorRenderer :> Doc |None -> Doc.Empty)]
+        div[x.OptSelectedItem.View |> Doc.BindView (fun value -> match value with |Some(selector) -> selector.Render :> Doc |None -> Doc.Empty)]
     member x.RenderMenu =     
           if x.SelectorGroups.Length = 1 then
-            (x.SelectorGroups |> List.ofSeq |> List.head).RenderMenu "" x.OptSelectedItem
+            (x.SelectorGroups |> List.ofSeq |> List.head).RenderMenu "" x.OptSelectedItem x.IsWithControls
           else
            div[ 
             ListModel.View x.SelectorGroups
@@ -123,7 +144,7 @@ type WindowSelector =
                                                     on.click (fun elem _-> x.GroupOnClick(group))
                                                 ]
                                                 [textView group.Name.View]
-                                               group.RenderMenu "    " x.OptSelectedItem
+                                               group.RenderMenu "    " x.OptSelectedItem x.IsWithControls
                                             ]
                                         )
               ]

@@ -3,8 +3,10 @@
 open WebSharper
 open WebSharper.JavaScript
 open WebSharper.UI.Next
-open WebSharper.UI.Next.Storage
+open WebSharper.UI.Next.Client
+open WebSharper.Community.PropertyGrid
 open WebSharper.Community.Panel
+open WebSharper.UI.Next.Html
 
 
 [<JavaScript>]
@@ -26,13 +28,33 @@ type EventsGroupItem =
       Key:Key
       Name:Var<string>
       EventItems : ListModel<Key,WorkerItem>
+      PropertyGrid:PropertyGrid
     }
-    static member Create  name=
+    static member Create  name propertyGrid=
         {
             Key=Key.Fresh()
             Name=Var.Create name
             EventItems = ListModel.Create (fun item ->item.Key) []
+            PropertyGrid = propertyGrid
         }
+    member x.Render = 
+            let moveItem = Helper.MoveItemInModelList x.EventItems
+            let icons item = [
+                           Helper.IconSmall "keyboard_arrow_down" (fun _ ->moveItem true item)
+                           Helper.IconSmall "keyboard_arrow_up" (fun _ ->moveItem false item)
+                           Helper.IconSmall "clear" (fun _ ->x.EventItems.Remove(item))
+                        ]
+            table[
+                    ListModel.View x.EventItems
+                    |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [(divAttr (Helper.AttrsClick (fun _ ->item.Worker.Properties |> x.PropertyGrid.Edit))
+                                                                                      [textView item.Worker.Name.View])
+                                                                               |> WrapControls.Render (icons item) WrapControlsAligment.Horizontal
+                                                                                                                   ])
+                  ]
+    interface ISelectorItem with
+        override x.Key = x.Key
+        override x.Name = x.Name
+        override x.Render = x.Render
 [<JavaScript>]
 type WidgetsGroupItem = 
     {
@@ -48,20 +70,36 @@ type WidgetsGroupItem =
             WidgetItems = ListModel.Create (fun item ->item.Key) []
             PanelContainer = panelContainer
         }
-[<JavaScript>]
+    member x.Render  = x.PanelContainer.Render
+    interface ISelectorItem with
+        override x.Key = x.Key
+        override x.Name = x.Name
+        override x.Render = x.Render
+
+[<JavaScript;CustomEquality;NoComparison>]
 type RulesGroupItem = 
     {
       Key:Key
       Name:Var<string>
       RulesRowItems:ListModel<Key,RulesRowItem>
+      Renderer:(ListModel<Key,RulesRowItem>->Elt)
     }
-    static member Create  name =
+    static member Create  name renderer=
         {
             Key=Key.Fresh()
             Name=Var.Create name
             RulesRowItems = ListModel.Create (fun item ->item.Key) []
+            Renderer = renderer
         }
+    member x.Render  = x.Renderer(x.RulesRowItems)
 
+    interface ISelectorItem with
+        override x.Key = x.Key
+        override x.Name = x.Name
+        override x.Render = x.Render
+    override x.Equals y = match y with
+                          | :? RulesGroupItem as gr -> x.Key = gr.Key
+                          | _ -> false
 [<JavaScript>]
 type DshData =
     {

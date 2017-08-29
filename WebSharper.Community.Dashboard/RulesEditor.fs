@@ -45,11 +45,20 @@ module RulesEditor =
                                      )
         rules.Reconnect allWorkers
     let Render data rowItems= 
+        let moveItem = Helper.MoveItemInModelList rowItems
+        let icons item = [
+                       Helper.IconSmall "keyboard_arrow_down" (fun _ ->moveItem true item)
+                       Helper.IconSmall "keyboard_arrow_up" (fun _ ->moveItem false item)
+                       Helper.IconSmall "clear" (fun _ ->rowItems.Remove(item))
+                    ]
+
         let reconnectFnc () =
                 data.WorkItems |>List.ofSeq |> List.map (fun item -> item.Worker)
                 |> (CopyToRules rowItems).Reconnect
         let renderRows=  ListModel.View rowItems
-                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data.WorkItems (fun _ ->reconnectFnc())]) // x.Reconnect data)])
+                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data.WorkItems (fun _ ->reconnectFnc())
+                                                                                  |> WrapControls.Render (icons item) WrapControlsAligment.Horizontal
+                                                                                 ]) 
         table[
                renderRows
              ]

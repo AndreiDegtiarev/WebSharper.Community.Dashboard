@@ -1,12 +1,14 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Panel,Helper,PanelData,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,Dialog,Guid,UI,Next,Doc,AttrModule,List,IntelliFactory,Runtime,Unchecked,Var,View,Input,Mouse,Seq,ListModel,console;
+ var Global,WebSharper,Community,Panel,Helper,WrapControlsAligment,WrapControls,PanelData,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,Dialog,List,Seq,Unchecked,Guid,UI,Next,Doc,AttrModule,Var,View,IntelliFactory,Runtime,Input,Mouse,ListModel,console;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  Panel=Community.Panel=Community.Panel||{};
  Helper=Panel.Helper=Panel.Helper||{};
+ WrapControlsAligment=Panel.WrapControlsAligment=Panel.WrapControlsAligment||{};
+ WrapControls=Panel.WrapControls=Panel.WrapControls||{};
  PanelData=Panel.PanelData=Panel.PanelData||{};
  TitleButton=Panel.TitleButton=Panel.TitleButton||{};
  Panel$1=Panel.Panel=Panel.Panel||{};
@@ -15,22 +17,48 @@
  LayoutManagers=Panel.LayoutManagers=Panel.LayoutManagers||{};
  SC$1=Global.StartupCode$WebSharper_Community_Panel$LayoutManagers=Global.StartupCode$WebSharper_Community_Panel$LayoutManagers||{};
  Dialog=Panel.Dialog=Panel.Dialog||{};
+ List=WebSharper&&WebSharper.List;
+ Seq=WebSharper&&WebSharper.Seq;
+ Unchecked=WebSharper&&WebSharper.Unchecked;
  Guid=WebSharper&&WebSharper.Guid;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Doc=Next&&Next.Doc;
  AttrModule=Next&&Next.AttrModule;
- List=WebSharper&&WebSharper.List;
- IntelliFactory=Global.IntelliFactory;
- Runtime=IntelliFactory&&IntelliFactory.Runtime;
- Unchecked=WebSharper&&WebSharper.Unchecked;
  Var=Next&&Next.Var;
  View=Next&&Next.View;
+ IntelliFactory=Global.IntelliFactory;
+ Runtime=IntelliFactory&&IntelliFactory.Runtime;
  Input=Next&&Next.Input;
  Mouse=Input&&Input.Mouse;
- Seq=WebSharper&&WebSharper.Seq;
  ListModel=Next&&Next.ListModel;
  console=Global.console;
+ Helper.MoveItemInModelList=function(items,isDown,item)
+ {
+  var listItems,targetIndex,p,first;
+  listItems=List.ofSeq(items);
+  targetIndex=isDown?Seq.findIndex(function(entry)
+  {
+   return Unchecked.Equals(entry,item);
+  },listItems)+1:Seq.findIndex(function(entry)
+  {
+   return Unchecked.Equals(entry,item);
+  },listItems)-1;
+  targetIndex>=0&&targetIndex<listItems.get_Length()?(items.Clear(),p=List.splitAt(targetIndex,List.filter(function(entry)
+  {
+   return!Unchecked.Equals(entry,item);
+  },listItems)),first=p[0],List.iter(function(entry)
+  {
+   items.Append(entry);
+  },List.append(first,new List.T({
+   $:1,
+   $0:item,
+   $1:p[1]
+  }))),List.iter(function(entry)
+  {
+   items.Append(entry);
+  },first)):void 0;
+ };
  Helper.UniqueKey=function()
  {
   var c;
@@ -70,6 +98,28 @@
     return action();
    };
   })]);
+ };
+ WrapControlsAligment.Horizontal={
+  $:1
+ };
+ WrapControlsAligment.Vertical={
+  $:0
+ };
+ WrapControls.Render=function(icons,aligment,content)
+ {
+  var mouseOver,icons$1;
+  mouseOver=Var.Create$1(false);
+  icons$1=Doc.Element("div",[AttrModule.DynamicStyle("display",View.Map(function(value)
+  {
+   return!value?"none":"block";
+  },mouseOver.v))],icons);
+  return aligment.$==1?Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[content]),Doc.Element("td",[],[icons$1])])]).on("mouseenter",function()
+  {
+   return Var.Set(mouseOver,true);
+  }).on("mouseleave",function()
+  {
+   return Var.Set(mouseOver,false);
+  }):Doc.Element("div",[],[icons$1,content]);
  };
  PanelData.Create=function(key,left,top,children)
  {

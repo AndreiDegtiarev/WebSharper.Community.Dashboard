@@ -16,18 +16,18 @@ module internal DshHelper =
                                      let panelContainer = panelContainerCreator()
                                      let grItem = WidgetsGroupItem.Create ("panel"+(number.ToString())) panelContainer
                                      data.WidgetGroups.Add(grItem)
-                                     (grItem.Name,panelContainer.Render))
+                                     grItem :> ISelectorItem)
     let EventsGroupCreator data propertyGrid= (fun _ ->
                                  let number = (data.EventGroups |> List.ofSeq  |> List.length) + 1
-                                 let grItem = EventsGroupItem.Create ("event"+(number.ToString()))
+                                 let grItem = EventsGroupItem.Create ("event"+(number.ToString())) propertyGrid
                                  data.EventGroups.Add(grItem)
-                                 (grItem.Name,EventsEditor.Render (grItem.EventItems) propertyGrid))
+                                 grItem :> ISelectorItem)
     let RulesGroupCreator data = (fun _ -> 
                                 let number = (data.RulesGroups |> List.ofSeq  |> List.length) + 1
-                                let grItem = RulesGroupItem.Create ("rules"+(number.ToString()))
+                                let grItem = RulesGroupItem.Create ("rules"+(number.ToString())) (RulesEditor.Render data)
                                 data.RulesGroups.Add(grItem)
                                 //(Var.Create "rules1",renderer data)
-                                (grItem.Name,RulesEditor.Render data (grItem.RulesRowItems)))
+                                grItem :> ISelectorItem)
 
 type DashboardMode =
 |DashboardRun
@@ -56,6 +56,27 @@ type Dashboard =
                                    .WithItemOnSelected(fun item -> //Environment.Log "WithItemOnSelected"
                                                                    List.empty |> propertyGrid.Edit)
                                    .WithItemOnCreated(fun grInd item -> if grInd = 0 then (editorSelectorRun.SelectorGroups |> List.ofSeq |> List.head).SelectorItems.Add(item)) 
+                                   .WithItemOnDeleted(fun _ _ -> ())
+                                   .WithItemOnDeleted(fun grInd item -> 
+                                                                   match item with
+                                                                   | :? WidgetsGroupItem as gr -> data.WidgetGroups.Remove(gr)
+                                                                   | :? EventsGroupItem as gr -> data.EventGroups.Remove(gr)
+                                                                   | :? RulesGroupItem as gr -> data.RulesGroups.Remove(gr)
+                                                                   | _ -> failwith "WithItemOnDeleted, type unknown"
+                                                                   if grInd = 0 then (editorSelectorRun.SelectorGroups |> List.ofSeq |> List.head).SelectorItems.Remove(item))
+                                   .WithItemOnMove(fun grInd item direction -> 
+                                                                let isDown = 
+                                                                    match direction with
+                                                                    |MoveUp -> false
+                                                                    |MoveDown -> true
+                                                                match item with
+                                                                | :? WidgetsGroupItem as gr -> Helper.MoveItemInModelList data.WidgetGroups isDown gr
+                                                                                               Helper.MoveItemInModelList (editorSelectorRun.SelectorGroups |> List.ofSeq |> List.head).SelectorItems isDown item
+                                                                | :? EventsGroupItem as gr -> Helper.MoveItemInModelList data.EventGroups isDown gr
+                                                                | :? RulesGroupItem as gr -> Helper.MoveItemInModelList data.RulesGroups isDown gr
+                                                                | _ -> failwith "WithItemOnDeleted, type unknown"
+                                   )
+                                   .WithControls(true)
         let panelGroupCreator = DshHelper.PanelGroupCreator data panelContainerCreator
         let firstPanel = panelGroupCreator()
         editorSelectorEdit.AppenGroup "Panels" [firstPanel] (Some(panelGroupCreator))
@@ -124,7 +145,9 @@ type Dashboard =
                                                                          |> List.map (fun item -> item.Widget.Properties)
                                                                          |> List.concat
                                                                          |> x.PropertyGrid.Edit)}
-                                        {Icon="clear";Action=(fun panel->group.PanelContainer.PanelItems.Remove(group.PanelContainer.FindPanelItem panel))}
+                                        {Icon="clear";Action=(fun panel->group.PanelContainer.PanelItems.Remove(group.PanelContainer.FindPanelItem panel)
+                                                                         group.WidgetItems.RemoveBy(fun item -> item.Panel = panel.Key)
+                                                             )}
                                       ])
                           .WithChildPanelContainer(childContainerContent)
         group.PanelContainer.AddPanel panel
@@ -156,10 +179,10 @@ type Dashboard =
         let gSelectorEvents=x.EditorSelectorEdit.GroupByIndex 1
         let gSelectorRules=x.EditorSelectorEdit.GroupByIndex 2
         widgets |> List.iteri (fun ind (grName,panelList,gr) -> 
-                                let (grNameVar,renderer) = DshHelper.PanelGroupCreator x.Data panelCreator ()
-                                grNameVar.Value <- grName
-                                gSelectorPanelsEdit.SelectorItems.Add (SelectorItem.Create grNameVar renderer)
-                                gSelectorPanelsRun.SelectorItems.Add (SelectorItem.Create grNameVar renderer)
+                                let item = DshHelper.PanelGroupCreator x.Data panelCreator ()
+                                item.Name.Value <- grName
+                                gSelectorPanelsEdit.SelectorItems.Add (item)
+                                gSelectorPanelsRun.SelectorItems.Add (item)
                                 let grItem = x.Data.WidgetGroups |> List.ofSeq |> List.item ind
                                 panelList
                                 |> List.iter(fun (panelConfig:PanelData) -> 
@@ -173,16 +196,16 @@ type Dashboard =
                                                                                                          widget)))
         Console.Log("Widgets restored")   
         events |> List.iteri (fun ind (grName,gr) -> 
-                                let (grNameVar,renderer) = DshHelper.EventsGroupCreator x.Data x.PropertyGrid ()
-                                grNameVar.Value <- grName
-                                gSelectorEvents.SelectorItems.Add (SelectorItem.Create grNameVar renderer)
+                                let item = DshHelper.EventsGroupCreator x.Data x.PropertyGrid ()
+                                item.Name.Value <- grName
+                                gSelectorEvents.SelectorItems.Add (item)
                                 let grItem = x.Data.EventGroups |> List.ofSeq |> List.item ind
                                 gr|> List.iter (fun (key,event:Worker) -> x.Data.RegisterEvent key grItem event)) 
         Console.Log("Events restored") 
         rules |> List.iteri (fun ind (grName,rulesData) -> 
-                                let (grNameVar,renderer) = DshHelper.RulesGroupCreator x.Data ()
-                                grNameVar.Value <- grName
-                                gSelectorRules.SelectorItems.Add (SelectorItem.Create grNameVar renderer)
+                                let item = DshHelper.RulesGroupCreator x.Data ()
+                                item.Name.Value <- grName
+                                gSelectorRules.SelectorItems.Add (item)
                                 let grItem = x.Data.RulesGroups |> List.ofSeq |> List.item ind
                                 RulesEditor.Restore x.Data grItem.RulesRowItems rulesData
                                 ) 

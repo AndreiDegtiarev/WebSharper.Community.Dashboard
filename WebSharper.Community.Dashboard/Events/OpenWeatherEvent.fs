@@ -1,13 +1,8 @@
-﻿namespace WebSharper.Community.Dashboard
+﻿namespace WebSharper.Community.Dashboard.Events
 
 open WebSharper
-open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
 open FSharp.Data
-open WebSharper.Community.PropertyGrid
-open WebSharper.Community.Panel
+open WebSharper.Community.Dashboard
 
 [<JavaScript>]
 module OpenWeather =
@@ -27,10 +22,10 @@ module OpenWeather =
     let get key city =
         async {
             let request = sprintf "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&appid=%s" city key
-            Console.Log ("get key city " + request)
+            Environment.Log ("get key city " + request)
             try
                 let! weather = WeatherApi.AsyncLoad(request)
-                Console.Log ("get key city 2")
+                Environment.Log ("get key city 2")
                 return weather.Weather 
                        |> Array.tryHead
                        |> Option.map (fun head -> 
@@ -40,26 +35,26 @@ module OpenWeather =
                               Temperature = weather.Main.Temp
                               TemparatureMinMax = weather.Main.TempMin, weather.Main.TempMax })
             with e ->
-                Console.Log(e.Message)
+                Environment.Log(e.Message)
                 return None
         }
 
 [<JavaScript>]
-type OpenWeatherRunner =
+type OpenWeatherEvent =
  {
-    OpenWeatherRunnerData:WorkerData
+    OpenWeatherEventData:WorkerData
  }
  static member Create city apikey = {
-                           OpenWeatherRunnerData =  WorkerData.Create "OpenWeatherMap" 
+                           OpenWeatherEventData =  WorkerData.Create "OpenWeatherMap" 
                                                                     [("City",MessageBus.StringMessage city)
                                                                      ("ApiKey",MessageBus.StringMessage apikey)]
                                                                     [("Temperature",MessageBus.NumberMessage 0.0)]
                                      }
- static member FromWorker = (fun (worker:Worker) -> {OpenWeatherRunnerData = worker.ToData}
+ static member FromWorker = (fun (worker:Worker) -> {OpenWeatherEventData = worker.ToData}
                            )
  
  interface IWorkerData with
-      override x.Data = x.OpenWeatherRunnerData
+      override x.Data = x.OpenWeatherEventData
       override x.Run = Some(fun worker -> 
                                 async {
                                     while true do
@@ -71,7 +66,7 @@ type OpenWeatherRunner =
                                         let! response = OpenWeather.get api crCity
                                         match response with
                                         |Some(res) -> 
-                                            Console.Log ("Value generated:"+response.Value.Title)
+                                            Environment.Log ("Value generated:"+response.Value.Title)
                                             MessageBus.Number((double)response.Value.Temperature) |> outTempearatur.Trigger 
                                             //Ports.NumTrigger outTempearatur ((double)response.Value.Temperature)
                                         |None -> ()
@@ -80,4 +75,3 @@ type OpenWeatherRunner =
                                 |> Async.Start
                                 None)
       override x.Render = None
-

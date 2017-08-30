@@ -1,9 +1,13 @@
-﻿namespace WebSharper.Community.Dashboard
+﻿namespace WebSharper.Community.Dashboard.Events
+
+open WebSharper
+open WebSharper.Community.Dashboard
 
 open WebSharper
 open WebSharper.JavaScript
 open WebSharper.UI.Next
 open WebSharper.Community.Panel
+open WebSharper.Community.Dashboard
 open System
 open System.IO
 
@@ -55,26 +59,26 @@ module ServerDatabase =
     let ReadAllMessages file= 
             Agent.PostAndReply(fun r -> ReadAllMessages(file,r))
 [<JavaScript>]
-type DatabaseRunnerContext =
+type DatabaseEventContext =
     {
-        DatabaseRunnerRun:MailboxProcessor<string>
+        DatabaseEventRun:MailboxProcessor<string>
     }
     interface IRunnerContext
 
 [<JavaScript>]
-type DatabaseRunner =
+type DatabaseEvent =
  {
-    DatabaseData:WorkerData
+    DatabaseEventData:WorkerData
  }
  static member Create  = {
-                           DatabaseData =  WorkerData.Create "Database" 
+                           DatabaseEventData =  WorkerData.Create "Database" 
                                                               [(" in Value",MessageBus.NumberMessage 100.0)
                                                                ("Database name",MessageBus.StringMessage "Database.txt")]
                                                               [("Number value",MessageBus.NumberMessage 0.0)]
                          }
- static member FromWorker = (fun (worker:Worker) -> {DatabaseData = worker.ToData})
+ static member FromWorker = (fun (worker:Worker) -> {DatabaseEventData = worker.ToData})
  interface IWorkerData with
-      override x.Data = x.DatabaseData
+      override x.Data = x.DatabaseEventData
       override x.Run = Some(fun worker ->
                                 let mutable isFirstCall = true
                                 worker.InPorts.[0].PortValue.View
@@ -90,4 +94,6 @@ type DatabaseRunner =
                                     )  
                                 None)
       override x.Render = None
+
+
 

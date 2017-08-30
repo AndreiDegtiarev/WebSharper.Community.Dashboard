@@ -1,27 +1,24 @@
-﻿namespace WebSharper.Community.Dashboard
+﻿namespace WebSharper.Community.Dashboard.Events
 
 open WebSharper
-open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.Community.PropertyGrid
-open WebSharper.Community.Panel
+open WebSharper.Community.Dashboard
 
 
 [<JavaScript>]
-type RandomRunner =
+type RandomEvent =
  {
-    RandomRunnerData:WorkerData
+    RandomEventData:WorkerData
  }
  static member Create  = {
-                           RandomRunnerData =  WorkerData.Create "Random" 
+                           RandomEventData =  WorkerData.Create "Random" 
                                                                     [("Middle value",MessageBus.NumberMessage 100.0)
                                                                      ("Dispersion",MessageBus.NumberMessage 10.0)
                                                                      ("Delay sec.",MessageBus.NumberMessage 2.0)]
                                                                     [("Random value",MessageBus.NumberMessage 0.0)]
                           }
- static member FromWorker = (fun (worker:Worker) -> { RandomRunnerData = worker.ToData})
+ static member FromWorker = (fun (worker:Worker) -> { RandomEventData = worker.ToData})
  interface IWorkerData with
-    override x.Data = x.RandomRunnerData
+    override x.Data = x.RandomEventData
     override x.Run = Some(fun worker -> 
                               let rnd = System.Random()
                               async {

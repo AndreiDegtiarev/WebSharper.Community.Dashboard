@@ -53,10 +53,6 @@
     <Compile Include="MessageBus.fs" />
     <Compile Include="Port.fs" />
     <Compile Include="Worker.fs" />
-    <Compile Include="Source.fs" />
-    <Compile Include="SrcOpenWeather.fs" />
-    <Compile Include="Database.fs" />
-    <Compile Include="Widgets.fs" />
     <Compile Include="Rules.fs" />
     <Compile Include="Factory.fs" />
     <Compile Include="RuleItem.fs" />
@@ -64,6 +60,12 @@
     <Compile Include="DshData.fs" />
     <Compile Include="RulesEditor.fs" />
     <Compile Include="Dashboard.fs" />
+    <Compile Include="Events\RandomEvent.fs" />
+    <Compile Include="Events\DatabaseEvent.fs" />
+    <Compile Include="Events\OpenWeatherEvent.fs" />
+    <Compile Include="Widgets\TextBoxWidget.fs" />
+    <Compile Include="Widgets\ChartWidget.fs" />
+    <Compile Include="Widgets\ButtonWidget.fs" />
     <Compile Include="AppModelLib.fs" />
     <Compile Include="AppData.fs" />
     <Content Include="packages.config" />

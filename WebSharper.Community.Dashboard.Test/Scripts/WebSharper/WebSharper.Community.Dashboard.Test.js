@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,AppModelLib,RuleEntry,AppData,Panel,Helper,RandomRunner,TextBoxRenderer,ChartRenderer,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,MessageBus,UI,Next,Doc,Environment,console,Var,Strings;
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,AppModelLib,RuleEntry,AppData,Panel,Helper,Events,RandomEvent,Widgets,TextBoxWidget,ChartWidget,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,MessageBus,UI,Next,Doc,Environment,console,Var,Strings;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -14,9 +14,11 @@
  AppData=Dashboard&&Dashboard.AppData;
  Panel=Community&&Community.Panel;
  Helper=Panel&&Panel.Helper;
- RandomRunner=Dashboard&&Dashboard.RandomRunner;
- TextBoxRenderer=Dashboard&&Dashboard.TextBoxRenderer;
- ChartRenderer=Dashboard&&Dashboard.ChartRenderer;
+ Events=Dashboard&&Dashboard.Events;
+ RandomEvent=Events&&Events.RandomEvent;
+ Widgets=Dashboard&&Dashboard.Widgets;
+ TextBoxWidget=Widgets&&Widgets.TextBoxWidget;
+ ChartWidget=Widgets&&Widgets.ChartWidget;
  List=WebSharper&&WebSharper.List;
  PanelData=Panel&&Panel.PanelData;
  RuleContainer=Dashboard&&Dashboard.RuleContainer;
@@ -66,7 +68,7 @@
     $:0,
     $0:{
      $:0,
-     $0:RandomRunner.get_Create()
+     $0:RandomEvent.get_Create()
     }
    };
    eventWorker=AppModel.ToWorker(event);
@@ -74,14 +76,14 @@
     $:0,
     $0:{
      $:3,
-     $0:TextBoxRenderer.get_Create()
+     $0:TextBoxWidget.get_Create()
     }
    });
    p$1=makeWidget({
     $:0,
     $0:{
      $:4,
-     $0:ChartRenderer.Create(300,150,50)
+     $0:ChartWidget.Create(300,150,50)
     }
    });
    panelData=List.ofArray([PanelData.Create(panelKey,0,0,List.T.Empty)]);

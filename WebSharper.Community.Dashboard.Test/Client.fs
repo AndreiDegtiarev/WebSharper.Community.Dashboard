@@ -7,6 +7,8 @@ open WebSharper.UI.Next.Client
 open WebSharper.UI.Next.Html
 open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
+open WebSharper.Community.Dashboard.Events
+open WebSharper.Community.Dashboard.Widgets
 open FSharp.Data
 
 type StartConfiguration = 
@@ -26,15 +28,15 @@ module Client =
         let makeTestConfig()= 
             let appData=AppData<AppModel>.Create dashboard fromWorker
             let panelKey = Helper.UniqueKey()
-            let event = AppLib(RandomSource(RandomRunner.Create))
+            let event = AppLib(AppRandomEvent(RandomEvent.Create))
             let eventWorker = event |> AppModel.ToWorker
             let eventPair = (eventWorker.Key,event)
             let makeWidget (widget:AppModel) = 
                 let widgetWorker = widget |> AppModel.ToWorker
                 let widgetPair = (widgetWorker.Key,panelKey,widget)
                 (widgetPair,{InPortKey = widgetWorker.InPorts.[0].Key;OutPortKey="";WorkerKey=widgetWorker.Key})
-            let (txtPair,textWorker) = makeWidget (AppLib(TextWidget(TextBoxRenderer.Create)))
-            let (chartPair,chartWorker) = makeWidget (AppLib(ChartWidget(ChartRenderer.Create 300.0 150.0 50.0)))
+            let (txtPair,textWorker) = makeWidget (AppLib(AppTextBoxWidget(TextBoxWidget.Create)))
+            let (chartPair,chartWorker) = makeWidget (AppLib(AppChartWidget(ChartWidget.Create 300.0 150.0 50.0)))
             let panelData = [ PanelData.Create panelKey 0.0 0.0 []]
             {appData with Events = [("main",[eventPair])]
                           Widgets = [("main",panelData,[txtPair;chartPair])]

@@ -5,33 +5,35 @@ open WebSharper.JavaScript
 open WebSharper.UI.Next
 open WebSharper.UI.Next.Client
 open WebSharper.Community.Dashboard
+open WebSharper.Community.Dashboard.Events
+open WebSharper.Community.Dashboard.Widgets
 open WebSharper.Community.Panel
 
 [<JavaScript>]
 type AppModelLib =
-    |RandomSource of RandomRunner
-    |OpenWeatherSource of OpenWeatherRunner
-    |DatabaseSource  of DatabaseRunner
-    |TextWidget   of TextBoxRenderer
-    |ChartWidget  of ChartRenderer
-    |ButtonWidget  of ButtonRenderer
+    |AppRandomEvent      of RandomEvent
+    |AppOpenWeatherEvent of OpenWeatherEvent
+    |AppDatabaseEvent    of DatabaseEvent
+    |AppTextBoxWidget    of TextBoxWidget
+    |AppChartWidget      of ChartWidget
+    |AppButtonWidget     of ButtonWidget
     static member ToWorker appModel=
         match appModel with 
-        |RandomSource(src) ->      src |> Worker.Create 
-        |OpenWeatherSource(src) -> src |> Worker.Create 
-        |DatabaseSource(src)   ->  src |> Worker.Create 
-        |TextWidget(src)   ->      src |> Worker.Create 
-        |ChartWidget(src)  ->      src |> Worker.Create 
-        |ButtonWidget(src)   ->    src |> Worker.Create 
+        |AppRandomEvent(src) ->      src |> Worker.Create 
+        |AppOpenWeatherEvent(src) -> src |> Worker.Create 
+        |AppDatabaseEvent(src)   ->  src |> Worker.Create 
+        |AppTextBoxWidget(src)   ->  src |> Worker.Create 
+        |AppChartWidget(src)  ->     src |> Worker.Create 
+        |AppButtonWidget(src)   ->   src |> Worker.Create 
          
     static member FromWorker (worker:Worker)= 
                             match worker.Data with
-                            | :? RandomRunner      as src -> Some(RandomSource(RandomRunner.FromWorker worker))
-                            | :? OpenWeatherRunner as src -> Some(OpenWeatherSource(OpenWeatherRunner.FromWorker worker))
-                            | :? DatabaseRunner    as src -> Some(DatabaseSource(DatabaseRunner.FromWorker worker))
-                            | :? TextBoxRenderer   as src -> Some(TextWidget(TextBoxRenderer.FromWorker worker))
-                            | :? ChartRenderer     as src -> Some(ChartWidget(ChartRenderer.FromWorker worker))
-                            | :? ButtonRenderer    as src -> Some(ButtonWidget(ButtonRenderer.FromWorker worker))
+                            | :? RandomEvent      as src -> Some(AppRandomEvent(RandomEvent.FromWorker worker))
+                            | :? OpenWeatherEvent as src -> Some(AppOpenWeatherEvent(OpenWeatherEvent.FromWorker worker))
+                            | :? DatabaseEvent    as src -> Some(AppDatabaseEvent(DatabaseEvent.FromWorker worker))
+                            | :? TextBoxWidget   as src -> Some(AppTextBoxWidget(TextBoxWidget.FromWorker worker))
+                            | :? ChartWidget     as src -> Some(AppChartWidget(ChartWidget.FromWorker worker))
+                            | :? ButtonWidget    as src -> Some(AppButtonWidget(ButtonWidget.FromWorker worker))
                             | _ -> None 
 
 
@@ -45,12 +47,12 @@ module App =
         let registerEvent  data = data |> RegisterEventGeneral dashboard 
         let registerWidget data = data |> RegisterWidgetGeneral dashboard
 
-        OpenWeatherRunner.Create "London" ""  |> registerEvent
-        RandomRunner.Create                   |> registerEvent
-        DatabaseRunner.Create                 |> registerEvent
-        TextBoxRenderer.Create                |> registerWidget
-        ChartRenderer.Create 300.0 150.0 50.0 |> registerWidget
-        ButtonRenderer.Create                 |> registerWidget
+        OpenWeatherEvent.Create "London" ""  |> registerEvent
+        RandomEvent.Create                   |> registerEvent
+        DatabaseEvent.Create                 |> registerEvent
+        TextBoxWidget.Create                 |> registerWidget
+        ChartWidget.Create 300.0 150.0 50.0  |> registerWidget
+        ButtonWidget.Create                  |> registerWidget
         dashboard
     let PanelContainerCreator=(fun _ -> 
                                 let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0

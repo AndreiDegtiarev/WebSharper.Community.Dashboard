@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,UI,Next,Array,String,Abbrev,Fresh,HashSet,Dict,Slot,Async,Mailbox,MailboxState,SC$1,AppendList,SC$2,DomUtility,SC$3,Trie,LookupResult,SC$4,Snap,Var,Updates,View,ViewBuilder,Submitter,Key,Model,Serializer,Storage,ArrayStorage,LocalStorageBackend,ListModel,ListModels,SC$5,ReactiveExtensions,DoubleInterpolation,Interpolation,Easing,Easings,An,Anims,Trans,SC$6,AnimatedAttrNode,DynamicAttrNode,AttrProxy,Client,Attrs,Dyn,Attrs$1,CheckedInput,AttrModule,SC$7,DocElemNode,Docs,DomNodes,NodeSet,RunState,Docs$1,Doc,Elt,EltUpdater,SC$8,Flow,FlowBuilder,Html,attr,Route,Routing,State,RouteMap,Router,Input,MousePosSt,MouseBtnSt,Mouse,KeyListenerSt,Keyboard,SC$9,List,Arrays,Enumerator,Strings,Char,Collections,HashSet$1,Seq,IntelliFactory,Runtime,Unchecked,console,Concurrency,Map,FSharpMap,List$1,Operators,Queue,Lazy,Dictionary,JSON,Numeric,Node,$,Slice,String$1;
+ var Global,WebSharper,UI,Next,Array,String,Abbrev,Fresh,HashSet,Dict,Slot,Async,Mailbox,SC$1,AppendList,SC$2,DomUtility,SC$3,Trie,LookupResult,SC$4,Snap,Var,Updates,View,ViewBuilder,Submitter,Key,Model,Serializer,Storage,ArrayStorage,LocalStorageBackend,ListModel,ListModels,SC$5,ReactiveExtensions,DoubleInterpolation,Interpolation,Easing,Easings,An,Anims,Trans,SC$6,AnimatedAttrNode,DynamicAttrNode,AttrProxy,Client,Attrs,Dyn,Attrs$1,CheckedInput,AttrModule,SC$7,DocElemNode,Docs,DomNodes,NodeSet,RunState,Docs$1,Doc,Elt,EltUpdater,SC$8,Flow,FlowBuilder,Html,attr,Route,Routing,State,RouteMap,Router,Input,MousePosSt,MouseBtnSt,Mouse,KeyListenerSt,Keyboard,SC$9,List,Arrays,Enumerator,Strings,Char,Collections,HashSet$1,Seq,IntelliFactory,Runtime,Unchecked,console,Concurrency,Map,FSharpMap,List$1,Operators,Queue,Lazy,Dictionary,JSON,Numeric,Node,$,Slice;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  UI=WebSharper.UI=WebSharper.UI||{};
@@ -15,7 +15,6 @@
  Slot=Abbrev.Slot=Abbrev.Slot||{};
  Async=Abbrev.Async=Abbrev.Async||{};
  Mailbox=Abbrev.Mailbox=Abbrev.Mailbox||{};
- MailboxState=Mailbox.MailboxState=Mailbox.MailboxState||{};
  SC$1=Global.StartupCode$WebSharper_UI_Next$Abbrev=Global.StartupCode$WebSharper_UI_Next$Abbrev||{};
  AppendList=Next.AppendList=Next.AppendList||{};
  SC$2=Global.StartupCode$WebSharper_UI_Next$AppendList=Global.StartupCode$WebSharper_UI_Next$AppendList||{};
@@ -109,7 +108,6 @@
  Node=Global.Node;
  $=Global.jQuery;
  Slice=WebSharper&&WebSharper.Slice;
- String$1=Global.String;
  Array.mapInPlace=function(f,arr)
  {
   var i,$1;
@@ -248,7 +246,7 @@
   {
    return this.value;
   }
- },null,Slot);
+ },WebSharper.Obj,Slot);
  Slot.New=Runtime.Ctor(function(key,value)
  {
   this.key=key;
@@ -269,7 +267,6 @@
    Async.OnError(e);
   },Global.ignore,null);
  };
- MailboxState=Mailbox.MailboxState=Runtime.Class({},null,MailboxState);
  Mailbox.StartProcessor=function(procAsync)
  {
   var st;
@@ -1669,7 +1666,7 @@
   {
    Var.Set(this["var"],null);
   }
- },null,Submitter);
+ },WebSharper.Obj,Submitter);
  Submitter.New=Runtime.Ctor(function(input,init)
  {
   this.input=input;
@@ -1693,7 +1690,7 @@
    $0:Fresh.Int()
   };
  };
- Model=Next.Model=Runtime.Class({},null,Model);
+ Model=Next.Model=Runtime.Class({},WebSharper.Obj,Model);
  Model.New=Runtime.Ctor(function(proj,init)
  {
   var _var;
@@ -1767,7 +1764,7 @@
    arr.push(i);
    return arr;
   }
- },null,ArrayStorage);
+ },WebSharper.Obj,ArrayStorage);
  ArrayStorage.New=Runtime.Ctor(function(init)
  {
   this.init=init;
@@ -1838,7 +1835,7 @@
    arr.push(i);
    return this.set(arr);
   }
- },null,LocalStorageBackend);
+ },WebSharper.Obj,LocalStorageBackend);
  LocalStorageBackend.New=Runtime.Ctor(function(id,serializer)
  {
   this.id=id;
@@ -2191,7 +2188,7 @@
   {
    return Enumerator.Get(this["var"].RVal());
   }
- },null,ListModel);
+ },WebSharper.Obj,ListModel);
  ListModel.New=Runtime.Ctor(function(key,storage)
  {
   ListModel.New$3.call(this,key,Var.Create$1(Arrays.ofSeq(Seq.distinctBy(key,storage.SInit()))),storage);
@@ -2289,7 +2286,7 @@
   };
   SC$5.$cctor=Global.ignore;
  });
- ReactiveExtensions=Next.ReactiveExtensions=Runtime.Class({},null,ReactiveExtensions);
+ ReactiveExtensions=Next.ReactiveExtensions=Runtime.Class({},WebSharper.Obj,ReactiveExtensions);
  ReactiveExtensions.New=Runtime.Ctor(function()
  {
  },ReactiveExtensions);
@@ -2311,7 +2308,7 @@
   {
    return this.transformTime(t);
   }
- },null,Easing);
+ },WebSharper.Obj,Easing);
  Easing.get_CubicInOut=function()
  {
   return Easings.CubicInOut();
@@ -2569,7 +2566,7 @@
   {
    return this.change(x,y);
   }
- },null,Trans);
+ },WebSharper.Obj,Trans);
  Trans.New=Runtime.Ctor(function(ch,enter,exit)
  {
   Trans.New$3.call(this,ch,Unchecked.Equals(enter,null)?An.Const:enter,Unchecked.Equals(exit,null)?An.Const:exit,1|(Unchecked.Equals(enter,null)?0:2)|(Unchecked.Equals(exit,null)?0:4));
@@ -2740,7 +2737,7 @@
     $this.pushVisible(parent,v);
    },Trans.AnimateChange(this.tr,$3[1],$3[0]))):An.get_Empty())));
   }
- },null,AnimatedAttrNode);
+ },WebSharper.Obj,AnimatedAttrNode);
  AnimatedAttrNode.New=Runtime.Ctor(function(tr,view,push)
  {
   var $this;
@@ -2784,7 +2781,7 @@
   {
    return An.get_Empty();
   }
- },null,DynamicAttrNode);
+ },WebSharper.Obj,DynamicAttrNode);
  DynamicAttrNode.New=Runtime.Ctor(function(view,push)
  {
   var $this;
@@ -3808,7 +3805,7 @@
    elt.parentNode.replaceChild(rdelim,elt);
    Doc.RunBefore(rdelim,this);
   }
- },null,Doc);
+ },WebSharper.Obj,Doc);
  Doc.Append=function(a,b)
  {
   return Doc.Mk({
@@ -4373,7 +4370,7 @@
     e.setAttribute("ws-on",Strings.concat(" ",Arrays.map(function(x)
     {
      var a,m,o;
-     a=Strings.SplitChars(x,[58],1);
+     a=Strings.SplitChars(x,[":"],1);
      m=(o=null,[mappings.TryGetValue(Arrays.get(a,1),{
       get:function()
       {
@@ -4385,12 +4382,12 @@
       }
      }),o]);
      return m[0]?Arrays.get(a,0)+":"+m[1]:x;
-    },Strings.SplitChars(e.getAttribute("ws-on"),[32],1))));
+    },Strings.SplitChars(e.getAttribute("ws-on"),[" "],1))));
    });
    return DomUtility.IterSelector(t,"[ws-attr-holes]",function(e)
    {
     var holeAttrs,i,$1;
-    holeAttrs=Strings.SplitChars(e.getAttribute("ws-attr-holes"),[32],1);
+    holeAttrs=Strings.SplitChars(e.getAttribute("ws-attr-holes"),[" "],1);
     for(i=0,$1=holeAttrs.length-1;i<=$1;i++)(function()
     {
      var attrName;
@@ -4454,13 +4451,13 @@
    {
     e.setAttribute("ws-on",Strings.concat(" ",Arrays.filter(function(x)
     {
-     return dontRemove.Contains(Arrays.get(Strings.SplitChars(x,[58],1),1));
-    },Strings.SplitChars(e.getAttribute("ws-on"),[32],1))));
+     return dontRemove.Contains(Arrays.get(Strings.SplitChars(x,[":"],1),1));
+    },Strings.SplitChars(e.getAttribute("ws-on"),[" "],1))));
    });
    return DomUtility.IterSelector(instance,"[ws-attr-holes]",function(e)
    {
     var holeAttrs,i,$1,attrName,_this;
-    holeAttrs=Strings.SplitChars(e.getAttribute("ws-attr-holes"),[32],1);
+    holeAttrs=Strings.SplitChars(e.getAttribute("ws-attr-holes"),[" "],1);
     for(i=0,$1=holeAttrs.length-1;i<=$1;i++){
      attrName=Arrays.get(holeAttrs,i);
      e.setAttribute(attrName,(_this=new Global.RegExp(Docs$1.TextHoleRE(),"g"),e.getAttribute(attrName).replace(_this,function($2,$3)
@@ -4501,7 +4498,7 @@
        $:1,
        $0:3
       },null).toLowerCase();
-      name$2=name$1.indexOf(String$1.fromCharCode(46))===-1?baseName+"/"+name$1:Strings.Replace(name$1,".","/");
+      name$2=name$1.indexOf(".")===-1?baseName+"/"+name$1:Strings.Replace(name$1,".","/");
       if(!Docs$1.LoadedTemplates().ContainsKey(name$2))
        return console.warn("Instantiating non-loaded template",name$2);
       else
@@ -4608,7 +4605,7 @@
    DomUtility.IterSelector(instance,"[ws-attr-holes]",function(e)
    {
     var holeAttrs,i,$1,attrName,_this;
-    holeAttrs=Strings.SplitChars(e.getAttribute("ws-attr-holes"),[32],1);
+    holeAttrs=Strings.SplitChars(e.getAttribute("ws-attr-holes"),[" "],1);
     for(i=0,$1=holeAttrs.length-1;i<=$1;i++){
      attrName=Arrays.get(holeAttrs,i);
      e.setAttribute(attrName,(_this=new Global.RegExp("\\${"+name$1+"}","ig"),e.getAttribute(attrName).replace(_this,fillWith.textContent)));
@@ -4736,7 +4733,7 @@
     $0:Doc.TextView(m[1].$1.RView())
    }:m[1].$==7?{
     $:1,
-    $0:Doc.TextView(View.Map(String$1,m[1].$1.RView()))
+    $0:Doc.TextView(View.Map(Global.String,m[1].$1.RView()))
    }:m[1].$==8?{
     $:1,
     $0:Doc.TextView(View.Map(function(i)
@@ -4745,7 +4742,7 @@
     },m[1].$1.RView()))
    }:m[1].$==9?{
     $:1,
-    $0:Doc.TextView(View.Map(String$1,m[1].$1.RView()))
+    $0:Doc.TextView(View.Map(Global.String,m[1].$1.RView()))
    }:m[1].$==10?{
     $:1,
     $0:Doc.TextView(View.Map(function(i)
@@ -4754,7 +4751,7 @@
     },m[1].$1.RView()))
    }:m[1].$==11?{
     $:1,
-    $0:Doc.TextView(View.Map(String$1,m[1].$1.RView()))
+    $0:Doc.TextView(View.Map(Global.String,m[1].$1.RView()))
    }:(console.warn("Content hole filled with attribute data",name),null):null;
   }
   holes=[];
@@ -4821,7 +4818,7 @@
    addAttr(e$1,AttrProxy.Concat(Arrays.choose(function(x$1)
    {
     var a,m,o;
-    a=Strings.SplitChars(x$1,[58],1);
+    a=Strings.SplitChars(x$1,[":"],1);
     m=(o=null,[fw.TryGetValue(Arrays.get(a,1),{
      get:function()
      {
@@ -4836,7 +4833,7 @@
      $:1,
      $0:AttrModule.Handler(Arrays.get(a,0),m[1].$1)
     }:(console.warn("Event hole on"+Arrays.get(a,0)+" filled with non-event data",Arrays.get(a,1)),null):null;
-   },Strings.SplitChars(e$1.getAttribute("ws-on"),[32],1))));
+   },Strings.SplitChars(e$1.getAttribute("ws-on"),[" "],1))));
    e$1.removeAttribute("ws-on");
   });
   DomUtility.IterSelector(el,"[ws-onafterrender]",function(e$1)
@@ -4876,7 +4873,7 @@
   {
    var re,holeAttrs,i,$3;
    re=new Global.RegExp(Docs$1.TextHoleRE(),"g");
-   holeAttrs=Strings.SplitChars(e$1.getAttribute("ws-attr-holes"),[32],1);
+   holeAttrs=Strings.SplitChars(e$1.getAttribute("ws-attr-holes"),[" "],1);
    e$1.removeAttribute("ws-attr-holes");
    for(i=0,$3=holeAttrs.length-1;i<=$3;i++)(function()
    {
@@ -4935,7 +4932,7 @@
         $0:m$1[1].$1.RView()
        }:m$1[1].$==7?{
         $:1,
-        $0:View.Map(String$1,m$1[1].$1.RView())
+        $0:View.Map(Global.String,m$1[1].$1.RView())
        }:m$1[1].$==8?{
         $:1,
         $0:View.Map(function(i$1)
@@ -4944,7 +4941,7 @@
         },m$1[1].$1.RView())
        }:m$1[1].$==9?{
         $:1,
-        $0:View.Map(String$1,m$1[1].$1.RView())
+        $0:View.Map(Global.String,m$1[1].$1.RView())
        }:m$1[1].$==10?{
         $:1,
         $0:View.Map(function(i$1)
@@ -4953,7 +4950,7 @@
         },m$1[1].$1.RView())
        }:m$1[1].$==11?{
         $:1,
-        $0:View.Map(String$1,m$1[1].$1.RView())
+        $0:View.Map(Global.String,m$1[1].$1.RView())
        }:(console.warn("Attribute value hole filled with non-text data",holeName),{
         $:0,
         $0:""
@@ -5434,7 +5431,7 @@
   {
    return this.render;
   }
- },null,Flow);
+ },WebSharper.Obj,Flow);
  Flow.New=Runtime.Ctor(function(define)
  {
   Flow.New$1.call(this,function(_var)
@@ -5527,11 +5524,11 @@
   {
    return Flow.Bind(comp,func);
   }
- },null,FlowBuilder);
+ },WebSharper.Obj,FlowBuilder);
  FlowBuilder.New=Runtime.Ctor(function()
  {
  },FlowBuilder);
- attr=Html.attr=Runtime.Class({},null,attr);
+ attr=Html.attr=Runtime.Class({},WebSharper.Obj,attr);
  attr.New=Runtime.Ctor(function()
  {
  },attr);
@@ -5581,7 +5578,7 @@
  {
   var hash$1,p,m,path;
   hash$1=Route.NoHash(hash);
-  p=(m=hash$1.indexOf(String$1.fromCharCode(63)),m===-1?[hash$1,""]:[Slice.string(hash$1,null,{
+  p=(m=hash$1.indexOf("?"),m===-1?[hash$1,""]:[Slice.string(hash$1,null,{
    $:1,
    $0:m-1
   }),Slice.string(hash$1,{
@@ -5594,11 +5591,11 @@
    $0:AppendList.FromArray(path===""?[]:Arrays.map(function(x)
    {
     return Global.decodeURIComponent(x);
-   },Strings.SplitChars(path,[47],0))),
+   },Strings.SplitChars(path,["/"],0))),
    $1:Map.OfArray(Arrays.map(function(s)
    {
     var m$1;
-    m$1=s.indexOf(String$1.fromCharCode(61));
+    m$1=s.indexOf("=");
     return m$1===-1?[Global.decodeURIComponent(s),""]:[Global.decodeURIComponent(Slice.string(s,null,{
      $:1,
      $0:m$1-1
@@ -5606,7 +5603,7 @@
      $:1,
      $0:m$1+1
     },null))];
-   },Strings.SplitChars(p[1],[38],0)))
+   },Strings.SplitChars(p[1],["&"],0)))
   };
  };
  Route.NoHash=function(s)

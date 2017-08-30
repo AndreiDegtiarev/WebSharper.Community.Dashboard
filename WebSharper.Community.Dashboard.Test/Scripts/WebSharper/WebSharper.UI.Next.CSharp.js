@@ -120,7 +120,7 @@
     $1:this.routes
    });
   }
- },null,RouteMapBuilder);
+ },WebSharper.Obj,RouteMapBuilder);
  RouteMapBuilder.New=Runtime.Ctor(function()
  {
   this.links=List.T.Empty;

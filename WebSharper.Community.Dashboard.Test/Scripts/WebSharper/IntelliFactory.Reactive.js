@@ -143,7 +143,7 @@
   {
    return Reactive$1.Return(x);
   }
- },null,Reactive$2);
+ },WebSharper.Obj,Reactive$2);
  Reactive$2.New=Runtime.Ctor(function()
  {
  },Reactive$2);

@@ -274,7 +274,7 @@
   {
    return Seq.compareWith(Unchecked.Compare,this,other);
   }
- },null,FSharpMap);
+ },WebSharper.Obj,FSharpMap);
  FSharpMap.New=Runtime.Ctor(function(s)
  {
   FSharpMap.New$1.call(this,MapUtil.fromSeq(s));
@@ -488,7 +488,7 @@
   {
    return this.GetEnumerator$1();
   }
- },null,FSharpSet);
+ },WebSharper.Obj,FSharpSet);
  FSharpSet.op_Subtraction=function(x,y)
  {
   return Set.Filter(function(x$1)
@@ -553,7 +553,7 @@
   {
    return this.MoveNext$1();
   }
- },null,ListEnumerator);
+ },WebSharper.Obj,ListEnumerator);
  ListEnumerator.New=Runtime.Ctor(function(arr)
  {
   this.arr=arr;
@@ -641,7 +641,7 @@
   {
    return Enumerator.Get0(this.arr);
   }
- },null,List);
+ },WebSharper.Obj,List);
  List.New=Runtime.Ctor(function(el)
  {
   List.New$3.call(this,Arrays.ofSeq(el));
@@ -678,7 +678,7 @@
   {
    return this.c.v;
   }
- },null,LinkedListEnumerator);
+ },WebSharper.Obj,LinkedListEnumerator);
  LinkedListEnumerator.New=Runtime.Ctor(function(l)
  {
   this.c=l;
@@ -809,7 +809,7 @@
   {
    return this.GetEnumerator$1();
   }
- },null,LinkedList);
+ },WebSharper.Obj,LinkedList);
  LinkedList.New=Runtime.Ctor(function()
  {
   LinkedList.New$1.call(this,[]);
@@ -851,7 +851,7 @@
   {
    return Enumerator.Get(this.v);
   }
- },null,Grouping);
+ },WebSharper.Obj,Grouping);
  Grouping.New=Runtime.Ctor(function(k,v)
  {
   this.k=k;
@@ -862,7 +862,7 @@
   {
    return Unchecked.Compare(x,y);
   }
- },null,FsComparer);
+ },WebSharper.Obj,FsComparer);
  FsComparer.New=Runtime.Ctor(function()
  {
  },FsComparer);
@@ -871,7 +871,7 @@
   {
    return this.primary.Compare(this.projection(x),this.projection(y));
   }
- },null,ProjectionComparer);
+ },WebSharper.Obj,ProjectionComparer);
  ProjectionComparer.New=Runtime.Ctor(function(primary,projection)
  {
   this.primary=primary;
@@ -884,7 +884,7 @@
    m=this.primary.Compare(x,y);
    return m===0?this.secondary.Compare(x,y):m;
   }
- },null,CompoundComparer);
+ },WebSharper.Obj,CompoundComparer);
  CompoundComparer.New=Runtime.Ctor(function(primary,secondary)
  {
   this.primary=primary;
@@ -895,7 +895,7 @@
   {
    return this.primary.Compare(this.projection(y),this.projection(x));
   }
- },null,ReverseComparer);
+ },WebSharper.Obj,ReverseComparer);
  ReverseComparer.New=Runtime.Ctor(function(primary,projection)
  {
   this.primary=primary;
@@ -921,7 +921,7 @@
   {
    return new OrderedEnumerable.New(this.source,new CompoundComparer.New(this.primary,descending?new ReverseComparer.New(secondary,keySelector):new ProjectionComparer.New(secondary,keySelector)));
   }
- },null,OrderedEnumerable);
+ },WebSharper.Obj,OrderedEnumerable);
  OrderedEnumerable.New=Runtime.Ctor(function(source,primary)
  {
   this.source=source;
@@ -1587,7 +1587,7 @@
        x.push((c$1=e.Current(),Nullable.get(c$1)));
       }
     }
-   return Arrays.length(x)===0?null:Seq.sum(x)/Global.Number(Arrays.length(x));
+   return Arrays.length(x)===0?null:Seq.sum(x)/Arrays.length(x);
   }
   finally
   {

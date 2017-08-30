@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunnerContext,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,PrintfHelpers,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RandomRunner,OpenWeather,Forecast,OpenWeatherRunner,DatabaseRunnerContext,DatabaseRunner,ChartRunnerContext,ChartRenderer,TextBoxRenderer,ButtonRenderer,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Random,Math,console,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives,AttrModule,Enumerator,Key,ListModel,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -67,7 +67,7 @@
  Control=WebSharper&&WebSharper.Control;
  MailboxProcessor=Control&&Control.MailboxProcessor;
  Seq=WebSharper&&WebSharper.Seq;
- PrintfHelpers=WebSharper&&WebSharper.PrintfHelpers;
+ Utils=WebSharper&&WebSharper.Utils;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  View=Next&&Next.View;
@@ -363,7 +363,7 @@
       }
       return a.$==2?(listenerInfo=a.$0[0],(x=(((Runtime.Curried3(function($1,$2,$3)
       {
-       return $1("RegisterListener:"+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
+       return $1("RegisterListener:"+Utils.toSafe($2)+" "+Utils.toSafe($3));
       }))(Global.id))(listenerInfo.Name))(listenerInfo.Key),(MessageBus.log())(x),loop(AgentState.New(state.ServerCallback,new List.T({
        $:1,
        $0:[listenerInfo,a.$0[2],List.T.Empty],
@@ -386,7 +386,7 @@
        return m$1($1[0],$1[1],$1[2]);
       },state.Listeners),(a.$0(maxTimes.$==0?(new Date(0,0-1,0)).getTime():List.max(maxTimes)),loop(state))):a.$==1?loop(AgentState.New(state.ServerCallback,send_to_listeners(a.$0,state.Listeners))):a.$==0?(message=a.$0,(x$1=(((Runtime.Curried3(function($1,$2,$3)
       {
-       return $1("Num listeners:"+Global.String($2)+" msg:"+PrintfHelpers.toSafe($3));
+       return $1("Num listeners:"+Global.String($2)+" msg:"+Utils.toSafe($3));
       }))(Global.id))(state.Listeners.get_Length()))(message.Key),(MessageBus.log())(x$1),(o=state.ServerCallback,o==null?void 0:o.$0(message)),loop(AgentState.New(state.ServerCallback,send_to_listeners(message,state.Listeners))))):loop(AgentState.get_empty());
      });
     });
@@ -668,7 +668,7 @@
        return true;
       },Concurrency.Delay(function()
       {
-       return Concurrency.Bind(Concurrency.Sleep(worker.InPorts.get_Item(2).get_Number()*1000<<0),function()
+       return Concurrency.Bind(Concurrency.Sleep(worker.InPorts.get_Item(2).get_Number()*1000>>0),function()
        {
         var middle,disper,d;
         middle=worker.InPorts.get_Item(0).get_Number();
@@ -727,7 +727,7 @@
    var request;
    request=(((Runtime.Curried3(function($1,$2,$3)
    {
-    return $1("http://api.openweathermap.org/data/2.5/weather?q="+PrintfHelpers.toSafe($2)+"&units=metric&appid="+PrintfHelpers.toSafe($3));
+    return $1("http://api.openweathermap.org/data/2.5/weather?q="+Utils.toSafe($2)+"&units=metric&appid="+Utils.toSafe($3));
    }))(Global.id))(city))(key);
    console.log("get key city "+request);
    return Concurrency.TryWith(Concurrency.Delay(function()
@@ -743,7 +743,7 @@
       $:1,
       $0:(head=o.$0,Forecast.New((((Runtime.Curried3(function($1,$2,$3)
       {
-       return $1(PrintfHelpers.toSafe($2)+", "+PrintfHelpers.toSafe($3));
+       return $1(Utils.toSafe($2)+", "+Utils.toSafe($3));
       }))(Global.id))((opt=(prop="name",prop in a?{
        $:1,
        $0:a[prop]
@@ -757,7 +757,7 @@
       {
        return function($2)
        {
-        return $1("http://openweathermap.org/img/w/"+PrintfHelpers.toSafe($2)+".png");
+        return $1("http://openweathermap.org/img/w/"+Utils.toSafe($2)+".png");
        };
       }(Global.id))((opt$3=(prop$3="icon",prop$3 in head?{
        $:1,
@@ -927,7 +927,7 @@
     $0:function(worker)
     {
      var chartBufferSize,chart,r,r$1,r$2,r$3,r$4,r$5;
-     chartBufferSize=worker.InPorts.get_Item(3).get_Number()<<0;
+     chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
      chart=worker.RunnerContext.c.$0;
      View.Sink(function(value)
      {
@@ -945,8 +945,8 @@
       $:1,
       $0:{
        $:0,
-       $0:worker.InPorts.get_Item(1).get_Number()<<0,
-       $1:worker.InPorts.get_Item(2).get_Number()<<0
+       $0:worker.InPorts.get_Item(1).get_Number()>>0,
+       $1:worker.InPorts.get_Item(2).get_Number()>>0
       }
      },{
       $:1,
@@ -962,7 +962,7 @@
     $0:function(worker)
     {
      var chartBufferSize,data,values,queue;
-     chartBufferSize=worker.InPorts.get_Item(3).get_Number()<<0;
+     chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
      data=List.ofSeq(Seq.delay(function()
      {
       return Seq.map(function()
@@ -1001,7 +1001,7 @@
  };
  ChartRenderer.Create=function(cx,cy,bufferSize)
  {
-  return ChartRenderer.New(WorkerData.CreateWithCache("Chart",List.ofArray([[" in Value",MessageBus.NumberMessage(100),bufferSize<<0],["cx",MessageBus.NumberMessage(cx),1],["cy",MessageBus.NumberMessage(cy),1],["BufferSize",MessageBus.NumberMessage(bufferSize),1]]),List.T.Empty));
+  return ChartRenderer.New(WorkerData.CreateWithCache("Chart",List.ofArray([[" in Value",MessageBus.NumberMessage(100),bufferSize>>0],["cx",MessageBus.NumberMessage(cx),1],["cy",MessageBus.NumberMessage(cy),1],["BufferSize",MessageBus.NumberMessage(bufferSize),1]]),List.T.Empty));
  };
  ChartRenderer.New=function(ChartRendererData)
  {
@@ -1020,7 +1020,7 @@
      strView=View.Map(function(value)
      {
       var c;
-      c=value<<0;
+      c=value>>0;
       return Global.String(c);
      },worker.InPorts.get_Item(0).get_NumberView());
      return Doc.Element("div",[AttrModule.Class("bigvalue")],[Doc.TextView(strView)]);
@@ -1121,14 +1121,14 @@
    {
     (Environment.Log())((((Runtime.Curried3(function($1,$2,$3)
     {
-     return $1("InPort: "+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
+     return $1("InPort: "+Utils.toSafe($2)+" "+Utils.toSafe($3));
     }))(Global.id))(inPort.get_Name()))(inPort.Data.Key));
    },allInPorts);
    List.iter(function(port)
    {
     (Environment.Log())((((Runtime.Curried3(function($1,$2,$3)
     {
-     return $1("outPort: "+PrintfHelpers.toSafe($2)+" "+PrintfHelpers.toSafe($3));
+     return $1("outPort: "+Utils.toSafe($2)+" "+Utils.toSafe($3));
     }))(Global.id))(port.Name))(port.Key));
    },allOutPorts);
    _this=MessageBus.Agent();
@@ -1157,7 +1157,7 @@
          $:1,
          $0:(outPort=o.$0,(log((((Runtime.Curried3(function($1,$2,$3)
          {
-          return $1("Found outPort "+PrintfHelpers.toSafe($2)+" try to find inPort:"+PrintfHelpers.toSafe($3));
+          return $1("Found outPort "+Utils.toSafe($2)+" try to find inPort:"+Utils.toSafe($3));
          }))(Global.id))(cell1.OutPortKey))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
          {
           return port.Data.Key===cell2.InPortKey;

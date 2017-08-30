@@ -715,12 +715,12 @@
    Handlers:Handlers
   });
  };
- FSharpEvent=Control.FSharpEvent=Runtime.Class({},null,FSharpEvent);
+ FSharpEvent=Control.FSharpEvent=Runtime.Class({},WebSharper.Obj,FSharpEvent);
  FSharpEvent.New=Runtime.Ctor(function()
  {
   this.event=Event$1.New(new List$1.New$2());
  },FSharpEvent);
- FSharpDelegateEvent=Control.FSharpDelegateEvent=Runtime.Class({},null,FSharpDelegateEvent);
+ FSharpDelegateEvent=Control.FSharpDelegateEvent=Runtime.Class({},WebSharper.Obj,FSharpDelegateEvent);
  FSharpDelegateEvent.New=Runtime.Ctor(function()
  {
   this.event=DelegateEvent$1.New(new List$1.New$2());
@@ -1149,7 +1149,7 @@
   {
    return this.errorEvent.event;
   }
- },null,MailboxProcessor);
+ },WebSharper.Obj,MailboxProcessor);
  MailboxProcessor.Start=function(initial,token)
  {
   var mb;

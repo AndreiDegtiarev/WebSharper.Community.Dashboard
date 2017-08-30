@@ -33,7 +33,7 @@
  Pervasives.randomFunctionName=function()
  {
   var c;
-  return Strings.ReplaceChar((c=Guid.NewGuid(),Global.String(c)).toLowerCase(),45,95);
+  return Strings.ReplaceChar((c=Guid.NewGuid(),Global.String(c)).toLowerCase(),"-","_");
  };
  WorldBankCountry.New=function(Context,Code,Name)
  {
@@ -96,7 +96,7 @@
     $0:e
    };
   }
- },null,Indicator);
+ },WebSharper.Obj,Indicator);
  JSRuntime.GetArrayChildByTypeTag=function(value,cultureStr,tagCode)
  {
   var arr;

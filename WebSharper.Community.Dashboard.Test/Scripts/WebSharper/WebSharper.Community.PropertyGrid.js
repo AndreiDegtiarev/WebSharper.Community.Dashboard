@@ -39,7 +39,7 @@
   {
    return this.name;
   }
- },null,IGroupProperty);
+ },WebSharper.Obj,IGroupProperty);
  IGroupProperty.New=Runtime.Ctor(function(name)
  {
   this.name=name;

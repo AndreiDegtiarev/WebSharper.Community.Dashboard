@@ -1,11 +1,12 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,JavaScript,JSModule,Collections,EqualityComparer,MacroModule,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Pervasives,Json,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,PrintfHelpers,Concurrency,Scheduler,SC$2,Enumerator,T,HtmlContentExtensions,SingleNode,Activator,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,Guid,HashSetUtil,HashSet,Lazy,T$1,Nullable,Operators,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,Date,console,String,Math;
+ var Global,WebSharper,JavaScript,JSModule,Obj,Collections,EqualityComparer,MacroModule,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Pervasives,Json,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,Operators,Nullable,Utils,Concurrency,Scheduler,SC$2,Enumerator,T,HtmlContentExtensions,SingleNode,Activator,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,Guid,HashSetUtil,HashSet,Lazy,T$1,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,String,Date,console,Math;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  JavaScript=WebSharper.JavaScript=WebSharper.JavaScript||{};
  JSModule=JavaScript.JSModule=JavaScript.JSModule||{};
+ Obj=WebSharper.Obj=WebSharper.Obj||{};
  Collections=WebSharper.Collections=WebSharper.Collections||{};
  EqualityComparer=Collections.EqualityComparer=Collections.EqualityComparer||{};
  MacroModule=WebSharper.MacroModule=WebSharper.MacroModule||{};
@@ -20,7 +21,9 @@
  XhrProvider=Remoting.XhrProvider=Remoting.XhrProvider||{};
  AjaxRemotingProvider=Remoting.AjaxRemotingProvider=Remoting.AjaxRemotingProvider||{};
  SC$1=Global.StartupCode$WebSharper_Main$Remoting=Global.StartupCode$WebSharper_Main$Remoting||{};
- PrintfHelpers=WebSharper.PrintfHelpers=WebSharper.PrintfHelpers||{};
+ Operators=WebSharper.Operators=WebSharper.Operators||{};
+ Nullable=WebSharper.Nullable=WebSharper.Nullable||{};
+ Utils=WebSharper.Utils=WebSharper.Utils||{};
  Concurrency=WebSharper.Concurrency=WebSharper.Concurrency||{};
  Scheduler=Concurrency.Scheduler=Concurrency.Scheduler||{};
  SC$2=Global.StartupCode$WebSharper_Main$Concurrency=Global.StartupCode$WebSharper_Main$Concurrency||{};
@@ -59,8 +62,6 @@
  HashSet=Collections.HashSet=Collections.HashSet||{};
  Lazy=WebSharper.Lazy=WebSharper.Lazy||{};
  T$1=List.T=List.T||{};
- Nullable=WebSharper.Nullable=WebSharper.Nullable||{};
- Operators=WebSharper.Operators=WebSharper.Operators||{};
  Slice=WebSharper.Slice=WebSharper.Slice||{};
  Option=WebSharper.Option=WebSharper.Option||{};
  Queue=WebSharper.Queue=WebSharper.Queue||{};
@@ -78,9 +79,9 @@
  IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
  JSON=Global.JSON;
+ String=Global.String;
  Date=Global.Date;
  console=Global.console;
- String=Global.String;
  Math=Global.Math;
  JSModule.GetFieldValues=function(o)
  {
@@ -103,33 +104,46 @@
   for(var k$1 in o)r.push([k$1,o[k$1]]);
   return r;
  };
+ Obj=WebSharper.Obj=Runtime.Class({
+  Equals:function(obj)
+  {
+   return this===obj;
+  },
+  GetHashCode:function()
+  {
+   return -1;
+  }
+ },null,Obj);
+ Obj.New=Runtime.Ctor(function()
+ {
+ },Obj);
  EqualityComparer=Collections.EqualityComparer=Runtime.Class({
   CGetHashCode0:function(x)
   {
-   return this.GetHashCode(x);
+   return this.GetHashCode$1(x);
   },
   CEquals0:function(x,y)
   {
-   return this.Equals(x,y);
+   return this.Equals$1(x,y);
   },
   CGetHashCode:function(x)
   {
-   return this.GetHashCode(x);
+   return this.GetHashCode$1(x);
   },
   CEquals:function(x,y)
   {
-   return this.Equals(x,y);
+   return this.Equals$1(x,y);
   }
- },null,EqualityComparer);
+ },Obj,EqualityComparer);
  EqualityComparer.New=Runtime.Ctor(function()
  {
  },EqualityComparer);
  EquatableEqualityComparer=MacroModule.EquatableEqualityComparer=Runtime.Class({
-  GetHashCode:function(x)
+  GetHashCode$1:function(x)
   {
    return Unchecked.Hash(x);
   },
-  Equals:function(x,y)
+  Equals$1:function(x,y)
   {
    return x.EEquals(y);
   }
@@ -139,11 +153,11 @@
   EqualityComparer.New.call(this);
  },EquatableEqualityComparer);
  BaseEqualityComparer=MacroModule.BaseEqualityComparer=Runtime.Class({
-  GetHashCode:function(x)
+  GetHashCode$1:function(x)
   {
    return Unchecked.Hash(x);
   },
-  Equals:function(x,y)
+  Equals$1:function(x,y)
   {
    return Unchecked.Equals(x,y);
   }
@@ -161,7 +175,7 @@
   {
    return this.Compare$1(x,y);
   }
- },null,Comparer);
+ },Obj,Comparer);
  Comparer.New=Runtime.Ctor(function()
  {
  },Comparer);
@@ -331,7 +345,7 @@
     Remoting.ajax(true,url,headers,data,ok,err,void 0);
    });
   }
- },null,XhrProvider);
+ },Obj,XhrProvider);
  XhrProvider.New=Runtime.Ctor(function()
  {
  },XhrProvider);
@@ -403,7 +417,7 @@
    var a,a$1,a$2;
    return Json.Activate(JSON.parse((a=this.get_EndPoint(),(a$1=Remoting.makeHeaders(m),(a$2=Remoting.makePayload(data),Remoting.AjaxProvider().Sync(a,a$1,a$2))))));
   }
- },null,AjaxRemotingProvider);
+ },Obj,AjaxRemotingProvider);
  AjaxRemotingProvider.New=Runtime.Ctor(function()
  {
  },AjaxRemotingProvider);
@@ -490,19 +504,61 @@
   SC$1.AjaxProvider=new XhrProvider.New();
   SC$1.$cctor=Global.ignore;
  });
- PrintfHelpers.prettyPrint=function(o)
+ Operators.charRange=function(min,max)
+ {
+  var minv,count;
+  minv=min.charCodeAt();
+  count=1+max.charCodeAt()-minv;
+  return count<=0?[]:Seq.init(count,function(x)
+  {
+   return String.fromCharCode(x+minv);
+  });
+ };
+ Nullable.op=function(a,b,f)
+ {
+  return a==null||b==null?null:f(a,b);
+ };
+ Nullable.opL=function(a,b,f)
+ {
+  return a==null?null:f(a,b);
+ };
+ Nullable.opR=function(a,b,f)
+ {
+  return b==null?null:f(a,b);
+ };
+ Nullable.cmp=function(a,b,f)
+ {
+  return a==null||b==null?false:f(a,b);
+ };
+ Nullable.cmpE=function(a,b,f)
+ {
+  return a==null?b==null:b==null?false:f(a,b);
+ };
+ Nullable.cmpL=function(a,b,f)
+ {
+  return a==null?false:f(a,b);
+ };
+ Nullable.cmpR=function(a,b,f)
+ {
+  return b==null?false:f(a,b);
+ };
+ Nullable.conv=function(a,f)
+ {
+  return a==null?null:f(a);
+ };
+ Utils.prettyPrint=function(o)
  {
   var t,s;
   function m(k,v)
   {
-   return k+" = "+PrintfHelpers.prettyPrint(v);
+   return k+" = "+Utils.prettyPrint(v);
   }
-  return o===null?"null":(t=typeof o,t=="string"?"\""+o+"\"":t=="object"?o instanceof Global.Array?"[|"+Strings.concat("; ",Arrays.map(PrintfHelpers.prettyPrint,o))+"|]":(s=Global.String(o),s==="[object Object]"?"{"+Strings.concat("; ",Arrays.map(function($1)
+  return o===null?"null":(t=typeof o,t=="string"?"\""+o+"\"":t=="object"?o instanceof Global.Array?"[|"+Strings.concat("; ",Arrays.map(Utils.prettyPrint,o))+"|]":(s=String(o),s==="[object Object]"?"{"+Strings.concat("; ",Arrays.map(function($1)
   {
    return m($1[0],$1[1]);
-  },JSModule.GetFields(o)))+"}":s):Global.String(o));
+  },JSModule.GetFields(o)))+"}":s):String(o));
  };
- PrintfHelpers.printArray2D=function(p,o)
+ Utils.printArray2D=function(p,o)
  {
   return o===null?"null":"[["+Strings.concat("][",Seq.delay(function()
   {
@@ -520,29 +576,29 @@
    },Operators.range(0,o.length-1));
   }))+"]]";
  };
- PrintfHelpers.printArray=function(p,o)
+ Utils.printArray=function(p,o)
  {
   return o===null?"null":"[|"+Strings.concat("; ",Arrays.map(p,o))+"|]";
  };
- PrintfHelpers.printList=function(p,o)
+ Utils.printList=function(p,o)
  {
   return"["+Strings.concat("; ",Seq.map(p,o))+"]";
  };
- PrintfHelpers.padNumLeft=function(s,l)
+ Utils.padNumLeft=function(s,l)
  {
   var f;
   f=Arrays.get(s,0);
-  return f===" "||f==="+"||f==="-"?f+Strings.PadLeftWith(s.substr(1),l-1,48):Strings.PadLeftWith(s,l,48);
+  return f===" "||f==="+"||f==="-"?f+Strings.PadLeftWith(s.substr(1),l-1,"0"):Strings.PadLeftWith(s,l,"0");
  };
- PrintfHelpers.spaceForPos=function(n,s)
+ Utils.spaceForPos=function(n,s)
  {
   return 0<=n?" "+s:s;
  };
- PrintfHelpers.plusForPos=function(n,s)
+ Utils.plusForPos=function(n,s)
  {
   return 0<=n?"+"+s:s;
  };
- PrintfHelpers.toSafe=function(s)
+ Utils.toSafe=function(s)
  {
   return s==null?"":s;
  };
@@ -578,7 +634,7 @@
     $this.tick();
    },0)):void 0;
   }
- },null,Scheduler);
+ },Obj,Scheduler);
  Scheduler.New=Runtime.Ctor(function()
  {
   this.idle=true;
@@ -1220,7 +1276,7 @@
   {
    return this.n(this);
   }
- },null,T);
+ },Obj,T);
  T.New=Runtime.Ctor(function(s,c,n,d)
  {
   this.s=s;
@@ -1242,7 +1298,7 @@
   {
    var i;
    i=e.s;
-   return i<s.length&&(e.c=s.charCodeAt(i),e.s=i+1,true);
+   return i<s.length&&(e.c=s[i],e.s=i+1,true);
   },void 0);
  };
  Enumerator.ArrayEnumerator=function(s)
@@ -1259,7 +1315,7 @@
   {
    this.node.parentNode.replaceChild(this.node,old);
   }
- },null,SingleNode);
+ },Obj,SingleNode);
  SingleNode.New=Runtime.Ctor(function(node)
  {
   this.node=node;
@@ -1751,11 +1807,11 @@
  };
  Arrays.average=function(arr)
  {
-  return Global.Number(Arrays.sum(arr))/Global.Number(arr.length);
+  return Global.Number(Arrays.sum(arr))/arr.length;
  };
  Arrays.averageBy=function(f,arr)
  {
-  return Global.Number(Arrays.sumBy(f,arr))/Global.Number(arr.length);
+  return Global.Number(Arrays.sumBy(f,arr))/arr.length;
  };
  Arrays.blit=function(arr1,start1,arr2,start2,length)
  {
@@ -2497,7 +2553,7 @@
       void 0;
     }
   }
- },null,CancellationTokenSource);
+ },Obj,CancellationTokenSource);
  CancellationTokenSource.CreateLinkedTokenSource=function(t1,t2)
  {
   return CancellationTokenSource.CreateLinkedTokenSource$1([t1,t2]);
@@ -2528,19 +2584,19 @@
  },CancellationTokenSource);
  Char.IsWhiteSpace=function(c)
  {
-  return String.fromCharCode(c).match(new Global.RegExp("\\s"))!==null;
+  return c.match(new Global.RegExp("\\s"))!==null;
  };
  Char.Parse=function(s)
  {
-  return s.length===1?s.charCodeAt(0):Operators.FailWith("String must be exactly one character long.");
+  return s.length===1?s:Operators.FailWith("String must be exactly one character long.");
  };
  Char.IsUpper=function(c)
  {
-  return c>=65&&c<=90;
+  return c>="A"&&c<="Z";
  };
  Char.IsLower=function(c)
  {
-  return c>=97&&c<=122;
+  return c>="a"&&c<="z";
  };
  Char.IsLetterOrDigit=function(c)
  {
@@ -2548,19 +2604,19 @@
  };
  Char.IsLetter=function(c)
  {
-  return c>=65&&c<=90||c>=97&&c<=122;
+  return c>="A"&&c<="Z"||c>="a"&&c<="z";
  };
  Char.IsDigit=function(c)
  {
-  return c>=48&&c<=57;
+  return c>="0"&&c<="9";
  };
  Char.IsControl=function(c)
  {
-  return c>=0&&c<=31||c>=128&&c<=159;
+  return c>="\u0000"&&c<="\u001f"||c>="\u0080"&&c<="\u009f";
  };
  Char.GetNumericValue=function(c)
  {
-  return c>=48&&c<=57?Global.Number(c)-Global.Number(48):-1;
+  return c>="0"&&c<="9"?c.charCodeAt()-"0".charCodeAt():-1;
  };
  Util.observer=function(h)
  {
@@ -2650,7 +2706,7 @@
   {
    return new DateTimeOffset.New(this.d,(new Date()).getTimezoneOffset());
   }
- },null,DateTimeOffset);
+ },Obj,DateTimeOffset);
  DateTimeOffset.New=Runtime.Ctor(function(d,o)
  {
   this.d=d;
@@ -2727,7 +2783,7 @@
   {
    return this.GetEnumerator$1();
   }
- },null,KeyCollection);
+ },Obj,KeyCollection);
  KeyCollection.New=Runtime.Ctor(function(d)
  {
   this.d=d;
@@ -2752,7 +2808,7 @@
   {
    return this.GetEnumerator$1();
   }
- },null,ValueCollection);
+ },Obj,ValueCollection);
  ValueCollection.New=Runtime.Ctor(function(d)
  {
   this.d=d;
@@ -2887,7 +2943,7 @@
   {
    return Enumerator.Get0(Arrays.concat(JSModule.GetFieldValues(this.data)));
   }
- },null,Dictionary);
+ },Obj,Dictionary);
  Dictionary.New=Runtime.Ctor(function(dictionary,comparer)
  {
   Dictionary.New$6.call(this,dictionary,DictionaryUtil.equals(comparer),function(x)
@@ -3260,7 +3316,7 @@
   {
    return Enumerator.Get(HashSetUtil.concat(this.data));
   }
- },null,HashSet);
+ },Obj,HashSet);
  HashSet.New=Runtime.Ctor(function(init,comparer)
  {
   HashSet.New$4.call(this,init,DictionaryUtil.equals(comparer),function(x)
@@ -4252,7 +4308,7 @@
   {
    return Math.floor(Math.random()*2147483648);
   }
- },null,Random);
+ },Obj,Random);
  Random.New=Runtime.Ctor(function()
  {
  },Random);
@@ -5552,15 +5608,15 @@
  };
  Strings.PadRightWith=function(s,n,c)
  {
-  return n>s.length?s+Global.Array(n-s.length+1).join(String.fromCharCode(c)):s;
+  return n>s.length?s+Global.Array(n-s.length+1).join(c):s;
  };
  Strings.PadLeftWith=function(s,n,c)
  {
-  return n>s.length?Global.Array(n-s.length+1).join(String.fromCharCode(c))+s:s;
+  return n>s.length?Global.Array(n-s.length+1).join(c)+s:s;
  };
  Strings.LastIndexOf=function(s,c,i)
  {
-  return s.lastIndexOf(String.fromCharCode(c),i);
+  return s.lastIndexOf(c,i);
  };
  Strings.IsNullOrWhiteSpace=function(x)
  {
@@ -5576,7 +5632,7 @@
  };
  Strings.IndexOf=function(s,c,i)
  {
-  return s.indexOf(String.fromCharCode(c),i);
+  return s.indexOf(c,i);
  };
  Strings.EndsWith=function(x,s)
  {
@@ -5586,7 +5642,7 @@
  {
   return Arrays.init(s.length,function(i)
   {
-   return f(s.charCodeAt(i));
+   return f(s[i]);
   }).join("");
  };
  Strings.concat=function(separator,strings)
@@ -5619,17 +5675,11 @@
  };
  Strings.map=function(f,s)
  {
-  return Strings.collect(function(x)
-  {
-   return String.fromCharCode(f(x));
-  },Strings.protect(s));
+  return Strings.collect(f,Strings.protect(s));
  };
  Strings.mapi=function(f,s)
  {
-  return Arrays.ofSeq(Seq.mapi(function($1,$2)
-  {
-   return String.fromCharCode(f($1,$2));
-  },s)).join("");
+  return Arrays.ofSeq(Seq.mapi(f,s)).join("");
  };
  Strings.replicate=function(count,s)
  {
@@ -5657,7 +5707,7 @@
   {
    return f(c)?{
     $:1,
-    $0:String.fromCharCode(c)
+    $0:c
    }:null;
   },s)).join("");
  };
@@ -5667,7 +5717,7 @@
  };
  Strings.SplitChars=function(s,sep,opts)
  {
-  return Strings.Split(s,new Global.RegExp("["+Strings.RegexEscape(String.fromCharCode.apply(void 0,sep))+"]"),opts);
+  return Strings.Split(s,new Global.RegExp("["+Strings.RegexEscape(sep.join(""))+"]"),opts);
  };
  Strings.Split=function(s,pat,opts)
  {
@@ -5689,7 +5739,7 @@
      (function()
      {
       var c;
-      c=s.charCodeAt(i);
+      c=s[i];
       return Arrays.exists(function(y)
       {
        return c===y;
@@ -5711,7 +5761,7 @@
      (function()
      {
       var c;
-      c=s.charCodeAt(i);
+      c=s[i];
       return Arrays.exists(function(y)
       {
        return c===y;
@@ -5724,19 +5774,19 @@
  {
   return Arrays.init(length,function(i)
   {
-   return s.charCodeAt(startIndex+i);
+   return s[startIndex+i];
   });
  };
  Strings.ToCharArray=function(s)
  {
   return Arrays.init(s.length,function(x)
   {
-   return s.charCodeAt(x);
+   return s[x];
   });
  };
  Strings.ReplaceChar=function(s,oldC,newC)
  {
-  return Strings.Replace(s,String.fromCharCode(oldC),String.fromCharCode(newC));
+  return Strings.Replace(s,oldC,newC);
  };
  Strings.Replace=function(subject,search,replace)
  {
@@ -5750,11 +5800,11 @@
  };
  Strings.PadRight=function(s,n)
  {
-  return Strings.PadRightWith(s,n,32);
+  return Strings.PadRightWith(s,n," ");
  };
  Strings.PadLeft=function(s,n)
  {
-  return Strings.PadLeftWith(s,n,32);
+  return Strings.PadLeftWith(s,n," ");
  };
  Strings.CopyTo=function(s,o,d,off,ct)
  {
@@ -5877,7 +5927,7 @@
   {
    return this.exc;
   }
- },null,Task);
+ },Obj,Task);
  Task.WhenAll=function(tasks)
  {
   var target,completed,results,tcs,i,$1;
@@ -6064,7 +6114,7 @@
   {
    return this.task;
   }
- },null,TaskCompletionSource);
+ },Obj,TaskCompletionSource);
  TaskCompletionSource.New=Runtime.Ctor(function()
  {
   this.task=new Task1.New(null,Concurrency.noneCT(),1,null,void 0);
@@ -6100,7 +6150,7 @@
   else
    {
     hash=5381;
-    for(i=0,$1=s.length-1;i<=$1;i++)hash=Unchecked.hashMix(hash,s.charCodeAt(i)<<0);
+    for(i=0,$1=s.length-1;i<=$1;i++)hash=Unchecked.hashMix(hash,s[i].charCodeAt());
     return hash;
    }
  };

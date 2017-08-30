@@ -300,7 +300,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },null,LineChart);
+ },WebSharper.Obj,LineChart);
  LineChart.New=Runtime.Ctor(function(dataset,cfg,scfg,ccfg)
  {
   this.dataset=dataset;
@@ -387,7 +387,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },null,BarChart);
+ },WebSharper.Obj,BarChart);
  BarChart.New=Runtime.Ctor(function(dataset,cfg,scfg)
  {
   this.dataset=dataset;
@@ -516,7 +516,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },null,RadarChart);
+ },WebSharper.Obj,RadarChart);
  RadarChart.New=Runtime.Ctor(function(dataset,cfg,scfg,ccfg)
  {
   this.dataset=dataset;
@@ -563,7 +563,7 @@
   {
    this.event.event.Trigger([props,data]);
   }
- },null,PolarAreaChart);
+ },WebSharper.Obj,PolarAreaChart);
  PolarAreaChart.New=Runtime.Ctor(function(dataset,cfg)
  {
   this.dataset=dataset;
@@ -608,7 +608,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },null,PieChart);
+ },WebSharper.Obj,PieChart);
  PieChart.New=Runtime.Ctor(function(dataset,cfg)
  {
   this.dataset=dataset;
@@ -653,7 +653,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },null,DoughnutChart);
+ },WebSharper.Obj,DoughnutChart);
  DoughnutChart.New=Runtime.Ctor(function(dataset,cfg)
  {
   this.dataset=dataset;
@@ -665,7 +665,7 @@
   {
    return this.charts;
   }
- },null,CompositeChart);
+ },WebSharper.Obj,CompositeChart);
  CompositeChart.New=Runtime.Ctor(function(charts)
  {
   this.charts=charts;
@@ -957,7 +957,7 @@
     $0:Global.setTimeout(doUpdate,this.interval)
    }):doUpdate();
   }
- },null,BatchUpdater);
+ },WebSharper.Obj,BatchUpdater);
  BatchUpdater.New=Runtime.Ctor(function(interval,maxCount)
  {
   this.interval=interval==null?75:interval.$0;
@@ -1293,7 +1293,7 @@
    },initial);
    toValue=Arrays.map(function(e)
    {
-    return Global.Number(e.Value);
+    return e.Value;
    },initial);
    toLabel=Arrays.map(function(e)
    {

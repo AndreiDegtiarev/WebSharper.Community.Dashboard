@@ -83,7 +83,7 @@
     $:0,
     $0:{
      $:4,
-     $0:ChartWidget.Create(300,150,50)
+     $0:ChartWidget.get_Create()
     }
    });
    panelData=List.ofArray([PanelData.Create(panelKey,0,0,List.T.Empty)]);

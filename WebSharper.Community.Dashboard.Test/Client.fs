@@ -36,7 +36,7 @@ module Client =
                 let widgetPair = (widgetWorker.Key,panelKey,widget)
                 (widgetPair,{InPortKey = widgetWorker.InPorts.[0].Key;OutPortKey="";WorkerKey=widgetWorker.Key})
             let (txtPair,textWorker) = makeWidget (AppLib(AppTextBoxWidget(TextBoxWidget.Create)))
-            let (chartPair,chartWorker) = makeWidget (AppLib(AppChartWidget(ChartWidget.Create 300.0 150.0 50.0)))
+            let (chartPair,chartWorker) = makeWidget (AppLib(AppChartWidget(ChartWidget.Create)))
             let panelData = [ PanelData.Create panelKey 0.0 0.0 []]
             {appData with Events = [("main",[eventPair])]
                           Widgets = [("main",panelData,[txtPair;chartPair])]

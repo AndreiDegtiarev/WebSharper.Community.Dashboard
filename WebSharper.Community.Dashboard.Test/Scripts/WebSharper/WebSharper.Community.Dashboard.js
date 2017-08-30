@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Enumerator,Key,ListModel,console,AttrModule,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,Chart,Pervasives;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Enumerator,Key,ListModel,console,AttrModule,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,FSharpEvent,LiveChart,Pervasives;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -105,7 +105,8 @@
  Charting=WebSharper&&WebSharper.Charting;
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
- Chart=Charting&&Charting.Chart;
+ FSharpEvent=Control&&Control.FSharpEvent;
+ LiveChart=Charting&&Charting.LiveChart;
  Pervasives=Charting&&Charting.Pervasives;
  Role.Server={
   $:1
@@ -2086,11 +2087,12 @@
    TextBoxWidgetData:TextBoxWidgetData
   });
  };
- ChartWidgetContext.New=function(LineChart,Queue)
+ ChartWidgetContext.New=function(LineChart,Queue,Source)
  {
   return{
    LineChart:LineChart,
-   Queue:Queue
+   Queue:Queue,
+   Source:Source
   };
  };
  ChartWidget=Widgets.ChartWidget=Runtime.Class({
@@ -2100,22 +2102,11 @@
     $:1,
     $0:function(worker)
     {
-     var chartBufferSize,chart,r,r$1,r$2,r$3,r$4,r$5;
+     var chartBufferSize,context,config,r,r$1,r$2,r$3,r$4,r$5;
      chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
-     chart=worker.RunnerContext.c.$0;
-     View.Sink(function(value)
-     {
-      chart.Queue.push(value);
-      chart.Queue.length>chartBufferSize?chart.Queue.shift():void 0;
-      Seq.iteri(function(ind,entry)
-      {
-       return chart.LineChart.__UpdateData(ind,function()
-       {
-        return entry;
-       });
-      },chart.Queue);
-     },worker.InPorts.get_Item(0).get_NumberView());
-     return ChartJs.Render$8(chart.LineChart,{
+     context=worker.RunnerContext.c.$0;
+     config=(r={},r.title=(r$1={},r$1.display=false,r$1),r.legend=(r$2={},r$2.display=false,r$2),r.elements=(r$3={},r$3.point=(r$4={},r$4.radius=0,r$4),r$3.line=(r$5={},r$5.borderWidth=1,r$5),r$3),r);
+     return ChartJs.Render$8(context.LineChart,{
       $:1,
       $0:{
        $:0,
@@ -2124,8 +2115,11 @@
       }
      },{
       $:1,
-      $0:(r={},r.title=(r$1={},r$1.display=false,r$1),r.legend=(r$2={},r$2.display=false,r$2),r.elements=(r$3={},r$3.point=(r$4={},r$4.radius=0,r$4),r$3.line=(r$5={},r$5.borderWidth=1,r$5),r$3),r)
-     },null);
+      $0:config
+     },{
+      $:1,
+      $0:chartBufferSize
+     });
     }
    };
   },
@@ -2135,28 +2129,32 @@
     $:1,
     $0:function(worker)
     {
-     var chartBufferSize,data,values,queue;
+     var chartBufferSize,values,queue,src;
      chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
-     data=List.ofSeq(Seq.delay(function()
+     values=(queue=[],(Seq.iter(function(entry)
+     {
+      queue.push(entry);
+     },List.ofSeq(Seq.delay(function()
      {
       return Seq.map(function()
       {
        return 0;
       },Operators.range(0,chartBufferSize-1));
-     }));
-     values=(queue=[],(Seq.iter(function(entry)
+     }))),queue));
+     src=new FSharpEvent.New();
+     View.Sink(function(value)
      {
-      queue.push(entry);
-     },data),queue));
+      src.event.Trigger(value);
+     },worker.InPorts.get_Item(0).get_NumberView());
      return{
       $:1,
-      $0:ChartWidgetContext.New(Chart.Line(data).WithFill(false).__WithStrokeColor(new Pervasives.Color({
+      $0:ChartWidgetContext.New(LiveChart.Line(src.event).WithFill(false).__WithStrokeColor(new Pervasives.Color({
        $:1,
        $0:"#FB8C00"
       })).__WithPointColor(new Pervasives.Color({
        $:2,
        $0:"black"
-      })),values)
+      })),values,src)
      };
     }
    };
@@ -2173,9 +2171,11 @@
    return ChartWidget.New(worker.get_ToData());
   };
  };
- ChartWidget.Create=function(cx,cy,bufferSize)
+ ChartWidget.get_Create=function()
  {
-  return ChartWidget.New(WorkerData.CreateWithCache("Chart",List.ofArray([[" in Value",MessageBus.NumberMessage(100),bufferSize>>0],["cx",MessageBus.NumberMessage(cx),1],["cy",MessageBus.NumberMessage(cy),1],["BufferSize",MessageBus.NumberMessage(bufferSize),1]]),List.T.Empty));
+  var bufferSize;
+  bufferSize=20;
+  return ChartWidget.New(WorkerData.CreateWithCache("Chart",List.ofArray([[" in Value",MessageBus.NumberMessage(100),bufferSize],["cx",MessageBus.NumberMessage(300),1],["cy",MessageBus.NumberMessage(150),1],["BufferSize",MessageBus.NumberMessage(bufferSize),1]]),List.T.Empty));
  };
  ChartWidget.New=function(ChartWidgetData)
  {
@@ -2295,7 +2295,7 @@
   registerEvent(RandomEvent.get_Create());
   registerEvent(DatabaseEvent.get_Create());
   registerWidget(TextBoxWidget.get_Create());
-  registerWidget(ChartWidget.Create(300,150,50));
+  registerWidget(ChartWidget.get_Create());
   registerWidget(ButtonWidget.get_Create());
   return dashboard;
  };

@@ -51,7 +51,7 @@ module App =
         RandomEvent.Create                   |> registerEvent
         DatabaseEvent.Create                 |> registerEvent
         TextBoxWidget.Create                 |> registerWidget
-        ChartWidget.Create 300.0 150.0 50.0  |> registerWidget
+        ChartWidget.Create                   |> registerWidget
         ButtonWidget.Create                  |> registerWidget
         dashboard
     let PanelContainerCreator=(fun _ -> 

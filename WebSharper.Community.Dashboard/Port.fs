@@ -32,14 +32,18 @@ type InPort =  {Data:InPortData;PortValue:Var<MessageBus.Message>}
                 member x.Property = 
                         match x.PortValue.Value.Value with 
                         |MessageBus.Number(value) ->let var = Var.Create x.Number
-                                                    var.View |> View.Sink (fun number -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Number(number)})
+                                                    var.View |> View.Sink (fun entry -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Number(entry)})
                                                     Properties.double  x.Data.Name var
                         |MessageBus.String(value) ->let var = Var.Create x.String 
-                                                    var.View |> View.Sink (fun number -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.String(number)})
+                                                    var.View |> View.Sink (fun entry -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.String(entry)})
                                                     Properties.string  x.Data.Name var
                         |MessageBus.Boolean(value) ->let var = Var.Create x.Boolean 
-                                                     var.View |> View.Sink (fun number -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Boolean(number)})
+                                                     var.View |> View.Sink (fun entry -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Boolean(entry)})
                                                      Properties.check  x.Data.Name var
+                        |MessageBus.Select(ind,sel_list) ->
+                                                    let var = Var.Create sel_list.[ind]
+                                                    var.View |> View.Sink (fun entry -> x.PortValue.Value <- {x.PortValue.Value with Value = MessageBus.Select((sel_list |> List.findIndex (fun str -> str = entry),sel_list))})
+                                                    Properties.select x.Data.Name (fun str -> str) sel_list var
 
                member x.Receive (value:MessageBus.Message) = x.PortValue.Value <- value; //.WithKey(x.Key)
 
@@ -52,7 +56,8 @@ type InPort =  {Data:InPortData;PortValue:Var<MessageBus.Message>}
                member x.Boolean = x.PortValue.Value.Value.AsBoolean 
                member x.BooleanView = x.PortValue.View  |> View.Map (fun value -> value.Value.AsBoolean ) 
 
-
+               member x.Select = x.PortValue.Value.Value.AsSelect 
+               member x.SelectView = x.PortValue.View  |> View.Map (fun value -> value.Value.AsSelect ) 
 [<JavaScript;CustomEquality;NoComparison>]
 type OutPort = 
            {Key:string;Name:string;Type:MessageBus.Message} 

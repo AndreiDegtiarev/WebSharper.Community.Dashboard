@@ -15,9 +15,11 @@ module MessageBus =
     |Number of double
     |String of string
     |Boolean of bool
-     member x.AsNumber  = match x with |Number(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
-     member x.AsString  = match x with |String(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
-     member x.AsBoolean = match x with |Boolean(num) -> num | _ -> failwith("MessageBus.Value: unexpected type")
+    |Select of (int*string list)
+     member x.AsNumber  = match x with |Number(value) -> value | _ -> failwith("MessageBus.Value: unexpected type")
+     member x.AsString  = match x with |String(value) -> value | _ -> failwith("MessageBus.Value: unexpected type")
+     member x.AsBoolean = match x with |Boolean(value)-> value | _ -> failwith("MessageBus.Value: unexpected type")
+     member x.AsSelect =  match x with |Select(value) -> value | _ -> failwith("MessageBus.Value: unexpected type")
 
     type Message = 
         {Key:string;Time:System.DateTime;Value:Value}
@@ -31,6 +33,7 @@ module MessageBus =
     let BooleanKeyMesage key value = CreateMessage key (Boolean(value))
     let NumberMessage value = NumberKeyMessage (Helper.UniqueKey()) value
     let StringMessage value = StringKeyMessage (Helper.UniqueKey()) value
+    let SelectMessage value = CreateMessage (Helper.UniqueKey()) (Select(value))
 
     type ListenerInfo =
      {Key:string;Name:string;CacheSize:int}

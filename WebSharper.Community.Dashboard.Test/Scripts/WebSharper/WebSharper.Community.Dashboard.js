@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Enumerator,Key,ListModel,console,AttrModule,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,FSharpEvent,LiveChart,Pervasives;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Enumerator,MatchFailureException,Key,ListModel,console,AttrModule,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,FSharpEvent,DateUtil,LiveChart,Pervasives;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -80,6 +80,7 @@
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Doc=Next&&Next.Doc;
  Enumerator=WebSharper&&WebSharper.Enumerator;
+ MatchFailureException=WebSharper&&WebSharper.MatchFailureException;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
  console=Global.console;
@@ -106,6 +107,7 @@
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
  FSharpEvent=Control&&Control.FSharpEvent;
+ DateUtil=WebSharper&&WebSharper.DateUtil;
  LiveChart=Charting&&Charting.LiveChart;
  Pervasives=Charting&&Charting.Pervasives;
  Role.Server={
@@ -152,6 +154,10 @@
   SC$1.$cctor=Global.ignore;
  });
  Value=MessageBus.Value=Runtime.Class({
+  get_AsSelect:function()
+  {
+   return this.$==3?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+  },
   get_AsBoolean:function()
   {
    return this.$==2?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
@@ -263,6 +269,13 @@
  {
   SC$2.$cctor();
   return SC$2.Agent;
+ };
+ MessageBus.SelectMessage=function(v,v$1)
+ {
+  return MessageBus.CreateMessage(Helper.UniqueKey(),new Value({
+   $:3,
+   $0:[v,v$1]
+  }));
  };
  MessageBus.StringMessage=function(value)
  {
@@ -416,6 +429,17 @@
   {
    return y instanceof InPort&&this.Data.Name===y.Data.Name;
   },
+  get_SelectView:function()
+  {
+   return View.Map(function(value)
+   {
+    return value.Value.get_AsSelect();
+   },this.PortValue.v);
+  },
+  get_Select:function()
+  {
+   return this.PortValue.c.Value.get_AsSelect();
+  },
   get_BooleanView:function()
   {
    return View.Map(function(value)
@@ -455,31 +479,41 @@
   },
   get_Property:function()
   {
-   var $this,m,_var,_var$1,_var$2;
+   var $this,m,_var,_var$1,sel_list,_var$2,_var$3;
    $this=this;
    m=this.PortValue.c.Value;
-   return m.$==1?(_var=Var.Create$1(this.get_String()),(View.Sink(function(number)
+   return m.$==1?(_var=Var.Create$1(this.get_String()),(View.Sink(function(entry)
    {
     var i;
     Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
      $:1,
-     $0:number
+     $0:entry
     }))));
-   },_var.v),Properties.string(this.Data.Name,_var))):m.$==2?(_var$1=Var.Create$1(this.get_Boolean()),(View.Sink(function(number)
+   },_var.v),Properties.string(this.Data.Name,_var))):m.$==2?(_var$1=Var.Create$1(this.get_Boolean()),(View.Sink(function(entry)
    {
     var i;
     Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
      $:2,
-     $0:number
+     $0:entry
     }))));
-   },_var$1.v),Properties.check(this.Data.Name,_var$1))):(_var$2=Var.Create$1(this.get_Number()),(View.Sink(function(number)
+   },_var$1.v),Properties.check(this.Data.Name,_var$1))):m.$==3?(sel_list=m.$0[1],(_var$2=Var.Create$1(sel_list.get_Item(m.$0[0])),(View.Sink(function(entry)
+   {
+    var i;
+    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+     $:3,
+     $0:[Seq.findIndex(function(str)
+     {
+      return str===entry;
+     },sel_list),sel_list]
+    }))));
+   },_var$2.v),Properties.select(this.Data.Name,Global.id,sel_list,_var$2)))):(_var$3=Var.Create$1(this.get_Number()),(View.Sink(function(entry)
    {
     var i;
     Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
      $:0,
-     $0:number
+     $0:entry
     }))));
-   },_var$2.v),Properties["double"](this.Data.Name,_var$2)));
+   },_var$3.v),Properties["double"](this.Data.Name,_var$3)));
   },
   get_Key:function()
   {
@@ -700,44 +734,71 @@
      while(e.MoveNext())
       (function()
       {
-       var i$1,cell1,cell2,o,outPort,o$1,inPort,templateValue,m,_this$1;
+       var $1,$2,$3,templateValue,_this$1,i$1,cell1,cell2,o,outPort,o$1,inPort,m;
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
+       o=Seq.tryFind(function(port)
        {
-        o=Seq.tryFind(function(port)
+        return port.Key===cell1.OutPortKey;
+       },allOutPorts);
+       if(o==null)
+        null;
+       else
         {
-         return port.Key===cell1.OutPortKey;
-        },allOutPorts),o==null?null:{
-         $:1,
-         $0:(outPort=o.$0,(log((((Runtime.Curried3(function($1,$2,$3)
+         outPort=o.$0;
+         log((((Runtime.Curried3(function($4,$5,$6)
          {
-          return $1("Found outPort "+Utils.toSafe($2)+" try to find inPort:"+Utils.toSafe($3));
-         }))(Global.id))(cell1.OutPortKey))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
+          return $4("Found outPort "+Utils.toSafe($5)+" try to find inPort:"+Utils.toSafe($6));
+         }))(Global.id))(cell1.OutPortKey))(cell2.InPortKey));
+         o$1=Seq.tryFind(function(port)
          {
           return port.Data.Key===cell2.InPortKey;
-         },allInPorts),o$1==null?null:{
+         },allInPorts);
+         if(o$1==null)
+          $1=null;
+         else
+          {
+           inPort=o$1.$0;
+           log("Found inPort");
+           inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):null;
+           m=inPort.PortValue.c.Value;
+           if(m.$==0)
+            templateValue=Message.Create(new Value({
+             $:0,
+             $0:0
+            }));
+           else
+            if(m.$==1)
+             templateValue=Message.Create(new Value({
+              $:1,
+              $0:""
+             }));
+            else
+             if(m.$==2)
+              templateValue=Message.Create(new Value({
+               $:2,
+               $0:false
+              }));
+             else
+              throw new MatchFailureException.New("Rules.fs",37,106);
+           $3=(_this$1=MessageBus.Agent(),(_this$1.mailbox.AddLast({
+            $:2,
+            $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),templateValue,function(a)
+            {
+             inPort.Receive(a);
+            }]
+           }),_this$1.resume()));
+           $1={
+            $:1,
+            $0:$3
+           };
+          }
+         ({
           $:1,
-          $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):void 0,templateValue=(m=inPort.PortValue.c.Value,m.$==1?Message.Create(new Value({
-           $:1,
-           $0:""
-          })):m.$==2?Message.Create(new Value({
-           $:2,
-           $0:false
-          })):Message.Create(new Value({
-           $:0,
-           $0:0
-          }))),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast({
-           $:2,
-           $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),templateValue,function(a)
-           {
-            inPort.Receive(a);
-           }]
-          }),_this$1.resume()))
-         }))
-        };
-        return;
-       }
+          $0:$1
+         });
+        }
       }());
     }
     finally
@@ -2087,11 +2148,10 @@
    TextBoxWidgetData:TextBoxWidgetData
   });
  };
- ChartWidgetContext.New=function(LineChart,Queue,Source)
+ ChartWidgetContext.New=function(LineChart,Source)
  {
   return{
    LineChart:LineChart,
-   Queue:Queue,
    Source:Source
   };
  };
@@ -2129,32 +2189,24 @@
     $:1,
     $0:function(worker)
     {
-     var chartBufferSize,values,queue,src;
-     chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
-     values=(queue=[],(Seq.iter(function(entry)
-     {
-      queue.push(entry);
-     },List.ofSeq(Seq.delay(function()
-     {
-      return Seq.map(function()
-      {
-       return 0;
-      },Operators.range(0,chartBufferSize-1));
-     }))),queue));
+     var src;
+     worker.InPorts.get_Item(3).get_Number();
      src=new FSharpEvent.New();
-     View.Sink(function(value)
+     View.Sink(function(msg)
      {
-      src.event.Trigger(value);
-     },worker.InPorts.get_Item(0).get_NumberView());
+      var sel;
+      sel=(worker.InPorts.get_Item(4).PortValue.c.Value.get_AsSelect())[0];
+      src.event.Trigger([sel===0?DateUtil.LongTime(msg.Time):sel===1?DateUtil.ShortTime(msg.Time):sel===2?DateUtil.LongDate(msg.Time):sel===3?(new Date(msg.Time)).toLocaleDateString():"",msg.Value.get_AsNumber()]);
+     },worker.InPorts.get_Item(0).PortValue.v);
      return{
       $:1,
-      $0:ChartWidgetContext.New(LiveChart.Line(src.event).WithFill(false).__WithStrokeColor(new Pervasives.Color({
+      $0:ChartWidgetContext.New(LiveChart.Line$1(src.event).WithFill(false).__WithStrokeColor(new Pervasives.Color({
        $:1,
        $0:"#FB8C00"
       })).__WithPointColor(new Pervasives.Color({
        $:2,
        $0:"black"
-      })),values,src)
+      })),src)
      };
     }
    };
@@ -2175,7 +2227,7 @@
  {
   var bufferSize;
   bufferSize=20;
-  return ChartWidget.New(WorkerData.CreateWithCache("Chart",List.ofArray([[" in Value",MessageBus.NumberMessage(100),bufferSize],["cx",MessageBus.NumberMessage(300),1],["cy",MessageBus.NumberMessage(150),1],["BufferSize",MessageBus.NumberMessage(bufferSize),1]]),List.T.Empty));
+  return ChartWidget.New(WorkerData.CreateWithCache("Chart",List.ofArray([[" in Value",MessageBus.NumberMessage(100),bufferSize],["cx",MessageBus.NumberMessage(300),1],["cy",MessageBus.NumberMessage(150),1],["BufferSize",MessageBus.NumberMessage(bufferSize),1],["X-Axis",MessageBus.SelectMessage(0,List.ofArray(["long time","short time","long date","short date"])),1]]),List.T.Empty));
  };
  ChartWidget.New=function(ChartWidgetData)
  {

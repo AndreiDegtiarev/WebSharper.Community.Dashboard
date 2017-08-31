@@ -17,7 +17,14 @@ type TextBoxWidget =
     override x.Data = x.TextBoxWidgetData
     override x.Run = None
     override x.Render  = Some(fun worker -> 
-                            let strView = worker.InPorts.[0].NumberView |> View.Map (fun value -> ((int)value).ToString())
+                            let strView = worker.InPorts.[0].PortValue.View 
+                                          |> View.Map (fun msg -> 
+                                                         match msg.Value with
+                                                         |MessageBus.Number(value) -> ((int)value).ToString()
+                                                         |MessageBus.String(value) -> value
+                                                         |MessageBus.Boolean(value) -> value.ToString()
+                                                         |_ -> "Wrong port value format"
+                                                      )
                             divAttr [Attr.Class "bigvalue"] [
                                              textView strView
                             ] :> Doc)

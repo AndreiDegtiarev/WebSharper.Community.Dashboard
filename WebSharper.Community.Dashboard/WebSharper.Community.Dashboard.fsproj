@@ -63,6 +63,7 @@
     <Compile Include="Events\RandomEvent.fs" />
     <Compile Include="Events\DatabaseEvent.fs" />
     <Compile Include="Events\OpenWeatherEvent.fs" />
+    <Compile Include="Events\ClockEvent.fs" />
     <Compile Include="Widgets\TextBoxWidget.fs" />
     <Compile Include="Widgets\ChartWidget.fs" />
     <Compile Include="Widgets\ButtonWidget.fs" />

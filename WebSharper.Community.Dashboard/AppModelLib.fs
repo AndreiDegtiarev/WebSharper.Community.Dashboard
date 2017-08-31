@@ -12,6 +12,7 @@ open WebSharper.Community.Panel
 [<JavaScript>]
 type AppModelLib =
     |AppRandomEvent      of RandomEvent
+    |AppClockEvent       of ClockEvent //Define model object
     |AppOpenWeatherEvent of OpenWeatherEvent
     |AppDatabaseEvent    of DatabaseEvent
     |AppTextBoxWidget    of TextBoxWidget
@@ -20,6 +21,7 @@ type AppModelLib =
     static member ToWorker appModel=
         match appModel with 
         |AppRandomEvent(src) ->      src |> Worker.Create 
+        |AppClockEvent(src) ->       src |> Worker.Create //conversion from model object to worker
         |AppOpenWeatherEvent(src) -> src |> Worker.Create 
         |AppDatabaseEvent(src)   ->  src |> Worker.Create 
         |AppTextBoxWidget(src)   ->  src |> Worker.Create 
@@ -29,6 +31,7 @@ type AppModelLib =
     static member FromWorker (worker:Worker)= 
                             match worker.Data with
                             | :? RandomEvent      as src -> Some(AppRandomEvent(RandomEvent.FromWorker worker))
+                            | :? ClockEvent      as src -> Some(AppClockEvent(ClockEvent.FromWorker worker)) //conversion from worker to model object
                             | :? OpenWeatherEvent as src -> Some(AppOpenWeatherEvent(OpenWeatherEvent.FromWorker worker))
                             | :? DatabaseEvent    as src -> Some(AppDatabaseEvent(DatabaseEvent.FromWorker worker))
                             | :? TextBoxWidget   as src -> Some(AppTextBoxWidget(TextBoxWidget.FromWorker worker))
@@ -49,6 +52,7 @@ module App =
 
         OpenWeatherEvent.Create "London" ""  |> registerEvent
         RandomEvent.Create                   |> registerEvent
+        ClockEvent.Create                    |> registerEvent //register clock event in the factory
         DatabaseEvent.Create                 |> registerEvent
         TextBoxWidget.Create                 |> registerWidget
         ChartWidget.Create                   |> registerWidget

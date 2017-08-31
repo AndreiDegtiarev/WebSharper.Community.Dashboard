@@ -75,14 +75,14 @@
    p=makeWidget({
     $:0,
     $0:{
-     $:3,
+     $:4,
      $0:TextBoxWidget.get_Create()
     }
    });
    p$1=makeWidget({
     $:0,
     $0:{
-     $:4,
+     $:5,
      $0:ChartWidget.get_Create()
     }
    });

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Enumerator,MatchFailureException,Key,ListModel,console,AttrModule,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,Charting,Renderers,ChartJs,FSharpEvent,DateUtil,LiveChart,Pervasives;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Unchecked,Doc,Enumerator,MatchFailureException,Key,ListModel,console,AttrModule,Option,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,LiveChart,Pervasives;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -46,6 +46,7 @@
  OpenWeather=Events.OpenWeather=Events.OpenWeather||{};
  Forecast=OpenWeather.Forecast=OpenWeather.Forecast||{};
  OpenWeatherEvent=Events.OpenWeatherEvent=Events.OpenWeatherEvent||{};
+ ClockEvent=Events.ClockEvent=Events.ClockEvent||{};
  Widgets=Dashboard.Widgets=Dashboard.Widgets||{};
  TextBoxWidget=Widgets.TextBoxWidget=Widgets.TextBoxWidget||{};
  ChartWidgetContext=Widgets.ChartWidgetContext=Widgets.ChartWidgetContext||{};
@@ -103,11 +104,11 @@
  IO=Runtime$1&&Runtime$1.IO;
  JSON=Global.JSON;
  Arrays=WebSharper&&WebSharper.Arrays;
+ DateUtil=WebSharper&&WebSharper.DateUtil;
  Charting=WebSharper&&WebSharper.Charting;
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
  FSharpEvent=Control&&Control.FSharpEvent;
- DateUtil=WebSharper&&WebSharper.DateUtil;
  LiveChart=Charting&&Charting.LiveChart;
  Pervasives=Charting&&Charting.Pervasives;
  Role.Server={
@@ -2104,6 +2105,74 @@
    OpenWeatherEventData:OpenWeatherEventData
   });
  };
+ ClockEvent=Events.ClockEvent=Runtime.Class({
+  WebSharper_Community_Dashboard_IWorkerData$get_Render:function()
+  {
+   return null;
+  },
+  WebSharper_Community_Dashboard_IWorkerData$get_Run:function()
+  {
+   return{
+    $:1,
+    $0:function(worker)
+    {
+     var b;
+     Concurrency.Start((b=null,Concurrency.Delay(function()
+     {
+      return Concurrency.While(function()
+      {
+       return true;
+      },Concurrency.Delay(function()
+      {
+       var sel,time,strTime;
+       sel=(worker.InPorts.get_Item(0).PortValue.c.Value.get_AsSelect())[0];
+       time=Date.now();
+       strTime=sel===0?DateUtil.LongTime(time):sel===1?DateUtil.ShortTime(time):sel===2?DateUtil.LongDate(time):sel===3?(new Date(time)).toLocaleDateString():"";
+       worker.OutPorts.get_Item(0).Trigger(new Value({
+        $:1,
+        $0:strTime
+       }));
+       return Concurrency.Bind(Concurrency.Sleep(worker.InPorts.get_Item(1).get_Number()*1000>>0),function()
+       {
+        var x;
+        x=(function($1)
+        {
+         return function($2)
+         {
+          return $1("Time value generated "+Utils.toSafe($2));
+         };
+        }(Global.id))(strTime);
+        (Environment.Log())(x);
+        return Concurrency.Zero();
+       });
+      }));
+     })),null);
+     return null;
+    }
+   };
+  },
+  WebSharper_Community_Dashboard_IWorkerData$get_Data:function()
+  {
+   return this.ClockEventData;
+  }
+ },null,ClockEvent);
+ ClockEvent.get_FromWorker=function()
+ {
+  return function(worker)
+  {
+   return ClockEvent.New(worker.get_ToData());
+  };
+ };
+ ClockEvent.get_Create=function()
+ {
+  return ClockEvent.New(WorkerData.Create("Clock",List.ofArray([["Format",MessageBus.SelectMessage(0,List.ofArray(["long time","short time","long date","short date"]))],["Delay sec.",MessageBus.NumberMessage(1)]]),List.ofArray([["Date Time",MessageBus.StringMessage("")]])));
+ };
+ ClockEvent.New=function(ClockEventData)
+ {
+  return new ClockEvent({
+   ClockEventData:ClockEventData
+  });
+ };
  TextBoxWidget=Widgets.TextBoxWidget=Runtime.Class({
   WebSharper_Community_Dashboard_IWorkerData$get_Render:function()
   {
@@ -2112,12 +2181,12 @@
     $0:function(worker)
     {
      var strView;
-     strView=View.Map(function(value)
+     strView=View.Map(function(msg)
      {
-      var c;
-      c=value>>0;
-      return Global.String(c);
-     },worker.InPorts.get_Item(0).get_NumberView());
+      var m,c;
+      m=msg.Value;
+      return m.$==0?(c=m.$0>>0,Global.String(c)):m.$==1?m.$0:m.$==2?Global.String(m.$0):"Wrong port value format";
+     },worker.InPorts.get_Item(0).PortValue.v);
      return Doc.Element("div",[AttrModule.Class("bigvalue")],[Doc.TextView(strView)]);
     }
    };
@@ -2288,41 +2357,47 @@
     $:0,
     $0:(RandomEvent.get_FromWorker())(worker)
    }
-  }:m instanceof OpenWeatherEvent?{
+  }:m instanceof ClockEvent?{
    $:1,
    $0:{
     $:1,
+    $0:(ClockEvent.get_FromWorker())(worker)
+   }
+  }:m instanceof OpenWeatherEvent?{
+   $:1,
+   $0:{
+    $:2,
     $0:(OpenWeatherEvent.get_FromWorker())(worker)
    }
   }:m instanceof DatabaseEvent?{
    $:1,
    $0:{
-    $:2,
+    $:3,
     $0:(DatabaseEvent.get_FromWorker())(worker)
    }
   }:m instanceof TextBoxWidget?{
    $:1,
    $0:{
-    $:3,
+    $:4,
     $0:(TextBoxWidget.get_FromWorker())(worker)
    }
   }:m instanceof ChartWidget?{
    $:1,
    $0:{
-    $:4,
+    $:5,
     $0:(ChartWidget.get_FromWorker())(worker)
    }
   }:m instanceof ButtonWidget?{
    $:1,
    $0:{
-    $:5,
+    $:6,
     $0:(ButtonWidget.get_FromWorker())(worker)
    }
   }:null;
  };
  AppModelLib.ToWorker=function(appModel)
  {
-  return appModel.$==1?Worker.Create(appModel.$0):appModel.$==2?Worker.Create(appModel.$0):appModel.$==3?Worker.Create(appModel.$0):appModel.$==4?Worker.Create(appModel.$0):appModel.$==5?Worker.Create(appModel.$0):Worker.Create(appModel.$0);
+  return appModel.$==1?Worker.Create(appModel.$0):appModel.$==2?Worker.Create(appModel.$0):appModel.$==3?Worker.Create(appModel.$0):appModel.$==4?Worker.Create(appModel.$0):appModel.$==5?Worker.Create(appModel.$0):appModel.$==6?Worker.Create(appModel.$0):Worker.Create(appModel.$0);
  };
  App.CreateDashboard=function()
  {
@@ -2345,6 +2420,7 @@
   }
   registerEvent(OpenWeatherEvent.Create("London",""));
   registerEvent(RandomEvent.get_Create());
+  registerEvent(ClockEvent.get_Create());
   registerEvent(DatabaseEvent.get_Create());
   registerWidget(TextBoxWidget.get_Create());
   registerWidget(ChartWidget.get_Create());

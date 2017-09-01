@@ -13,7 +13,7 @@ type WorkerData =
     {
         WorkerName:string
         InPorts:InPortData list
-        OutPorts:(string*MessageBus.Message) list
+        OutPorts:OutPort list
     }
     static member Create name inPorts outPorts = {WorkerName = name; InPorts=inPorts|> List.map (fun (name,msg)->InPortData.Create name msg 1); OutPorts=outPorts}
     static member CreateWithCache name inPorts outPorts = {WorkerName = name; InPorts=inPorts|> List.map (fun (name,msg,cacheSize)->InPortData.Create name msg cacheSize); OutPorts=outPorts}
@@ -23,7 +23,7 @@ type IWorkerData =
     abstract Run:Option<Worker->Option<IRunnerContext> >
     abstract Render:Option<(Worker->Doc)>
 and
- [<JavaScript;CustomEquality;NoComparison>] 
+ [<JavaScript>] 
  Worker =
    {
        Key:string
@@ -38,7 +38,7 @@ and
                Key = Helper.UniqueKey()
                Name = Var.Create dataContext.Data.WorkerName
                InPorts = dataContext.Data.InPorts |> List.map InPort.FromData
-               OutPorts = dataContext.Data.OutPorts |> List.map OutPort.FromData
+               OutPorts = dataContext.Data.OutPorts
                Data = dataContext 
                RunnerContext = Var.Create None                   
            }
@@ -49,7 +49,7 @@ and
           |None -> ()
    member x.ToData  =   {WorkerName = x.Name.Value;
                          InPorts = x.InPorts |> List.map (InPort.ToData)
-                         OutPorts = x.OutPorts |> List.map (OutPort.ToData) 
+                         OutPorts = x.OutPorts
                         }
    member x.Clone =
           {
@@ -66,9 +66,7 @@ and
                       |None -> Doc.Empty
        
    member   x.Properties = (Properties.string "Name" x.Name)::(x.InPorts |> List.map (fun port -> port.Property))
-   override x.Equals y = match y with
-                         | :? Worker as worker -> x.Name = worker.Name
-                         | _ -> false
+
 
 [<JavaScript>]
 module Workers = 

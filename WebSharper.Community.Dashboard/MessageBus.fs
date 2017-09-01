@@ -72,7 +72,10 @@ module MessageBus =
                     |> List.map (fun listener -> let  (info,callback,buf) = listener
                                                  if info.Key = message.Key then 
                                                      //sprintf "Message send from:%s CacheSize:%d BufSize:%d" info.Name info.CacheSize (buf|>List.length)|> Log
-                                                     callback (message)
+                                                     try
+                                                        callback (message)
+                                                     with
+                                                     |ex -> sprintf "Fails send message. It might be that receiver doesn't expect message of this type: %s" info.Name |> log
                                                      (info,callback,update_and_split (info.CacheSize) buf message )
                                                  else listener )
 
@@ -106,7 +109,7 @@ module MessageBus =
             | SendOnlyToClient (message) ->
                 return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
             | Send (message) ->
-                sprintf "Num listeners:%d msg:%s" state.Listeners.Length message.Key |> log
+                //sprintf "Num listeners:%d msg:%s" state.Listeners.Length message.Key |> log
                 state.ServerCallback |> Option.map(fun fncServer -> fncServer message) |> ignore
                 return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
 

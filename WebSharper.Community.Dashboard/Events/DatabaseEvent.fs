@@ -74,7 +74,7 @@ type DatabaseEvent =
                            DatabaseEventData =  WorkerData.Create "Database" 
                                                               [(" in Value",MessageBus.NumberMessage 100.0)
                                                                ("Database name",MessageBus.StringMessage "Database.txt")]
-                                                              [("Number value",MessageBus.NumberMessage 0.0)]
+                                                              [OutPort.Create "Number value"]
                          }
  static member FromWorker = (fun (worker:Worker) -> {DatabaseEventData = worker.ToData})
  interface IWorkerData with

@@ -14,7 +14,7 @@ type ClockEvent =
                            ClockEventData =  WorkerData.Create "Clock" 
                                                                     [("Format",MessageBus.SelectMessage ((0,["long time";"short time";"long date";"short date"])))
                                                                      ("Delay sec.",MessageBus.NumberMessage 1.0)]
-                                                                    [("Date Time",MessageBus.StringMessage "")]
+                                                                    [OutPort.Create "Date Time"]
                           }
  static member FromWorker = (fun (worker:Worker) -> { ClockEventData = worker.ToData})
  interface IWorkerData with

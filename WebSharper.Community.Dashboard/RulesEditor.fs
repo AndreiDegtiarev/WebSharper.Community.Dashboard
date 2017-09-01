@@ -17,9 +17,9 @@ module RulesEditor =
             |> List.map (fun row -> {RuleChain =
                                          row.CellItems |> List.ofSeq
                                          |> List.map (fun cell ->
-                                                            {InPortKey  = match cell.OptInPort.Value with | Some(port) -> port.Key | None -> ""
-                                                             OutPortKey = match cell.OptOutPort.Value with | Some(port) -> port.Key | None -> ""
-                                                             WorkerKey  = match cell.OptWorker.Value with | Some(worker) -> worker.Worker.Key | None -> "" 
+                                                            {InPortKey  = match cell.OptInPort.Value  with | Some(port)  -> port.Key | None -> ""
+                                                             OutPortKey = match cell.OptOutPort.Value with | Some(port)  -> port.Key | None -> ""
+                                                             WorkerKey  = match cell.OptWorker.Value  with | Some(worker)-> worker.Worker.Key | None -> "" 
                                                             }
                                                        )
                                     }

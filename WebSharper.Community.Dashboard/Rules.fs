@@ -26,6 +26,7 @@ type RuleContainer =
                              for i in [1..(cells.Length - 1)] do
                                  let cell1=cells.[i-1]
                                  let cell2=cells.[i]
+                                 sprintf "Try to find outPort:%s "cell1.OutPortKey |> log
                                  allOutPorts|> List.tryFind (fun port -> port.Key = cell1.OutPortKey)
                                  |> Option.map (fun outPort -> sprintf "Found outPort %s try to find inPort:%s" cell1.OutPortKey cell2.InPortKey |> log
                                                                allInPorts|> List.tryFind (fun port -> port.Data.Key = cell2.InPortKey)
@@ -37,7 +38,8 @@ type RuleContainer =
                                                                                 let templateValue = match inPort.PortValue.Value.Value with 
                                                                                                     |MessageBus.Number(_) -> MessageBus.Message.Create (MessageBus.Number(0.0))
                                                                                                     |MessageBus.String(_) -> MessageBus.Message.Create (MessageBus.String(""))
-                                                                                                    |MessageBus.Boolean(_) -> MessageBus.Message.Create (MessageBus.Boolean(false))
+                                                                                                    |MessageBus.Boolean(_)-> MessageBus.Message.Create (MessageBus.Boolean(false))
+                                                                                                    |MessageBus.Select(_) -> MessageBus.Message.Create (MessageBus.Select(0,[]))
                                                                                 MessageBus.Agent.Post (MessageBus.RegisterListener(listInfo,templateValue,inPort.Receive))
                                                                              ))|>ignore
                      )

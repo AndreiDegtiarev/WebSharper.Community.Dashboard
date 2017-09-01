@@ -13,7 +13,7 @@ type ButtonWidget =
   }
   static member Create = {ButtonWidgetData = WorkerData.Create "Button" [("Caption",MessageBus.StringMessage "Button")
                                                                          ("State",MessageBus.NumberMessage 0.0)
-                                                                        ][("Button value",MessageBus.NumberMessage 0.0)]}
+                                                                        ][OutPort.Create "Button value"]}
                          
   static member FromWorker = (fun (worker:Worker) -> {ButtonWidgetData = worker.ToData})
 

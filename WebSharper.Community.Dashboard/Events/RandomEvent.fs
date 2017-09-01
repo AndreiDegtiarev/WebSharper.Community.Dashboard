@@ -14,7 +14,7 @@ type RandomEvent =
                                                                     [("Middle value",MessageBus.NumberMessage 100.0)
                                                                      ("Dispersion",MessageBus.NumberMessage 10.0)
                                                                      ("Delay sec.",MessageBus.NumberMessage 2.0)]
-                                                                    [("Random value",MessageBus.NumberMessage 0.0)]
+                                                                    [OutPort.Create "Random value"]
                           }
  static member FromWorker = (fun (worker:Worker) -> { RandomEventData = worker.ToData})
  interface IWorkerData with

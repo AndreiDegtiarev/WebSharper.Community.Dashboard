@@ -27,13 +27,7 @@ module MessageBus =
         member x.WithKey key = {x with Key = key} 
         member x.WithTime time = {x with Time = time} 
 
-    let CreateMessage key value = {Key=key;Time=System.DateTime.UtcNow;Value=value}
-    let NumberKeyMessage key value = CreateMessage key (Number(value))
-    let StringKeyMessage key value = CreateMessage key (String(value))
-    let BooleanKeyMesage key value = CreateMessage key (Boolean(value))
-    let NumberMessage value = NumberKeyMessage (Helper.UniqueKey()) value
-    let StringMessage value = StringKeyMessage (Helper.UniqueKey()) value
-    let SelectMessage value = CreateMessage (Helper.UniqueKey()) (Select(value))
+    let CreateMessage value = {Key=Helper.UniqueKey();Time=System.DateTime.UtcNow;Value=value}
 
     type ListenerInfo =
      {Key:string;Name:string;CacheSize:int}

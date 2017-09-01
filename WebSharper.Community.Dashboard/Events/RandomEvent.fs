@@ -11,9 +11,9 @@ type RandomEvent =
  }
  static member Create  = {
                            RandomEventData =  WorkerData.Create "Random" 
-                                                                    [("Middle value",MessageBus.NumberMessage 100.0)
-                                                                     ("Dispersion",MessageBus.NumberMessage 10.0)
-                                                                     ("Delay sec.",MessageBus.NumberMessage 2.0)]
+                                                                    [InPortData.CreateNumber "Middle value" 100.0
+                                                                     InPortData.CreateNumber "Dispersion" 10.0
+                                                                     InPortData.CreateNumber "Delay sec." 2.0]
                                                                     [OutPort.Create "Random value"]
                           }
  static member FromWorker = (fun (worker:Worker) -> { RandomEventData = worker.ToData})

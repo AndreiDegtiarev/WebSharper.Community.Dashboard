@@ -14,7 +14,14 @@ type InPortData =
         Value:MessageBus.Message
         CacheSize:int
     }
-    static member Create name value cacheSize= {Value=value;Key = value.Key;Name=name;CacheSize=cacheSize}
+    static member Create name value=let msg = value |> MessageBus.CreateMessage
+                                    {Value=msg;Key = msg.Key;Name=name;CacheSize=1}
+    static member CreateNumber name value  = MessageBus.Number(value) |> InPortData.Create name
+    static member CreateString name value  = MessageBus.String(value) |> InPortData.Create name
+    static member CreateBoolean name value = MessageBus.Boolean(value)|> InPortData.Create name
+    static member CreateSelect name value  = MessageBus.Select(value) |> InPortData.Create name
+    member x.WithCacheSize cacheSize= {x with CacheSize = cacheSize}
+
 [<JavaScript>]
 type InPort =  {Data:InPortData;PortValue:Var<MessageBus.Message>}
                 static member FromData (data:InPortData) = {Data=data;PortValue=Var.Create data.Value}
@@ -60,7 +67,7 @@ type OutPort =
            {Key:string;Name:string} 
            static member Create name = {Key=Helper.UniqueKey();Name=name} 
            static member Clone (port:OutPort) = {port with Key=Helper.UniqueKey()}
-           member x.Trigger value = MessageBus.Agent.Post (MessageBus.Send(MessageBus.CreateMessage x.Key value))
+           member x.Trigger value = MessageBus.Send((MessageBus.CreateMessage value).WithKey(x.Key)) |> MessageBus.Agent.Post
 
 
             

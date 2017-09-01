@@ -11,7 +11,7 @@ type TextBoxWidget =
   {
       TextBoxWidgetData:WorkerData
   }
-  static member Create = {TextBoxWidgetData = WorkerData.Create "Text" [("in Value",MessageBus.NumberMessage 0.0)] []} 
+  static member Create = {TextBoxWidgetData = WorkerData.Create "Text" [InPortData.CreateNumber "in Value" 0.0] []} 
   static member FromWorker = (fun (worker:Worker) -> {TextBoxWidgetData = worker.ToData}) 
   interface IWorkerData with
     override x.Data = x.TextBoxWidgetData

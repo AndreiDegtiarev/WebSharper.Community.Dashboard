@@ -24,12 +24,12 @@ type ChartWidget =
   static member Create  = 
           let bufferSize = 20
           {
-                       ChartWidgetData =  WorkerData.CreateWithCache "Chart" 
-                                                   [(" in Value",MessageBus.NumberMessage 100.0,bufferSize)
-                                                    ("cx",MessageBus.NumberMessage 300.0,1)
-                                                    ("cy",MessageBus.NumberMessage 150.0,1)
-                                                    ("BufferSize",MessageBus.NumberMessage ((float)bufferSize),1)
-                                                    ("X-Axis",MessageBus.SelectMessage ((0,["long time";"short time";"long date";"short date"])),1)
+                       ChartWidgetData =  WorkerData.Create "Chart" 
+                                                   [(InPortData.CreateNumber " in Value" 100.0).WithCacheSize(bufferSize)
+                                                    InPortData.CreateNumber "cx" 300.0
+                                                    InPortData.CreateNumber "cy" 150.0
+                                                    InPortData.CreateNumber "BufferSize" ((float)bufferSize)
+                                                    InPortData.CreateSelect "X-Axis" (0,["long time";"short time";"long date";"short date"])
                                                    ]
                                                    []
           }

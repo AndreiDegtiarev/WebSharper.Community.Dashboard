@@ -46,8 +46,8 @@ type OpenWeatherEvent =
  }
  static member Create city apikey = {
                            OpenWeatherEventData =  WorkerData.Create "OpenWeatherMap" 
-                                                                    [("City",MessageBus.StringMessage city)
-                                                                     ("ApiKey",MessageBus.StringMessage apikey)]
+                                                                    [InPortData.CreateString "City" city
+                                                                     InPortData.CreateString "ApiKey" apikey]
                                                                     [OutPort.Create "Temperature"]
                                      }
  static member FromWorker = (fun (worker:Worker) -> {OpenWeatherEventData = worker.ToData}

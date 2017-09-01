@@ -15,8 +15,8 @@ type WorkerData =
         InPorts:InPortData list
         OutPorts:OutPort list
     }
-    static member Create name inPorts outPorts = {WorkerName = name; InPorts=inPorts|> List.map (fun (name,msg)->InPortData.Create name msg 1); OutPorts=outPorts}
-    static member CreateWithCache name inPorts outPorts = {WorkerName = name; InPorts=inPorts|> List.map (fun (name,msg,cacheSize)->InPortData.Create name msg cacheSize); OutPorts=outPorts}
+    static member Create name inPorts outPorts = {WorkerName = name; InPorts=inPorts; OutPorts=outPorts}
+    //static member CreateWithCache name inPorts outPorts = {WorkerName = name; InPorts=inPorts|> List.map (fun (name,msg,cacheSize)->InPortData.Create name msg cacheSize); OutPorts=outPorts}
 [<JavaScript>]
 type IWorkerData =
     abstract Data:WorkerData

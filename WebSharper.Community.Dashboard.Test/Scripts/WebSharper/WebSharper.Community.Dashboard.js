@@ -270,45 +270,9 @@
   SC$2.$cctor();
   return SC$2.Agent;
  };
- MessageBus.SelectMessage=function(v,v$1)
+ MessageBus.CreateMessage=function(value)
  {
-  return MessageBus.CreateMessage(Helper.UniqueKey(),new Value({
-   $:3,
-   $0:[v,v$1]
-  }));
- };
- MessageBus.StringMessage=function(value)
- {
-  return MessageBus.StringKeyMessage(Helper.UniqueKey(),value);
- };
- MessageBus.NumberMessage=function(value)
- {
-  return MessageBus.NumberKeyMessage(Helper.UniqueKey(),value);
- };
- MessageBus.BooleanKeyMesage=function(key,value)
- {
-  return MessageBus.CreateMessage(key,new Value({
-   $:2,
-   $0:value
-  }));
- };
- MessageBus.StringKeyMessage=function(key,value)
- {
-  return MessageBus.CreateMessage(key,new Value({
-   $:1,
-   $0:value
-  }));
- };
- MessageBus.NumberKeyMessage=function(key,value)
- {
-  return MessageBus.CreateMessage(key,new Value({
-   $:0,
-   $0:value
-  }));
- };
- MessageBus.CreateMessage=function(key,value)
- {
-  return Message.New(key,Date.now(),value);
+  return Message.New(Helper.UniqueKey(),Date.now(),value);
  };
  MessageBus.log=function()
  {
@@ -428,18 +392,54 @@
   },null);
   SC$2.$cctor=Global.ignore;
  });
- InPortData.Create=function(name,value,cacheSize)
+ InPortData=Dashboard.InPortData=Runtime.Class({
+  WithCacheSize:function(cacheSize)
+  {
+   return InPortData.New(this.Key,this.Name,this.Value,cacheSize);
+  }
+ },null,InPortData);
+ InPortData.CreateSelect=function(name,value)
  {
-  return InPortData.New(value.Key,name,value,cacheSize);
+  return InPortData.Create(name,new Value({
+   $:3,
+   $0:value
+  }));
+ };
+ InPortData.CreateBoolean=function(name,value)
+ {
+  return InPortData.Create(name,new Value({
+   $:2,
+   $0:value
+  }));
+ };
+ InPortData.CreateString=function(name,value)
+ {
+  return InPortData.Create(name,new Value({
+   $:1,
+   $0:value
+  }));
+ };
+ InPortData.CreateNumber=function(name,value)
+ {
+  return InPortData.Create(name,new Value({
+   $:0,
+   $0:value
+  }));
+ };
+ InPortData.Create=function(name,value)
+ {
+  var msg;
+  msg=MessageBus.CreateMessage(value);
+  return InPortData.New(msg.Key,name,msg,1);
  };
  InPortData.New=function(Key$1,Name,Value$1,CacheSize)
  {
-  return{
+  return new InPortData({
    Key:Key$1,
    Name:Name,
    Value:Value$1,
    CacheSize:CacheSize
-  };
+  });
  };
  InPort=Dashboard.InPort=Runtime.Class({
   get_SelectView:function()
@@ -562,12 +562,13 @@
  OutPort=Dashboard.OutPort=Runtime.Class({
   Trigger:function(value)
   {
-   var _this;
-   _this=MessageBus.Agent();
-   _this.mailbox.AddLast({
+   var a,_this;
+   a={
     $:0,
-    $0:MessageBus.CreateMessage(this.Key,value)
-   });
+    $0:MessageBus.CreateMessage(value).WithKey(this.Key)
+   };
+   _this=MessageBus.Agent();
+   _this.mailbox.AddLast(a);
    _this.resume();
   }
  },null,OutPort);
@@ -586,23 +587,9 @@
    Name:Name
   });
  };
- WorkerData.CreateWithCache=function(name,inPorts,outPorts)
- {
-  return WorkerData.New(name,List.map(function($1)
-  {
-   return InPortData.Create($1[0],$1[1],$1[2]);
-  },inPorts),outPorts);
- };
  WorkerData.Create=function(name,inPorts,outPorts)
  {
-  function m(name$1,msg)
-  {
-   return InPortData.Create(name$1,msg,1);
-  }
-  return WorkerData.New(name,List.map(function($1)
-  {
-   return m($1[0],$1[1]);
-  },inPorts),outPorts);
+  return WorkerData.New(name,inPorts,outPorts);
  };
  WorkerData.New=function(WorkerName,InPorts,OutPorts)
  {
@@ -1872,7 +1859,7 @@
  };
  RandomEvent.get_Create=function()
  {
-  return RandomEvent.New(WorkerData.Create("Random",List.ofArray([["Middle value",MessageBus.NumberMessage(100)],["Dispersion",MessageBus.NumberMessage(10)],["Delay sec.",MessageBus.NumberMessage(2)]]),List.ofArray([OutPort.Create("Random value")])));
+  return RandomEvent.New(WorkerData.Create("Random",List.ofArray([InPortData.CreateNumber("Middle value",100),InPortData.CreateNumber("Dispersion",10),InPortData.CreateNumber("Delay sec.",2)]),List.ofArray([OutPort.Create("Random value")])));
  };
  RandomEvent.New=function(RandomEventData)
  {
@@ -1930,7 +1917,7 @@
  };
  DatabaseEvent.get_Create=function()
  {
-  return DatabaseEvent.New(WorkerData.Create("Database",List.ofArray([[" in Value",MessageBus.NumberMessage(100)],["Database name",MessageBus.StringMessage("Database.txt")]]),List.ofArray([OutPort.Create("Number value")])));
+  return DatabaseEvent.New(WorkerData.Create("Database",List.ofArray([InPortData.CreateNumber(" in Value",100),InPortData.CreateString("Database name","Database.txt")]),List.ofArray([OutPort.Create("Number value")])));
  };
  DatabaseEvent.New=function(DatabaseEventData)
  {
@@ -2076,7 +2063,7 @@
  };
  OpenWeatherEvent.Create=function(city,apikey)
  {
-  return OpenWeatherEvent.New(WorkerData.Create("OpenWeatherMap",List.ofArray([["City",MessageBus.StringMessage(city)],["ApiKey",MessageBus.StringMessage(apikey)]]),List.ofArray([OutPort.Create("Temperature")])));
+  return OpenWeatherEvent.New(WorkerData.Create("OpenWeatherMap",List.ofArray([InPortData.CreateString("City",city),InPortData.CreateString("ApiKey",apikey)]),List.ofArray([OutPort.Create("Temperature")])));
  };
  OpenWeatherEvent.New=function(OpenWeatherEventData)
  {
@@ -2144,7 +2131,7 @@
  };
  ClockEvent.get_Create=function()
  {
-  return ClockEvent.New(WorkerData.Create("Clock",List.ofArray([["Format",MessageBus.SelectMessage(0,List.ofArray(["long time","short time","long date","short date"]))],["Delay sec.",MessageBus.NumberMessage(1)]]),List.ofArray([OutPort.Create("Date Time")])));
+  return ClockEvent.New(WorkerData.Create("Clock",List.ofArray([InPortData.CreateSelect("Format",[0,List.ofArray(["long time","short time","long date","short date"])]),InPortData.CreateNumber("Delay sec.",1)]),List.ofArray([OutPort.Create("Date Time")])));
  };
  ClockEvent.New=function(ClockEventData)
  {
@@ -2188,7 +2175,7 @@
  };
  TextBoxWidget.get_Create=function()
  {
-  return TextBoxWidget.New(WorkerData.Create("Text",List.ofArray([["in Value",MessageBus.NumberMessage(0)]]),List.T.Empty));
+  return TextBoxWidget.New(WorkerData.Create("Text",List.ofArray([InPortData.CreateNumber("in Value",0)]),List.T.Empty));
  };
  TextBoxWidget.New=function(TextBoxWidgetData)
  {
@@ -2275,7 +2262,7 @@
  {
   var bufferSize;
   bufferSize=20;
-  return ChartWidget.New(WorkerData.CreateWithCache("Chart",List.ofArray([[" in Value",MessageBus.NumberMessage(100),bufferSize],["cx",MessageBus.NumberMessage(300),1],["cy",MessageBus.NumberMessage(150),1],["BufferSize",MessageBus.NumberMessage(bufferSize),1],["X-Axis",MessageBus.SelectMessage(0,List.ofArray(["long time","short time","long date","short date"])),1]]),List.T.Empty));
+  return ChartWidget.New(WorkerData.Create("Chart",List.ofArray([InPortData.CreateNumber(" in Value",100).WithCacheSize(bufferSize),InPortData.CreateNumber("cx",300),InPortData.CreateNumber("cy",150),InPortData.CreateNumber("BufferSize",bufferSize),InPortData.CreateSelect("X-Axis",[0,List.ofArray(["long time","short time","long date","short date"])])]),List.T.Empty));
  };
  ChartWidget.New=function(ChartWidgetData)
  {
@@ -2318,7 +2305,7 @@
  };
  ButtonWidget.get_Create=function()
  {
-  return ButtonWidget.New(WorkerData.Create("Button",List.ofArray([["Caption",MessageBus.StringMessage("Button")],["State",MessageBus.NumberMessage(0)]]),List.ofArray([OutPort.Create("Button value")])));
+  return ButtonWidget.New(WorkerData.Create("Button",List.ofArray([InPortData.CreateString("Caption","Button"),InPortData.CreateNumber("State",0)]),List.ofArray([OutPort.Create("Button value")])));
  };
  ButtonWidget.New=function(ButtonWidgetData)
  {

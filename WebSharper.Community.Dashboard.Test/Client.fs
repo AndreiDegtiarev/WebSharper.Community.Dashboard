@@ -16,6 +16,8 @@ type StartConfiguration =
         static member Create config = {ConfigurationName=config}
 
 [<Require(typeof<WebSharper.Community.PropertyGrid.Resources.StyleResource>)>]
+[<Require(typeof<WebSharper.Community.Panel.Resources.StyleResource>)>]
+[<Require(typeof<WebSharper.Community.Dashboard.Resources.StyleResource>)>]
 [<JavaScript>]
 module Client =
 

@@ -18,6 +18,6 @@ module Server =
     let RecreateOnServer (data:AppData<AppModel>) = 
         Environment.Log <- (fun str -> System.Diagnostics.Debug.WriteLine(str))
         Environment.Role <- Environment.Server
-        data.RecreateOnServer (AppModel.ToWorker:AppModel->Worker) |> ignore
+        data.RecreateOnServer (Json.Serialize<AppData<AppModel>> data) (AppModel.ToWorker:AppModel->Worker) |> ignore
 
 

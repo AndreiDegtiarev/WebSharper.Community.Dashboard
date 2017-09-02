@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Control,MailboxProcessor,Seq,Utils,UI,Next,View,Var,PropertyGrid,Properties,Guid,Doc,Enumerator,Key,ListModel,console,AttrModule,Option,Unchecked,WrapControls,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,LiveChart,Pervasives;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,Guid,Doc,Enumerator,Key,ListModel,AttrModule,Option,Unchecked,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,LiveChart,Pervasives;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -13,6 +13,7 @@
  Value=MessageBus.Value=MessageBus.Value||{};
  Message=MessageBus.Message=MessageBus.Message||{};
  ListenerInfo=MessageBus.ListenerInfo=MessageBus.ListenerInfo||{};
+ SystemStatus=MessageBus.SystemStatus=MessageBus.SystemStatus||{};
  AgentMessage=MessageBus.AgentMessage=MessageBus.AgentMessage||{};
  AgentState=MessageBus.AgentState=MessageBus.AgentState||{};
  SC$2=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus=Global.StartupCode$WebSharper_Community_Dashboard$MessageBus||{};
@@ -67,26 +68,27 @@
  Concurrency=WebSharper&&WebSharper.Concurrency;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
+ Utils=WebSharper&&WebSharper.Utils;
  Control=WebSharper&&WebSharper.Control;
  MailboxProcessor=Control&&Control.MailboxProcessor;
  Seq=WebSharper&&WebSharper.Seq;
- Utils=WebSharper&&WebSharper.Utils;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  View=Next&&Next.View;
  Var=Next&&Next.Var;
  PropertyGrid=Community&&Community.PropertyGrid;
  Properties=PropertyGrid&&PropertyGrid.Properties;
+ MatchFailureException=WebSharper&&WebSharper.MatchFailureException;
  Guid=WebSharper&&WebSharper.Guid;
  Doc=Next&&Next.Doc;
  Enumerator=WebSharper&&WebSharper.Enumerator;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
- console=Global.console;
  AttrModule=Next&&Next.AttrModule;
  Option=WebSharper&&WebSharper.Option;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  WrapControls=Panel&&Panel.WrapControls;
+ console=Global.console;
  PanelContainer=Panel&&Panel.PanelContainer;
  LayoutManagers=Panel&&Panel.LayoutManagers;
  Panel$1=Panel&&Panel.Panel;
@@ -115,6 +117,16 @@
  };
  Role.Client={
   $:0
+ };
+ Environment.UpdateConfiguration=function()
+ {
+  SC$1.$cctor();
+  return SC$1.UpdateConfiguration;
+ };
+ Environment.set_UpdateConfiguration=function($1)
+ {
+  SC$1.$cctor();
+  SC$1.UpdateConfiguration=$1;
  };
  Environment.DataDirectory=function()
  {
@@ -151,9 +163,17 @@
   SC$1.Role=Role.Server;
   SC$1.Log=Global.ignore;
   SC$1.DataDirectory="";
+  SC$1.UpdateConfiguration=Global.ignore;
   SC$1.$cctor=Global.ignore;
  });
  Value=MessageBus.Value=Runtime.Class({
+  get_trySystem:function()
+  {
+   return this.$==4?{
+    $:1,
+    $0:this.$0
+   }:null;
+  },
   get_AsSelect:function()
   {
    return this.$==3?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
@@ -205,18 +225,38 @@
    CacheSize:CacheSize
   };
  };
- AgentMessage.Clear={
+ SystemStatus.Running={
+  $:1
+ };
+ SystemStatus.Inactive={
+  $:0
+ };
+ AgentMessage.Start={
+  $:5
+ };
+ AgentMessage.Stop={
   $:4
+ };
+ AgentState.get_initListeners=function()
+ {
+  return List.ofArray([[ListenerInfo.Create("system","Configuration",1),function(msg)
+  {
+   var o;
+   o=msg.Value.get_trySystem();
+   o==null?void 0:(Environment.UpdateConfiguration())(o.$0.$0);
+  },List.T.Empty]]);
  };
  AgentState.get_empty=function()
  {
-  return AgentState.New(null,List.T.Empty);
+  return AgentState.New(SystemStatus.Inactive,null,AgentState.get_initListeners(),(new Date(1,1-1,1)).getTime());
  };
- AgentState.New=function(ServerCallback,Listeners)
+ AgentState.New=function(SystemStatus$1,ServerCallback,Listeners,LastConfigurationTime)
  {
   return{
+   SystemStatus:SystemStatus$1,
    ServerCallback:ServerCallback,
-   Listeners:Listeners
+   Listeners:Listeners,
+   LastConfigurationTime:LastConfigurationTime
   };
  };
  MessageBus.RunServerRequests=function()
@@ -234,31 +274,45 @@
      return Concurrency.Bind(MessageBus.Agent().PostAndAsyncReply(function(r)
      {
       return{
-       $:6,
+       $:8,
        $0:r
       };
      },null),function(a)
      {
-      return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:1550733476",[a]),function(a$1)
+      return Concurrency.TryWith(Concurrency.Delay(function()
       {
-       var x;
-       List.iter(function(message)
+       return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:1550733476",[a]),function(a$1)
        {
-        var _this;
-        _this=MessageBus.Agent();
-        _this.mailbox.AddLast({
-         $:1,
-         $0:message
-        });
-        _this.resume();
-       },a$1);
-       return a$1.get_Length()>0?(x=(function($1)
-       {
-        return function($2)
+        var x;
+        List.iter(function(message)
         {
-         return $1("Values from server requested messages received:"+Global.String($2));
-        };
-       }(Global.id))(a$1.get_Length()),(MessageBus.log())(x),Concurrency.Zero()):Concurrency.Zero();
+         var _this;
+         _this=MessageBus.Agent();
+         _this.mailbox.AddLast({
+          $:1,
+          $0:message
+         });
+         _this.resume();
+        },a$1);
+        return a$1.get_Length()>0?(List.iter(function(msg)
+        {
+         var x$1;
+         x$1=(((Runtime.Curried3(function($1,$2,$3)
+         {
+          return $1(Utils.toSafe($2)+" "+Utils.toSafe($3));
+         }))(Global.id))(msg.Key))(Global.String(msg.Time));
+         (MessageBus.log())(x$1);
+        },a$1),x=(function($1)
+        {
+         return function($2)
+         {
+          return $1("Values from server requested messages received:"+Global.String($2));
+         };
+        }(Global.id))(a$1.get_Length()),(MessageBus.log())(x),Concurrency.Zero()):Concurrency.Zero();
+       });
+      }),function()
+      {
+       return Concurrency.Zero();
       });
      });
     });
@@ -349,29 +403,32 @@
     {
      return Concurrency.Bind(inbox.Receive(null),function(a)
      {
-      var listenerInfo,x,time,maxTimes,message,o;
-      function m(info,a$1,buffer)
+      var listenerInfo,x,time,maxTimes,message,m,message$1,o;
+      function m$1(info,a$1,buffer)
       {
        return cutBuffer(time,buffer);
       }
-      function m$1(info,a$1,buffer)
+      function m$2(info,a$1,buffer)
       {
-       return buffer.$==0?(new Date(0,0-1,0)).getTime():List.maxBy(function(item)
+       return buffer.$==0?state.LastConfigurationTime:List.maxBy(function(item)
        {
         return item.Time;
        },buffer).Time;
       }
-      return a.$==2?(listenerInfo=a.$0[0],(x=(((Runtime.Curried3(function($1,$2,$3)
+      return a.$==5?loop(AgentState.New(SystemStatus.Running,state.ServerCallback,state.Listeners,state.LastConfigurationTime)):a.$==6?(a.$0(state.SystemStatus),loop(state)):a.$==2?(listenerInfo=a.$0[0],(x=(((Runtime.Curried3(function($1,$2,$3)
       {
        return $1("RegisterListener:"+Utils.toSafe($2)+" "+Utils.toSafe($3));
-      }))(Global.id))(listenerInfo.Name))(listenerInfo.Key),(MessageBus.log())(x),loop(AgentState.New(state.ServerCallback,new List.T({
+      }))(Global.id))(listenerInfo.Name))(listenerInfo.Key),(MessageBus.log())(x),loop(AgentState.New(state.SystemStatus,state.ServerCallback,new List.T({
        $:1,
        $0:[listenerInfo,a.$0[2],List.T.Empty],
        $1:state.Listeners
-      }))))):a.$==3?loop(AgentState.New({
+      }),state.LastConfigurationTime)))):a.$==3?loop(AgentState.New(state.SystemStatus,{
        $:1,
        $0:a.$0
-      },state.Listeners)):a.$==5?(time=a.$0[0],(a.$0[1](Seq.fold(function(acc,state$1)
+      },state.Listeners,state.LastConfigurationTime)):a.$==7?(time=a.$0[0],(a.$0[1](List.sortBy(function(msg)
+      {
+       return msg.Time;
+      },Seq.fold(function(acc,state$1)
       {
        return!List.contains(state$1,acc)?new List.T({
         $:1,
@@ -380,11 +437,14 @@
        }):acc;
       },List.T.Empty,List.concat(List.map(function($1)
       {
-       return m($1[0],$1[1],$1[2]);
-      },state.Listeners)))),loop(state))):a.$==6?(maxTimes=List.map(function($1)
-      {
        return m$1($1[0],$1[1],$1[2]);
-      },state.Listeners),(a.$0(maxTimes.$==0?(new Date(0,0-1,0)).getTime():List.max(maxTimes)),loop(state))):a.$==1?loop(AgentState.New(state.ServerCallback,send_to_listeners(a.$0,state.Listeners))):a.$==0?(message=a.$0,(o=state.ServerCallback,o==null?void 0:o.$0(message),loop(AgentState.New(state.ServerCallback,send_to_listeners(message,state.Listeners))))):loop(AgentState.get_empty());
+      },state.Listeners))))),loop(state))):a.$==8?(maxTimes=List.map(function($1)
+      {
+       return m$2($1[0],$1[1],$1[2]);
+      },state.Listeners),(a.$0(maxTimes.$==0?state.LastConfigurationTime:List.max(maxTimes)),loop(state))):a.$==1?(message=a.$0,(m=message.Value.get_trySystem(),m==null?loop(AgentState.New(state.SystemStatus,state.ServerCallback,send_to_listeners(message,state.Listeners),state.LastConfigurationTime)):Concurrency.Combine(((Environment.UpdateConfiguration())(m.$0.$0),Concurrency.Zero()),Concurrency.Delay(function()
+      {
+       return loop(AgentState.New(state.SystemStatus,state.ServerCallback,state.Listeners,message.Time));
+      })))):a.$==0?(message$1=a.$0,(o=state.ServerCallback,o==null?void 0:o.$0(message$1),loop(AgentState.New(state.SystemStatus,state.ServerCallback,send_to_listeners(message$1,state.Listeners),state.LastConfigurationTime)))):loop(AgentState.New(SystemStatus.Inactive,state.ServerCallback,AgentState.get_initListeners(),state.LastConfigurationTime));
      });
     });
    }
@@ -430,7 +490,7 @@
  {
   var msg;
   msg=MessageBus.CreateMessage(value);
-  return InPortData.New(msg.Key,name,msg,1);
+  return InPortData.New(msg.Key,name,msg.WithTime((new Date(0,0-1,0)).getTime()),1);
  };
  InPortData.New=function(Key$1,Name,Value$1,CacheSize)
  {
@@ -492,41 +552,70 @@
   },
   get_Property:function()
   {
-   var $this,m,_var,_var$1,sel_list,_var$2,_var$3;
+   var _var,_var$1,_var$2,sel_list,_var$3,$this,m;
    $this=this;
    m=this.PortValue.c.Value;
-   return m.$==1?(_var=Var.Create$1(this.get_String()),(View.Sink(function(entry)
-   {
-    var i;
-    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
-     $:1,
-     $0:entry
-    }))));
-   },_var.v),Properties.string(this.Data.Name,_var))):m.$==2?(_var$1=Var.Create$1(this.get_Boolean()),(View.Sink(function(entry)
-   {
-    var i;
-    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
-     $:2,
-     $0:entry
-    }))));
-   },_var$1.v),Properties.check(this.Data.Name,_var$1))):m.$==3?(sel_list=m.$0[1],(_var$2=Var.Create$1(sel_list.get_Item(m.$0[0])),(View.Sink(function(entry)
-   {
-    var i;
-    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
-     $:3,
-     $0:[Seq.findIndex(function(str)
+   if(m.$==0)
+    {
+     _var=Var.Create$1(this.get_Number());
+     View.Sink(function(entry)
      {
-      return str===entry;
-     },sel_list),sel_list]
-    }))));
-   },_var$2.v),Properties.select(this.Data.Name,Global.id,sel_list,_var$2)))):(_var$3=Var.Create$1(this.get_Number()),(View.Sink(function(entry)
-   {
-    var i;
-    Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
-     $:0,
-     $0:entry
-    }))));
-   },_var$3.v),Properties["double"](this.Data.Name,_var$3)));
+      var i;
+      Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+       $:0,
+       $0:entry
+      }))));
+     },_var.v);
+     return Properties["double"](this.Data.Name,_var);
+    }
+   else
+    if(m.$==1)
+     {
+      _var$1=Var.Create$1(this.get_String());
+      View.Sink(function(entry)
+      {
+       var i;
+       Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+        $:1,
+        $0:entry
+       }))));
+      },_var$1.v);
+      return Properties.string(this.Data.Name,_var$1);
+     }
+    else
+     if(m.$==2)
+      {
+       _var$2=Var.Create$1(this.get_Boolean());
+       View.Sink(function(entry)
+       {
+        var i;
+        Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+         $:2,
+         $0:entry
+        }))));
+       },_var$2.v);
+       return Properties.check(this.Data.Name,_var$2);
+      }
+     else
+      if(m.$==3)
+       {
+        sel_list=m.$0[1];
+        _var$3=Var.Create$1(sel_list.get_Item(m.$0[0]));
+        View.Sink(function(entry)
+        {
+         var i;
+         Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+          $:3,
+          $0:[Seq.findIndex(function(str)
+          {
+           return str===entry;
+          },sel_list),sel_list]
+         }))));
+        },_var$3.v);
+        return Properties.select(this.Data.Name,Global.id,sel_list,_var$3);
+       }
+      else
+       throw new MatchFailureException.New("Port.fs",38,30);
   },
   get_Key:function()
   {
@@ -686,27 +775,10 @@
  RuleContainer=Dashboard.RuleContainer=Runtime.Class({
   Reconnect:function(workers)
   {
-   var log,allOutPorts,allInPorts,_this;
+   var log,allOutPorts,allInPorts;
    log=Environment.Log();
    allOutPorts=Workers.allOutPorts(workers);
    allInPorts=Workers.allInPorts(workers);
-   List.iter(function(inPort)
-   {
-    (Environment.Log())((((Runtime.Curried3(function($1,$2,$3)
-    {
-     return $1("InPort: "+Utils.toSafe($2)+" "+Utils.toSafe($3));
-    }))(Global.id))(inPort.get_Name()))(inPort.Data.Key));
-   },allInPorts);
-   List.iter(function(port)
-   {
-    (Environment.Log())((((Runtime.Curried3(function($1,$2,$3)
-    {
-     return $1("outPort: "+Utils.toSafe($2)+" "+Utils.toSafe($3));
-    }))(Global.id))(port.Name))(port.Key));
-   },allOutPorts);
-   _this=MessageBus.Agent();
-   _this.mailbox.AddLast(AgentMessage.Clear);
-   _this.resume();
    List.iter(function(row)
    {
     var cells,i,e;
@@ -718,54 +790,73 @@
      while(e.MoveNext())
       (function()
       {
-       var i$1,cell1,cell2,o,outPort,o$1,inPort,templateValue,m,_this$1;
+       var $1,$2,$3,templateValue,_this,i$1,cell1,cell2,o,outPort,o$1,inPort,m;
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
-       log((function($1)
+       o=Seq.tryFind(function(port)
        {
-        return function($2)
+        return port.Key===cell1.OutPortKey;
+       },allOutPorts);
+       if(o==null)
+        null;
+       else
         {
-         return $1("Try to find outPort:"+Utils.toSafe($2)+" ");
-        };
-       }(Global.id))(cell1.OutPortKey));
-       {
-        o=Seq.tryFind(function(port)
-        {
-         return port.Key===cell1.OutPortKey;
-        },allOutPorts),o==null?null:{
-         $:1,
-         $0:(outPort=o.$0,(log((((Runtime.Curried3(function($1,$2,$3)
-         {
-          return $1("Found outPort "+Utils.toSafe($2)+" try to find inPort:"+Utils.toSafe($3));
-         }))(Global.id))(cell1.OutPortKey))(cell2.InPortKey)),o$1=Seq.tryFind(function(port)
+         outPort=o.$0;
+         o$1=Seq.tryFind(function(port)
          {
           return port.Data.Key===cell2.InPortKey;
-         },allInPorts),o$1==null?null:{
+         },allInPorts);
+         if(o$1==null)
+          $1=null;
+         else
+          {
+           inPort=o$1.$0;
+           log("Found inPort");
+           inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):null;
+           m=inPort.PortValue.c.Value;
+           if(m.$==0)
+            templateValue=Message.Create(new Value({
+             $:0,
+             $0:0
+            }));
+           else
+            if(m.$==1)
+             templateValue=Message.Create(new Value({
+              $:1,
+              $0:""
+             }));
+            else
+             if(m.$==2)
+              templateValue=Message.Create(new Value({
+               $:2,
+               $0:false
+              }));
+             else
+              if(m.$==3)
+               templateValue=Message.Create(new Value({
+                $:3,
+                $0:[0,List.T.Empty]
+               }));
+              else
+               throw new MatchFailureException.New("Rules.fs",38,106);
+           $3=(_this=MessageBus.Agent(),(_this.mailbox.AddLast({
+            $:2,
+            $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),templateValue,function(a)
+            {
+             inPort.Receive(a);
+            }]
+           }),_this.resume()));
+           $1={
+            $:1,
+            $0:$3
+           };
+          }
+         ({
           $:1,
-          $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):void 0,templateValue=(m=inPort.PortValue.c.Value,m.$==1?Message.Create(new Value({
-           $:1,
-           $0:""
-          })):m.$==2?Message.Create(new Value({
-           $:2,
-           $0:false
-          })):m.$==3?Message.Create(new Value({
-           $:3,
-           $0:[0,List.T.Empty]
-          })):Message.Create(new Value({
-           $:0,
-           $0:0
-          }))),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast({
-           $:2,
-           $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),templateValue,function(a)
-           {
-            inPort.Receive(a);
-           }]
-          }),_this$1.resume()))
-         }))
-        };
-        return;
-       }
+          $0:$1
+         });
+        }
       }());
     }
     finally
@@ -825,6 +916,7 @@
   {
    var $this,workerSelector,inPorts,outPorts,items;
    $this=this;
+   (Environment.Log())("Render rule item");
    View.Sink(function(optWorker)
    {
     var workerItem;
@@ -833,7 +925,6 @@
     else
      {
       workerItem=optWorker.$0;
-      console.log("Workitem selected");
       Var.Set($this.OptInPort,List.tryHead(workerItem.Worker.InPorts));
       Var.Set($this.OptOutPort,List.tryHead(workerItem.Worker.OutPorts));
       reconnectFnc();
@@ -1400,12 +1491,24 @@
   }
   function reconnectFnc()
   {
-   var x;
-   x=List.map(function(item)
+   var b;
+   Concurrency.Start((b=null,Concurrency.Delay(function()
    {
-    return item.Worker;
-   },List.ofSeq(data.WorkItems));
-   RulesEditor.CopyToRules(rowItems).Reconnect(x);
+    return Concurrency.Bind(MessageBus.Agent().PostAndAsyncReply(function(r)
+    {
+     return{
+      $:6,
+      $0:r
+     };
+    },null),function(a)
+    {
+     var x;
+     return a.$==1?(x=List.map(function(item)
+     {
+      return item.Worker;
+     },List.ofSeq(data.WorkItems)),RulesEditor.CopyToRules(rowItems).Reconnect(x),Concurrency.Zero()):Concurrency.Zero();
+    });
+   })),null);
   }
   return Doc.Element("table",[],[Doc.ConvertBy(function(m)
   {
@@ -1453,7 +1556,6 @@
    },rowData.RuleChain);
    rowItems.Append(row);
   },rules.RuleContainer);
-  rules.Reconnect(allWorkers);
  };
  RulesEditor.CopyToRules=function(rowItems)
  {
@@ -1529,8 +1631,15 @@
   },
   Restore:function(panelCreator,events,widgets,rules)
   {
-   var $this,gSelectorPanelsRun,gSelectorPanelsEdit,gSelectorEvents,gSelectorRules;
+   var $this,_this,gSelectorPanelsRun,gSelectorPanelsEdit,gSelectorEvents,gSelectorRules,allWorkers,_this$1;
+   function a(grName,rules$1)
+   {
+    rules$1.Reconnect(allWorkers);
+   }
    $this=this;
+   _this=MessageBus.Agent();
+   _this.mailbox.AddLast(AgentMessage.Stop);
+   _this.resume();
    this.EditorSelectorRun.ClearGroups();
    this.EditorSelectorEdit.ClearGroups();
    this.Data.get_Clear();
@@ -1541,7 +1650,7 @@
    List.iteri(function(ind,t)
    {
     var item,grItem;
-    function a(key,panelKey,widget)
+    function a$1(key,panelKey,widget)
     {
      $this.RegisterWidget(key,grItem,panelKey,Seq.find(function(entry)
      {
@@ -1565,14 +1674,14 @@
     },t[1]);
     return List.iter(function($1)
     {
-     return a($1[0],$1[1],$1[2]);
+     return a$1($1[0],$1[1],$1[2]);
     },t[2]);
    },widgets);
    console.log("Widgets restored");
    List.iteri(function(ind,t)
    {
     var item,grItem;
-    function a(key,event)
+    function a$1(key,event)
     {
      $this.Data.RegisterEvent(key,grItem,event);
     }
@@ -1582,7 +1691,7 @@
     grItem=Seq.nth(ind,List.ofSeq($this.Data.EventGroups));
     return List.iter(function($1)
     {
-     return a($1[0],$1[1]);
+     return a$1($1[0],$1[1]);
     },t[1]);
    },events);
    console.log("Events restored");
@@ -1601,6 +1710,17 @@
     $:1,
     $0:List.head(List.ofSeq(this.EditorSelectorRun.GroupByIndex(0).SelectorItems))
    })):(Var.Set(this.EditorSelectorEdit.OptSelectedItem,null),Var.Set(this.EditorSelectorRun.OptSelectedItem,null));
+   allWorkers=List.map(function(item)
+   {
+    return item.Worker;
+   },List.ofSeq(this.Data.WorkItems));
+   List.iter(function($1)
+   {
+    return a($1[0],$1[1]);
+   },rules);
+   _this$1=MessageBus.Agent();
+   _this$1.mailbox.AddLast(AgentMessage.Start);
+   _this$1.resume();
    console.log("Connectors restored");
    return[List.concat(List.map(function(gr)
    {
@@ -2224,24 +2344,26 @@
     $:1,
     $0:function(worker)
     {
-     var src;
+     var inPortNumberView,src,chart;
      worker.InPorts.get_Item(3).get_Number();
+     inPortNumberView=worker.InPorts.get_Item(0).PortValue.v;
      src=new FSharpEvent.New();
+     chart=LiveChart.Line$1(src.event).WithFill(false).__WithStrokeColor(new Pervasives.Color({
+      $:1,
+      $0:"#FB8C00"
+     })).__WithPointColor(new Pervasives.Color({
+      $:2,
+      $0:"black"
+     }));
      View.Sink(function(msg)
      {
       var sel;
       sel=(worker.InPorts.get_Item(4).PortValue.c.Value.get_AsSelect())[0];
       src.event.Trigger([sel===0?DateUtil.LongTime(msg.Time):sel===1?DateUtil.ShortTime(msg.Time):sel===2?DateUtil.LongDate(msg.Time):sel===3?(new Date(msg.Time)).toLocaleDateString():"",msg.Value.get_AsNumber()]);
-     },worker.InPorts.get_Item(0).PortValue.v);
+     },inPortNumberView);
      return{
       $:1,
-      $0:ChartWidgetContext.New(LiveChart.Line$1(src.event).WithFill(false).__WithStrokeColor(new Pervasives.Color({
-       $:1,
-       $0:"#FB8C00"
-      })).__WithPointColor(new Pervasives.Color({
-       $:2,
-       $0:"black"
-      })),src)
+      $0:ChartWidgetContext.New(chart,src)
      };
     }
    };
@@ -2509,10 +2631,10 @@
   },events);
  };
  AppData=Dashboard.AppData=Runtime.Class({
-  RecreateOnServer:function(toWorker)
+  RecreateOnServer:function(json,toWorker)
   {
-   var allEvents,allWorkers;
-   function a(grName,rules)
+   var allEvents,allWorkers,a,_this;
+   function a$1(grName,rules)
    {
     rules.Reconnect(allWorkers);
    }
@@ -2520,12 +2642,25 @@
    allWorkers=List.append(allEvents,AppDataHelper.RecreatWidgetsOnServer(toWorker,this.Widgets));
    List.iter(function($1)
    {
-    return a($1[0],$1[1]);
+    return a$1($1[0],$1[1]);
    },this.Rules);
    List.iter(function(worker)
    {
     worker.StartRunner();
    },allWorkers);
+   a={
+    $:0,
+    $0:MessageBus.CreateMessage(new Value({
+     $:4,
+     $0:{
+      $:0,
+      $0:json
+     }
+    })).WithKey("system")
+   };
+   _this=MessageBus.Agent();
+   _this.mailbox.AddLast(a);
+   _this.resume();
    return allEvents;
   },
   RecreateOnClientEventsRunning:function(dashboard,panelContainerCreator,toWorker)

@@ -27,14 +27,16 @@ type RulesCellItem =
     member x.Render (workItems:ListModel<Key,WorkerItem>) reconnectFnc= 
          let observe (optWorker) =
               match optWorker with 
-              |Some(workerItem) -> Console.Log("Workitem selected")
+              |Some(workerItem) -> //"Workitem selected" |> Environment.Log
                                    x.OptInPort.Value <-  workerItem.Worker.InPorts |> List.tryHead
                                    x.OptOutPort.Value <- workerItem.Worker.OutPorts |> List.tryHead
                                    reconnectFnc()
               |None -> ()
          View.Sink observe x.OptWorker.View
-         View.Sink (fun optInport -> reconnectFnc()) x.OptInPort.View
-         View.Sink (fun optInport -> reconnectFnc()) x.OptOutPort.View
+         View.Sink (fun optInport -> //"inport selected" |> Environment.Log
+                                     reconnectFnc()) x.OptInPort.View
+         View.Sink (fun optInport -> //"outport selected" |> Environment.Log
+                                     reconnectFnc()) x.OptOutPort.View
 
          let workerSelector =
            let inPorts = x.OptWorker.View.Map (fun  workerItemOpt -> match workerItemOpt with

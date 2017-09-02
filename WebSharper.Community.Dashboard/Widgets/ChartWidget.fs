@@ -51,10 +51,10 @@ type ChartWidget =
                                             |2 -> msg.Time.ToLongDateString()
                                             |3 -> msg.Time.ToShortDateString()
                                             |_ -> ""
+                                        //sprintf "Chart trigger value %s %f" x_label msg.Value.AsNumber |> Environment.Log
                                         src.Trigger (x_label,msg.Value.AsNumber)
-                                    do View.Sink observe inPortNumberView
                                     let chart = (LiveChart.Line src.Publish).WithFill(false).WithStrokeColor(Color.Hex "#FB8C00").WithPointColor(Color.Name "black")
-
+                                    do View.Sink observe inPortNumberView
                                     Some({LineChart=chart;Source = src} :> IRunnerContext)
                         )
     override x.Render  = Some(fun worker ->
@@ -70,6 +70,5 @@ type ChartWidget =
                             let cy = worker.InPorts.[2].Number
 
                             context.LineChart|> fun ch -> Renderers.ChartJs.Render(ch, Window = chartBufferSize,Size=Size((int) cx, (int) cy),Config=config)  :> Doc// only display 10 points of data max
-
                              )
 

@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,AppModelLib,RuleEntry,AppData,Panel,Helper,Events,RandomEvent,Widgets,TextBoxWidget,ChartWidget,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,MessageBus,UI,Next,Doc,Environment,console,Var,Strings;
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,WebSharper$Community$Dashboard$Test_JsonDecoder,AppModelLib,RuleEntry,AppData,Panel,Helper,Events,RandomEvent,Widgets,TextBoxWidget,ChartWidget,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,UI,Next,Doc,Environment,console,MessageBus,Var,JSON,Strings,Json,Provider;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -9,6 +9,7 @@
  Test=Dashboard.Test=Dashboard.Test||{};
  AppModel=Test.AppModel=Test.AppModel||{};
  Client=Test.Client=Test.Client||{};
+ WebSharper$Community$Dashboard$Test_JsonDecoder=Global.WebSharper$Community$Dashboard$Test_JsonDecoder=Global.WebSharper$Community$Dashboard$Test_JsonDecoder||{};
  AppModelLib=Dashboard&&Dashboard.AppModelLib;
  RuleEntry=Dashboard&&Dashboard.RuleEntry;
  AppData=Dashboard&&Dashboard.AppData;
@@ -26,14 +27,17 @@
  App=Dashboard&&Dashboard.App;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
- MessageBus=Dashboard&&Dashboard.MessageBus;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Doc=Next&&Next.Doc;
  Environment=Dashboard&&Dashboard.Environment;
  console=Global.console;
+ MessageBus=Dashboard&&Dashboard.MessageBus;
  Var=Next&&Next.Var;
+ JSON=Global.JSON;
  Strings=WebSharper&&WebSharper.Strings;
+ Json=WebSharper&&WebSharper.Json;
+ Provider=Json&&Json.Provider;
  AppModel.FromWorker=function(worker)
  {
   var o;
@@ -94,15 +98,8 @@
   }
   function loadOnServer(configName)
   {
-   var data;
-   data=(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:960175932",[configName]);
-   data.RecreateOnClientEventsNotRunning(dashboard,function()
-   {
-    return App.PanelContainerCreator();
-   },AppModel.ToWorker);
-   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:1430973847",[data]);
+   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:1430973847",[(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:960175932",[configName])]);
    log("Server recreated");
-   MessageBus.RunServerRequests();
   }
   function tbCellC(content)
   {
@@ -112,9 +109,25 @@
   {
    console.log(str);
   });
+  MessageBus.RunServerRequests();
   log=Environment.Log();
   fileName=Var.Create$1("Dashboard");
   dashboard=App.CreateDashboard();
+  Environment.set_UpdateConfiguration(function(json)
+  {
+   try
+   {
+    (WebSharper$Community$Dashboard$Test_JsonDecoder.j())(JSON.parse(json)).RecreateOnClientEventsNotRunning(dashboard,function()
+    {
+     return App.PanelContainerCreator();
+    },AppModel.ToWorker);
+    log("Configuration updated");
+   }
+   catch(ex)
+   {
+    log(ex.message);
+   }
+  });
   return Doc.Element("div",[],[dashboard.Render(Doc.Element("div",[],[tbCellC(List.ofArray([Helper.TxtIconNormal("build","Sample configuration",function()
   {
    makeTestConfig();
@@ -141,5 +154,81 @@
     null;
    }
   });
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$8=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$8?WebSharper$Community$Dashboard$Test_JsonDecoder._v$8:WebSharper$Community$Dashboard$Test_JsonDecoder._v$8=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",Provider.Id(),0]]]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$7=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$7?WebSharper$Community$Dashboard$Test_JsonDecoder._v$7:WebSharper$Community$Dashboard$Test_JsonDecoder._v$7=(Provider.DecodeUnion(MessageBus.Value,"$",[[0,[["$0","Item",Provider.Id(),0]]],[1,[["$0","Item",Provider.Id(),0]]],[2,[["$0","Item",Provider.Id(),0]]],[3,[["$0","Item",Provider.DecodeTuple([Provider.Id(),Provider.DecodeList(Provider.Id())]),0]]],[4,[["$0","Item",WebSharper$Community$Dashboard$Test_JsonDecoder.j$8,0]]]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$6=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$6?WebSharper$Community$Dashboard$Test_JsonDecoder._v$6:WebSharper$Community$Dashboard$Test_JsonDecoder._v$6=(Provider.DecodeRecord(MessageBus.Message,[["Key",Provider.Id(),0],["Time",Provider.DecodeDateTime(),0],["Value",WebSharper$Community$Dashboard$Test_JsonDecoder.j$7,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$5=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$5?WebSharper$Community$Dashboard$Test_JsonDecoder._v$5:WebSharper$Community$Dashboard$Test_JsonDecoder._v$5=(Provider.DecodeRecord(Dashboard.InPortData,[["Key",Provider.Id(),0],["Name",Provider.Id(),0],["Value",WebSharper$Community$Dashboard$Test_JsonDecoder.j$6,0],["CacheSize",Provider.Id(),0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$9=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$9?WebSharper$Community$Dashboard$Test_JsonDecoder._v$9:WebSharper$Community$Dashboard$Test_JsonDecoder._v$9=(Provider.DecodeRecord(Dashboard.OutPort,[["Key",Provider.Id(),0],["Name",Provider.Id(),0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$4=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$4?WebSharper$Community$Dashboard$Test_JsonDecoder._v$4:WebSharper$Community$Dashboard$Test_JsonDecoder._v$4=(Provider.DecodeRecord(void 0,[["WorkerName",Provider.Id(),0],["InPorts",Provider.DecodeList(WebSharper$Community$Dashboard$Test_JsonDecoder.j$5),0],["OutPorts",Provider.DecodeList(WebSharper$Community$Dashboard$Test_JsonDecoder.j$9),0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$3=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$3?WebSharper$Community$Dashboard$Test_JsonDecoder._v$3:WebSharper$Community$Dashboard$Test_JsonDecoder._v$3=(Provider.DecodeRecord(Widgets.ButtonWidget,[["ButtonWidgetData",WebSharper$Community$Dashboard$Test_JsonDecoder.j$4,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$10=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$10?WebSharper$Community$Dashboard$Test_JsonDecoder._v$10:WebSharper$Community$Dashboard$Test_JsonDecoder._v$10=(Provider.DecodeRecord(ChartWidget,[["ChartWidgetData",WebSharper$Community$Dashboard$Test_JsonDecoder.j$4,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$11=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$11?WebSharper$Community$Dashboard$Test_JsonDecoder._v$11:WebSharper$Community$Dashboard$Test_JsonDecoder._v$11=(Provider.DecodeRecord(TextBoxWidget,[["TextBoxWidgetData",WebSharper$Community$Dashboard$Test_JsonDecoder.j$4,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$12=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$12?WebSharper$Community$Dashboard$Test_JsonDecoder._v$12:WebSharper$Community$Dashboard$Test_JsonDecoder._v$12=(Provider.DecodeRecord(Events.DatabaseEvent,[["DatabaseEventData",WebSharper$Community$Dashboard$Test_JsonDecoder.j$4,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$13=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$13?WebSharper$Community$Dashboard$Test_JsonDecoder._v$13:WebSharper$Community$Dashboard$Test_JsonDecoder._v$13=(Provider.DecodeRecord(Events.OpenWeatherEvent,[["OpenWeatherEventData",WebSharper$Community$Dashboard$Test_JsonDecoder.j$4,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$14=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$14?WebSharper$Community$Dashboard$Test_JsonDecoder._v$14:WebSharper$Community$Dashboard$Test_JsonDecoder._v$14=(Provider.DecodeRecord(Events.ClockEvent,[["ClockEventData",WebSharper$Community$Dashboard$Test_JsonDecoder.j$4,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$15=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$15?WebSharper$Community$Dashboard$Test_JsonDecoder._v$15:WebSharper$Community$Dashboard$Test_JsonDecoder._v$15=(Provider.DecodeRecord(RandomEvent,[["RandomEventData",WebSharper$Community$Dashboard$Test_JsonDecoder.j$4,0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$2=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$2?WebSharper$Community$Dashboard$Test_JsonDecoder._v$2:WebSharper$Community$Dashboard$Test_JsonDecoder._v$2=(Provider.DecodeUnion(void 0,"$",[[0,[[null,null,WebSharper$Community$Dashboard$Test_JsonDecoder.j$15]]],[1,[[null,null,WebSharper$Community$Dashboard$Test_JsonDecoder.j$14]]],[2,[[null,null,WebSharper$Community$Dashboard$Test_JsonDecoder.j$13]]],[3,[[null,null,WebSharper$Community$Dashboard$Test_JsonDecoder.j$12]]],[4,[[null,null,WebSharper$Community$Dashboard$Test_JsonDecoder.j$11]]],[5,[[null,null,WebSharper$Community$Dashboard$Test_JsonDecoder.j$10]]],[6,[[null,null,WebSharper$Community$Dashboard$Test_JsonDecoder.j$3]]]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$1=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$1?WebSharper$Community$Dashboard$Test_JsonDecoder._v$1:WebSharper$Community$Dashboard$Test_JsonDecoder._v$1=(Provider.DecodeUnion(void 0,"$",[[0,[["$0","Item",WebSharper$Community$Dashboard$Test_JsonDecoder.j$2,0]]]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$16=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$16?WebSharper$Community$Dashboard$Test_JsonDecoder._v$16:WebSharper$Community$Dashboard$Test_JsonDecoder._v$16=(Provider.DecodeRecord(void 0,[["Key",Provider.Id(),0],["Left",Provider.Id(),0],["Top",Provider.Id(),0],["Children",Provider.DecodeList(WebSharper$Community$Dashboard$Test_JsonDecoder.j$16),0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$18=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$18?WebSharper$Community$Dashboard$Test_JsonDecoder._v$18:WebSharper$Community$Dashboard$Test_JsonDecoder._v$18=(Provider.DecodeRecord(void 0,[["RuleChain",Provider.DecodeList(Provider.Id()),0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j$17=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v$17?WebSharper$Community$Dashboard$Test_JsonDecoder._v$17:WebSharper$Community$Dashboard$Test_JsonDecoder._v$17=(Provider.DecodeRecord(RuleContainer,[["RuleContainer",Provider.DecodeList(WebSharper$Community$Dashboard$Test_JsonDecoder.j$18),0]]))();
+ };
+ WebSharper$Community$Dashboard$Test_JsonDecoder.j=function()
+ {
+  return WebSharper$Community$Dashboard$Test_JsonDecoder._v?WebSharper$Community$Dashboard$Test_JsonDecoder._v:WebSharper$Community$Dashboard$Test_JsonDecoder._v=(Provider.DecodeRecord(AppData,[["Events",Provider.DecodeList(Provider.DecodeTuple([Provider.Id(),Provider.DecodeList(Provider.DecodeTuple([Provider.Id(),WebSharper$Community$Dashboard$Test_JsonDecoder.j$1]))])),0],["Widgets",Provider.DecodeList(Provider.DecodeTuple([Provider.Id(),Provider.DecodeList(WebSharper$Community$Dashboard$Test_JsonDecoder.j$16),Provider.DecodeList(Provider.DecodeTuple([Provider.Id(),Provider.Id(),WebSharper$Community$Dashboard$Test_JsonDecoder.j$1]))])),0],["Rules",Provider.DecodeList(Provider.DecodeTuple([Provider.Id(),WebSharper$Community$Dashboard$Test_JsonDecoder.j$17])),0]]))();
  };
 }());

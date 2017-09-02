@@ -10,5 +10,6 @@ module Environment =
     |Server
 
     let mutable Role:Role = Server
-    let mutable Log:(string->unit) =(fun _ ->())
+    let mutable Log:(string->unit) = (fun _ ->())
     let mutable DataDirectory:string = ""
+    let mutable UpdateConfiguration:(string->unit) = (fun _ -> ())

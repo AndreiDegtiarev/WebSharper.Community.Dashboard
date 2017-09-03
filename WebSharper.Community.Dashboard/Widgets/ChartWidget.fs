@@ -24,12 +24,12 @@ type ChartWidget =
   static member Create  = 
           let bufferSize = 20
           {
-                       ChartWidgetData =  WorkerData.CreateWithCache "Chart" 
-                                                   [(" in Value",MessageBus.NumberMessage 100.0,bufferSize)
-                                                    ("cx",MessageBus.NumberMessage 300.0,1)
-                                                    ("cy",MessageBus.NumberMessage 150.0,1)
-                                                    ("BufferSize",MessageBus.NumberMessage ((float)bufferSize),1)
-                                                    ("X-Axis",MessageBus.SelectMessage ((0,["long time";"short time";"long date";"short date"])),1)
+                       ChartWidgetData =  WorkerData.Create "Chart" 
+                                                   [(InPortData.CreateNumber " in Value" 100.0).WithCacheSize(bufferSize)
+                                                    InPortData.CreateNumber "cx" 300.0
+                                                    InPortData.CreateNumber "cy" 150.0
+                                                    InPortData.CreateNumber "BufferSize" ((float)bufferSize)
+                                                    InPortData.CreateSelect "X-Axis" (0,["long time";"short time";"long date";"short date"])
                                                    ]
                                                    []
           }
@@ -51,10 +51,10 @@ type ChartWidget =
                                             |2 -> msg.Time.ToLongDateString()
                                             |3 -> msg.Time.ToShortDateString()
                                             |_ -> ""
+                                        //sprintf "Chart trigger value %s %f" x_label msg.Value.AsNumber |> Environment.Log
                                         src.Trigger (x_label,msg.Value.AsNumber)
-                                    do View.Sink observe inPortNumberView
                                     let chart = (LiveChart.Line src.Publish).WithFill(false).WithStrokeColor(Color.Hex "#FB8C00").WithPointColor(Color.Name "black")
-
+                                    do View.Sink observe inPortNumberView
                                     Some({LineChart=chart;Source = src} :> IRunnerContext)
                         )
     override x.Render  = Some(fun worker ->
@@ -70,6 +70,5 @@ type ChartWidget =
                             let cy = worker.InPorts.[2].Number
 
                             context.LineChart|> fun ch -> Renderers.ChartJs.Render(ch, Window = chartBufferSize,Size=Size((int) cx, (int) cy),Config=config)  :> Doc// only display 10 points of data max
-
                              )
 

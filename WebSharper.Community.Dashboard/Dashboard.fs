@@ -170,6 +170,7 @@ type Dashboard =
         (events,widgets,rules)
 
     member x.Restore panelCreator events widgets rules =
+        MessageBus.Agent.Post MessageBus.Stop
         x.EditorSelectorRun.ClearGroups()
         x.EditorSelectorEdit.ClearGroups()
         x.Data.Clear
@@ -215,9 +216,13 @@ type Dashboard =
         else 
             x.EditorSelectorEdit.OptSelectedItem.Value <- None
             x.EditorSelectorRun.OptSelectedItem.Value <- None
+        let allWorkers = x.Data.WorkItems |>List.ofSeq |> List.map (fun item -> item.Worker)
+        rules |> List.iter (fun (grName,rules:RuleContainer) -> allWorkers |> rules.Reconnect)
+        MessageBus.Agent.Post MessageBus.Start
         Console.Log("Connectors restored")   
         let allEvents = x.Data.EventGroups |> List.ofSeq |> List.map (fun gr -> gr.EventItems |> List.ofSeq |> List.map (fun item -> item.Worker)) |> List.concat
         let allWidgets = x.Data.WidgetGroups |> List.ofSeq |> List.map (fun gr -> gr.WidgetItems |> List.ofSeq |> List.map (fun item -> item.Widget)) |> List.concat
+
         (allEvents,allWidgets)
     member x.Render menu=
         x.Mode.View |> View.Map (fun mode -> 

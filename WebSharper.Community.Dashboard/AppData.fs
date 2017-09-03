@@ -60,10 +60,12 @@ type AppData<'a> =
             AppDataHelper.RecreateOnClient (fun (worker:Worker) -> ()) (dashboard:Dashboard) panelContainerCreator  toWorker (x.Events,x.Widgets,x.Rules)
     member x.RecreateOnClientEventsRunning (dashboard:Dashboard) panelContainerCreator  toWorker = 
             AppDataHelper.RecreateOnClient (fun (worker:Worker) -> worker.StartRunner()) (dashboard:Dashboard) panelContainerCreator  toWorker  (x.Events,x.Widgets,x.Rules)
-    member x.RecreateOnServer toWorker=
+    member x.RecreateOnServer json toWorker=
         let allEvents = x.Events |> AppDataHelper.RecreateEventsOnServer toWorker 
         let allWidgets = x.Widgets |> AppDataHelper.RecreatWidgetsOnServer toWorker
         let allWorkers = allEvents@allWidgets //|> List.map (fun (worker:Worker) -> worker.WithStartRunner())
         x.Rules |> List.iter (fun (grName,rules:RuleContainer) -> allWorkers |> rules.Reconnect)
         allWorkers |> List.iter (fun worker -> worker.StartRunner() |> ignore)
+        let msgValue = MessageBus.System(MessageBus.UpdateConfiguration(json))
+        MessageBus.Send((MessageBus.CreateMessage msgValue).WithKey("system")) |> MessageBus.Agent.Post
         allEvents

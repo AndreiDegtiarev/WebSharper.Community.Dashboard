@@ -16,15 +16,27 @@ type StartConfiguration =
         static member Create config = {ConfigurationName=config}
 
 [<Require(typeof<WebSharper.Community.PropertyGrid.Resources.StyleResource>)>]
+[<Require(typeof<WebSharper.Community.Panel.Resources.StyleResource>)>]
+[<Require(typeof<WebSharper.Community.Dashboard.Resources.StyleResource>)>]
 [<JavaScript>]
 module Client =
 
     let Main (config:StartConfiguration) =
         Environment.Log <- (fun str -> Console.Log(str))
+        MessageBus.RunServerRequests()
         let fromWorker = AppModel.FromWorker
         let log = Environment.Log
         let fileName = Var.Create "Dashboard"
         let dashboard = App.CreateDashboard
+        Environment.UpdateConfiguration <- (fun json -> 
+                                                    try
+                                                        let data = Json.Deserialize<AppData<AppModel>> json
+                                                        data.RecreateOnClientEventsNotRunning dashboard (App.PanelContainerCreator) 
+                                                                                    (AppModel.ToWorker:AppModel->Worker)
+                                                        "Configuration updated" |> log
+                                                    with
+                                                    |ex -> ex.Message |> log
+                                           )
         let makeTestConfig()= 
             let appData=AppData<AppModel>.Create dashboard fromWorker
             let panelKey = Helper.UniqueKey()
@@ -50,11 +62,10 @@ module Client =
             }.RecreateOnClientEventsRunning dashboard (App.PanelContainerCreator) (AppModel.ToWorker:AppModel->Worker)
         let loadOnServer (configName)= 
             let data =  Server.LoadFromFile(configName)
-            data.RecreateOnClientEventsNotRunning dashboard (App.PanelContainerCreator) 
-                                                  (AppModel.ToWorker:AppModel->Worker)
+//            data.RecreateOnClientEventsNotRunning dashboard (App.PanelContainerCreator) 
+//                                                  (AppModel.ToWorker:AppModel->Worker)
             Server.RecreateOnServer data |> ignore
             "Server recreated" |> log
-            MessageBus.RunServerRequests()
 
         let tbCellC content =td content
         let menu =
@@ -77,6 +88,7 @@ module Client =
             tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer(fileName.Value))]
           ]
         div[dashboard.Render menu
-        ].OnAfterRender (fun _ -> try
+        ].OnAfterRender (fun _ -> //MessageBus.RunServerRequests()
+                                  try
                                     if not (System.String.IsNullOrWhiteSpace(config.ConfigurationName)) then loadOnServer(config.ConfigurationName)
                                   with _ -> ())

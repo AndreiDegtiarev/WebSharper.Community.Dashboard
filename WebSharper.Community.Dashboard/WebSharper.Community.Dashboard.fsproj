@@ -69,6 +69,8 @@
     <Compile Include="Widgets\ButtonWidget.fs" />
     <Compile Include="AppModelLib.fs" />
     <Compile Include="AppData.fs" />
+    <EmbeddedResource Include="Content\Dashboard.css" />
+    <Compile Include="Resources.fs" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

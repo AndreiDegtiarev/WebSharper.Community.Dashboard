@@ -38,8 +38,8 @@ module ServerDatabase =
                             |>List.ofArray
                             |>List.fold (fun acc raw -> match raw with
                                                         |keyStr::dateStr::timeStr::value::[] ->let time = System.DateTime.Parse(dateStr + " " + timeStr)
-                                                                                               (MessageBus.NumberKeyMessage keyStr (Double.Parse(value)))
-                                                                                                .WithTime(time) :: acc
+                                                                                               (MessageBus.Number(Double.Parse(value)) |> MessageBus.CreateMessage)
+                                                                                                .WithTime(time).WithKey(keyStr) :: acc
 
                                                         |_ -> acc) []
                         channel.Reply(messages)
@@ -72,9 +72,9 @@ type DatabaseEvent =
  }
  static member Create  = {
                            DatabaseEventData =  WorkerData.Create "Database" 
-                                                              [(" in Value",MessageBus.NumberMessage 100.0)
-                                                               ("Database name",MessageBus.StringMessage "Database.txt")]
-                                                              [("Number value",MessageBus.NumberMessage 0.0)]
+                                                              [InPortData.CreateNumber " in Value"  100.0
+                                                               InPortData.CreateString "Database name" "Database.txt"]
+                                                              [OutPort.Create "Number value"]
                          }
  static member FromWorker = (fun (worker:Worker) -> {DatabaseEventData = worker.ToData})
  interface IWorkerData with

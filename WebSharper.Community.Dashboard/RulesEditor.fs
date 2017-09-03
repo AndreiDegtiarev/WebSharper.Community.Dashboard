@@ -17,9 +17,9 @@ module RulesEditor =
             |> List.map (fun row -> {RuleChain =
                                          row.CellItems |> List.ofSeq
                                          |> List.map (fun cell ->
-                                                            {InPortKey  = match cell.OptInPort.Value with | Some(port) -> port.Key | None -> ""
-                                                             OutPortKey = match cell.OptOutPort.Value with | Some(port) -> port.Key | None -> ""
-                                                             WorkerKey  = match cell.OptWorker.Value with | Some(worker) -> worker.Worker.Key | None -> "" 
+                                                            {InPortKey  = match cell.OptInPort.Value  with | Some(port)  -> port.Key | None -> ""
+                                                             OutPortKey = match cell.OptOutPort.Value with | Some(port)  -> port.Key | None -> ""
+                                                             WorkerKey  = match cell.OptWorker.Value  with | Some(worker)-> worker.Worker.Key | None -> "" 
                                                             }
                                                        )
                                     }
@@ -43,7 +43,7 @@ module RulesEditor =
                                                                                 )  
                                             rowItems.Add row      
                                      )
-        rules.Reconnect allWorkers
+        //rules.Reconnect allWorkers
     let Render data rowItems= 
         let moveItem = Helper.MoveItemInModelList rowItems
         let icons item = [
@@ -53,8 +53,14 @@ module RulesEditor =
                     ]
 
         let reconnectFnc () =
-                data.WorkItems |>List.ofSeq |> List.map (fun item -> item.Worker)
-                |> (CopyToRules rowItems).Reconnect
+            async{
+                let! status = MessageBus.Agent.PostAndAsyncReply(fun r -> MessageBus.GetStatus(r))
+                match status with
+                |MessageBus.Running -> 
+                    data.WorkItems |>List.ofSeq |> List.map (fun item -> item.Worker)
+                    |> (CopyToRules rowItems).Reconnect
+                |_ ->()
+            } |> Async.Start
         let renderRows=  ListModel.View rowItems
                          |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data.WorkItems (fun _ ->reconnectFnc())
                                                                                   |> WrapControls.Render (icons item) WrapControlsAligment.Horizontal

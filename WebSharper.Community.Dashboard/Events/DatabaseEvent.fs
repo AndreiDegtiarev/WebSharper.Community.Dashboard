@@ -24,7 +24,11 @@ module ServerDatabase =
             match message with
             | WriteMessage (file,message) ->
                 try
-                    let line=sprintf "%s %s %f" message.Key (message.Time.ToString()) message.Value.AsNumber
+                    let line=sprintf "%s %s %s" message.Key (message.Time.ToString()) (match message.Value with
+                                                                                       |MessageBus.Number(num) -> num.ToString()
+                                                                                       |MessageBus.String(str) -> str
+                                                                                       |_ -> failwith "Database supports only numbers and strings"
+                                                                                       )
                     File.AppendAllText(fileName file,line + "\n")
                 with
                 |ex -> ex.Message |> Environment.Log
@@ -38,7 +42,10 @@ module ServerDatabase =
                             |>List.ofArray
                             |>List.fold (fun acc raw -> match raw with
                                                         |keyStr::dateStr::timeStr::value::[] ->let time = System.DateTime.Parse(dateStr + " " + timeStr)
-                                                                                               (MessageBus.Number(Double.Parse(value)) |> MessageBus.CreateMessage)
+                                                                                               (let (res,dblValue) = Double.TryParse(value)
+                                                                                                if res then MessageBus.Number(dblValue)
+                                                                                                else MessageBus.String(value)
+                                                                                                 |> MessageBus.CreateMessage)
                                                                                                 .WithTime(time).WithKey(keyStr) :: acc
 
                                                         |_ -> acc) []

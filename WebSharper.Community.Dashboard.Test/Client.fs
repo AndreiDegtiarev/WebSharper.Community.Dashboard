@@ -72,7 +72,7 @@ module Client =
            div[
             tbCellC[Helper.TxtIconNormal "build" "Sample configuration" (fun _ ->  
                               makeTestConfig())]
-            tbCellC[Helper.TxtIconNormal "autorenew" "Reload" (fun _ ->  
+            tbCellC[Helper.TxtIconNormal "autorenew" "Refresh" (fun _ ->  
                                           let data = AppData<AppModel>.Create dashboard (AppModel.FromWorker)
                                           data.RecreateOnClientEventsRunning 
                                            dashboard (App.PanelContainerCreator) 
@@ -80,16 +80,16 @@ module Client =
                                           )]
             tbCellC[Helper.TxtIconNormal "archive" "Upload" (fun _ ->  
                                           let data =  AppData<AppModel>.Create dashboard (AppModel.FromWorker)
-                                          Server.SaveToFile("Default.cfg",data)
+                                          Server.SaveToFile("Default",data)
                                     )]
             tbCellC[Helper.TxtIconNormal "unarchive" "Download  and run on client" (fun _ ->  
-                              Server.LoadFromFile("Default.cfg")
+                              Server.LoadFromFile("Default")
                                .RecreateOnClientEventsRunning 
                                            dashboard (App.PanelContainerCreator) 
                                            (AppModel.ToWorker:AppModel->Worker)
 
                         )]
-            tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer("Default.cfg"))]
+            tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer("Default"))]
           ]
         div[dashboard.Render menu
         ].OnAfterRender (fun _ -> //MessageBus.RunServerRequests()

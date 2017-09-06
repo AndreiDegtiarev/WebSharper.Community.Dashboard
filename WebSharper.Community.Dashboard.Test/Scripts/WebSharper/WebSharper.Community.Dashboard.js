@@ -2026,7 +2026,7 @@
         $0:msg
        });
        _this.resume();
-      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:965639103",[worker.InPorts.get_Item(1).get_String()])),isFirstCall=false):((new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-353093100",[worker.InPorts.get_Item(1).get_String(),value.WithKey(worker.OutPorts.get_Item(0).Key)]),worker.OutPorts.get_Item(0).Trigger(value.Value));
+      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:965639103",[worker.InPorts.get_Item(1).get_String()])),isFirstCall=false):(new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-353093100",[worker.InPorts.get_Item(1).get_String(),value]);
      },worker.InPorts.get_Item(0).PortValue.v);
      return null;
     }
@@ -2046,7 +2046,7 @@
  };
  DatabaseEvent.get_Create=function()
  {
-  return DatabaseEvent.New(WorkerData.Create("Database",List.ofArray([InPortData.CreateNumber(" in Value",100),InPortData.CreateString("Database name","Database.txt")]),List.ofArray([OutPort.Create("Number value")])));
+  return DatabaseEvent.New(WorkerData.Create("Database",List.ofArray([InPortData.CreateNumber(" in Value",100),InPortData.CreateString("Database name","Database.txt")]),List.T.Empty));
  };
  DatabaseEvent.New=function(DatabaseEventData)
  {

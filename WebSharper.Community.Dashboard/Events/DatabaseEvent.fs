@@ -74,7 +74,7 @@ type DatabaseEvent =
                            DatabaseEventData =  WorkerData.Create "Database" 
                                                               [InPortData.CreateNumber " in Value"  100.0
                                                                InPortData.CreateString "Database name" "Database.txt"]
-                                                              [OutPort.Create "Number value"]
+                                                              []
                          }
  static member FromWorker = (fun (worker:Worker) -> {DatabaseEventData = worker.ToData})
  interface IWorkerData with
@@ -89,8 +89,7 @@ type DatabaseEvent =
                                             |> List.iter (fun msg -> (MessageBus.Agent.Post(MessageBus.Send(msg))))
                                             isFirstCall <- false
                                         else
-                                            ServerDatabase.WriteMessage file (value.WithKey(worker.OutPorts.[0].Key))
-                                            worker.OutPorts.[0].Trigger value.Value
+                                            ServerDatabase.WriteMessage file (value)                                            
                                     )  
                                 None)
       override x.Render = None

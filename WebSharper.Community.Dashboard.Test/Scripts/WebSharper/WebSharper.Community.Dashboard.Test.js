@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,WebSharper$Community$Dashboard$Test_JsonDecoder,AppModelLib,RuleEntry,AppData,Panel,Helper,Events,RandomEvent,Widgets,TextBoxWidget,ChartWidget,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,UI,Next,Doc,Environment,console,MessageBus,Var,JSON,Strings,Json,Provider;
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,WebSharper$Community$Dashboard$Test_JsonDecoder,AppModelLib,RuleEntry,AppData,Panel,Helper,Events,RandomEvent,Widgets,TextBoxWidget,ChartWidget,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,UI,Next,Doc,Environment,console,MessageBus,JSON,Strings,Json,Provider;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -33,7 +33,6 @@
  Environment=Dashboard&&Dashboard.Environment;
  console=Global.console;
  MessageBus=Dashboard&&Dashboard.MessageBus;
- Var=Next&&Next.Var;
  JSON=Global.JSON;
  Strings=WebSharper&&WebSharper.Strings;
  Json=WebSharper&&WebSharper.Json;
@@ -56,7 +55,7 @@
  };
  Client.Main=function(config)
  {
-  var log,fileName,dashboard;
+  var log,dashboard;
   function makeTestConfig()
   {
    var panelKey,event,eventWorker,p,p$1,panelData;
@@ -111,7 +110,6 @@
   });
   MessageBus.RunServerRequests();
   log=Environment.Log();
-  fileName=Var.Create$1("Dashboard");
   dashboard=App.CreateDashboard();
   Environment.set_UpdateConfiguration(function(json)
   {
@@ -131,18 +129,24 @@
   return Doc.Element("div",[],[dashboard.Render(Doc.Element("div",[],[tbCellC(List.ofArray([Helper.TxtIconNormal("build","Sample configuration",function()
   {
    makeTestConfig();
-  })])),tbCellC(List.ofArray([Doc.TextNode("File name"),Doc.Input([],fileName)])),tbCellC(List.ofArray([Helper.TxtIconNormal("archive","Upload",function()
+  })])),tbCellC(List.ofArray([Helper.TxtIconNormal("autorenew","Reload",function()
   {
-   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.SaveToFile:-1517660316",[fileName.c,AppData.Create(dashboard,AppModel.FromWorker)]);
+   AppData.Create(dashboard,AppModel.FromWorker).RecreateOnClientEventsRunning(dashboard,function()
+   {
+    return App.PanelContainerCreator();
+   },AppModel.ToWorker);
+  })])),tbCellC(List.ofArray([Helper.TxtIconNormal("archive","Upload",function()
+  {
+   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.SaveToFile:-1517660316",["Default.cfg",AppData.Create(dashboard,AppModel.FromWorker)]);
   })])),tbCellC(List.ofArray([Helper.TxtIconNormal("unarchive","Download  and run on client",function()
   {
-   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:960175932",[fileName.c]).RecreateOnClientEventsRunning(dashboard,function()
+   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:960175932",["Default.cfg"]).RecreateOnClientEventsRunning(dashboard,function()
    {
     return App.PanelContainerCreator();
    },AppModel.ToWorker);
   })])),tbCellC(List.ofArray([Helper.TxtIconNormal("cloud_upload","Download and run on server",function()
   {
-   loadOnServer(fileName.c);
+   loadOnServer("Default.cfg");
   })]))]))]).OnAfterRender(function()
   {
    try

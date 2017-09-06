@@ -174,6 +174,7 @@ type Dashboard =
         x.EditorSelectorRun.ClearGroups()
         x.EditorSelectorEdit.ClearGroups()
         x.Data.Clear
+        List.empty |> x.PropertyGrid.Edit
 
         let gSelectorPanelsRun=x.EditorSelectorRun.GroupByIndex 0
         let gSelectorPanelsEdit=x.EditorSelectorEdit.GroupByIndex 0

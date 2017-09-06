@@ -26,7 +26,7 @@ module Client =
         MessageBus.RunServerRequests()
         let fromWorker = AppModel.FromWorker
         let log = Environment.Log
-        let fileName = Var.Create "Dashboard"
+        //let fileName = Var.Create "Dashboard"
         let dashboard = App.CreateDashboard
         Environment.UpdateConfiguration <- (fun json -> 
                                                     try
@@ -72,20 +72,24 @@ module Client =
            div[
             tbCellC[Helper.TxtIconNormal "build" "Sample configuration" (fun _ ->  
                               makeTestConfig())]
-            tbCellC [text "File name"
-                     Doc.Input [] fileName]
+            tbCellC[Helper.TxtIconNormal "autorenew" "Reload" (fun _ ->  
+                                          let data = AppData<AppModel>.Create dashboard (AppModel.FromWorker)
+                                          data.RecreateOnClientEventsRunning 
+                                           dashboard (App.PanelContainerCreator) 
+                                           (AppModel.ToWorker:AppModel->Worker)
+                                          )]
             tbCellC[Helper.TxtIconNormal "archive" "Upload" (fun _ ->  
                                           let data =  AppData<AppModel>.Create dashboard (AppModel.FromWorker)
-                                          Server.SaveToFile(fileName.Value,data)
+                                          Server.SaveToFile("Default.cfg",data)
                                     )]
             tbCellC[Helper.TxtIconNormal "unarchive" "Download  and run on client" (fun _ ->  
-                              Server.LoadFromFile(fileName.Value)
+                              Server.LoadFromFile("Default.cfg")
                                .RecreateOnClientEventsRunning 
                                            dashboard (App.PanelContainerCreator) 
                                            (AppModel.ToWorker:AppModel->Worker)
 
                         )]
-            tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer(fileName.Value))]
+            tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer("Default.cfg"))]
           ]
         div[dashboard.Render menu
         ].OnAfterRender (fun _ -> //MessageBus.RunServerRequests()

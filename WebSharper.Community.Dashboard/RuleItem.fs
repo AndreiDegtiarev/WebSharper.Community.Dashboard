@@ -28,8 +28,14 @@ type RulesCellItem =
          let observe (optWorker) =
               match optWorker with 
               |Some(workerItem) -> //"Workitem selected" |> Environment.Log
-                                   x.OptInPort.Value <-  workerItem.Worker.InPorts |> List.tryHead
-                                   x.OptOutPort.Value <- workerItem.Worker.OutPorts |> List.tryHead
+                                   match x.OptInPort.Value with
+                                   |Some(port) -> if  not (workerItem.Worker.InPorts |> List.exists (fun entry -> entry = port)) then 
+                                                     x.OptInPort.Value <-  workerItem.Worker.InPorts |> List.tryHead
+                                   |None -> x.OptInPort.Value <-  workerItem.Worker.InPorts |> List.tryHead
+                                   match x.OptOutPort.Value with
+                                   |Some(port) -> if  not (workerItem.Worker.OutPorts |> List.exists (fun entry -> entry = port)) then 
+                                                     x.OptOutPort.Value <-  workerItem.Worker.OutPorts |> List.tryHead
+                                   |None -> x.OptOutPort.Value <-  workerItem.Worker.OutPorts |> List.tryHead
                                    reconnectFnc()
               |None -> ()
          View.Sink observe x.OptWorker.View

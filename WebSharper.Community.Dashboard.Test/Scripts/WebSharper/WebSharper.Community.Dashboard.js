@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,Guid,Doc,Enumerator,Key,ListModel,AttrModule,Option,Unchecked,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,LiveChart,Pervasives;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,Guid,Doc,Enumerator,Key,ListModel,Unchecked,AttrModule,Option,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,Chart,LiveChart,Pervasives;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -84,9 +84,9 @@
  Enumerator=WebSharper&&WebSharper.Enumerator;
  Key=Next&&Next.Key;
  ListModel=Next&&Next.ListModel;
+ Unchecked=WebSharper&&WebSharper.Unchecked;
  AttrModule=Next&&Next.AttrModule;
  Option=WebSharper&&WebSharper.Option;
- Unchecked=WebSharper&&WebSharper.Unchecked;
  WrapControls=Panel&&Panel.WrapControls;
  console=Global.console;
  PanelContainer=Panel&&Panel.PanelContainer;
@@ -110,6 +110,7 @@
  Renderers=Charting&&Charting.Renderers;
  ChartJs=Renderers&&Renderers.ChartJs;
  FSharpEvent=Control&&Control.FSharpEvent;
+ Chart=Charting&&Charting.Chart;
  LiveChart=Charting&&Charting.LiveChart;
  Pervasives=Charting&&Charting.Pervasives;
  Role.Server={
@@ -916,17 +917,24 @@
   {
    var $this,workerSelector,inPorts,outPorts,items;
    $this=this;
-   (Environment.Log())("Render rule item");
    View.Sink(function(optWorker)
    {
-    var workerItem;
+    var workerItem,m,port,m$1,port$1;
     if(optWorker==null)
      ;
     else
      {
       workerItem=optWorker.$0;
-      Var.Set($this.OptInPort,List.tryHead(workerItem.Worker.InPorts));
-      Var.Set($this.OptOutPort,List.tryHead(workerItem.Worker.OutPorts));
+      m=$this.OptInPort.c;
+      m==null?Var.Set($this.OptInPort,List.tryHead(workerItem.Worker.InPorts)):(port=m.$0,!List.exists(function(entry)
+      {
+       return Unchecked.Equals(entry,port);
+      },workerItem.Worker.InPorts)?Var.Set($this.OptInPort,List.tryHead(workerItem.Worker.InPorts)):void 0);
+      m$1=$this.OptOutPort.c;
+      m$1==null?Var.Set($this.OptOutPort,List.tryHead(workerItem.Worker.OutPorts)):(port$1=m$1.$0,!List.exists(function(entry)
+      {
+       return Unchecked.Equals(entry,port$1);
+      },workerItem.Worker.OutPorts)?Var.Set($this.OptOutPort,List.tryHead(workerItem.Worker.OutPorts)):void 0);
       reconnectFnc();
      }
    },this.OptWorker.v);
@@ -1502,11 +1510,11 @@
      };
     },null),function(a)
     {
-     var x;
-     return a.$==1?(x=List.map(function(item)
+     var _this,x,_this$1;
+     return a.$==1?(_this=MessageBus.Agent(),_this.mailbox.AddLast(AgentMessage.Stop),_this.resume(),x=List.map(function(item)
      {
       return item.Worker;
-     },List.ofSeq(data.WorkItems)),RulesEditor.CopyToRules(rowItems).Reconnect(x),Concurrency.Zero()):Concurrency.Zero();
+     },List.ofSeq(data.WorkItems)),RulesEditor.CopyToRules(rowItems).Reconnect(x),_this$1=MessageBus.Agent(),_this$1.mailbox.AddLast(AgentMessage.Start),_this$1.resume(),Concurrency.Zero()):Concurrency.Zero();
     });
    })),null);
   }
@@ -1643,6 +1651,7 @@
    this.EditorSelectorRun.ClearGroups();
    this.EditorSelectorEdit.ClearGroups();
    this.Data.get_Clear();
+   this.PropertyGrid.Edit(List.T.Empty);
    gSelectorPanelsRun=this.EditorSelectorRun.GroupByIndex(0);
    gSelectorPanelsEdit=this.EditorSelectorEdit.GroupByIndex(0);
    gSelectorEvents=this.EditorSelectorEdit.GroupByIndex(1);
@@ -2303,11 +2312,11 @@
    TextBoxWidgetData:TextBoxWidgetData
   });
  };
- ChartWidgetContext.New=function(LineChart,Source)
+ ChartWidgetContext.New=function(LineChart,Sources)
  {
   return{
    LineChart:LineChart,
-   Source:Source
+   Sources:Sources
   };
  };
  ChartWidget=Widgets.ChartWidget=Runtime.Class({
@@ -2321,7 +2330,7 @@
      chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
      context=worker.RunnerContext.c.$0;
      config=(r={},r.title=(r$1={},r$1.display=false,r$1),r.legend=(r$2={},r$2.display=false,r$2),r.elements=(r$3={},r$3.point=(r$4={},r$4.radius=0,r$4),r$3.line=(r$5={},r$5.borderWidth=1,r$5),r$3),r);
-     return ChartJs.Render$8(context.LineChart,{
+     return ChartJs.Render$2(context.LineChart,{
       $:1,
       $0:{
        $:0,
@@ -2340,37 +2349,76 @@
   },
   WebSharper_Community_Dashboard_IWorkerData$get_Run:function()
   {
+   var $this;
+   $this=this;
    return{
     $:1,
     $0:function(worker)
     {
-     var inPortNumberView,src,chart;
-     worker.InPorts.get_Item(3).get_Number();
-     inPortNumberView=worker.InPorts.get_Item(0).PortValue.v;
-     src=new FSharpEvent.New();
-     chart=LiveChart.Line$1(src.event).WithFill(false).__WithStrokeColor(new Pervasives.Color({
-      $:1,
-      $0:"#FB8C00"
-     })).__WithPointColor(new Pervasives.Color({
-      $:2,
-      $0:"black"
-     }));
-     View.Sink(function(msg)
+     var srcs,ports,allSrcPorts,charts;
+     function observe(port,msg)
      {
-      var sel;
+      var sel,x_label;
       sel=(worker.InPorts.get_Item(4).PortValue.c.Value.get_AsSelect())[0];
-      src.event.Trigger([sel===0?DateUtil.LongTime(msg.Time):sel===1?DateUtil.ShortTime(msg.Time):sel===2?DateUtil.LongDate(msg.Time):sel===3?(new Date(msg.Time)).toLocaleDateString():"",msg.Value.get_AsNumber()]);
-     },inPortNumberView);
+      x_label=sel===0?DateUtil.LongTime(msg.Time):sel===1?DateUtil.ShortTime(msg.Time):sel===2?DateUtil.LongDate(msg.Time):sel===3?(new Date(msg.Time)).toLocaleDateString():"";
+      return srcs.get_Item(Seq.findIndex(function(entry)
+      {
+       return Unchecked.Equals(entry,port);
+      },allSrcPorts)).event.Trigger([x_label,msg.Value.get_AsNumber()]);
+     }
+     worker.InPorts.get_Item(3).get_Number();
+     srcs=List.init(($this.ChartWidgetData.InPorts.get_Item(5).Value.Value.get_AsNumber()>>0)+1,function()
+     {
+      return new FSharpEvent.New();
+     });
+     ports=(List.splitAt(6,worker.InPorts))[1];
+     allSrcPorts=new List.T({
+      $:1,
+      $0:worker.InPorts.get_Item(0),
+      $1:ports
+     });
+     charts=Chart.Combine(List.ofSeq(Seq.delay(function()
+     {
+      return Seq.map(function(src)
+      {
+       return LiveChart.Line$1(src.event).WithFill(false).__WithStrokeColor(new Pervasives.Color({
+        $:1,
+        $0:"#FB8C00"
+       })).__WithPointColor(new Pervasives.Color({
+        $:2,
+        $0:"black"
+       }));
+      },srcs);
+     })));
+     List.iter(function(port)
+     {
+      View.Sink(function($1)
+      {
+       return observe(port,$1);
+      },port.PortValue.v);
+     },allSrcPorts);
      return{
       $:1,
-      $0:ChartWidgetContext.New(chart,src)
+      $0:ChartWidgetContext.New(charts,srcs)
      };
     }
    };
   },
   WebSharper_Community_Dashboard_IWorkerData$get_Data:function()
   {
-   return this.ChartWidgetData;
+   var $this,chartBufferSize,resultNumberOfPorts,startIndex,i;
+   $this=this;
+   chartBufferSize=this.ChartWidgetData.InPorts.get_Item(3).Value.Value.get_AsNumber()>>0;
+   resultNumberOfPorts=(this.ChartWidgetData.InPorts.get_Item(5).Value.Value.get_AsNumber()>>0)+6;
+   i=this.ChartWidgetData;
+   return WorkerData.New(i.WorkerName,resultNumberOfPorts<this.ChartWidgetData.InPorts.get_Length()?(List.splitAt(resultNumberOfPorts,this.ChartWidgetData.InPorts))[0]:resultNumberOfPorts>this.ChartWidgetData.InPorts.get_Length()?(startIndex=this.ChartWidgetData.InPorts.get_Length()-6+1,List.append(this.ChartWidgetData.InPorts,List.ofSeq(Seq.delay(function()
+   {
+    return Seq.map(function(i$1)
+    {
+     var c;
+     return InPortData.CreateNumber(" in Value "+(c=startIndex+i$1,Global.String(c)),0).WithCacheSize(chartBufferSize);
+    },Operators.range(0,resultNumberOfPorts-$this.ChartWidgetData.InPorts.get_Length()-1));
+   })))):this.ChartWidgetData.InPorts,i.OutPorts);
   }
  },null,ChartWidget);
  ChartWidget.get_FromWorker=function()
@@ -2384,7 +2432,7 @@
  {
   var bufferSize;
   bufferSize=20;
-  return ChartWidget.New(WorkerData.Create("Chart",List.ofArray([InPortData.CreateNumber(" in Value",100).WithCacheSize(bufferSize),InPortData.CreateNumber("cx",300),InPortData.CreateNumber("cy",150),InPortData.CreateNumber("BufferSize",bufferSize),InPortData.CreateSelect("X-Axis",[0,List.ofArray(["long time","short time","long date","short date"])])]),List.T.Empty));
+  return ChartWidget.New(WorkerData.Create("Chart",List.ofArray([InPortData.CreateNumber(" in Value",100).WithCacheSize(bufferSize),InPortData.CreateNumber("cx",300),InPortData.CreateNumber("cy",150),InPortData.CreateNumber("BufferSize",bufferSize),InPortData.CreateSelect("X-Axis",[0,List.ofArray(["long time","short time","long date","short date"])]),InPortData.CreateNumber("Number of additional ports",0)]),List.T.Empty));
  };
  ChartWidget.New=function(ChartWidgetData)
  {

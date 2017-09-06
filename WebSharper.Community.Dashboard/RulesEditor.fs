@@ -57,8 +57,10 @@ module RulesEditor =
                 let! status = MessageBus.Agent.PostAndAsyncReply(fun r -> MessageBus.GetStatus(r))
                 match status with
                 |MessageBus.Running -> 
+                    MessageBus.Agent.Post MessageBus.Stop
                     data.WorkItems |>List.ofSeq |> List.map (fun item -> item.Worker)
                     |> (CopyToRules rowItems).Reconnect
+                    MessageBus.Agent.Post MessageBus.Start
                 |_ ->()
             } |> Async.Start
         let renderRows=  ListModel.View rowItems

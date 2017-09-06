@@ -71,7 +71,7 @@
  };
  Helper.TxtIcon=function(className,id,txt,action)
  {
-  return Doc.Element("div",Helper.AttrsClick(action),[Doc.Element("i",[AttrModule.Class(className)],[Doc.TextNode(id)]),Doc.TextNode(txt)]);
+  return Doc.Element("div",Helper.AttrsClick(action),[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[],[Doc.Element("i",[AttrModule.Class(className)],[Doc.TextNode(id)])]),Doc.Element("td",[AttrModule.Style("vertical-align","middle")],[Doc.TextNode(txt)])])])]);
  };
  Helper.IconSmall=function(id,action)
  {

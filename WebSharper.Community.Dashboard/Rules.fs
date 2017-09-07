@@ -35,12 +35,7 @@ type RuleContainer =
                                                                                 if inPort.PortValue.Value.Key <> inPort.Data.Key then
                                                                                     inPort.PortValue.Value <- inPort.PortValue.Value.WithKey(inPort.Data.Key)
                                                                                 let listInfo = MessageBus.ListenerInfo.Create outPort.Key (outPort.Name+"->"+inPort.Name) inPort.Data.CacheSize 
-                                                                                let templateValue = match inPort.PortValue.Value.Value with 
-                                                                                                    |MessageBus.Number(_) -> MessageBus.Message.Create (MessageBus.Number(0.0))
-                                                                                                    |MessageBus.String(_) -> MessageBus.Message.Create (MessageBus.String(""))
-                                                                                                    |MessageBus.Boolean(_)-> MessageBus.Message.Create (MessageBus.Boolean(false))
-                                                                                                    |MessageBus.Select(_) -> MessageBus.Message.Create (MessageBus.Select(0,[]))
-                                                                                MessageBus.Agent.Post (MessageBus.RegisterListener(listInfo,templateValue,inPort.Receive))
+                                                                                MessageBus.Agent.Post (MessageBus.RegisterListener(listInfo,inPort.Receive))
                                                                              ))|>ignore
                      )
         //MessageBus.Agent.Post MessageBus.Start

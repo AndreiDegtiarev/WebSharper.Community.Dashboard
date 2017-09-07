@@ -43,7 +43,7 @@ module MessageBus =
     type AgentMessage =
         | Send of Message
         | SendOnlyToClient of Message
-        | RegisterListener of (ListenerInfo*Message*(Message->unit))
+        | RegisterListener of (ListenerInfo*(Message->unit))
         | RegisterServerCallback of (Message -> unit)
         | Stop
         | Start
@@ -99,7 +99,7 @@ module MessageBus =
             | GetStatus(channel) -> 
                 channel.Reply(state.SystemStatus)
                 return! loop state
-            | RegisterListener (listenerInfo,startValue,receiver) ->
+            | RegisterListener (listenerInfo,receiver) ->
                 sprintf "RegisterListener:%s %s" listenerInfo.Name listenerInfo.Key |> log
                 //let buffer = if listenerInfo.CacheSize = 1 then SingleValue(startValue) else ListenerBuffer(listenerInfo.CacheSize,[])
                 return! loop {state with Listeners=((listenerInfo,receiver,[])::state.Listeners)}

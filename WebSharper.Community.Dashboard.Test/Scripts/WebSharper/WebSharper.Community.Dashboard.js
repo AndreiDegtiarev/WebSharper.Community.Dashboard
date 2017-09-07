@@ -421,7 +421,7 @@
        return $1("RegisterListener:"+Utils.toSafe($2)+" "+Utils.toSafe($3));
       }))(Global.id))(listenerInfo.Name))(listenerInfo.Key),(MessageBus.log())(x),loop(AgentState.New(state.SystemStatus,state.ServerCallback,new List.T({
        $:1,
-       $0:[listenerInfo,a.$0[2],List.T.Empty],
+       $0:[listenerInfo,a.$0[1],List.T.Empty],
        $1:state.Listeners
       }),state.LastConfigurationTime)))):a.$==3?loop(AgentState.New(state.SystemStatus,{
        $:1,
@@ -791,73 +791,32 @@
      while(e.MoveNext())
       (function()
       {
-       var $1,$2,$3,templateValue,_this,i$1,cell1,cell2,o,outPort,o$1,inPort,m;
+       var i$1,cell1,cell2,o,outPort,o$1,inPort,_this;
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
-       o=Seq.tryFind(function(port)
        {
-        return port.Key===cell1.OutPortKey;
-       },allOutPorts);
-       if(o==null)
-        null;
-       else
+        o=Seq.tryFind(function(port)
         {
-         outPort=o.$0;
-         o$1=Seq.tryFind(function(port)
+         return port.Key===cell1.OutPortKey;
+        },allOutPorts),o==null?null:{
+         $:1,
+         $0:(outPort=o.$0,(o$1=Seq.tryFind(function(port)
          {
           return port.Data.Key===cell2.InPortKey;
-         },allInPorts);
-         if(o$1==null)
-          $1=null;
-         else
-          {
-           inPort=o$1.$0;
-           log("Found inPort");
-           inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):null;
-           m=inPort.PortValue.c.Value;
-           if(m.$==0)
-            templateValue=Message.Create(new Value({
-             $:0,
-             $0:0
-            }));
-           else
-            if(m.$==1)
-             templateValue=Message.Create(new Value({
-              $:1,
-              $0:""
-             }));
-            else
-             if(m.$==2)
-              templateValue=Message.Create(new Value({
-               $:2,
-               $0:false
-              }));
-             else
-              if(m.$==3)
-               templateValue=Message.Create(new Value({
-                $:3,
-                $0:[0,List.T.Empty]
-               }));
-              else
-               throw new MatchFailureException.New("Rules.fs",38,106);
-           $3=(_this=MessageBus.Agent(),(_this.mailbox.AddLast({
-            $:2,
-            $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),templateValue,function(a)
-            {
-             inPort.Receive(a);
-            }]
-           }),_this.resume()));
-           $1={
-            $:1,
-            $0:$3
-           };
-          }
-         ({
+         },allInPorts),o$1==null?null:{
           $:1,
-          $0:$1
-         });
-        }
+          $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):void 0,_this=MessageBus.Agent(),_this.mailbox.AddLast({
+           $:2,
+           $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),function(a)
+           {
+            inPort.Receive(a);
+           }]
+          }),_this.resume()))
+         }))
+        };
+        return;
+       }
       }());
     }
     finally

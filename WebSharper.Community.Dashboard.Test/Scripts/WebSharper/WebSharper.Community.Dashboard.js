@@ -2411,14 +2411,17 @@
    chartBufferSize=this.ChartWidgetData.InPorts.get_Item(3).Value.Value.get_AsNumber()>>0;
    resultNumberOfPorts=(this.ChartWidgetData.InPorts.get_Item(5).Value.Value.get_AsNumber()>>0)+6;
    i=this.ChartWidgetData;
-   return WorkerData.New(i.WorkerName,resultNumberOfPorts<this.ChartWidgetData.InPorts.get_Length()?(List.splitAt(resultNumberOfPorts,this.ChartWidgetData.InPorts))[0]:resultNumberOfPorts>this.ChartWidgetData.InPorts.get_Length()?(startIndex=this.ChartWidgetData.InPorts.get_Length()-6+1,List.append(this.ChartWidgetData.InPorts,List.ofSeq(Seq.delay(function()
+   return WorkerData.New(i.WorkerName,List.mapi(function(ind,port)
+   {
+    return ind===0||ind>5?port.WithCacheSize(chartBufferSize):port;
+   },resultNumberOfPorts<this.ChartWidgetData.InPorts.get_Length()?(List.splitAt(resultNumberOfPorts,this.ChartWidgetData.InPorts))[0]:resultNumberOfPorts>this.ChartWidgetData.InPorts.get_Length()?(startIndex=this.ChartWidgetData.InPorts.get_Length()-6+1,List.append(this.ChartWidgetData.InPorts,List.ofSeq(Seq.delay(function()
    {
     return Seq.map(function(i$1)
     {
      var c;
      return InPortData.CreateNumber(" in Value "+(c=startIndex+i$1,Global.String(c)),0).WithCacheSize(chartBufferSize);
     },Operators.range(0,resultNumberOfPorts-$this.ChartWidgetData.InPorts.get_Length()-1));
-   })))):this.ChartWidgetData.InPorts,i.OutPorts);
+   })))):this.ChartWidgetData.InPorts),i.OutPorts);
   }
  },null,ChartWidget);
  ChartWidget.get_FromWorker=function()
@@ -2681,13 +2684,12 @@
  AppData=Dashboard.AppData=Runtime.Class({
   RecreateOnServer:function(json,toWorker)
   {
-   var allEvents,allWorkers,a,_this;
+   var allWorkers,a,_this;
    function a$1(grName,rules)
    {
     rules.Reconnect(allWorkers);
    }
-   allEvents=AppDataHelper.RecreateEventsOnServer(toWorker,this.Events);
-   allWorkers=List.append(allEvents,AppDataHelper.RecreatWidgetsOnServer(toWorker,this.Widgets));
+   allWorkers=List.append(AppDataHelper.RecreateEventsOnServer(toWorker,this.Events),AppDataHelper.RecreatWidgetsOnServer(toWorker,this.Widgets));
    List.iter(function($1)
    {
     return a$1($1[0],$1[1]);
@@ -2709,7 +2711,7 @@
    _this=MessageBus.Agent();
    _this.mailbox.AddLast(a);
    _this.resume();
-   return allEvents;
+   return allWorkers;
   },
   RecreateOnClientEventsRunning:function(dashboard,panelContainerCreator,toWorker)
   {

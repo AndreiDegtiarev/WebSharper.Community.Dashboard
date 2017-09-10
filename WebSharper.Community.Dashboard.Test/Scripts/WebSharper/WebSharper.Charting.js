@@ -880,9 +880,10 @@
    $0:dataset
   },Charts.defaultChartConfig(),Charts.defaultSeriesChartConfig(),Charts.defaultColorConfig());
  };
- SC$1.$cctor=Runtime.Cctor(function()
+ SC$1.$cctor=function()
  {
   var rand;
+  SC$1.$cctor=Global.ignore;
   SC$1.defaultChartConfig=ChartConfig.New("Chart");
   SC$1.defaultSeriesChartConfig=SeriesChartConfig.New("x","y",new Color({
    $:0,
@@ -937,8 +938,7 @@
     return PolarData.New(data,p[0],p[1],label);
    };
   });
-  SC$1.$cctor=Global.ignore;
- });
+ };
  BatchUpdater=ChartJsInternal.BatchUpdater=Runtime.Class({
   Update:function(updater)
   {
@@ -1645,13 +1645,13 @@
   SC$2.$cctor();
   return SC$2.defaultSize;
  };
- SC$2.$cctor=Runtime.Cctor(function()
+ SC$2.$cctor=function()
  {
+  SC$2.$cctor=Global.ignore;
   SC$2.defaultSize={
    $:0,
    $0:500,
    $1:200
   };
-  SC$2.$cctor=Global.ignore;
- });
+ };
 }());

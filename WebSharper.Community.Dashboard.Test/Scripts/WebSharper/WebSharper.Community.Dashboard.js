@@ -159,14 +159,14 @@
   SC$1.$cctor();
   SC$1.Role=$1;
  };
- SC$1.$cctor=Runtime.Cctor(function()
+ SC$1.$cctor=function()
  {
+  SC$1.$cctor=Global.ignore;
   SC$1.Role=Role.Server;
   SC$1.Log=Global.ignore;
   SC$1.DataDirectory="";
   SC$1.UpdateConfiguration=Global.ignore;
-  SC$1.$cctor=Global.ignore;
- });
+ };
  Value=MessageBus.Value=Runtime.Class({
   get_trySystem:function()
   {
@@ -334,8 +334,9 @@
   SC$2.$cctor();
   return SC$2.log;
  };
- SC$2.$cctor=Runtime.Cctor(function()
+ SC$2.$cctor=function()
  {
+  SC$2.$cctor=Global.ignore;
   SC$2.log=Environment.Log();
   SC$2.Agent=MailboxProcessor.Start(function(inbox)
   {
@@ -451,8 +452,7 @@
    }
    return loop(AgentState.get_empty());
   },null);
-  SC$2.$cctor=Global.ignore;
- });
+ };
  InPortData=Dashboard.InPortData=Runtime.Class({
   WithCacheSize:function(cacheSize)
   {
@@ -2037,7 +2037,7 @@
    (Environment.Log())("get key city "+request);
    return Concurrency.TryWith(Concurrency.Delay(function()
    {
-    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\AEAFrame\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
+    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\Andrey\\Private\\VS_Projects\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
     {
      return Unchecked.Equals(typeof t,"string")?JSON.parse(t):t;
     }),function(a)
@@ -2545,14 +2545,14 @@
  {
   return fnc(Worker.Create(data));
  };
- SC$3.$cctor=Runtime.Cctor(function()
+ SC$3.$cctor=function()
  {
+  SC$3.$cctor=Global.ignore;
   SC$3.CreateDashboard=App.RegisterAppModelLib(Dashboard$1.Create(function()
   {
    return App.PanelContainerCreator();
   }));
-  SC$3.$cctor=Global.ignore;
- });
+ };
  AppDataHelper.RecreatWidgetsOnServer=function(toWorker,widgets)
  {
   function m(a,a$1,gr)

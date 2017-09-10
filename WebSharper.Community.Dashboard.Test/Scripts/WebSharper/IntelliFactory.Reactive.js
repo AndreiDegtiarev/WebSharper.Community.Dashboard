@@ -486,9 +486,9 @@
    }
   };
  };
- SC$1.$cctor=Runtime.Cctor(function()
+ SC$1.$cctor=function()
  {
-  SC$1.Default=new Reactive$2.New();
   SC$1.$cctor=Global.ignore;
- });
+  SC$1.Default=new Reactive$2.New();
+ };
 }());

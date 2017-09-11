@@ -16,7 +16,7 @@ type InPortData =
         CacheSize:int
     }
     static member Create name value=let msg = value |> MessageBus.CreateMessage
-                                    {Value=msg.WithTime(DateTime(0,0,0));Key = msg.Key;Name=name;CacheSize=1}
+                                    {Value=msg.WithTime(DateTime(1,1,1));Key = msg.Key;Name=name;CacheSize=1}
     static member CreateNumber name value  = MessageBus.Number(value) |> InPortData.Create name
     static member CreateString name value  = MessageBus.String(value) |> InPortData.Create name
     static member CreateBoolean name value = MessageBus.Boolean(value)|> InPortData.Create name

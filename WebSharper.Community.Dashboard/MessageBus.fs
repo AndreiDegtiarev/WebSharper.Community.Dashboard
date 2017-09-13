@@ -48,8 +48,8 @@ module MessageBus =
         | Stop
         | Start
         | GetStatus of (AsyncReplyChannel<SystemStatus>)
-        | ReadMessages of (System.DateTime*AsyncReplyChannel<Message list>)
-        | LatestMessageTime of (AsyncReplyChannel<System.DateTime>)
+        | ReadMessages of (System.DateTime*System.DateTime*AsyncReplyChannel<Message list>)
+        | LatestMessageTime of (AsyncReplyChannel<(System.DateTime*System.DateTime)>)
     type AgentState =
         {
             SystemStatus:SystemStatus
@@ -68,8 +68,8 @@ module MessageBus =
 
     let Agent = MailboxProcessor<AgentMessage>.Start(fun inbox ->
         let cutBuffer (time:DateTime) buffer=
-            buffer |> List.fold (fun acc item -> //sprintf "%s %s  %f %b" (item.Time.ToLongTimeString()) (time.ToLongTimeString())  ((item.Time - time).TotalSeconds) ((item.Time - time).TotalSeconds > 0.0) |> log
-                                                if (item.Time - time).TotalSeconds > 0.01 then item::acc else acc) []  
+            buffer |> List.fold (fun acc item -> //sprintf "%s %s %s  %f %b" (item.Time.ToLongDateString()) (item.Time.ToLongTimeString()) (time.ToLongTimeString())  ((item.Time - time).TotalSeconds) ((item.Time - time).TotalSeconds > 0.0) |> log
+                                                 if (item.Time - time).TotalSeconds > 0.01 then item::acc else acc) []  
                    //|> List.rev
         let split maxSize (buffer:List<Message>) = 
                         if maxSize < buffer.Length then 
@@ -104,25 +104,29 @@ module MessageBus =
                 //let buffer = if listenerInfo.CacheSize = 1 then SingleValue(startValue) else ListenerBuffer(listenerInfo.CacheSize,[])
                 return! loop {state with Listeners=((listenerInfo,receiver,[])::state.Listeners)}
             | RegisterServerCallback (fnc) -> return! loop {state with ServerCallback=Some(fnc)}
-            | ReadMessages (time,channel) ->
+            | ReadMessages (timeSys,timeMsg,channel) ->
                 let messages = 
-                    state.Listeners |> List.map (fun (info,_,buffer) -> cutBuffer time buffer) |> List.concat
-                    |> List.fold (fun acc state -> if not (acc |> List.contains state) then state::acc else acc) [] 
-                    |> List.sortBy (fun msg -> msg.Time)
-                //Log(sprintf "ReadMessages:%d" messages.Length)
+                    let getMsgs time listeners = 
+                        listeners |> List.map (fun (info,_,buffer) -> cutBuffer time buffer) |> List.concat
+                        |> List.fold (fun acc state -> if not (acc |> List.contains state) then state::acc else acc) [] 
+                        |> List.sortBy (fun msg -> msg.Time)
+                    let msgsSys=state.Listeners|> List.filter (fun (info,_,_) ->info.Key = "system" ) |> (getMsgs timeSys)
+                    let msgs=state.Listeners|> List.filter (fun (info,_,_) ->info.Key <> "system" ) |> (getMsgs timeMsg)
+                    msgsSys@msgs
+                //Environment.Log(sprintf "ReadMessages:%d" messages.Length)
                 channel.Reply(messages)
                 return! loop state
             | LatestMessageTime (channel) ->
                 let maxTimes = state.Listeners |> List.map (fun (info,_,buffer) -> //sprintf "Check listener time %s" info.Name |> log
                                                                                    match buffer with
-                                                                                   |[] -> state.LastConfigurationTime
+                                                                                   |[] ->  DateTime(1,1,1)
                                                                                    |_ -> (buffer 
                                                                                          // |> List.filter (fun msg -> match msg.Value.trySystem with |Some(_) -> false |None -> true)
                                                                                           |> List.maxBy (fun item -> item.Time)).Time)
                 let maxTime = match maxTimes with
-                              | [] ->  state.LastConfigurationTime
+                              | [] ->  DateTime(1,1,1)
                               | _ -> maxTimes |> List.max
-                channel.Reply(maxTime)
+                channel.Reply(state.LastConfigurationTime,maxTime)
                 //sprintf "Max time:%s" (maxTime.ToString()) |> log
                 return! loop state
             | SendOnlyToClient (message) ->
@@ -132,7 +136,7 @@ module MessageBus =
                 |None ->
                     return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
             | Send (message) ->
-                //sprintf "Num listeners:%d msg:%s" state.Listeners.Length message.Key |> log
+                //sprintf "Num listeners:%d msg:%s %s" state.Listeners.Length message.Key (message.Time.ToLongTimeString()) |> log
                 state.ServerCallback |> Option.map(fun fncServer -> fncServer message) |> ignore
                 return! loop {state with Listeners=state.Listeners |> send_to_listeners message}
 
@@ -143,16 +147,16 @@ module MessageBus =
     let SendToServer(message) =
         Agent.Post(Send(message))
     [<Rpc>]
-    let GetMessages (time:System.DateTime) = 
-       Agent.PostAndAsyncReply(fun r -> ReadMessages(time,r))
+    let GetMessages (timeSys:System.DateTime,timeMsg:System.DateTime) = 
+       Agent.PostAndAsyncReply(fun r -> ReadMessages(timeSys,timeMsg,r))
     let RunServerRequests()= 
         async {
             while true do
                 do! Async.Sleep (2*1000)
                 //"Ask for server messages" |> log
-                let! latestTime = Agent.PostAndAsyncReply(fun r -> LatestMessageTime(r))
+                let! latestTimes = Agent.PostAndAsyncReply(fun r -> LatestMessageTime(r))
                 try
-                    let! messages=GetMessages latestTime
+                    let! messages=GetMessages latestTimes
                     messages |> List.iter (fun message -> Agent.Post(SendOnlyToClient(message)))
                     if messages.Length > 0 then
                         messages |> List.iter (fun msg ->sprintf "%s %s" msg.Key (msg.Time.ToString()) |> log) 

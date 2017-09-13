@@ -106,7 +106,7 @@ type Dashboard =
                          .WithPanelContent(worker.Render)
         panel.IsWithTitle.Value <- false
         toPanelContainer.AddPanel panel
-    member x.CreatePanel(group,name,cx,?key) = //,?afterRenderFnc) = 
+    member x.CreatePanel(group,name,?key) = //,?afterRenderFnc) = 
         let renderWidgets= group.WidgetItems.View
                            |> Doc.BindSeqCachedBy group.WidgetItems.Key (fun item-> 
                                                                                 let nameView = item.Widget.Name.View
@@ -120,7 +120,7 @@ type Dashboard =
                                                                   ]) 
         let panel = Panel.Create
                          .WithKey(keyDef)
-                         .WithPannelAttrs([Attr.Style "Width" (cx.ToString()+"px")
+                         .WithPannelAttrs([//Attr.Style "Width" (cx.ToString()+"px")
                                            Attr.Style "position" "absolute"
                                           ])
                          .WithTitle(x.PanelTitleVisibility)
@@ -188,7 +188,7 @@ type Dashboard =
                                 let grItem = x.Data.WidgetGroups |> List.ofSeq |> List.item ind
                                 panelList
                                 |> List.iter(fun (panelConfig:PanelData) -> 
-                                                     let panel = x.CreatePanel(grItem,"Panel",700,panelConfig.Key)
+                                                     let panel = x.CreatePanel(grItem,"Panel",panelConfig.Key)
                                                      panel.Left.Value <- panelConfig.Left
                                                      panel.Top.Value <- panelConfig.Top
                                             )
@@ -272,7 +272,8 @@ type Dashboard =
                                                                                                    x.Data.RegisterEvent (Helper.UniqueKey()) group event)
                                            else if selIndex = 0 then
                                                let group = x.Data.WidgetGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
-                                               x.CreatePanel(group,"Panel",700)|>ignore
+                                               let panel =x.CreatePanel(group,"Panel")
+                                               panel.IsWithInitialAutoLayout.Value <- true
                                            else if selIndex = 2 then
                                                let group = x.Data.RulesGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
                                                group.RulesRowItems.Add (RulesRowItem.Create [RulesCellItem.Create;RulesCellItem.Create]) 

@@ -286,69 +286,73 @@
     return childPanel.Properties;
    },List.ofSeq(this.Children.PanelItems)))]));
   },
+  WithInitialAutoLayout:function()
+  {
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,Var.Create$1(true));
+  },
   WithHeight:function(cy)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,cy,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,cy,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithWidth:function(cx)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,cx,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,cx,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithProperties:function(properties)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,properties,this.IsWithInitialAutoLayout);
   },
   WithOnAfterRender:function(fnc)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,fnc,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,fnc,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithInternalName:function(name)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,name,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,name,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithTitle:function(withTitle)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,withTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,withTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithChildPanelContainer:function(container)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,container,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,container,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithRelayoutFnc:function(fnc)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,fnc,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,fnc,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithPanelContent:function(content)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,content,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,content,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithTitleButtons:function(buttons)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,buttons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,buttons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithTitleContent:function(content)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,content,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,content,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithTitleAttrs:function(attrs)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,attrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,attrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithPannelAttrs:function(attrs)
   {
-   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,attrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(this.Key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,attrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   },
   WithKey:function(key)
   {
-   return Panel$1.New(key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties);
+   return Panel$1.New(key,this.Left,this.Top,this.Width,this.Height,this.Element,this.Relayout,this.PannelAttrs,this.IsWithTitle,this.TitleAttrs,this.TitleContent,this.TitleButtons,this.PanelContent,this.Children,this.InternalName,this.onAfterRender,this.Properties,this.IsWithInitialAutoLayout);
   }
  },null,Panel$1);
  Panel$1.get_Create=function()
  {
   var c;
-  return Panel$1.New((c=Guid.NewGuid(),Global.String(c)),Var.Create$1(0),Var.Create$1(0),0,0,Var.Create$1(null),Global.ignore,List.T.Empty,Var.Create$1(true),List.ofArray([AttrModule.Class("panelTitle")]),Doc.Element("div",[],[]),List.T.Empty,Doc.Element("div",[],[]),PanelContainer.get_Create(),"",Global.ignore,List.T.Empty);
+  return Panel$1.New((c=Guid.NewGuid(),Global.String(c)),Var.Create$1(0),Var.Create$1(0),0,0,Var.Create$1(null),Global.ignore,List.T.Empty,Var.Create$1(true),List.ofArray([AttrModule.Class("panelTitle")]),Doc.Element("div",[],[]),List.T.Empty,Doc.Element("div",[],[]),PanelContainer.get_Create(),"",Global.ignore,List.T.Empty,Var.Create$1(false));
  };
- Panel$1.New=function(Key,Left,Top,Width,Height,Element,Relayout,PannelAttrs,IsWithTitle,TitleAttrs,TitleContent,TitleButtons,PanelContent,Children,InternalName,onAfterRender,Properties)
+ Panel$1.New=function(Key,Left,Top,Width,Height,Element,Relayout,PannelAttrs,IsWithTitle,TitleAttrs,TitleContent,TitleButtons,PanelContent,Children,InternalName,onAfterRender,Properties,IsWithInitialAutoLayout)
  {
   return new Panel$1({
    Key:Key,
@@ -367,7 +371,8 @@
    Children:Children,
    InternalName:InternalName,
    onAfterRender:onAfterRender,
-   Properties:Properties
+   Properties:Properties,
+   IsWithInitialAutoLayout:IsWithInitialAutoLayout
   });
  };
  PanelContainer=Panel.PanelContainer=Runtime.Class({
@@ -394,7 +399,11 @@
    {
     return item.get_Render().OnAfterRender(function()
     {
-     $this.LayoutManager.WebSharper_Community_Panel_ILayoutManager$PlacePanel($this,item);
+     if(item.IsWithInitialAutoLayout.c)
+      {
+       $this.LayoutManager.WebSharper_Community_Panel_ILayoutManager$PlacePanel($this,item);
+       Var.Set(item.IsWithInitialAutoLayout,false);
+      }
     });
    },this.PanelItems.v)]);
   },
@@ -464,6 +473,13 @@
   inflate:function(width,height)
   {
    return Rect.New(this.left-width,this.right+width,this.top-height,this.bottom+height);
+  },
+  get_minSize:function()
+  {
+   var a,b;
+   a=this.get_width();
+   b=this.get_height();
+   return Unchecked.Compare(a,b)===-1?a:b;
   },
   get_height:function()
   {
@@ -541,7 +557,7 @@
   },List.ofSeq(panelItems));
   foundPanel=Seq.tryFind(function(panelItem)
   {
-   return panelItem.Key!==exceptPanelItem.Key&&!Rect.fromPanel(panelItem).intersect(Rect.fromPanel(exceptPanelItem)).get_isEmpty();
+   return panelItem.Key!==exceptPanelItem.Key&&Rect.fromPanel(panelItem).intersect(Rect.fromPanel(exceptPanelItem)).get_minSize()>15;
   },List.ofSeq(panelItems));
   foundPanel!=null&&foundPanel.$==1?LayoutManagers.movePanelToFreeSpace(panelItems,foundPanel.$0,margin):void 0;
  };
@@ -657,7 +673,7 @@
   {
    var $this;
    $this=this;
-   return Doc.Element("div",[AttrModule.Style("position","absolute"),AttrModule.Style("left","50%"),AttrModule.Style("top","50%"),AttrModule.Style("z-index","1"),AttrModule.Style("background-color","white"),AttrModule.Style("min-height","100px"),AttrModule.Style("min-width","200px"),AttrModule.DynamicStyle("display",View.Map(function(isVis)
+   return Doc.Element("div",[AttrModule.Style("position","absolute"),AttrModule.Style("left","250px"),AttrModule.Style("top","200px"),AttrModule.Style("z-index","1"),AttrModule.Style("background-color","white"),AttrModule.Style("min-height","100px"),AttrModule.Style("min-width","200px"),AttrModule.DynamicStyle("display",View.Map(function(isVis)
    {
     return isVis?"block":"none";
    },this.Visibility.v))],[Doc.Element("table",[AttrModule.Style("background-color","grey"),AttrModule.Style("display","block"),AttrModule.Style("min-height","100px"),AttrModule.Style("min-width","200px")],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("border-style","hidden"),AttrModule.Style("background","#404040"),AttrModule.Style("color","rgb(200,200,200)"),AttrModule.Style("padding","0px 2px 5px 2px"),AttrModule.Style("Width","200px"),AttrModule.Style("font-size","medium")],[Doc.TextView(this.Title.v)])])]),Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("padding","5px 0px 0px 2px")],[Doc.BindView(Global.id,this.Content.v)])]),Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("padding","20px 12px 2px 20px")],[Doc.Element("button",[AttrModule.Style("border-radius","2px"),AttrModule.Handler("click",function()

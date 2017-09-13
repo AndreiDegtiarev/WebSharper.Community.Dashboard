@@ -181,15 +181,15 @@
   },
   get_AsBoolean:function()
   {
-   return this.$==2?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+   return this.$==2?this.$0:((MessageBus.log())("MessageBus.Value: unexpected type"),false);
   },
   get_AsString:function()
   {
-   return this.$==1?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+   return this.$==1?this.$0:((MessageBus.log())("MessageBus.Value: unexpected type"),"Invalid");
   },
   get_AsNumber:function()
   {
-   return this.$==0?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+   return this.$==0?this.$0:((MessageBus.log())("MessageBus.Value: unexpected type"),0);
   }
  },null,Value);
  Message=MessageBus.Message=Runtime.Class({
@@ -282,7 +282,7 @@
      {
       return Concurrency.TryWith(Concurrency.Delay(function()
       {
-       return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:1550733476",[a]),function(a$1)
+       return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:214660718",[a[0],a[1]]),function(a$1)
        {
         var x;
         List.iter(function(message)
@@ -405,14 +405,39 @@
     {
      return Concurrency.Bind(inbox.Receive(null),function(a)
      {
-      var listenerInfo,x,time,maxTimes,message,m,message$1,o;
+      var listenerInfo,x,maxTimes,message,m,message$1,o;
+      function getMsgs(time,listeners)
+      {
+       function m$2(info,a$1,buffer)
+       {
+        return cutBuffer(time,buffer);
+       }
+       return List.sortBy(function(msg)
+       {
+        return msg.Time;
+       },Seq.fold(function(acc,state$1)
+       {
+        return!List.contains(state$1,acc)?new List.T({
+         $:1,
+         $0:state$1,
+         $1:acc
+        }):acc;
+       },List.T.Empty,List.concat(List.map(function($1)
+       {
+        return m$2($1[0],$1[1],$1[2]);
+       },listeners))));
+      }
+      function p(info,a$1,a$2)
+      {
+       return info.Key==="system";
+      }
+      function p$1(info,a$1,a$2)
+      {
+       return info.Key!=="system";
+      }
       function m$1(info,a$1,buffer)
       {
-       return cutBuffer(time,buffer);
-      }
-      function m$2(info,a$1,buffer)
-      {
-       return buffer.$==0?state.LastConfigurationTime:List.maxBy(function(item)
+       return buffer.$==0?(new Date(1,1-1,1)).getTime():List.maxBy(function(item)
        {
         return item.Time;
        },buffer).Time;
@@ -427,23 +452,16 @@
       }),state.LastConfigurationTime)))):a.$==3?loop(AgentState.New(state.SystemStatus,{
        $:1,
        $0:a.$0
-      },state.Listeners,state.LastConfigurationTime)):a.$==7?(time=a.$0[0],(a.$0[1](List.sortBy(function(msg)
+      },state.Listeners,state.LastConfigurationTime)):a.$==7?(a.$0[2](List.append(getMsgs(a.$0[0],List.filter(function($1)
       {
-       return msg.Time;
-      },Seq.fold(function(acc,state$1)
+       return p($1[0],$1[1],$1[2]);
+      },state.Listeners)),getMsgs(a.$0[1],List.filter(function($1)
       {
-       return!List.contains(state$1,acc)?new List.T({
-        $:1,
-        $0:state$1,
-        $1:acc
-       }):acc;
-      },List.T.Empty,List.concat(List.map(function($1)
+       return p$1($1[0],$1[1],$1[2]);
+      },state.Listeners)))),loop(state)):a.$==8?(maxTimes=List.map(function($1)
       {
        return m$1($1[0],$1[1],$1[2]);
-      },state.Listeners))))),loop(state))):a.$==8?(maxTimes=List.map(function($1)
-      {
-       return m$2($1[0],$1[1],$1[2]);
-      },state.Listeners),(a.$0(maxTimes.$==0?state.LastConfigurationTime:List.max(maxTimes)),loop(state))):a.$==1?(message=a.$0,(m=message.Value.get_trySystem(),m==null?loop(AgentState.New(state.SystemStatus,state.ServerCallback,send_to_listeners(message,state.Listeners),state.LastConfigurationTime)):Concurrency.Combine(((Environment.UpdateConfiguration())(m.$0.$0),Concurrency.Zero()),Concurrency.Delay(function()
+      },state.Listeners),(a.$0([state.LastConfigurationTime,maxTimes.$==0?(new Date(1,1-1,1)).getTime():List.max(maxTimes)]),loop(state))):a.$==1?(message=a.$0,(m=message.Value.get_trySystem(),m==null?loop(AgentState.New(state.SystemStatus,state.ServerCallback,send_to_listeners(message,state.Listeners),state.LastConfigurationTime)):Concurrency.Combine(((Environment.UpdateConfiguration())(m.$0.$0),Concurrency.Zero()),Concurrency.Delay(function()
       {
        return loop(AgentState.New(state.SystemStatus,state.ServerCallback,state.Listeners,message.Time));
       })))):a.$==0?(message$1=a.$0,(o=state.ServerCallback,o==null?void 0:o.$0(message$1),loop(AgentState.New(state.SystemStatus,state.ServerCallback,send_to_listeners(message$1,state.Listeners),state.LastConfigurationTime)))):loop(AgentState.New(SystemStatus.Inactive,state.ServerCallback,AgentState.get_initListeners(),state.LastConfigurationTime));
@@ -1586,7 +1604,7 @@
       event.StartRunner();
       a=(x$2=List.ofSeq($this.Data.EventGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$2));
       $this.Data.RegisterEvent(Helper.UniqueKey(),a,event);
-     })):selIndex===0?$this.CreatePanel((x=List.ofSeq($this.Data.WidgetGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x)),"Panel",700,null):selIndex===2?(x$1=List.ofSeq($this.Data.RulesGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$1)).RulesRowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
+     })):selIndex===0?Var.Set($this.CreatePanel((x=List.ofSeq($this.Data.WidgetGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x)),"Panel",null).IsWithInitialAutoLayout,true):selIndex===2?(x$1=List.ofSeq($this.Data.RulesGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$1)).RulesRowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
     }),$this.EditorSelectorEdit.get_Render()])])]),Doc.Element("div",[],[$this.Dialog.get_Render()])]):Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Helper.IconNormal("dehaze",function()
     {
      Var.Set($this.PanelTitleVisibility,true);
@@ -1633,7 +1651,7 @@
     List.iter(function(panelConfig)
     {
      var panel;
-     panel=$this.CreatePanel(grItem,"Panel",700,{
+     panel=$this.CreatePanel(grItem,"Panel",{
       $:1,
       $0:panelConfig.Key
      });
@@ -1746,7 +1764,7 @@
     return[gr.Name.c,RulesEditor.CopyToRules(gr.RulesRowItems)];
    },List.ofSeq(this.Data.RulesGroups))];
   },
-  CreatePanel:function(group,name,cx,key)
+  CreatePanel:function(group,name,key)
   {
    var $this,keyDef,d,c,childContainerContent,panel;
    $this=this;
@@ -1756,7 +1774,7 @@
    },group.WidgetItems.v);
    keyDef=(d=(c=Guid.NewGuid(),Global.String(c)),key==null?d:key.$0);
    childContainerContent=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.StackPanelLayoutManager()).WithAttributes([AttrModule.Style("border","1px solid white"),AttrModule.Style("display","flex")]);
-   panel=Panel$1.get_Create().WithKey(keyDef).WithPannelAttrs([AttrModule.Style("Width",Global.String(cx)+"px"),AttrModule.Style("position","absolute")]).WithTitle(this.PanelTitleVisibility).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel$1)
+   panel=Panel$1.get_Create().WithKey(keyDef).WithPannelAttrs([AttrModule.Style("position","absolute")]).WithTitle(this.PanelTitleVisibility).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel$1)
    {
     var items,selected;
     items=List.ofSeq($this.Factory.WidgetItems);
@@ -2188,16 +2206,7 @@
        }));
        return Concurrency.Bind(Concurrency.Sleep(worker.InPorts.get_Item(1).get_Number()*1000>>0),function()
        {
-        var x;
-        x=(function($1)
-        {
-         return function($2)
-         {
-          return $1("Time value generated "+Utils.toSafe($2));
-         };
-        }(Global.id))(strTime);
-        (Environment.Log())(x);
-        return Concurrency.Zero();
+        return Concurrency.Return(null);
        });
       }));
      })),null);
@@ -2263,7 +2272,7 @@
  };
  TextBoxWidget.get_Create=function()
  {
-  return TextBoxWidget.New(WorkerData.Create("Text",List.ofArray([InPortData.CreateNumber("in Value",0)]),List.T.Empty));
+  return TextBoxWidget.New(WorkerData.Create("Text",List.ofArray([InPortData.CreateString("in Text","txt")]),List.T.Empty));
  };
  TextBoxWidget.New=function(TextBoxWidgetData)
  {
@@ -2504,7 +2513,7 @@
  };
  App.PanelContainerCreator=function(a)
  {
-  return PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(800).WithHeight(420).WithAttributes([AttrModule.Style("border","1px solid white")]);
+  return PanelContainer.get_Create().WithLayoutManager(LayoutManagers.FloatingPanelLayoutManager(5)).WithWidth(2800).WithHeight(2420).WithAttributes([]);
  };
  App.RegisterAppModelLib=function(dashboard)
  {

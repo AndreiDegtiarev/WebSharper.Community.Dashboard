@@ -33,7 +33,7 @@ type ClockEvent =
                                           |_ -> ""
                                       worker.OutPorts.[0].Trigger (MessageBus.String(strTime))
                                       do! Async.Sleep ((int)(worker.InPorts.[1].Number * 1000.0))
-                                      sprintf "Time value generated %s" strTime |> Environment.Log
+                                      //sprintf "Time value generated %s" strTime |> Environment.Log
                               }|> Async.Start 
                               None)
     override x.Render = None

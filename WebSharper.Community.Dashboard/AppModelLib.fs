@@ -62,9 +62,8 @@ module App =
                                 let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0
                                 PanelContainer.Create
                                      .WithLayoutManager(layoutManager)
-                                     .WithWidth(800.0).WithHeight(420.0)
-                                     .WithAttributes([Attr.Style "border" "1px solid white"
-                                                      //Attr.Style "position" "absolute"
+                                     .WithWidth(2800.0).WithHeight(2420.0)
+                                     .WithAttributes([//Attr.Style "border" "1px solid white"
                                                      ]))
     let CreateDashboard =
         let dashboard = Dashboard.Create PanelContainerCreator

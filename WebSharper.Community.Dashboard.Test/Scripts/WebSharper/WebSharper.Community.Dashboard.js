@@ -181,15 +181,15 @@
   },
   get_AsBoolean:function()
   {
-   return this.$==2?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+   return this.$==2?this.$0:((MessageBus.log())("MessageBus.Value: unexpected type"),false);
   },
   get_AsString:function()
   {
-   return this.$==1?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+   return this.$==1?this.$0:((MessageBus.log())("MessageBus.Value: unexpected type"),"Invalid");
   },
   get_AsNumber:function()
   {
-   return this.$==0?this.$0:Operators.FailWith("MessageBus.Value: unexpected type");
+   return this.$==0?this.$0:((MessageBus.log())("MessageBus.Value: unexpected type"),0);
   }
  },null,Value);
  Message=MessageBus.Message=Runtime.Class({
@@ -2206,16 +2206,7 @@
        }));
        return Concurrency.Bind(Concurrency.Sleep(worker.InPorts.get_Item(1).get_Number()*1000>>0),function()
        {
-        var x;
-        x=(function($1)
-        {
-         return function($2)
-         {
-          return $1("Time value generated "+Utils.toSafe($2));
-         };
-        }(Global.id))(strTime);
-        (Environment.Log())(x);
-        return Concurrency.Zero();
+        return Concurrency.Return(null);
        });
       }));
      })),null);

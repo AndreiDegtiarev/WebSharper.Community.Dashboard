@@ -20,9 +20,15 @@ module MessageBus =
     |Boolean of bool
     |Select of (int*string list)
     |System of SystemMessage
-     member x.AsNumber  = match x with |Number(value) -> value | _ -> failwith("MessageBus.Value: unexpected type")
-     member x.AsString  = match x with |String(value) -> value | _ -> failwith("MessageBus.Value: unexpected type")
-     member x.AsBoolean = match x with |Boolean(value)-> value | _ -> failwith("MessageBus.Value: unexpected type")
+     member x.AsNumber  = match x with |Number(value) -> value 
+                                       | _ -> "MessageBus.Value: unexpected type" |> log 
+                                              0.0
+     member x.AsString  = match x with |String(value) -> value 
+                                       | _ -> "MessageBus.Value: unexpected type" |> log
+                                              "Invalid"
+     member x.AsBoolean = match x with |Boolean(value)-> value 
+                                       | _ -> "MessageBus.Value: unexpected type" |> log
+                                              false
      member x.AsSelect =  match x with |Select(value) -> value | _ -> failwith("MessageBus.Value: unexpected type")
      member x.trySystem = match x with |System(value) -> Some(value) | _ -> None
     type Message = 

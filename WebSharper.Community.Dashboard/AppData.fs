@@ -68,4 +68,4 @@ type AppData<'a> =
         allWorkers |> List.iter (fun worker -> worker.StartRunner() |> ignore)
         let msgValue = MessageBus.System(MessageBus.UpdateConfiguration(json))
         MessageBus.Send((MessageBus.CreateMessage msgValue).WithKey("system")) |> MessageBus.Agent.Post
-        allEvents
+        allWorkers

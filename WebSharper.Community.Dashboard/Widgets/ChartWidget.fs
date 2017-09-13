@@ -51,7 +51,7 @@ type ChartWidget =
                             x.ChartWidgetData.InPorts@newPorts
                           else 
                             x.ChartWidgetData.InPorts
-                      {x.ChartWidgetData with InPorts = inPorts}
+                      {x.ChartWidgetData with InPorts = inPorts |> List.mapi (fun ind port-> if ind = 0 || ind > 5 then port.WithCacheSize(chartBufferSize) else port)}
     override x.Run = Some(fun worker ->
                                     let chartBufferSize = (int) worker.InPorts.[3].Number
                                     //let inPortNumberView = worker.InPorts.[0].PortValue.View

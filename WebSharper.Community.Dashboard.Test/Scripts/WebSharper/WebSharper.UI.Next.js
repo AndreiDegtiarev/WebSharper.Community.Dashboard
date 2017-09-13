@@ -292,11 +292,11 @@
    Unchecked.Equals(m,0)?(st[0]=1,Concurrency.Start(work(),null)):Unchecked.Equals(m,1)?st[0]=2:void 0;
   };
  };
- SC$1.$cctor=Runtime.Cctor(function()
+ SC$1.$cctor=function()
  {
-  SC$1.counter=0;
   SC$1.$cctor=Global.ignore;
- });
+  SC$1.counter=0;
+ };
  AppendList.FromArray=function(xs)
  {
   var m;
@@ -361,13 +361,13 @@
   SC$2.$cctor();
   return SC$2.Empty;
  };
- SC$2.$cctor=Runtime.Cctor(function()
+ SC$2.$cctor=function()
  {
+  SC$2.$cctor=Global.ignore;
   SC$2.Empty={
    $:0
   };
-  SC$2.$cctor=Global.ignore;
- });
+ };
  DomUtility.SetProperty=function(target,name,value)
  {
   return target.setProperty(name,value);
@@ -454,11 +454,11 @@
   SC$3.$cctor();
   return SC$3.Doc;
  };
- SC$3.$cctor=Runtime.Cctor(function()
+ SC$3.$cctor=function()
  {
-  SC$3.Doc=Global.document;
   SC$3.$cctor=Global.ignore;
- });
+  SC$3.Doc=Global.document;
+ };
  LookupResult.NotFound={
   $:1
  };
@@ -639,13 +639,13 @@
    $0:xs
   };
  };
- SC$4.$cctor=Runtime.Cctor(function()
+ SC$4.$cctor=function()
  {
+  SC$4.$cctor=Global.ignore;
   SC$4.Empty={
    $:1
   };
-  SC$4.$cctor=Global.ignore;
- });
+ };
  Snap.Obsolete=function(sn)
  {
   var $1,m,i,$2,o;
@@ -2278,14 +2278,14 @@
  {
   return new ListModel.New(key,storage);
  };
- SC$5.$cctor=Runtime.Cctor(function()
+ SC$5.$cctor=function()
  {
+  SC$5.$cctor=Global.ignore;
   SC$5.Default={
    Encode:Global.id,
    Decode:Global.id
   };
-  SC$5.$cctor=Global.ignore;
- });
+ };
  ReactiveExtensions=Next.ReactiveExtensions=Runtime.Class({},WebSharper.Obj,ReactiveExtensions);
  ReactiveExtensions.New=Runtime.Ctor(function()
  {
@@ -2660,8 +2660,9 @@
  {
   return tr.TChange(x,y);
  };
- SC$6.$cctor=Runtime.Cctor(function()
+ SC$6.$cctor=function()
  {
+  SC$6.$cctor=Global.ignore;
   SC$6.CubicInOut=Easing.Custom(function(t)
   {
    var t2;
@@ -2669,8 +2670,7 @@
    return 3*t2-2*(t2*t);
   });
   SC$6.UseAnimations=true;
-  SC$6.$cctor=Global.ignore;
- });
+ };
  AnimatedAttrNode=Next.AnimatedAttrNode=Runtime.Class({
   sync:function(p)
   {
@@ -3359,11 +3359,11 @@
    DomUtility.SetStyle(el,name,value);
   });
  };
- SC$7.$cctor=Runtime.Cctor(function()
+ SC$7.$cctor=function()
  {
-  SC$7.EmptyAttr=null;
   SC$7.$cctor=Global.ignore;
- });
+  SC$7.EmptyAttr=null;
+ };
  DocElemNode=Next.DocElemNode=Runtime.Class({
   GetHashCode:function()
   {
@@ -5420,12 +5420,12 @@
   this.holeUpdates=holeUpdates;
   this.origHoles=this.treeNode.Holes;
  },EltUpdater);
- SC$8.$cctor=Runtime.Cctor(function()
+ SC$8.$cctor=function()
  {
+  SC$8.$cctor=Global.ignore;
   SC$8.LoadedTemplates=new Dictionary.New$5();
   SC$8.TextHoleRE="\\${([^}]+)}";
-  SC$8.$cctor=Global.ignore;
- });
+ };
  Flow=Next.Flow=Runtime.Class({
   get_Render:function()
   {
@@ -5954,8 +5954,9 @@
   SC$9.$cctor();
   return SC$9.MousePosSt;
  };
- SC$9.$cctor=Runtime.Cctor(function()
+ SC$9.$cctor=function()
  {
+  SC$9.$cctor=Global.ignore;
   function buttonListener(evt,down)
   {
    var m;
@@ -5995,6 +5996,5 @@
     return List.filter(p,l);
    });
   })):null;
-  SC$9.$cctor=Global.ignore;
- });
+ };
 }());

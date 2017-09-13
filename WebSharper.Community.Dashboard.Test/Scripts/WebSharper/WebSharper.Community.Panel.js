@@ -638,8 +638,9 @@
  {
   return Rect.fromPanel(panel).inflate(margin,margin);
  };
- SC$1.$cctor=Runtime.Cctor(function()
+ SC$1.$cctor=function()
  {
+  SC$1.$cctor=Global.ignore;
   SC$1.StackPanelLayoutManager={
    WebSharper_Community_Panel_ILayoutManager$Relayout:function(panelContainer,exceptPanel)
    {
@@ -650,8 +651,7 @@
     return null;
    }
   };
-  SC$1.$cctor=Global.ignore;
- });
+ };
  Dialog=Panel.Dialog=Runtime.Class({
   get_Render:function()
   {

@@ -159,14 +159,14 @@
   SC$1.$cctor();
   SC$1.Role=$1;
  };
- SC$1.$cctor=Runtime.Cctor(function()
+ SC$1.$cctor=function()
  {
+  SC$1.$cctor=Global.ignore;
   SC$1.Role=Role.Server;
   SC$1.Log=Global.ignore;
   SC$1.DataDirectory="";
   SC$1.UpdateConfiguration=Global.ignore;
-  SC$1.$cctor=Global.ignore;
- });
+ };
  Value=MessageBus.Value=Runtime.Class({
   get_trySystem:function()
   {
@@ -334,8 +334,9 @@
   SC$2.$cctor();
   return SC$2.log;
  };
- SC$2.$cctor=Runtime.Cctor(function()
+ SC$2.$cctor=function()
  {
+  SC$2.$cctor=Global.ignore;
   SC$2.log=Environment.Log();
   SC$2.Agent=MailboxProcessor.Start(function(inbox)
   {
@@ -421,7 +422,7 @@
        return $1("RegisterListener:"+Utils.toSafe($2)+" "+Utils.toSafe($3));
       }))(Global.id))(listenerInfo.Name))(listenerInfo.Key),(MessageBus.log())(x),loop(AgentState.New(state.SystemStatus,state.ServerCallback,new List.T({
        $:1,
-       $0:[listenerInfo,a.$0[2],List.T.Empty],
+       $0:[listenerInfo,a.$0[1],List.T.Empty],
        $1:state.Listeners
       }),state.LastConfigurationTime)))):a.$==3?loop(AgentState.New(state.SystemStatus,{
        $:1,
@@ -451,8 +452,7 @@
    }
    return loop(AgentState.get_empty());
   },null);
-  SC$2.$cctor=Global.ignore;
- });
+ };
  InPortData=Dashboard.InPortData=Runtime.Class({
   WithCacheSize:function(cacheSize)
   {
@@ -491,7 +491,7 @@
  {
   var msg;
   msg=MessageBus.CreateMessage(value);
-  return InPortData.New(msg.Key,name,msg.WithTime((new Date(0,0-1,0)).getTime()),1);
+  return InPortData.New(msg.Key,name,msg.WithTime((new Date(1,1-1,1)).getTime()),1);
  };
  InPortData.New=function(Key$1,Name,Value$1,CacheSize)
  {
@@ -791,73 +791,32 @@
      while(e.MoveNext())
       (function()
       {
-       var $1,$2,$3,templateValue,_this,i$1,cell1,cell2,o,outPort,o$1,inPort,m;
+       var i$1,cell1,cell2,o,outPort,o$1,inPort,_this;
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
-       o=Seq.tryFind(function(port)
        {
-        return port.Key===cell1.OutPortKey;
-       },allOutPorts);
-       if(o==null)
-        null;
-       else
+        o=Seq.tryFind(function(port)
         {
-         outPort=o.$0;
-         o$1=Seq.tryFind(function(port)
+         return port.Key===cell1.OutPortKey;
+        },allOutPorts),o==null?null:{
+         $:1,
+         $0:(outPort=o.$0,(o$1=Seq.tryFind(function(port)
          {
           return port.Data.Key===cell2.InPortKey;
-         },allInPorts);
-         if(o$1==null)
-          $1=null;
-         else
-          {
-           inPort=o$1.$0;
-           log("Found inPort");
-           inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):null;
-           m=inPort.PortValue.c.Value;
-           if(m.$==0)
-            templateValue=Message.Create(new Value({
-             $:0,
-             $0:0
-            }));
-           else
-            if(m.$==1)
-             templateValue=Message.Create(new Value({
-              $:1,
-              $0:""
-             }));
-            else
-             if(m.$==2)
-              templateValue=Message.Create(new Value({
-               $:2,
-               $0:false
-              }));
-             else
-              if(m.$==3)
-               templateValue=Message.Create(new Value({
-                $:3,
-                $0:[0,List.T.Empty]
-               }));
-              else
-               throw new MatchFailureException.New("Rules.fs",38,106);
-           $3=(_this=MessageBus.Agent(),(_this.mailbox.AddLast({
-            $:2,
-            $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),templateValue,function(a)
-            {
-             inPort.Receive(a);
-            }]
-           }),_this.resume()));
-           $1={
-            $:1,
-            $0:$3
-           };
-          }
-         ({
+         },allInPorts),o$1==null?null:{
           $:1,
-          $0:$1
-         });
-        }
+          $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):void 0,_this=MessageBus.Agent(),_this.mailbox.AddLast({
+           $:2,
+           $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),function(a)
+           {
+            inPort.Receive(a);
+           }]
+          }),_this.resume()))
+         }))
+        };
+        return;
+       }
       }());
     }
     finally
@@ -2026,7 +1985,7 @@
         $0:msg
        });
        _this.resume();
-      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:965639103",[worker.InPorts.get_Item(1).get_String()])),isFirstCall=false):((new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-353093100",[worker.InPorts.get_Item(1).get_String(),value.WithKey(worker.OutPorts.get_Item(0).Key)]),worker.OutPorts.get_Item(0).Trigger(value.Value));
+      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:965639103",[worker.InPorts.get_Item(1).get_String()])),isFirstCall=false):(new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-353093100",[worker.InPorts.get_Item(1).get_String(),value]);
      },worker.InPorts.get_Item(0).PortValue.v);
      return null;
     }
@@ -2046,7 +2005,7 @@
  };
  DatabaseEvent.get_Create=function()
  {
-  return DatabaseEvent.New(WorkerData.Create("Database",List.ofArray([InPortData.CreateNumber(" in Value",100),InPortData.CreateString("Database name","Database.txt")]),List.ofArray([OutPort.Create("Number value")])));
+  return DatabaseEvent.New(WorkerData.Create("Database",List.ofArray([InPortData.CreateNumber(" in Value",100),InPortData.CreateString("Database name","Database.txt")]),List.T.Empty));
  };
  DatabaseEvent.New=function(DatabaseEventData)
  {
@@ -2411,14 +2370,17 @@
    chartBufferSize=this.ChartWidgetData.InPorts.get_Item(3).Value.Value.get_AsNumber()>>0;
    resultNumberOfPorts=(this.ChartWidgetData.InPorts.get_Item(5).Value.Value.get_AsNumber()>>0)+6;
    i=this.ChartWidgetData;
-   return WorkerData.New(i.WorkerName,resultNumberOfPorts<this.ChartWidgetData.InPorts.get_Length()?(List.splitAt(resultNumberOfPorts,this.ChartWidgetData.InPorts))[0]:resultNumberOfPorts>this.ChartWidgetData.InPorts.get_Length()?(startIndex=this.ChartWidgetData.InPorts.get_Length()-6+1,List.append(this.ChartWidgetData.InPorts,List.ofSeq(Seq.delay(function()
+   return WorkerData.New(i.WorkerName,List.mapi(function(ind,port)
+   {
+    return ind===0||ind>5?port.WithCacheSize(chartBufferSize):port;
+   },resultNumberOfPorts<this.ChartWidgetData.InPorts.get_Length()?(List.splitAt(resultNumberOfPorts,this.ChartWidgetData.InPorts))[0]:resultNumberOfPorts>this.ChartWidgetData.InPorts.get_Length()?(startIndex=this.ChartWidgetData.InPorts.get_Length()-6+1,List.append(this.ChartWidgetData.InPorts,List.ofSeq(Seq.delay(function()
    {
     return Seq.map(function(i$1)
     {
      var c;
      return InPortData.CreateNumber(" in Value "+(c=startIndex+i$1,Global.String(c)),0).WithCacheSize(chartBufferSize);
     },Operators.range(0,resultNumberOfPorts-$this.ChartWidgetData.InPorts.get_Length()-1));
-   })))):this.ChartWidgetData.InPorts,i.OutPorts);
+   })))):this.ChartWidgetData.InPorts),i.OutPorts);
   }
  },null,ChartWidget);
  ChartWidget.get_FromWorker=function()
@@ -2583,14 +2545,14 @@
  {
   return fnc(Worker.Create(data));
  };
- SC$3.$cctor=Runtime.Cctor(function()
+ SC$3.$cctor=function()
  {
+  SC$3.$cctor=Global.ignore;
   SC$3.CreateDashboard=App.RegisterAppModelLib(Dashboard$1.Create(function()
   {
    return App.PanelContainerCreator();
   }));
-  SC$3.$cctor=Global.ignore;
- });
+ };
  AppDataHelper.RecreatWidgetsOnServer=function(toWorker,widgets)
  {
   function m(a,a$1,gr)
@@ -2681,13 +2643,12 @@
  AppData=Dashboard.AppData=Runtime.Class({
   RecreateOnServer:function(json,toWorker)
   {
-   var allEvents,allWorkers,a,_this;
+   var allWorkers,a,_this;
    function a$1(grName,rules)
    {
     rules.Reconnect(allWorkers);
    }
-   allEvents=AppDataHelper.RecreateEventsOnServer(toWorker,this.Events);
-   allWorkers=List.append(allEvents,AppDataHelper.RecreatWidgetsOnServer(toWorker,this.Widgets));
+   allWorkers=List.append(AppDataHelper.RecreateEventsOnServer(toWorker,this.Events),AppDataHelper.RecreatWidgetsOnServer(toWorker,this.Widgets));
    List.iter(function($1)
    {
     return a$1($1[0],$1[1]);
@@ -2709,7 +2670,7 @@
    _this=MessageBus.Agent();
    _this.mailbox.AddLast(a);
    _this.resume();
-   return allEvents;
+   return allWorkers;
   },
   RecreateOnClientEventsRunning:function(dashboard,panelContainerCreator,toWorker)
   {

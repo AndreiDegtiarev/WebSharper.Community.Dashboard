@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Control,Observer,Message,HotStream,HotStream$1,Observable,Microsoft,FSharp,Control$1,ObservableModule,Event,Event$1,DelegateEvent,DelegateEvent$1,FSharpEvent,FSharpDelegateEvent,EventModule,MailboxProcessor,IntelliFactory,Runtime,Util,List,Seq,Unchecked,Arrays,Collections,List$1,Concurrency,TimeoutException,Operators,LinkedList;
+ var Global,WebSharper,Control,Observer,Message,HotStream,HotStream$1,Observable,Microsoft,FSharp,Control$1,ObservableModule,Event,Event$1,DelegateEvent,DelegateEvent$1,FSharpEvent,FSharpDelegateEvent,EventModule,MailboxProcessor,IntelliFactory,Runtime,Util,List,Seq,Unchecked,Arrays,Concurrency,TimeoutException,Operators,Collections,LinkedList;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Control=WebSharper.Control=WebSharper.Control||{};
@@ -29,11 +29,10 @@
  Seq=WebSharper&&WebSharper.Seq;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Arrays=WebSharper&&WebSharper.Arrays;
- Collections=WebSharper&&WebSharper.Collections;
- List$1=Collections&&Collections.List;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  TimeoutException=WebSharper&&WebSharper.TimeoutException;
  Operators=WebSharper&&WebSharper.Operators;
+ Collections=WebSharper&&WebSharper.Collections;
  LinkedList=Collections&&Collections.LinkedList;
  Message.Completed={
   $:2
@@ -642,21 +641,21 @@
   },
   RemoveHandler$1:function(h)
   {
-   var o;
+   var o,o$1;
    o=Seq.tryFindIndex(function(y)
    {
     return Unchecked.Equals(h,y);
    },this.Handlers);
-   o==null?void 0:this.Handlers.RemoveAt(o.$0);
+   o==null?void 0:(o$1=this.Handlers,o$1.splice.apply(o$1,[o.$0,1]));
   },
   AddHandler$1:function(h)
   {
-   this.Handlers.Add(h);
+   this.Handlers.push(h);
   },
   Trigger:function(x)
   {
    var a,i,$1;
-   a=this.Handlers.ToArray();
+   a=this.Handlers.slice();
    for(i=0,$1=a.length-1;i<=$1;i++)(Arrays.get(a,i))(null,x);
   },
   RemoveHandler:function(x)
@@ -682,21 +681,21 @@
  DelegateEvent$1=DelegateEvent.DelegateEvent=Runtime.Class({
   RemoveHandler$1:function(h)
   {
-   var o;
+   var o,o$1;
    o=Seq.tryFindIndex(function(y)
    {
     return Unchecked.Equals(h,y);
    },this.Handlers);
-   o==null?void 0:this.Handlers.RemoveAt(o.$0);
+   o==null?void 0:(o$1=this.Handlers,o$1.splice.apply(o$1,[o.$0,1]));
   },
   AddHandler$1:function(h)
   {
-   this.Handlers.Add(h);
+   this.Handlers.push(h);
   },
   Trigger:function(x)
   {
    var a,i,$1;
-   a=this.Handlers.ToArray();
+   a=this.Handlers.slice();
    for(i=0,$1=a.length-1;i<=$1;i++)Arrays.get(a,i).apply(null,x);
   },
   RemoveHandler:function(x)
@@ -718,12 +717,12 @@
  FSharpEvent=Control.FSharpEvent=Runtime.Class({},WebSharper.Obj,FSharpEvent);
  FSharpEvent.New=Runtime.Ctor(function()
  {
-  this.event=Event$1.New(new List$1.New$2());
+  this.event=Event$1.New([]);
  },FSharpEvent);
  FSharpDelegateEvent=Control.FSharpDelegateEvent=Runtime.Class({},WebSharper.Obj,FSharpDelegateEvent);
  FSharpDelegateEvent.New=Runtime.Ctor(function()
  {
-  this.event=DelegateEvent$1.New(new List$1.New$2());
+  this.event=DelegateEvent$1.New([]);
  },FSharpDelegateEvent);
  EventModule.Split=function(f,e)
  {
@@ -770,7 +769,7 @@
  {
   var buf,ev;
   buf=[null];
-  ev=Event$1.New(new List$1.New$2());
+  ev=Event$1.New([]);
   e.Subscribe(Util.observer(function(x)
   {
    var m;
@@ -788,7 +787,7 @@
  EventModule.Merge=function(e1,e2)
  {
   var r;
-  r=Event$1.New(new List$1.New$2());
+  r=Event$1.New([]);
   e1.Subscribe(Util.observer(function(a)
   {
    r.Trigger(a);
@@ -802,7 +801,7 @@
  EventModule.Map=function(f,e)
  {
   var r;
-  r=Event$1.New(new List$1.New$2());
+  r=Event$1.New([]);
   e.Subscribe(Util.observer(function(x)
   {
    r.Trigger(f(x));
@@ -812,7 +811,7 @@
  EventModule.Filter=function(ok,e)
  {
   var r;
-  r=Event$1.New(new List$1.New$2());
+  r=Event$1.New([]);
   e.Subscribe(Util.observer(function(x)
   {
    if(ok(x))

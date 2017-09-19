@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,Guid,Doc,Enumerator,Key,ListModel,Unchecked,AttrModule,Option,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,Chart,LiveChart,Pervasives;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,System,Guid,Doc,Enumerator,Key,ListModel,Unchecked,AttrModule,Option,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,Chart,LiveChart,Pervasives;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -79,7 +79,8 @@
  PropertyGrid=Community&&Community.PropertyGrid;
  Properties=PropertyGrid&&PropertyGrid.Properties;
  MatchFailureException=WebSharper&&WebSharper.MatchFailureException;
- Guid=WebSharper&&WebSharper.Guid;
+ System=Global.System;
+ Guid=System&&System.Guid;
  Doc=Next&&Next.Doc;
  Enumerator=WebSharper&&WebSharper.Enumerator;
  Key=Next&&Next.Key;
@@ -1611,7 +1612,7 @@
      Var.Set($this.Mode,{
       $:1
      });
-    }),$this.EditorSelectorRun.GroupByIndex(0).SelectorItems.get_Length()>1?$this.EditorSelectorRun.get_RenderMenu():Doc.Element("div",[],[])]),Doc.Element("td",[],[$this.EditorSelectorRun.get_Render()])])])]);
+    }),$this.EditorSelectorRun.get_RenderMenu()]),Doc.Element("td",[],[$this.EditorSelectorRun.get_Render()])])])]);
    },this.Mode.v));
   },
   Restore:function(panelCreator,events,widgets,rules)
@@ -2243,14 +2244,30 @@
     $:1,
     $0:function(worker)
     {
-     var strView;
+     var strView,widthView,fontSizeView,fontFamilyView;
      strView=View.Map(function(msg)
      {
       var m,c;
       m=msg.Value;
       return m.$==0?(c=m.$0>>0,Global.String(c)):m.$==1?m.$0:m.$==2?Global.String(m.$0):"Wrong port value format";
      },worker.InPorts.get_Item(0).PortValue.v);
-     return Doc.Element("div",[AttrModule.Class("bigvalue")],[Doc.TextView(strView)]);
+     widthView=View.Map(function(msg)
+     {
+      var c;
+      return(c=msg.Value.get_AsNumber(),Global.String(c))+"px";
+     },worker.InPorts.get_Item(1).PortValue.v);
+     fontSizeView=View.Map(function(msg)
+     {
+      var c;
+      return(c=msg.Value.get_AsNumber(),Global.String(c))+"px";
+     },worker.InPorts.get_Item(2).PortValue.v);
+     fontFamilyView=View.Map(function(msg)
+     {
+      var p;
+      p=msg.Value.get_AsSelect();
+      return p[1].get_Item(p[0]);
+     },worker.InPorts.get_Item(3).PortValue.v);
+     return Doc.Element("div",[AttrModule.Class("bigvalue"),AttrModule.DynamicStyle("width",widthView),AttrModule.DynamicStyle("font-size",fontSizeView),AttrModule.DynamicStyle("font-family",fontFamilyView)],[Doc.TextView(strView)]);
     }
    };
   },
@@ -2272,7 +2289,7 @@
  };
  TextBoxWidget.get_Create=function()
  {
-  return TextBoxWidget.New(WorkerData.Create("Text",List.ofArray([InPortData.CreateString("in Text","txt")]),List.T.Empty));
+  return TextBoxWidget.New(WorkerData.Create("Text",List.ofArray([InPortData.CreateString("in Text","txt"),InPortData.CreateNumber("Width",200),InPortData.CreateNumber("Font-Size",100),InPortData.CreateSelect("Font-Family",[0,List.ofArray(["Times New Roman","Courier New","Arial","Freestyle Script"])])]),List.T.Empty));
  };
  TextBoxWidget.New=function(TextBoxWidgetData)
  {

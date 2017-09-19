@@ -162,10 +162,10 @@
    function m(name,queryItem,a,link)
    {
     var p,v,m$2,v$1,v$2,v$3;
-    return Unchecked.Equals(queryItem,0)?(p=link(value[name]),(map[0]=Map.FoldBack(function($1,$2,$3)
+    return queryItem===0?(p=link(value[name]),(map[0]=Map.FoldBack(function($1,$2,$3)
     {
      return $3.Add($1,$2);
-    },p[1],map[0]),p[0])):Unchecked.Equals(queryItem,1)?(map[0]=(v=List.head((link(value[name]))[0]),map[0].Add(name,v)),List.T.Empty):Unchecked.Equals(queryItem,2)?(m$2=value[name],m$2!=null&&m$2.$==1?map[0]=(v$1=List.head((link(m$2.$0))[0]),map[0].Add(name,v$1)):void 0,List.T.Empty):Unchecked.Equals(queryItem,3)?(v$2=value[name],(v$2!=null?map[0]=(v$3=List.head((link(Nullable.get(v$2)))[0]),map[0].Add(name,v$3)):void 0,List.T.Empty)):Operators.FailWith("invalid QueryItem enum value");
+    },p[1],map[0]),p[0])):queryItem===1?(map[0]=(v=List.head((link(value[name]))[0]),map[0].Add(name,v)),List.T.Empty):queryItem===2?(m$2=value[name],m$2!=null&&m$2.$==1?map[0]=(v$1=List.head((link(m$2.$0))[0]),map[0].Add(name,v$1)):void 0,List.T.Empty):queryItem===3?(v$2=value[name],(v$2!=null?map[0]=(v$3=List.head((link(Nullable.get(v$2)))[0]),map[0].Add(name,v$3)):void 0,List.T.Empty)):Operators.FailWith("invalid QueryItem enum value");
    }
    function g(t)
    {
@@ -231,13 +231,13 @@
      name=t$2[0];
      queryItem=t$2[1];
      parse=t$2[2];
-     return rest$2!=null&&rest$2.$==1?(rest$3=rest$2.$0,Unchecked.Equals(queryItem,0)?(m=parse([rest$3,query]),m!=null&&m.$==1?(v[name]=m.$0[0],{
+     return rest$2!=null&&rest$2.$==1?(rest$3=rest$2.$0,queryItem===0?(m=parse([rest$3,query]),m!=null&&m.$==1?(v[name]=m.$0[0],{
       $:1,
       $0:m.$0[1]
-     }):null):Unchecked.Equals(queryItem,1)?(m$1=Map.TryFind(name,query),m$1==null?null:(v[name]=m$1.$0,{
+     }):null):queryItem===1?(m$1=Map.TryFind(name,query),m$1==null?null:(v[name]=m$1.$0,{
       $:1,
       $0:rest$3
-     })):Unchecked.Equals(queryItem,2)?(m$2=Map.TryFind(name,query),m$2!=null&&m$2.$==1?(m$3=parse([List.ofArray([m$2.$0]),new FSharpMap.New([])]),m$3!=null&&m$3.$==1?(v[name]={
+     })):queryItem===2?(m$2=Map.TryFind(name,query),m$2!=null&&m$2.$==1?(m$3=parse([List.ofArray([m$2.$0]),new FSharpMap.New([])]),m$3!=null&&m$3.$==1?(v[name]={
       $:1,
       $0:m$3.$0[0]
      },{
@@ -246,7 +246,7 @@
      }):null):(v[name]=null,{
       $:1,
       $0:rest$3
-     })):Unchecked.Equals(queryItem,3)?(m$4=Map.TryFind(name,query),m$4!=null&&m$4.$==1?(m$5=parse([List.ofArray([m$4.$0]),new FSharpMap.New([])]),m$5!=null&&m$5.$==1?(v[name]=m$5.$0[0],{
+     })):queryItem===3?(m$4=Map.TryFind(name,query),m$4!=null&&m$4.$==1?(m$5=parse([List.ofArray([m$4.$0]),new FSharpMap.New([])]),m$5!=null&&m$5.$==1?(v[name]=m$5.$0[0],{
       $:1,
       $0:rest$3
      }):null):(v[name]=null,{

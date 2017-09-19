@@ -1,22 +1,14 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,JavaScript,JSModule,Obj,Collections,EqualityComparer,MacroModule,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Pervasives,Json,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,HtmlContentExtensions,SingleNode,Activator,Operators,Nullable,Utils,Concurrency,CT,AsyncBody,Scheduler,SC$2,Enumerator,T,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,Guid,HashSetUtil,HashSet,LazyExtensionsProxy,LazyRecord,Lazy,T$1,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,String,Date,console,Math;
+ var Global,WebSharper,JavaScript,JSModule,Pervasives,Json,Obj,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,HtmlContentExtensions,SingleNode,Activator,Collections,EqualityComparer,Comparers,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Operators,Nullable,Utils,Concurrency,CT,AsyncBody,Scheduler,SC$2,Enumerator,T,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,ArgumentNullException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,System,Guid,HashSetUtil,HashSet,LazyExtensionsProxy,LazyRecord,Lazy,T$1,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,String,Date,console,Math;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  JavaScript=WebSharper.JavaScript=WebSharper.JavaScript||{};
  JSModule=JavaScript.JSModule=JavaScript.JSModule||{};
- Obj=WebSharper.Obj=WebSharper.Obj||{};
- Collections=WebSharper.Collections=WebSharper.Collections||{};
- EqualityComparer=Collections.EqualityComparer=Collections.EqualityComparer||{};
- MacroModule=WebSharper.MacroModule=WebSharper.MacroModule||{};
- EquatableEqualityComparer=MacroModule.EquatableEqualityComparer=MacroModule.EquatableEqualityComparer||{};
- BaseEqualityComparer=MacroModule.BaseEqualityComparer=MacroModule.BaseEqualityComparer||{};
- Comparer=Collections.Comparer=Collections.Comparer||{};
- ComparableComparer=MacroModule.ComparableComparer=MacroModule.ComparableComparer||{};
- BaseComparer=MacroModule.BaseComparer=MacroModule.BaseComparer||{};
  Pervasives=JavaScript.Pervasives=JavaScript.Pervasives||{};
  Json=WebSharper.Json=WebSharper.Json||{};
+ Obj=WebSharper.Obj=WebSharper.Obj||{};
  Remoting=WebSharper.Remoting=WebSharper.Remoting||{};
  XhrProvider=Remoting.XhrProvider=Remoting.XhrProvider||{};
  AjaxRemotingProvider=Remoting.AjaxRemotingProvider=Remoting.AjaxRemotingProvider||{};
@@ -24,6 +16,14 @@
  HtmlContentExtensions=WebSharper.HtmlContentExtensions=WebSharper.HtmlContentExtensions||{};
  SingleNode=HtmlContentExtensions.SingleNode=HtmlContentExtensions.SingleNode||{};
  Activator=WebSharper.Activator=WebSharper.Activator||{};
+ Collections=WebSharper.Collections=WebSharper.Collections||{};
+ EqualityComparer=Collections.EqualityComparer=Collections.EqualityComparer||{};
+ Comparers=WebSharper.Comparers=WebSharper.Comparers||{};
+ EquatableEqualityComparer=Comparers.EquatableEqualityComparer=Comparers.EquatableEqualityComparer||{};
+ BaseEqualityComparer=Comparers.BaseEqualityComparer=Comparers.BaseEqualityComparer||{};
+ Comparer=Collections.Comparer=Collections.Comparer||{};
+ ComparableComparer=Comparers.ComparableComparer=Comparers.ComparableComparer||{};
+ BaseComparer=Comparers.BaseComparer=Comparers.BaseComparer||{};
  Operators=WebSharper.Operators=WebSharper.Operators||{};
  Nullable=WebSharper.Nullable=WebSharper.Nullable||{};
  Utils=WebSharper.Utils=WebSharper.Utils||{};
@@ -54,12 +54,14 @@
  OperationCanceledException=WebSharper.OperationCanceledException=WebSharper.OperationCanceledException||{};
  ArgumentException=WebSharper.ArgumentException=WebSharper.ArgumentException||{};
  ArgumentOutOfRangeException=WebSharper.ArgumentOutOfRangeException=WebSharper.ArgumentOutOfRangeException||{};
+ ArgumentNullException=WebSharper.ArgumentNullException=WebSharper.ArgumentNullException||{};
  InvalidOperationException=WebSharper.InvalidOperationException=WebSharper.InvalidOperationException||{};
  AggregateException=WebSharper.AggregateException=WebSharper.AggregateException||{};
  TimeoutException=WebSharper.TimeoutException=WebSharper.TimeoutException||{};
  FormatException=WebSharper.FormatException=WebSharper.FormatException||{};
  OverflowException=WebSharper.OverflowException=WebSharper.OverflowException||{};
- Guid=WebSharper.Guid=WebSharper.Guid||{};
+ System=Global.System=Global.System||{};
+ Guid=System.Guid=System.Guid||{};
  HashSetUtil=Collections.HashSetUtil=Collections.HashSetUtil||{};
  HashSet=Collections.HashSet=Collections.HashSet||{};
  LazyExtensionsProxy=WebSharper.LazyExtensionsProxy=WebSharper.LazyExtensionsProxy||{};
@@ -108,101 +110,6 @@
   for(var k$1 in o)r.push([k$1,o[k$1]]);
   return r;
  };
- Obj=WebSharper.Obj=Runtime.Class({
-  Equals:function(obj)
-  {
-   return this===obj;
-  },
-  GetHashCode:function()
-  {
-   return -1;
-  }
- },null,Obj);
- Obj.New=Runtime.Ctor(function()
- {
- },Obj);
- EqualityComparer=Collections.EqualityComparer=Runtime.Class({
-  CGetHashCode0:function(x)
-  {
-   return this.GetHashCode$1(x);
-  },
-  CEquals0:function(x,y)
-  {
-   return this.Equals$1(x,y);
-  },
-  CGetHashCode:function(x)
-  {
-   return this.GetHashCode$1(x);
-  },
-  CEquals:function(x,y)
-  {
-   return this.Equals$1(x,y);
-  }
- },Obj,EqualityComparer);
- EqualityComparer.New=Runtime.Ctor(function()
- {
- },EqualityComparer);
- EquatableEqualityComparer=MacroModule.EquatableEqualityComparer=Runtime.Class({
-  GetHashCode$1:function(x)
-  {
-   return Unchecked.Hash(x);
-  },
-  Equals$1:function(x,y)
-  {
-   return x.EEquals(y);
-  }
- },EqualityComparer,EquatableEqualityComparer);
- EquatableEqualityComparer.New=Runtime.Ctor(function()
- {
-  EqualityComparer.New.call(this);
- },EquatableEqualityComparer);
- BaseEqualityComparer=MacroModule.BaseEqualityComparer=Runtime.Class({
-  GetHashCode$1:function(x)
-  {
-   return Unchecked.Hash(x);
-  },
-  Equals$1:function(x,y)
-  {
-   return Unchecked.Equals(x,y);
-  }
- },EqualityComparer,BaseEqualityComparer);
- BaseEqualityComparer.New=Runtime.Ctor(function()
- {
-  EqualityComparer.New.call(this);
- },BaseEqualityComparer);
- Comparer=Collections.Comparer=Runtime.Class({
-  Compare0:function(x,y)
-  {
-   return this.Compare$1(x,y);
-  },
-  Compare:function(x,y)
-  {
-   return this.Compare$1(x,y);
-  }
- },Obj,Comparer);
- Comparer.New=Runtime.Ctor(function()
- {
- },Comparer);
- ComparableComparer=MacroModule.ComparableComparer=Runtime.Class({
-  Compare$1:function(x,y)
-  {
-   return x.CompareTo(y);
-  }
- },Comparer,ComparableComparer);
- ComparableComparer.New=Runtime.Ctor(function()
- {
-  Comparer.New.call(this);
- },ComparableComparer);
- BaseComparer=MacroModule.BaseComparer=Runtime.Class({
-  Compare$1:function(x,y)
-  {
-   return Unchecked.Compare(x,y);
-  }
- },Comparer,BaseComparer);
- BaseComparer.New=Runtime.Ctor(function()
- {
-  Comparer.New.call(this);
- },BaseComparer);
  Pervasives.GetJS=function(x,items)
  {
   var x$1,e;
@@ -319,6 +226,19 @@
    }
   return r;
  };
+ Obj=WebSharper.Obj=Runtime.Class({
+  Equals:function(obj)
+  {
+   return this===obj;
+  },
+  GetHashCode:function()
+  {
+   return -1;
+  }
+ },null,Obj);
+ Obj.New=Runtime.Ctor(function()
+ {
+ },Obj);
  XhrProvider=Remoting.XhrProvider=Runtime.Class({
   Sync:function(url,headers,data)
   {
@@ -541,6 +461,88 @@
     }):void 0;
    }
  };
+ EqualityComparer=Collections.EqualityComparer=Runtime.Class({
+  CGetHashCode0:function(x)
+  {
+   return this.GetHashCode$1(x);
+  },
+  CEquals0:function(x,y)
+  {
+   return this.Equals$1(x,y);
+  },
+  CGetHashCode:function(x)
+  {
+   return this.GetHashCode$1(x);
+  },
+  CEquals:function(x,y)
+  {
+   return this.Equals$1(x,y);
+  }
+ },Obj,EqualityComparer);
+ EqualityComparer.New=Runtime.Ctor(function()
+ {
+ },EqualityComparer);
+ EquatableEqualityComparer=Comparers.EquatableEqualityComparer=Runtime.Class({
+  GetHashCode$1:function(x)
+  {
+   return Unchecked.Hash(x);
+  },
+  Equals$1:function(x,y)
+  {
+   return x.EEquals(y);
+  }
+ },EqualityComparer,EquatableEqualityComparer);
+ EquatableEqualityComparer.New=Runtime.Ctor(function()
+ {
+  EqualityComparer.New.call(this);
+ },EquatableEqualityComparer);
+ BaseEqualityComparer=Comparers.BaseEqualityComparer=Runtime.Class({
+  GetHashCode$1:function(x)
+  {
+   return Unchecked.Hash(x);
+  },
+  Equals$1:function(x,y)
+  {
+   return Unchecked.Equals(x,y);
+  }
+ },EqualityComparer,BaseEqualityComparer);
+ BaseEqualityComparer.New=Runtime.Ctor(function()
+ {
+  EqualityComparer.New.call(this);
+ },BaseEqualityComparer);
+ Comparer=Collections.Comparer=Runtime.Class({
+  Compare0:function(x,y)
+  {
+   return this.Compare$1(x,y);
+  },
+  Compare:function(x,y)
+  {
+   return this.Compare$1(x,y);
+  }
+ },Obj,Comparer);
+ Comparer.New=Runtime.Ctor(function()
+ {
+ },Comparer);
+ ComparableComparer=Comparers.ComparableComparer=Runtime.Class({
+  Compare$1:function(x,y)
+  {
+   return x.CompareTo(y);
+  }
+ },Comparer,ComparableComparer);
+ ComparableComparer.New=Runtime.Ctor(function()
+ {
+  Comparer.New.call(this);
+ },ComparableComparer);
+ BaseComparer=Comparers.BaseComparer=Runtime.Class({
+  Compare$1:function(x,y)
+  {
+   return Unchecked.Compare(x,y);
+  }
+ },Comparer,BaseComparer);
+ BaseComparer.New=Runtime.Ctor(function()
+ {
+  Comparer.New.call(this);
+ },BaseComparer);
  Operators.charRange=function(min,max)
  {
   var minv,count;
@@ -902,12 +904,12 @@
  {
   return Concurrency.FromContinuations(function(ok,err,cc)
   {
-   Unchecked.Equals(t.get_Status(),0)?t.Start():void 0;
+   t.get_Status()===0?t.Start():void 0;
    {
-    t.ContinueWith$2(function(t$1)
+    t.ContinueWith$1(function(t$1)
     {
      return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok(t$1.get_Result());
-    });
+    },Concurrency.noneCT());
     return;
    }
   });
@@ -916,12 +918,12 @@
  {
   return Concurrency.FromContinuations(function(ok,err,cc)
   {
-   Unchecked.Equals(t.get_Status(),0)?t.Start():void 0;
+   t.get_Status()===0?t.Start():void 0;
    {
-    t.ContinueWith$2(function(t$1)
+    t.ContinueWith$1(function(t$1)
     {
      return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok();
-    });
+    },Concurrency.noneCT());
     return;
    }
   });
@@ -1756,6 +1758,185 @@
  WebSharper.checkThis=function(_this)
  {
   return Unchecked.Equals(_this,null)?Operators.InvalidOp("The initialization of an object or value resulted in an object or value being accessed recursively before it was fully initialized."):_this;
+ };
+ Arrays.binarySearch=function(haystack,comparer,start,finish)
+ {
+  var left,right,pivot,cmp;
+  left=start;
+  right=finish-1;
+  if(start<0)
+   throw new ArgumentOutOfRangeException.New("index","Non-negative number required.");
+  else
+   null;
+  if(finish>Arrays.length(haystack))
+   throw new ArgumentException.New$2("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+  else
+   null;
+  if(finish<start)
+   throw new ArgumentOutOfRangeException.New("length","Non-negative number required.");
+  else
+   null;
+  while(true)
+   if(left>right)
+    return~left;
+   else
+    {
+     pivot=(left+right)/2>>0;
+     cmp=comparer(Arrays.get(haystack,pivot));
+     if(left===right)
+      return cmp===0?left:cmp>0?~(left+1):~left;
+     else
+      if(cmp<=0)
+       right=pivot;
+      else
+       left=pivot+1;
+    }
+ };
+ Arrays.binarySearchComparer=function(needle)
+ {
+  return needle.CompareTo0?function(a)
+  {
+   return needle.CompareTo0(a);
+  }:function(x)
+  {
+   if(x.CompareTo0)
+    return-x.CompareTo0(needle);
+   else
+    throw new InvalidOperationException.New$2("Failed to compare two elements in the array.",new ArgumentException.New$2("At least one object must implement IComparable."));
+  };
+ };
+ Arrays.sortInternal=function(keys,index,length,comp,swap)
+ {
+  function partition(l,r)
+  {
+   var i,pivot,j,$1;
+   pivot=keys[r];
+   i=l-1;
+   for(j=l,$1=r-1;j<=$1;j++)if(comp(keys[j],pivot)<0)
+    {
+     i=i+1;
+     swap(i,j);
+    }
+   comp(keys[r],keys[i+1])<0?swap(i+1,r):void 0;
+   return i+1;
+  }
+  function quicksort(l,r)
+  {
+   var p;
+   return l<r?(p=partition(l,r),(quicksort(l,p-1),quicksort(p+1,r))):null;
+  }
+  quicksort(index,index+length-1);
+ };
+ Arrays.sortSub=function(keys,index,length,comp)
+ {
+  Arrays.sortInternal(keys,index,length,comp,function(i,j)
+  {
+   var k;
+   k=keys[i];
+   keys[i]=keys[j];
+   {
+    keys[j]=k;
+    return;
+   }
+  });
+ };
+ Arrays.sortByKeys=function(keys,items,index,length,comp)
+ {
+  Arrays.sortInternal(keys,index,length,comp,function(i,j)
+  {
+   var k,v;
+   k=keys[i];
+   keys[i]=keys[j];
+   keys[j]=k;
+   v=items[i];
+   items[i]=items[j];
+   {
+    items[j]=v;
+    return;
+   }
+  });
+ };
+ Arrays.clear=function(array,index,length)
+ {
+  var i,$1;
+  if(array==null)
+   throw new ArgumentNullException.New$1(array);
+  else
+   void 0;
+  if(index<0||length<0||index+length>Arrays.length(array))
+   throw new IndexOutOfRangeException.New();
+  else
+   void 0;
+  for(i=index,$1=index+length-1;i<=$1;i++)Arrays.set(array,i,typeof Arrays.get(array,i)=="number"?0:null);
+ };
+ Arrays.constrainedCopy=function(src,srcIndex,dst,dstIndex,length)
+ {
+  if(src===dst&&dstIndex<=srcIndex+length)
+   Arrays.blit(Arrays.init(length,function(i)
+   {
+    return Arrays.get(src,srcIndex+i);
+   }),0,dst,dstIndex,length);
+  else
+   Arrays.blit(src,srcIndex,dst,dstIndex,length);
+ };
+ Arrays.findIndexBound=function(array,startIndex,count,predicate)
+ {
+  var finish,i;
+  finish=startIndex+count;
+  i=startIndex;
+  if(array==null)
+   throw new ArgumentNullException.New$1("array");
+  else
+   null;
+  if(predicate==null)
+   throw new ArgumentNullException.New$1("match");
+  else
+   null;
+  if(startIndex<0)
+   throw new ArgumentOutOfRangeException.New("startIndex","Index was out of range. Must be non-negative and less than the size of the collection.");
+  else
+   null;
+  if(count<0||startIndex+count>Arrays.length(array))
+   throw new ArgumentOutOfRangeException.New("count","Count must be positive and count must refer to a location within the string/array/collection.");
+  else
+   null;
+  while(true)
+   if(i===finish)
+    return -1;
+   else
+    if(predicate(Arrays.get(array,i)))
+     return i;
+    else
+     i=i+1;
+ };
+ Arrays.findLastIndexBound=function(array,startIndex,count,predicate)
+ {
+  var i;
+  i=startIndex+count-1;
+  if(array==null)
+   throw new ArgumentNullException.New$1("array");
+  else
+   null;
+  if(predicate==null)
+   throw new ArgumentNullException.New$1("match");
+  else
+   null;
+  if(startIndex<0)
+   throw new ArgumentOutOfRangeException.New("startIndex","Index was out of range. Must be non-negative and less than the size of the collection.");
+  else
+   null;
+  if(count<0||startIndex+count>Arrays.length(array))
+   throw new ArgumentOutOfRangeException.New("count","Count must be positive and count must refer to a location within the string/array/collection.");
+  else
+   null;
+  while(true)
+   if(i<startIndex)
+    return -1;
+   else
+    if(predicate(Arrays.get(array,i)))
+     return i;
+    else
+     i=i-1;
  };
  Arrays.reverse=function(array,offset,length)
  {
@@ -3020,22 +3201,44 @@
   this.message=message;
  },ArgumentException);
  ArgumentOutOfRangeException=WebSharper.ArgumentOutOfRangeException=Runtime.Class({},null,ArgumentOutOfRangeException);
- ArgumentOutOfRangeException.New=Runtime.Ctor(function()
+ ArgumentOutOfRangeException.New=Runtime.Ctor(function(argumentName,message)
  {
-  ArgumentOutOfRangeException.New$1.call(this,"Specified argument was out of the range of valid values.");
+  this.message=message+"\nParameter name: "+argumentName;
  },ArgumentOutOfRangeException);
- ArgumentOutOfRangeException.New$1=Runtime.Ctor(function(message)
+ ArgumentOutOfRangeException.New$1=Runtime.Ctor(function(argumentName)
  {
-  this.message=message;
+  ArgumentOutOfRangeException.New.call(this,argumentName,"Specified argument was out of the range of valid values.");
  },ArgumentOutOfRangeException);
+ ArgumentOutOfRangeException.New$2=Runtime.Ctor(function()
+ {
+  this.message="Specified argument was out of the range of valid values.";
+ },ArgumentOutOfRangeException);
+ ArgumentNullException=WebSharper.ArgumentNullException=Runtime.Class({},null,ArgumentNullException);
+ ArgumentNullException.New=Runtime.Ctor(function(argumentName,message)
+ {
+  this.message=message+"\nParameter name: "+argumentName;
+ },ArgumentNullException);
+ ArgumentNullException.New$1=Runtime.Ctor(function(argumentName)
+ {
+  ArgumentNullException.New.call(this,argumentName,"Value cannot be null.");
+ },ArgumentNullException);
+ ArgumentNullException.New$2=Runtime.Ctor(function()
+ {
+  this.message="Value cannot be null.";
+ },ArgumentNullException);
  InvalidOperationException=WebSharper.InvalidOperationException=Runtime.Class({},null,InvalidOperationException);
- InvalidOperationException.New=Runtime.Ctor(function()
+ InvalidOperationException.New=Runtime.Ctor(function(message)
  {
-  InvalidOperationException.New$1.call(this,"Operation is not valid due to the current state of the object.");
+  InvalidOperationException.New$2.call(this,message,null);
  },InvalidOperationException);
- InvalidOperationException.New$1=Runtime.Ctor(function(message)
+ InvalidOperationException.New$1=Runtime.Ctor(function()
+ {
+  InvalidOperationException.New.call(this,"Operation is not valid due to the current state of the object.");
+ },InvalidOperationException);
+ InvalidOperationException.New$2=Runtime.Ctor(function(message,innerExn)
  {
   this.message=message;
+  this.inner=innerExn;
  },InvalidOperationException);
  AggregateException=WebSharper.AggregateException=Runtime.Class({},null,AggregateException);
  AggregateException.New=Runtime.Ctor(function(message,innerException)
@@ -3102,6 +3305,203 @@
    v=c=="x"?r:r&3|8;
    return v.toString(16);
   });
+ };
+ Guid.TryParseExact=function(input,format,output)
+ {
+  try
+  {
+   output.set(Guid.ParseExact(input,format));
+   return true;
+  }
+  catch(m)
+  {
+   return false;
+  }
+ };
+ Guid.TryParse=function(input,output)
+ {
+  try
+  {
+   output.set(Guid.Parse(input));
+   return true;
+  }
+  catch(m)
+  {
+   return false;
+  }
+ };
+ Guid.ParseExact=function(input,format)
+ {
+  var s,s$1,s$2,m,s$3,i,$1,c,s$4,i$1,$2,$3,c$1;
+  function parseD(s$5)
+  {
+   var i$2,$4,$5,c$2;
+   for(i$2=0,$4=35;i$2<=$4;i$2++){
+    i$2===8||(i$2===13||(i$2===18||i$2===23&&true))?s$5[i$2]!=="-"?Guid.ShapeError():void 0:(c$2=s$5[i$2],!("0"<=c$2&&c$2<="9"||"a"<=c$2&&c$2<="f")?Guid.ShapeError():void 0);
+   }
+   return s$5;
+  }
+  m=format.toUpperCase();
+  if(m==="N")
+   {
+    s$3=Strings.Trim(input).toLowerCase();
+    if(s$3.length!==32)
+     Guid.ShapeError();
+    for(i=0,$1=31;i<=$1;i++){
+     c=s$3[i];
+     !("0"<=c&&c<="9"||"a"<=c&&c<="f")?Guid.ShapeError():void 0;
+    }
+    return Strings.Substring(s$3,0,8)+"-"+Strings.Substring(s$3,8,4)+"-"+Strings.Substring(s$3,12,4)+"-"+Strings.Substring(s$3,16,4)+"-"+s$3.substring(20);
+   }
+  else
+   if(m==="D")
+    {
+     s=Strings.Trim(input).toLowerCase();
+     s.length!==36?Guid.ShapeError():void 0;
+     return parseD(s);
+    }
+   else
+    if(m==="B")
+     {
+      s$1=Strings.Trim(input).toLowerCase();
+      s$1.length!==38||s$1[0]!=="{"||s$1[17]!=="}"?Guid.ShapeError():void 0;
+      return parseD(Strings.Substring(s$1,1,36));
+     }
+    else
+     if(m==="P")
+      {
+       s$2=Strings.Trim(input).toLowerCase();
+       s$2.length!==38||s$2[0]!=="("||s$2[17]!==")"?Guid.ShapeError():void 0;
+       return parseD(Strings.Substring(s$2,1,36));
+      }
+     else
+      if(m==="X")
+       {
+        s$4=Strings.Trim(input).toLowerCase();
+        if(s$4.length!==68)
+         Guid.ShapeError();
+        for(i$1=0,$2=67;i$1<=$2;i$1++){
+         switch(i$1)
+         {
+          case 26:
+          case 0:
+           if(s$4[i$1]!=="{")
+            Guid.ShapeError();
+           break;
+          case 62:
+          case 57:
+          case 52:
+          case 47:
+          case 42:
+          case 37:
+          case 32:
+          case 27:
+          case 19:
+          case 12:
+          case 1:
+           if(s$4[i$1]!=="0")
+            Guid.ShapeError();
+           break;
+          case 63:
+          case 58:
+          case 53:
+          case 48:
+          case 43:
+          case 38:
+          case 33:
+          case 28:
+          case 20:
+          case 13:
+          case 2:
+           if(s$4[i$1]!=="x")
+            Guid.ShapeError();
+           break;
+          case 61:
+          case 56:
+          case 51:
+          case 46:
+          case 41:
+          case 36:
+          case 31:
+          case 25:
+          case 18:
+          case 11:
+           if(s$4[i$1]!==",")
+            Guid.ShapeError();
+           break;
+          case 67:
+          case 66:
+           if(s$4[i$1]!=="{")
+            Guid.ShapeError();
+           break;
+          default:
+           c$1=s$4[i$1];
+           !("0"<=c$1&&c$1<="9"||"a"<=c$1&&c$1<="f")?Guid.ShapeError():void 0;
+           break;
+         }
+        }
+        return Strings.Substring(s$4,3,8)+"-"+Strings.Substring(s$4,14,4)+"-"+Strings.Substring(s$4,21,4)+"-"+Strings.Substring(s$4,29,2)+Strings.Substring(s$4,34,2)+"-"+Strings.Substring(s$4,39,2)+Strings.Substring(s$4,44,2)+Strings.Substring(s$4,49,2)+Strings.Substring(s$4,54,2)+Strings.Substring(s$4,59,2)+Strings.Substring(s$4,64,2);
+       }
+      else
+       return Guid.FormatError();
+ };
+ Guid.Parse=function(input)
+ {
+  var $1,$2,$3;
+  try
+  {
+   return Guid.ParseExact(input,"D");
+  }
+  catch(m)
+  {
+   try
+   {
+    $1=Guid.ParseExact(input,"B");
+   }
+   catch(m$1)
+   {
+    try
+    {
+     $2=Guid.ParseExact(input,"P");
+    }
+    catch(m$2)
+    {
+     try
+     {
+      $3=Guid.ParseExact(input,"N");
+     }
+     catch(m$3)
+     {
+      $3=Guid.ParseExact(input,"X");
+     }
+     $2=$3;
+    }
+    $1=$2;
+   }
+   return $1;
+  }
+ };
+ Guid.ToString=function($this,format)
+ {
+  var m;
+  m=format.toUpperCase();
+  return m==="N"?Strings.Replace($this,"-",""):m==="D"?$this:m==="B"?"{"+$this+"}":m==="P"?"("+$this+")":m==="X"?"{0x"+Strings.Substring($this,0,8)+",0x"+Strings.Substring($this,9,4)+",0x"+Strings.Substring($this,14,4)+",{0x"+Strings.Substring($this,19,2)+",0x"+Strings.Substring($this,21,2)+",0x"+Strings.Substring($this,24,2)+",0x"+Strings.Substring($this,26,2)+",0x"+Strings.Substring($this,28,2)+",0x"+Strings.Substring($this,30,2)+",0x"+Strings.Substring($this,32,2)+",0x"+Strings.Substring($this,34,2)+"}}":Guid.FormatError();
+ };
+ Guid.ParseError=function()
+ {
+  throw new FormatException.New$1("Unrecognized Guid format.");
+ };
+ Guid.ShapeError=function()
+ {
+  throw new FormatException.New$1("Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).");
+ };
+ Guid.HexaError=function()
+ {
+  throw new FormatException.New$1("Hexadecimal Guid printing not implemented by WebSharper.");
+ };
+ Guid.FormatError=function()
+ {
+  throw new FormatException.New$1("Format String can be only \"D\", \"d\", \"N\", \"n\", \"P\", \"p\", \"B\", \"b\", \"X\" or \"x\".");
  };
  HashSetUtil.concat=function(o)
  {
@@ -4149,7 +4549,7 @@
  };
  Operators.InvalidOp=function(msg)
  {
-  throw new InvalidOperationException.New$1(msg);
+  throw new InvalidOperationException.New(msg);
  };
  Operators.FailWith=function(msg)
  {
@@ -5466,10 +5866,7 @@
  };
  Seq.mapi2=function(f,s1,s2)
  {
-  return Seq.map3(function($1,$2,$3)
-  {
-   return((f($1))($2))($3);
-  },Seq.initInfinite(Global.id),s1,s2);
+  return Seq.map3(f,Seq.initInfinite(Global.id),s1,s2);
  };
  Seq.mapFold=function(f,zero,s)
  {
@@ -5668,10 +6065,7 @@
  };
  Strings.replicate=function(count,s)
  {
-  return Strings.init(count,function()
-  {
-   return s;
-  });
+  return Arrays.create(count,s).join("");
  };
  Strings.protect=function(s)
  {
@@ -5808,7 +6202,7 @@
   {
    var $this;
    $this=this;
-   Unchecked.Equals(this.status,0)?(this.status=2,Concurrency.scheduler().Fork(function()
+   this.status===0?(this.status=2,Concurrency.scheduler().Fork(function()
    {
     var $1;
     $this.status=3;
@@ -5828,9 +6222,9 @@
   {
    var $this;
    $this=this;
-   Unchecked.Equals(this.status,1)?(this.status=2,Concurrency.scheduler().Fork(function()
+   this.status===1?(this.status=2,Concurrency.scheduler().Fork(function()
    {
-    if(Unchecked.Equals($this.status,2))
+    if($this.status===2)
      {
       $this.status=3;
       try
@@ -5851,7 +6245,7 @@
   {
    var $this,res;
    $this=this;
-   res=new Task1.New(function()
+   res=new Task1.New$4(function()
    {
     return func($this);
    },ct,1,null,void 0);
@@ -5862,16 +6256,12 @@
   {
    var $this,res;
    $this=this;
-   res=new Task.New$2(function()
+   res=new Task.New$4(function()
    {
     return action($this);
    },ct,1,null);
    this.get_IsCompleted()?res.StartContinuation():this.continuations.push(res);
    return res;
-  },
-  ContinueWith$2:function(action)
-  {
-   return this.ContinueWith$1(action,Concurrency.noneCT());
   },
   RunContinuations:function()
   {
@@ -5885,11 +6275,11 @@
     cont();
    else
     {
-     Unchecked.Equals(this.get_Status(),0)?this.Start():void 0;
-     this.ContinueWith$2(function()
+     this.get_Status()===0?this.Start():void 0;
+     this.ContinueWith$1(function()
      {
       return cont();
-     });
+     },Concurrency.noneCT());
     }
   },
   get_Status:function()
@@ -5898,21 +6288,28 @@
   },
   get_IsFaulted:function()
   {
-   return Unchecked.Equals(this.status,7);
+   return this.status===7;
   },
   get_IsCompleted:function()
   {
-   return Unchecked.Equals(this.status,5)||Unchecked.Equals(this.status,7)||Unchecked.Equals(this.status,6);
+   return this.status===5||this.status===7||this.status===6;
   },
   get_IsCanceled:function()
   {
-   return Unchecked.Equals(this.status,6);
+   return this.status===6;
   },
   get_Exception:function()
   {
    return this.exc;
   }
  },Obj,Task);
+ Task.Yield=function()
+ {
+  return new Task.New$3(function()
+  {
+   return null;
+  });
+ };
  Task.WhenAll=function(tasks)
  {
   var target,completed,results,tcs,i,$1;
@@ -5922,10 +6319,10 @@
   tcs=new TaskCompletionSource.New();
   for(i=0,$1=target-1;i<=$1;i++)(function(i$1)
   {
-   Arrays.get(tasks,i).ContinueWith$2(function(t)
+   Arrays.get(tasks,i).ContinueWith$1(function(t)
    {
     return t.get_IsFaulted()?void tcs.TrySetException$1(t.get_Exception()):t.get_IsCanceled()?void tcs.TrySetCanceled$1():(completed[0]++,results[i$1]=t.get_Result(),completed[0]===target?tcs.SetResult(results):null);
-   });
+   },Concurrency.noneCT());
   }(i));
   return tcs.get_Task();
  };
@@ -5935,10 +6332,10 @@
   target=Arrays.length(tasks);
   completed=[0];
   tcs=new TaskCompletionSource.New();
-  for(i=0,$1=target-1;i<=$1;i++)Arrays.get(tasks,i).ContinueWith$2(function(t)
+  for(i=0,$1=target-1;i<=$1;i++)Arrays.get(tasks,i).ContinueWith$1(function(t)
   {
    return t.get_IsFaulted()?void tcs.TrySetException$1(t.get_Exception()):t.get_IsCanceled()?void tcs.TrySetCanceled$1():(completed[0]++,completed[0]===target?void tcs.TrySetResult():null);
-  });
+  },Concurrency.noneCT());
   return tcs.get_Task();
  };
  Task.WhenAny=function(tasks)
@@ -5955,10 +6352,10 @@
  {
   var tcs,i,$1;
   tcs=new TaskCompletionSource.New();
-  for(i=0,$1=tasks.length-1;i<=$1;i++)Arrays.get(tasks,i).ContinueWith$2(function(t)
+  for(i=0,$1=tasks.length-1;i<=$1;i++)Arrays.get(tasks,i).ContinueWith$1(function(t)
   {
    tcs.TrySetResult(t);
-  });
+  },Concurrency.noneCT());
   return tcs.get_Task();
  };
  Task.Delay=function(time,ct)
@@ -5976,12 +6373,12 @@
  {
   var task;
   task=func();
-  return ct.c?Task.FromCanceled(ct):(Unchecked.Equals(task.get_Status(),0)?task.Start():void 0,task);
+  return ct.c?Task.FromCanceled(ct):(task.get_Status()===0?task.Start():void 0,task);
  };
  Task.Run$1=function(func,ct)
  {
   var res;
-  res=new Task1.New(func,ct,0,null,void 0);
+  res=new Task1.New$4(func,ct,0,null,void 0);
   res.Start();
   return res;
  };
@@ -5989,44 +6386,58 @@
  {
   var task;
   task=func();
-  return ct.c?Task.FromCanceled$1(ct):(Unchecked.Equals(task.get_Status(),0)?task.Start():void 0,task);
+  return ct.c?Task.FromCanceled$1(ct):(task.get_Status()===0?task.Start():void 0,task);
  };
  Task.Run$3=function(action,ct)
  {
   var res;
-  res=new Task.New$2(action,ct,0,null);
+  res=new Task.New$4(action,ct,0,null);
   res.Start();
   return res;
  };
  Task.FromResult=function(res)
  {
-  return new Task1.New(null,Concurrency.noneCT(),5,null,res);
+  return new Task1.New$4(null,Concurrency.noneCT(),5,null,res);
  };
  Task.FromException=function(exc)
  {
-  return new Task1.New(null,Concurrency.noneCT(),7,new AggregateException.New$3([exc]),null);
+  return new Task1.New$4(null,Concurrency.noneCT(),7,new AggregateException.New$3([exc]),null);
  };
  Task.FromException$1=function(exc)
  {
-  return new Task.New$2(null,Concurrency.noneCT(),7,new AggregateException.New$3([exc]));
+  return new Task.New$4(null,Concurrency.noneCT(),7,new AggregateException.New$3([exc]));
  };
  Task.FromCanceled=function(ct)
  {
-  return new Task1.New(null,ct,6,null,null);
+  return new Task1.New$4(null,ct,6,null,null);
  };
  Task.FromCanceled$1=function(ct)
  {
-  return new Task.New$2(null,ct,6,null);
+  return new Task.New$4(null,ct,6,null);
  };
- Task.New=Runtime.Ctor(function(action,ct)
+ Task.New=Runtime.Ctor(function(action,obj,ct)
  {
-  Task.New$2.call(this,action,ct,0,null);
+  Task.New$4.call(this,function()
+  {
+   return action(obj);
+  },ct,0,null);
  },Task);
- Task.New$1=Runtime.Ctor(function(action)
+ Task.New$1=Runtime.Ctor(function(action,obj)
  {
-  Task.New$2.call(this,action,Concurrency.noneCT(),0,null);
+  Task.New$4.call(this,function()
+  {
+   return action(obj);
+  },Concurrency.noneCT(),0,null);
  },Task);
- Task.New$2=Runtime.Ctor(function(action,token,status,exc)
+ Task.New$2=Runtime.Ctor(function(action,ct)
+ {
+  Task.New$4.call(this,action,ct,0,null);
+ },Task);
+ Task.New$3=Runtime.Ctor(function(action)
+ {
+  Task.New$4.call(this,action,Concurrency.noneCT(),0,null);
+ },Task);
+ Task.New$4=Runtime.Ctor(function(action,token,status,exc)
  {
   this.action=action;
   this.token=token;
@@ -6044,9 +6455,31 @@
    this.result=this.func();
   }
  },Task,Task1);
- Task1.New=Runtime.Ctor(function(func,token,status,exc,result)
+ Task1.New=Runtime.Ctor(function(func,obj,ct)
  {
-  Task.New$2.call(this,null,token,status,exc);
+  Task1.New$4.call(this,function()
+  {
+   return func(obj);
+  },ct,0,null,void 0);
+ },Task1);
+ Task1.New$1=Runtime.Ctor(function(func,obj)
+ {
+  Task1.New$4.call(this,function()
+  {
+   return func(obj);
+  },Concurrency.noneCT(),0,null,void 0);
+ },Task1);
+ Task1.New$2=Runtime.Ctor(function(func,ct)
+ {
+  Task1.New$4.call(this,func,ct,0,null,void 0);
+ },Task1);
+ Task1.New$3=Runtime.Ctor(function(func)
+ {
+  Task1.New$4.call(this,func,Concurrency.noneCT(),0,null,void 0);
+ },Task1);
+ Task1.New$4=Runtime.Ctor(function(func,token,status,exc,result)
+ {
+  Task.New$4.call(this,null,token,status,exc);
   this.func=func;
   this.result=result;
  },Task1);
@@ -6102,7 +6535,7 @@
  },Obj,TaskCompletionSource);
  TaskCompletionSource.New=Runtime.Ctor(function()
  {
-  this.task=new Task1.New(null,Concurrency.noneCT(),1,null,void 0);
+  this.task=new Task1.New$4(null,Concurrency.noneCT(),1,null,void 0);
  },TaskCompletionSource);
  Unchecked.Hash=function(o)
  {

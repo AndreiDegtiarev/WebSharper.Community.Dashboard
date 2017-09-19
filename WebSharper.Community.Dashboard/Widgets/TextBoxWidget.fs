@@ -13,9 +13,12 @@ type TextBoxWidget =
         TextBoxWidgetData:WorkerData
     }
     static member Create = {TextBoxWidgetData = WorkerData.Create "Text" [InPortData.CreateString "in Text" "txt"
-                                                                          InPortData.CreateNumber "Width" 50.0
-                                                                          InPortData.CreateNumber "Font-Size" 25.0
-                                                                          InPortData.CreateSelect "Font-Family" (0, ["Courier New" ; "Segoe UI"; "Freestyle Script"])]
+                                                                          InPortData.CreateNumber "Width" 200.0
+                                                                          InPortData.CreateNumber "Font-Size" 100.0
+                                                                          InPortData.CreateSelect "Font-Family" (0, ["Times New Roman" 
+                                                                                                                     "Courier New" 
+                                                                                                                     "Arial"
+                                                                                                                     "Freestyle Script"])]
                                                                           []} 
     static member FromWorker = (fun (worker:Worker) -> {TextBoxWidgetData = worker.ToData}) 
     interface IWorkerData with

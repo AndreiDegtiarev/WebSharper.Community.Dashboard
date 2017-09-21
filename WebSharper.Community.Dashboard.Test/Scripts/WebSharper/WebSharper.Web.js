@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,IntelliFactory,Runtime,Collections,Dictionary,FSharpMap,Unchecked,Operators,Arrays,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
+ var Global,WebSharper,Json,Provider,Web,Control,FSharpInlineControl,InlineControl,IntelliFactory,Runtime,Collections,Dictionary,FSharpMap,Operators,Unchecked,Arrays,FSharpSet,BalancedTree,List,Enumerator,Map,Seq;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Json=WebSharper.Json=WebSharper.Json||{};
@@ -15,8 +15,8 @@
  Collections=WebSharper&&WebSharper.Collections;
  Dictionary=Collections&&Collections.Dictionary;
  FSharpMap=Collections&&Collections.FSharpMap;
- Unchecked=WebSharper&&WebSharper.Unchecked;
  Operators=WebSharper&&WebSharper.Operators;
+ Unchecked=WebSharper&&WebSharper.Unchecked;
  Arrays=WebSharper&&WebSharper.Arrays;
  FSharpSet=Collections&&Collections.FSharpSet;
  BalancedTree=Collections&&Collections.BalancedTree;
@@ -76,10 +76,10 @@
        o.$0=r$1;
       }
      else
-      if(Unchecked.Equals(kind,0))
+      if(kind===0)
        o[from]=(dec(null))(x[to]);
       else
-       if(Unchecked.Equals(kind,1))
+       if(kind===1)
         o[from]=x.hasOwnProperty(to)?{
          $:1,
          $0:(dec(null))(x[to])
@@ -126,7 +126,7 @@
     var o;
     function a(name,dec,kind)
     {
-     if(Unchecked.Equals(kind,0))
+     if(kind===0)
      {
       if(x.hasOwnProperty(name))
        o[name]=(dec(null))(x[name]);
@@ -134,13 +134,13 @@
        Operators.FailWith("Missing mandatory field: "+name);
      }
      else
-      if(Unchecked.Equals(kind,1))
+      if(kind===1)
        o[name]=x.hasOwnProperty(name)?{
         $:1,
         $0:(dec(null))(x[name])
        }:null;
       else
-       if(Unchecked.Equals(kind,2))
+       if(kind===2)
        {
         if(x.hasOwnProperty(name))
          o[name]=(dec(null))(x[name]);
@@ -246,10 +246,10 @@
         break;
       }
      else
-      if(Unchecked.Equals(kind,0))
+      if(kind===0)
        o[to]=(enc(null))(x[from]);
       else
-       if(Unchecked.Equals(kind,1))
+       if(kind===1)
         {
          m=x[from];
          m==null?void 0:o[to]=(enc(null))(m.$0);
@@ -274,16 +274,16 @@
     function a$1(name,enc,kind)
     {
      var m;
-     if(Unchecked.Equals(kind,0))
+     if(kind===0)
       o[name]=(enc(null))(x[name]);
      else
-      if(Unchecked.Equals(kind,1))
+      if(kind===1)
        {
         m=x[name];
         m==null?void 0:o[name]=(enc(null))(m.$0);
        }
       else
-       if(Unchecked.Equals(kind,2))
+       if(kind===2)
        {
         if(x.hasOwnProperty(name))
          o[name]=(enc(null))(x[name]);

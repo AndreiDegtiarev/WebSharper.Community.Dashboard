@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Panel,Helper,WrapControlsAligment,WrapControls,PanelData,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,Dialog,List,Seq,Unchecked,Guid,UI,Next,Doc,AttrModule,Var,View,IntelliFactory,Runtime,Input,Mouse,ListModel,console;
+ var Global,WebSharper,Community,Panel,Helper,WrapControlsAligment,WrapControls,PanelData,TitleButton,Panel$1,PanelContainer,Rect,LayoutManagers,SC$1,Dialog,List,Seq,Unchecked,System,Guid,UI,Next,Doc,AttrModule,Var,View,IntelliFactory,Runtime,Input,Mouse,ListModel,console;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -20,7 +20,8 @@
  List=WebSharper&&WebSharper.List;
  Seq=WebSharper&&WebSharper.Seq;
  Unchecked=WebSharper&&WebSharper.Unchecked;
- Guid=WebSharper&&WebSharper.Guid;
+ System=Global.System;
+ Guid=System&&System.Guid;
  UI=WebSharper&&WebSharper.UI;
  Next=UI&&UI.Next;
  Doc=Next&&Next.Doc;

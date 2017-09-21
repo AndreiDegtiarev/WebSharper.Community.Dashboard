@@ -6,4 +6,4 @@ module Settings
     let dependencies = [("WebSharper.Charting","")
                         ("WebSharper.Data","")
                         ("WebSharper.Community.Panel",globalSettings.version)]
-    let releaseNotes = ""
+    let releaseNotes = "Text widget extended with some settings"

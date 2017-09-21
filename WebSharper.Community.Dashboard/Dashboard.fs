@@ -232,7 +232,8 @@ type Dashboard =
                                             tdAttr [Attr.Style "vertical-align" "top"]
                                                    [Helper.IconNormal "dehaze" (fun _ -> x.PanelTitleVisibility.Value <- true
                                                                                          x.Mode.Value <- DashboardEdit)
-                                                    (if (x.EditorSelectorRun.GroupByIndex 0).SelectorItems.Length > 1 then x.EditorSelectorRun.RenderMenu else div[]) 
+                                                    x.EditorSelectorRun.RenderMenu
+                                                    //(if (x.EditorSelectorRun.GroupByIndex 0).SelectorItems.Length > 1 then x.EditorSelectorRun.RenderMenu else div[]) 
                                               ]
                                             td [x.EditorSelectorRun.Render] 
                                         ]

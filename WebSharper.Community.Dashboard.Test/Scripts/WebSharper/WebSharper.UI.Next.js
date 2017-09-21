@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,UI,Next,Array,String,Abbrev,Fresh,HashSet,Dict,Slot,Async,Mailbox,SC$1,AppendList,SC$2,DomUtility,SC$3,Trie,LookupResult,SC$4,Snap,Var,Updates,View,ViewBuilder,Submitter,Key,Model,Serializer,Storage,ArrayStorage,LocalStorageBackend,ListModel,ListModels,SC$5,ReactiveExtensions,DoubleInterpolation,Interpolation,Easing,Easings,An,Anims,Trans,SC$6,AnimatedAttrNode,DynamicAttrNode,AttrProxy,Client,Attrs,Dyn,Attrs$1,CheckedInput,AttrModule,SC$7,DocElemNode,Docs,DomNodes,NodeSet,RunState,Docs$1,Doc,Elt,EltUpdater,SC$8,Flow,FlowBuilder,Html,attr,Route,Routing,State,RouteMap,Router,Input,MousePosSt,MouseBtnSt,Mouse,KeyListenerSt,Keyboard,SC$9,List,Arrays,Enumerator,Strings,Char,Collections,HashSet$1,Seq,IntelliFactory,Runtime,Unchecked,console,Concurrency,Map,FSharpMap,List$1,Operators,Queue,Lazy,Dictionary,JSON,Numeric,Node,$,Slice;
+ var Global,WebSharper,UI,Next,Array,String,Abbrev,Fresh,HashSet,Dict,Slot,Async,Mailbox,SC$1,AppendList,SC$2,DomUtility,SC$3,Trie,LookupResult,SC$4,Snap,Var,Updates,View,ViewBuilder,Submitter,Key,Model,Serializer,Storage,ArrayStorage,LocalStorageBackend,ListModel,ListModels,SC$5,ReactiveExtensions,DoubleInterpolation,Interpolation,Easing,Easings,An,Anims,Trans,SC$6,AnimatedAttrNode,DynamicAttrNode,AttrProxy,Client,Attrs,Dyn,Attrs$1,CheckedInput,AttrModule,SC$7,DocElemNode,Docs,DomNodes,NodeSet,RunState,Docs$1,Doc,Elt,EltUpdater,SC$8,Flow,FlowBuilder,Html,attr,Route,Routing,State,RouteMap,Router,Input,MousePosSt,MouseBtnSt,Mouse,KeyListenerSt,Keyboard,SC$9,List,Arrays,Enumerator,Strings,Char,Collections,HashSet$1,Seq,IntelliFactory,Runtime,Unchecked,console,Concurrency,Map,FSharpMap,Operators,Queue,Lazy,Dictionary,JSON,Numeric,Node,$,Slice;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  UI=WebSharper.UI=WebSharper.UI||{};
@@ -98,7 +98,6 @@
  Concurrency=WebSharper&&WebSharper.Concurrency;
  Map=Collections&&Collections.Map;
  FSharpMap=Collections&&Collections.FSharpMap;
- List$1=Collections&&Collections.List;
  Operators=WebSharper&&WebSharper.Operators;
  Queue=WebSharper&&WebSharper.Queue;
  Lazy=WebSharper&&WebSharper.Lazy;
@@ -280,7 +279,7 @@
     {
      var m;
      m=st[0];
-     return Unchecked.Equals(m,1)?(st[0]=0,Concurrency.Zero()):Unchecked.Equals(m,2)?(st[0]=1,work()):Concurrency.Zero();
+     return m===1?(st[0]=0,Concurrency.Zero()):m===2?(st[0]=1,work()):Concurrency.Zero();
     });
    });
   }
@@ -289,7 +288,7 @@
   {
    var m;
    m=st[0];
-   Unchecked.Equals(m,0)?(st[0]=1,Concurrency.Start(work(),null)):Unchecked.Equals(m,1)?st[0]=2:void 0;
+   m===0?(st[0]=1,Concurrency.Start(work(),null)):m===1?st[0]=2:void 0;
   };
  };
  SC$1.$cctor=function()
@@ -593,16 +592,16 @@
  {
   var ok,e,r,m;
   e=Enumerator.Get(xs);
-  r=new List$1.New$2();
+  r=[];
   ok=true;
   while(ok&&e.MoveNext())
    {
     m=e.Current();
-    m!=null&&m.$==1?r.Add(m.$0):ok=false;
+    m!=null&&m.$==1?r.push(m.$0):ok=false;
    }
   return ok?{
    $:1,
-   $0:r.ToArray()
+   $0:r.slice()
   }:null;
  };
  Trie.MultiAdd=function(key,value,map)
@@ -1246,6 +1245,20 @@
      $1:[]
     });
    }
+ };
+ Var.CreateWaiting=function()
+ {
+  var _var;
+  _var=null;
+  _var=Var.New(false,null,Snap.New({
+   $:3,
+   $0:[],
+   $1:[]
+  }),Fresh.Int(),function()
+  {
+   return _var.s;
+  });
+  return _var;
  };
  Var.Create=function()
  {
@@ -2107,10 +2120,10 @@
     {
      return Unchecked.Equals($this.key(it),t);
     },v);
-    return m==null?(toPrepend.Add(item),v):$this.storage.SSetAt(m.$0,item,v);
+    return m==null?(toPrepend.push(item),v):$this.storage.SSetAt(m.$0,item,v);
    }
    $this=this;
-   toPrepend=new List$1.New$2();
+   toPrepend=[];
    this["var"].set_RVal(this.storage.SPrependMany(toPrepend,(((Runtime.Curried3(Seq.fold))(f))(this["var"].RVal()))(items)));
   },
   Prepend:function(item)
@@ -2138,10 +2151,10 @@
     {
      return Unchecked.Equals($this.key(it),t);
     },v);
-    return m==null?(toAppend.Add(item),v):$this.storage.SSetAt(m.$0,item,v);
+    return m==null?(toAppend.push(item),v):$this.storage.SSetAt(m.$0,item,v);
    }
    $this=this;
-   toAppend=new List$1.New$2();
+   toAppend=[];
    this["var"].set_RVal(this.storage.SAppendMany(toAppend,(((Runtime.Curried3(Seq.fold))(f))(this["var"].RVal()))(items)));
   },
   Append:function(item)
@@ -3878,15 +3891,15 @@
  Doc.MixedNodes=function(nodes)
  {
   var attrs,children,e,n;
-  attrs=new List$1.New$2();
-  children=new List$1.New$2();
+  attrs=[];
+  children=[];
   e=Enumerator.Get(nodes);
   try
   {
    while(e.MoveNext())
     {
      n=e.Current();
-     n instanceof AttrProxy?attrs.Add(n):children.Add(Doc.ToMixedDoc(n));
+     n instanceof AttrProxy?attrs.push(n):children.push(Doc.ToMixedDoc(n));
     }
   }
   finally

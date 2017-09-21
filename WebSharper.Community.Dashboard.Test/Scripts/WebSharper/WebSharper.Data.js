@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Strings,Guid,Concurrency,$,List,JavaScript,Pervasives$1,Arrays,IntelliFactory,Runtime$1,Operators,Array,Unchecked;
+ var Global,WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Strings,System,Guid,Concurrency,$,List,JavaScript,Pervasives$1,Arrays,IntelliFactory,Runtime$1,Operators,Array,Unchecked;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Data=WebSharper.Data=WebSharper.Data||{};
@@ -18,7 +18,8 @@
  TxtRuntime=Data.TxtRuntime=Data.TxtRuntime||{};
  IO=Runtime.IO=Runtime.IO||{};
  Strings=WebSharper&&WebSharper.Strings;
- Guid=WebSharper&&WebSharper.Guid;
+ System=Global.System;
+ Guid=System&&System.Guid;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  $=Global.jQuery;
  List=WebSharper&&WebSharper.List;

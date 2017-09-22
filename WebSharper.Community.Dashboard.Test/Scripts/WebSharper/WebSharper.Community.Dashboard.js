@@ -814,28 +814,25 @@
        i$1=e.Current();
        cell1=cells.get_Item(i$1-1);
        cell2=cells.get_Item(i$1);
+       o=Seq.tryFind(function(port)
        {
-        o=Seq.tryFind(function(port)
+        return port.Key===cell1.OutPortKey;
+       },allOutPorts),o==null?null:{
+        $:1,
+        $0:(outPort=o.$0,(o$1=Seq.tryFind(function(port)
         {
-         return port.Key===cell1.OutPortKey;
-        },allOutPorts),o==null?null:{
+         return port.Data.Key===cell2.InPortKey;
+        },allInPorts),o$1==null?null:{
          $:1,
-         $0:(outPort=o.$0,(o$1=Seq.tryFind(function(port)
-         {
-          return port.Data.Key===cell2.InPortKey;
-         },allInPorts),o$1==null?null:{
-          $:1,
-          $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):void 0,_this=MessageBus.Agent(),_this.mailbox.AddLast({
-           $:2,
-           $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),function(a)
-           {
-            inPort.Receive(a);
-           }]
-          }),_this.resume()))
-         }))
-        };
-        return;
-       }
+         $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):void 0,_this=MessageBus.Agent(),_this.mailbox.AddLast({
+          $:2,
+          $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),function(a)
+          {
+           inPort.Receive(a);
+          }]
+         }),_this.resume()))
+        }))
+       };
       }());
     }
     finally
@@ -1084,6 +1081,19 @@
      return WrapControls.Render(i$1,a,c);
     })):Global.id)(x))])]);
    },this.SelectorItems.v),plus]);
+  },
+  Render:function(selectedItemVar)
+  {
+   return Doc.ConvertBy(function(m)
+   {
+    return m.WebSharper_Community_Dashboard_ISelectorItem$get_Key();
+   },function(item)
+   {
+    return Doc.Element("div",[AttrModule.DynamicStyle("display",View.Map(function(selectedItemOpt)
+    {
+     return selectedItemOpt==null?"none":Unchecked.Equals(selectedItemOpt.$0,item)?"block":"none";
+    },selectedItemVar.v))],[item.WebSharper_Community_Dashboard_ISelectorItem$get_Render()]);
+   },this.SelectorItems.v);
   }
  },null,SelectorGroup);
  SelectorGroup.Create=function(name,items,itemCreator,itemOnCreated,itemOnSelected,itemOnDelete,itemOnMove)
@@ -1129,10 +1139,15 @@
   },
   get_Render:function()
   {
-   return Doc.Element("div",[],[Doc.BindView(function(value)
+   var $this;
+   $this=this;
+   return Doc.Element("div",[],[Doc.ConvertBy(function(m)
    {
-    return value==null?Doc.Empty():value.$0.WebSharper_Community_Dashboard_ISelectorItem$get_Render();
-   },this.OptSelectedItem.v)]);
+    return m.Key;
+   },function(group)
+   {
+    return group.Render($this.OptSelectedItem);
+   },this.SelectorGroups.v)]);
   },
   GroupByIndex:function(index)
   {
@@ -1991,10 +2006,13 @@
     $:1,
     $0:function(worker)
     {
-     var isFirstCall;
+     var isFirstCall,startTime;
      isFirstCall=true;
+     startTime=worker.InPorts.get_Item(0).PortValue.c.Time;
      View.Sink(function(value)
      {
+      var file;
+      file=worker.InPorts.get_Item(1).get_String();
       isFirstCall?(List.iter(function(msg)
       {
        var _this;
@@ -2004,7 +2022,7 @@
         $0:msg
        });
        _this.resume();
-      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:965639103",[worker.InPorts.get_Item(1).get_String()])),isFirstCall=false):(new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-353093100",[worker.InPorts.get_Item(1).get_String(),value]);
+      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:965639103",[file])),isFirstCall=false):value.Time>startTime?(new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-353093100",[file,value]):void 0;
      },worker.InPorts.get_Item(0).PortValue.v);
      return null;
     }
@@ -2312,6 +2330,7 @@
     $0:function(worker)
     {
      var chartBufferSize,context,config,r,r$1,r$2,r$3,r$4,r$5;
+     (Environment.Log())("Chart Render");
      chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
      context=worker.RunnerContext.c.$0;
      config=(r={},r.title=(r$1={},r$1.display=false,r$1),r.legend=(r$2={},r$2.display=false,r$2),r.elements=(r$3={},r$3.point=(r$4={},r$4.radius=0,r$4),r$3.line=(r$5={},r$5.borderWidth=1,r$5),r$3),r);
@@ -2343,14 +2362,16 @@
      var srcs,ports,allSrcPorts,charts;
      function observe(port,msg)
      {
-      var sel,x_label;
+      var sel,x_label,localTime;
       sel=(worker.InPorts.get_Item(4).PortValue.c.Value.get_AsSelect())[0];
-      x_label=sel===0?DateUtil.LongTime(msg.Time):sel===1?DateUtil.ShortTime(msg.Time):sel===2?DateUtil.LongDate(msg.Time):sel===3?(new Date(msg.Time)).toLocaleDateString():"";
+      x_label=(localTime=msg.Time,sel===0?DateUtil.LongTime(localTime):sel===1?DateUtil.ShortTime(localTime):sel===2?DateUtil.LongDate(localTime):sel===3?(new Date(localTime)).toLocaleDateString():"");
+      (Environment.Log())("Chart observe "+x_label);
       return srcs.get_Item(Seq.findIndex(function(entry)
       {
        return Unchecked.Equals(entry,port);
       },allSrcPorts)).event.Trigger([x_label,msg.Value.get_AsNumber()]);
      }
+     (Environment.Log())("Chart run");
      worker.InPorts.get_Item(3).get_Number();
      srcs=List.init(($this.ChartWidgetData.InPorts.get_Item(5).Value.Value.get_AsNumber()>>0)+1,function()
      {

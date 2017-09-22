@@ -4500,13 +4500,13 @@
   function recF(recI,$1,$2)
   {
    var $3,x,f,name$1,name$2,t,instance,usedHoles,mappings,attrs,i,$4,name$3,m,i$1,$5,n,singleTextFill,i$2,$6,n$1,next;
+   function g(v)
+   {
+   }
    while(true)
     switch(recI)
     {
      case 0:
-      function g(v)
-      {
-      }
       name$1=Slice.string($1.nodeName,{
        $:1,
        $0:3
@@ -4575,10 +4575,8 @@
           };
          };
         }(instance))($1.parentNode))($1));
-        {
-         $1.parentNode.removeChild($1);
-         return;
-        }
+        $1.parentNode.removeChild($1);
+        return;
        }
       break;
      case 1:

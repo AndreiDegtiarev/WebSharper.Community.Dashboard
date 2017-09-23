@@ -879,51 +879,51 @@
     function a(ok)
     {
      var waiting,pending;
+     function scanNext()
+     {
+      var b$1;
+      $this.savedCont={
+       $:1,
+       $0:(b$1=null,Concurrency.Delay(function()
+       {
+        var m$3;
+        m$3=scanner($this.mailbox.n.v);
+        return m$3!=null&&m$3.$==1?($this.mailbox.RemoveFirst(),Concurrency.Bind(m$3.$0,function(a$1)
+        {
+         ok({
+          $:1,
+          $0:a$1
+         });
+         return Concurrency.Zero();
+        })):(scanNext(),Concurrency.Zero());
+       }))
+      };
+     }
+     function scanNext$1()
+     {
+      var b$1;
+      $this.savedCont={
+       $:1,
+       $0:(b$1=null,Concurrency.Delay(function()
+       {
+        var m$3;
+        m$3=scanner($this.mailbox.n.v);
+        return m$3!=null&&m$3.$==1?($this.mailbox.RemoveFirst(),Concurrency.Bind(m$3.$0,function(a$1)
+        {
+         return waiting[0]?(waiting[0]=false,Global.clearTimeout(pending),ok({
+          $:1,
+          $0:a$1
+         }),Concurrency.Zero()):Concurrency.Zero();
+        })):(scanNext$1(),Concurrency.Zero());
+       }))
+      };
+     }
      if(timeout$1<0)
       {
-       function scanNext()
-       {
-        var b$1;
-        $this.savedCont={
-         $:1,
-         $0:(b$1=null,Concurrency.Delay(function()
-         {
-          var m$3;
-          m$3=scanner($this.mailbox.n.v);
-          return m$3!=null&&m$3.$==1?($this.mailbox.RemoveFirst(),Concurrency.Bind(m$3.$0,function(a$1)
-          {
-           ok({
-            $:1,
-            $0:a$1
-           });
-           return Concurrency.Zero();
-          })):(scanNext(),Concurrency.Zero());
-         }))
-        };
-       }
        scanNext();
       }
      else
       {
-       function scanNext$1()
-       {
-        var b$1;
-        $this.savedCont={
-         $:1,
-         $0:(b$1=null,Concurrency.Delay(function()
-         {
-          var m$3;
-          m$3=scanner($this.mailbox.n.v);
-          return m$3!=null&&m$3.$==1?($this.mailbox.RemoveFirst(),Concurrency.Bind(m$3.$0,function(a$1)
-          {
-           return waiting[0]?(waiting[0]=false,Global.clearTimeout(pending),ok({
-            $:1,
-            $0:a$1
-           }),Concurrency.Zero()):Concurrency.Zero();
-          })):(scanNext$1(),Concurrency.Zero());
-         }))
-        };
-       }
        waiting=[true];
        pending=Global.setTimeout(function()
        {
@@ -981,15 +981,15 @@
    function a(ok)
    {
     var waiting;
+    function f(a$1)
+    {
+     return{
+      $:1,
+      $0:a$1
+     };
+    }
     if(timeout$1<0)
      {
-      function f(a$1)
-      {
-       return{
-        $:1,
-        $0:a$1
-       };
-      }
       $this.mailbox.AddLast(msgf(function(x)
       {
        return ok(f(x));

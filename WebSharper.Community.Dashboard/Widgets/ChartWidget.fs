@@ -53,6 +53,7 @@ type ChartWidget =
                             x.ChartWidgetData.InPorts
                       {x.ChartWidgetData with InPorts = inPorts |> List.mapi (fun ind port-> if ind = 0 || ind > 5 then port.WithCacheSize(chartBufferSize) else port)}
     override x.Run = Some(fun worker ->
+                                    "Chart run" |> Environment.Log
                                     let chartBufferSize = (int) worker.InPorts.[3].Number
                                     //let inPortNumberView = worker.InPorts.[0].PortValue.View
                                     let numAdditionalPorts = (int) x.ChartWidgetData.InPorts.[5].Value.Value.AsNumber
@@ -63,12 +64,14 @@ type ChartWidget =
                                     let observe port (msg:MessageBus.Message) =
                                         let (sel,_) = worker.InPorts.[4].PortValue.Value.Value.AsSelect
                                         let x_label = 
+                                            let localTime = msg.Time
                                             match sel with
-                                            |0 -> msg.Time.ToLongTimeString()
-                                            |1 -> msg.Time.ToShortTimeString()
-                                            |2 -> msg.Time.ToLongDateString()
-                                            |3 -> msg.Time.ToShortDateString()
+                                            |0 -> localTime.ToLongTimeString()
+                                            |1 -> localTime.ToShortTimeString()
+                                            |2 -> localTime.ToLongDateString()
+                                            |3 -> localTime.ToShortDateString()
                                             |_ -> ""
+                                        "Chart observe " + x_label |> Environment.Log
                                         let index = allSrcPorts |> List.findIndex (fun entry -> entry = port)
                                         //sprintf "Chart trigger value %s %f" x_label msg.Value.AsNumber |> Environment.Log
                                         srcs.[index].Trigger (x_label,msg.Value.AsNumber)
@@ -82,6 +85,7 @@ type ChartWidget =
                                     Some({LineChart=charts;Sources = srcs} :> IRunnerContext)
                         )
     override x.Render  = Some(fun worker ->
+                            "Chart Render" |> Environment.Log
                             let chartBufferSize = (int) worker.InPorts.[3].Number
                             let context = worker.RunnerContext.Value.Value :?> ChartWidgetContext
                             let config = ChartJs.CommonChartConfig(Title=ChartJs.TitleConfig(Display = false),

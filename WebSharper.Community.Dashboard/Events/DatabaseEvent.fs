@@ -9,6 +9,7 @@ open WebSharper.UI.Next
 open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
 open System
+open System.Globalization
 open System.IO
 
 module ServerDatabase =
@@ -19,44 +20,52 @@ module ServerDatabase =
 
     let Agent = MailboxProcessor<AgentMessage>.Start(fun inbox ->
         let fileName file = Path.Combine(Environment.DataDirectory,file)
-        let rec loop state = async {
+        let rec loop (state:DateTime) = async {
             let! message = inbox.Receive()
             match message with
             | WriteMessage (file,message) ->
-                try
-                    let line=sprintf "%s %s %s" message.Key (message.Time.ToString()) (match message.Value with
-                                                                                       |MessageBus.Number(num) -> num.ToString()
-                                                                                       |MessageBus.String(str) -> str
-                                                                                       |_ -> failwith "Database supports only numbers and strings"
-                                                                                       )
-                    File.AppendAllText(fileName file,line + "\n")
-                with
-                |ex -> ex.Message |> Environment.Log
-                return! loop ""
+                //sprintf "DB state time %s message %s " (message.Time.ToLongTimeString()) (state.ToLongTimeString()) |> Environment.Log
+                if message.Time > state then
+                    try
+                        let line=sprintf "%s %s %s" message.Key (message.Time.ToString(new CultureInfo("de-DE"))) (match message.Value with
+                                                                                           |MessageBus.Number(num) -> num.ToString()
+                                                                                           |MessageBus.String(str) -> str
+                                                                                           |_ -> failwith "Database supports only numbers and strings"
+                                                                                           )
+                        File.AppendAllText(fileName file,line + "\n")
+                    with
+                    |ex -> ex.Message |> Environment.Log
+                return! loop state
             | ReadAllMessages (file,channel) ->
-                try
-                    if File.Exists(fileName file) then
-                        let messages = 
-                            System.IO.File.ReadAllLines(fileName file)
-                            |>Array.map (fun line -> line.Split([|' '|], System.StringSplitOptions.RemoveEmptyEntries)|>List.ofArray)
-                            |>List.ofArray
-                            |>List.fold (fun acc raw -> match raw with
-                                                        |keyStr::dateStr::timeStr::value::[] ->let time = System.DateTime.Parse(dateStr + " " + timeStr)
-                                                                                               (let (res,dblValue) = Double.TryParse(value)
-                                                                                                if res then MessageBus.Number(dblValue)
-                                                                                                else MessageBus.String(value)
-                                                                                                 |> MessageBus.CreateMessage)
-                                                                                                .WithTime(time).WithKey(keyStr) :: acc
+                let msgs =
+                    try
+                        if File.Exists(fileName file) then
+                            let messages = 
+                                System.IO.File.ReadAllLines(fileName file)
+                                |>Array.map (fun line -> line.Split([|' '|], System.StringSplitOptions.RemoveEmptyEntries)|>List.ofArray)
+                                |>List.ofArray
+                                |>List.fold (fun acc raw -> match raw with
+                                                            |keyStr::dateStr::timeStr::value::[] ->let time =  System.DateTime.SpecifyKind(System.DateTime.Parse(dateStr + " " + timeStr,new CultureInfo("de-DE")),DateTimeKind.Utc)
+                                                                                                   (let (res,dblValue) = Double.TryParse(value)
+                                                                                                    if res then MessageBus.Number(dblValue)
+                                                                                                    else MessageBus.String(value)
+                                                                                                     |> MessageBus.CreateMessage)
+                                                                                                    .WithTime(time).WithKey(keyStr) :: acc
 
-                                                        |_ -> acc) []
-                        channel.Reply(messages)
-                    else channel.Reply([])
-                with
-                |ex -> ex.Message |> Environment.Log
-                return! loop ""
+                                                            |_ -> acc) []
+                            messages
+                        else 
+                           []
+                    with
+                    |ex -> ex.Message |> Environment.Log
+                           []
+                channel.Reply(msgs)
+                let lastTime = if msgs.Length > 0 then (msgs |>List.sortBy(fun msg-> msg.Time) |> List.last).Time else DateTime(1,1,1)
+                //sprintf "DB last time %s" (lastTime.ToLongTimeString()) |> Environment.Log
+                return! loop lastTime
 
         }
-        loop ""
+        loop (DateTime(1,1,1))
     )
 
     [<Rpc>]
@@ -88,6 +97,7 @@ type DatabaseEvent =
       override x.Data = x.DatabaseEventData
       override x.Run = Some(fun worker ->
                                 let mutable isFirstCall = true
+                                let startTime = worker.InPorts.[0].PortValue.Value.Time
                                 worker.InPorts.[0].PortValue.View
                                 |> View.Sink (fun value -> 
                                         let file = worker.InPorts.[1].String
@@ -96,7 +106,8 @@ type DatabaseEvent =
                                             |> List.iter (fun msg -> (MessageBus.Agent.Post(MessageBus.Send(msg))))
                                             isFirstCall <- false
                                         else
-                                            ServerDatabase.WriteMessage file (value)                                            
+                                            if value.Time > startTime then
+                                                ServerDatabase.WriteMessage file (value)                                            
                                     )  
                                 None)
       override x.Render = None

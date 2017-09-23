@@ -905,13 +905,10 @@
   return Concurrency.FromContinuations(function(ok,err,cc)
   {
    t.get_Status()===0?t.Start():void 0;
+   t.ContinueWith$1(function(t$1)
    {
-    t.ContinueWith$1(function(t$1)
-    {
-     return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok(t$1.get_Result());
-    },Concurrency.noneCT());
-    return;
-   }
+    return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok(t$1.get_Result());
+   },Concurrency.noneCT());
   });
  };
  Concurrency.AwaitTask=function(t)
@@ -919,13 +916,10 @@
   return Concurrency.FromContinuations(function(ok,err,cc)
   {
    t.get_Status()===0?t.Start():void 0;
+   t.ContinueWith$1(function(t$1)
    {
-    t.ContinueWith$1(function(t$1)
-    {
-     return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok();
-    },Concurrency.noneCT());
-    return;
-   }
+    return t$1.get_IsCanceled()?cc(new OperationCanceledException.New(Concurrency.noneCT())):t$1.get_IsFaulted()?err(t$1.get_Exception()):ok();
+   },Concurrency.noneCT());
   });
  };
  Concurrency.AwaitEvent=function(e,ca)
@@ -1834,10 +1828,7 @@
    var k;
    k=keys[i];
    keys[i]=keys[j];
-   {
-    keys[j]=k;
-    return;
-   }
+   keys[j]=k;
   });
  };
  Arrays.sortByKeys=function(keys,items,index,length,comp)
@@ -1850,10 +1841,7 @@
    keys[j]=k;
    v=items[i];
    items[i]=items[j];
-   {
-    items[j]=v;
-    return;
-   }
+   items[j]=v;
   });
  };
  Arrays.clear=function(array,index,length)
@@ -6733,6 +6721,24 @@
       }
      return cmp;
     }
+ };
+ Numeric.TryParseBool=function(s,r)
+ {
+  var m;
+  m=s.toLowerCase();
+  return m==="true"?(r.set(true),true):m==="false"&&(r.set(false),true);
+ };
+ Numeric.ParseBool=function(s)
+ {
+  var m;
+  m=s.toLowerCase();
+  if(m==="true")
+   return true;
+  else
+   if(m==="false")
+    return false;
+   else
+    throw new FormatException.New$1("String was not recognized as a valid Boolean.");
  };
  Numeric.TryParse=function(s,min,max,r)
  {

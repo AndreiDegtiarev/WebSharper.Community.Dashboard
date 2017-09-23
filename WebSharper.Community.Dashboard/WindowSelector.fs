@@ -42,6 +42,17 @@ type SelectorGroup =
             ItemOnMove = itemOnMove
         }
 //    member x.ItemByIndex ind = x.SelectorItems |> List.ofSeq |> List.head
+    member x.Render (selectedItemVar:Var<Option<ISelectorItem>>) = 
+        ListModel.View x.SelectorItems
+                        |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> 
+                                                      divAttr[Attr.DynamicStyle "display" 
+                                                                        (View.Map (fun (selectedItemOpt:Option<ISelectorItem>) -> 
+                                                                                      match selectedItemOpt with
+                                                                                      |Some(selItem) -> if selItem = item then "block" else "none"
+                                                                                      |None -> "none") selectedItemVar.View)      
+                                                             ]
+                                                             [item.Render]
+                                                    )
     member x.RenderMenu offset (selectedItemVar:Var<Option<ISelectorItem>>) withControls= 
      let moveItem = Helper.MoveItemInModelList x.SelectorItems
      let icons item = [
@@ -130,7 +141,13 @@ type WindowSelector =
             |> List.findIndex (fun listItem -> listItem.Key = x.SelectedItem.Key)
     member x.GroupByIndex index = x.SelectorGroups |> List.ofSeq |> List.item index
     member x.Render = 
-        div[x.OptSelectedItem.View |> Doc.BindView (fun value -> match value with |Some(selector) -> selector.Render :> Doc |None -> Doc.Empty)]
+        //div[x.OptSelectedItem.View |> Doc.BindView (fun value -> match value with |Some(selector) -> selector.Render :> Doc |None -> Doc.Empty)]
+        div[ 
+                    ListModel.View x.SelectorGroups
+                    |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun group -> 
+                                                   group.Render x.OptSelectedItem
+                                                )
+                      ]
     member x.RenderMenu =     
           if x.SelectorGroups.Length = 1 then
             (x.SelectorGroups |> List.ofSeq |> List.head).RenderMenu "" x.OptSelectedItem x.IsWithControls

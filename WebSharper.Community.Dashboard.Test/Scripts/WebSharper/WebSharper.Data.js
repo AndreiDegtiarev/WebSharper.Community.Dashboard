@@ -50,22 +50,19 @@
   {
    var guid,r;
    guid=Pervasives.randomFunctionName();
+   $.ajax((r={},r.url=WBRuntime.worldBankUrl(country.Context,List.ofArray(["countries",country.Code,"indicators",indicator]),List.ofArray([["date","1900:2050"],["format","jsonp"]])),r.dataType="jsonp",r.jsonp="prefix",r.jsonpCallback="jsonp"+guid,r.error=function(jqXHR,textStatus,error)
    {
-    $.ajax((r={},r.url=WBRuntime.worldBankUrl(country.Context,List.ofArray(["countries",country.Code,"indicators",indicator]),List.ofArray([["date","1900:2050"],["format","jsonp"]])),r.dataType="jsonp",r.jsonp="prefix",r.jsonpCallback="jsonp"+guid,r.error=function(jqXHR,textStatus,error)
+    return ko(Global.Error(textStatus+error));
+   },r.success=function(data)
+   {
+    return ok(Pervasives$1.NewFromSeq(Arrays.choose(function(e)
     {
-     return ko(Global.Error(textStatus+error));
-    },r.success=function(data)
-    {
-     return ok(Pervasives$1.NewFromSeq(Arrays.choose(function(e)
-     {
-      return e.value==null?null:{
-       $:1,
-       $0:[e.date,e.value]
-      };
-     },Arrays.get(data,1)).slice().reverse()));
-    },r));
-    return;
-   }
+     return e.value==null?null:{
+      $:1,
+      $0:[e.date,e.value]
+     };
+    },Arrays.get(data,1)).slice().reverse()));
+   },r));
   });
  };
  WorldBankRuntime.GetIndicators=Global.id;

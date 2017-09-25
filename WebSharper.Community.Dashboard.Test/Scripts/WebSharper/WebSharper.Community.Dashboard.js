@@ -1600,7 +1600,7 @@
    $this=this;
    return Doc.EmbedView(View.Map(function(mode)
    {
-    return mode.$==1?Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Doc.Element("table",[],Seq.concat([List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("dehaze",function()
+    return mode.$==1?Doc.Element("div",[],[Doc.Element("table",[AttrModule.Style("White-space","nowrap")],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Doc.Element("table",[],Seq.concat([List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("dehaze",function()
     {
      Var.Set($this.PanelTitleVisibility,false);
      Var.Set($this.Mode,{
@@ -1621,7 +1621,7 @@
       a=(x$2=List.ofSeq($this.Data.EventGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$2));
       $this.Data.RegisterEvent(Helper.UniqueKey(),a,event);
      })):selIndex===0?Var.Set($this.CreatePanel((x=List.ofSeq($this.Data.WidgetGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x)),"Panel",null).IsWithInitialAutoLayout,true):selIndex===2?(x$1=List.ofSeq($this.Data.RulesGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$1)).RulesRowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
-    }),$this.EditorSelectorEdit.get_Render()])])]),Doc.Element("div",[],[$this.Dialog.get_Render()])]):Doc.Element("div",[],[Doc.Element("table",[],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Helper.IconNormal("dehaze",function()
+    }),$this.EditorSelectorEdit.get_Render()])])]),Doc.Element("div",[],[$this.Dialog.get_Render()])]):Doc.Element("div",[],[Doc.Element("table",[AttrModule.Style("White-space","nowrap")],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Helper.IconNormal("dehaze",function()
     {
      Var.Set($this.PanelTitleVisibility,true);
      Var.Set($this.Mode,{
@@ -2074,7 +2074,7 @@
    (Environment.Log())("get key city "+request);
    return Concurrency.TryWith(Concurrency.Delay(function()
    {
-    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\Andrey\\Private\\VS_Projects\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
+    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\jaipr\\Source\\Repos\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
     {
      return Unchecked.Equals(typeof t,"string")?JSON.parse(t):t;
     }),function(a)

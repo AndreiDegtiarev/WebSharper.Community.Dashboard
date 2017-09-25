@@ -70,7 +70,7 @@
    },
    WebSharper_Community_PropertyGrid_IProperty$get_Render:function()
    {
-    return Doc.Select([AttrModule.Class("td-no-group")],fncCnv,selections,_var);
+    return Doc.Select([AttrModule.Class("td-no-group"),AttrModule.Style("Width","170px")],fncCnv,selections,_var);
    }
   };
  };

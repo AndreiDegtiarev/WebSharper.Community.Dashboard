@@ -228,7 +228,8 @@ type Dashboard =
     member x.Render menu=
         x.Mode.View |> View.Map (fun mode -> 
           match mode with 
-          |DashboardRun -> div[table [tr[
+          |DashboardRun -> div[tableAttr[Attr.Style "White-space" "nowrap"] 
+                                    [tr[
                                             tdAttr [Attr.Style "vertical-align" "top"]
                                                    [Helper.IconNormal "dehaze" (fun _ -> x.PanelTitleVisibility.Value <- true
                                                                                          x.Mode.Value <- DashboardEdit)
@@ -241,7 +242,7 @@ type Dashboard =
                               ]
           |DashboardEdit -> 
             div[
-                table[
+                tableAttr[Attr.Style "White-space" "nowrap"][
                     tr[
                         tdAttr [Attr.Style "vertical-align" "top"][
                             table

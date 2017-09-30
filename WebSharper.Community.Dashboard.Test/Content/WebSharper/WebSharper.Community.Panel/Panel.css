@@ -1,10 +1,10 @@
 div.panelTitle {
-    background-color:#404040;
+    background-color:#272727;
     color:rgb(200,200,200);
     height:20px;
 }
 div.panelContent {
-    background-color:#808080;
+    background-color:#2a2a2a;
 }           
 .material-icons.orange600 { 
     color: #FB8C00; 

@@ -115,13 +115,12 @@ type Dashboard =
         let keyDef = defaultArg key (System.Guid.NewGuid().ToString())
         let childContainerContent = PanelContainer.Create
                                                   .WithLayoutManager(LayoutManagers.StackPanelLayoutManager)
-                                                  .WithAttributes([Attr.Style "border" "1px solid white"
-                                                                   Attr.Style "display" "flex"
-                                                                  ]) 
+                                                  .WithAttributes([Attr.Style "display" "flex"]) 
         let panel = Panel.Create
                          .WithKey(keyDef)
                          .WithPannelAttrs([//Attr.Style "Width" (cx.ToString()+"px")
                                            Attr.Style "position" "absolute"
+                                           Attr.Style "Background" "#2a2a2a"
                                           ])
                          .WithTitle(x.PanelTitleVisibility)
                          .WithTitleContent(text (name))

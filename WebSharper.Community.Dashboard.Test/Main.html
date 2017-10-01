@@ -25,6 +25,25 @@
     </style>
 </head>
 <body>
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!--a class="navbar-brand" href="#">Your App</a-->
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav" ws-hole="MenuBar"></ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="http://websharper.com">websharper.com</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
     <div class="fluid-container" style="padding-left:20px">
         <div ws-replace="Body">
         </div>

@@ -1789,8 +1789,8 @@
     return Doc.Element("div",[],[Doc.TextView(item.Widget.Name.v)]);
    },group.WidgetItems.v);
    keyDef=(d=(c=Guid.NewGuid(),Global.String(c)),key==null?d:key.$0);
-   childContainerContent=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.StackPanelLayoutManager()).WithAttributes([AttrModule.Style("border","1px solid white"),AttrModule.Style("display","flex")]);
-   panel=Panel$1.get_Create().WithKey(keyDef).WithPannelAttrs([AttrModule.Style("position","absolute")]).WithTitle(this.PanelTitleVisibility).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel$1)
+   childContainerContent=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.StackPanelLayoutManager()).WithAttributes([AttrModule.Style("display","flex")]);
+   panel=Panel$1.get_Create().WithKey(keyDef).WithPannelAttrs([AttrModule.Style("position","absolute"),AttrModule.Style("Background","#2a2a2a")]).WithTitle(this.PanelTitleVisibility).WithTitleContent(Doc.TextNode(name)).WithTitleButtons(List.ofArray([TitleButton.New("add",function(panel$1)
    {
     var items,selected;
     items=List.ofSeq($this.Factory.WidgetItems);
@@ -2074,7 +2074,7 @@
    (Environment.Log())("get key city "+request);
    return Concurrency.TryWith(Concurrency.Delay(function()
    {
-    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\Andrey\\Private\\VS_Projects\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
+    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\AEAFrame\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
     {
      return Unchecked.Equals(typeof t,"string")?JSON.parse(t):t;
     }),function(a)

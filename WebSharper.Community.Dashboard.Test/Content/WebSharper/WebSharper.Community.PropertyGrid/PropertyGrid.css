@@ -1,9 +1,8 @@
 /* Sticky footer styles */
 .td-no-group
 {
-    background-color:white;
-    border-top: solid 1px darkgrey;
-    border-right: solid 1px darkgrey;
+    background-color: #101214;
+    border: solid 1px darkgrey;
     border-collapse: collapse;
     width: 175px;
     height: 30px; 
@@ -26,11 +25,13 @@ input[type=checkbox]{
     width: 15px !important;
     margin-left: 2px;
 }
-div.propertyGrid input
+div.propertyGrid input, select
 {
-    border:0px;
-    width: 100px
-    margin-left: 2px;   
+    border: none !important;
+    width: auto;
+    margin-left: 2px;
+    color: grey;
+    background-color: #101214;   
 } 
 .container .text-muted {
     margin: 20px 0;

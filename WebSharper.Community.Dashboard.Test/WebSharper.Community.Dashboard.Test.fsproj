@@ -103,8 +103,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Community.PropertyGrid">
-      <HintPath>..\packages\WebSharper.Community.PropertyGrid.1.0.0-beta-8\lib\net46\WebSharper.Community.PropertyGrid.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\WebSharper.Community.PropertyGrid\WebSharper.Community.PropertyGrid\bin\Release\WebSharper.Community.PropertyGrid.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Control">
       <HintPath>..\packages\WebSharper.4.0.192.106\lib\net40\WebSharper.Control.dll</HintPath>

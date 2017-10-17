@@ -65,7 +65,7 @@ and
                       |Some(render) -> render(x)
                       |None -> Doc.Empty
        
-   member   x.Properties = (Properties.string "Name" x.Name)::(x.InPorts |> List.map (fun port -> port.Property))
+   member   x.Properties = (Properties.group "")::(Properties.string "Name" x.Name)::(x.InPorts |> List.map (fun port -> port.Property))
 
 
 [<JavaScript>]

@@ -49,15 +49,18 @@ module Client =
                 (widgetPair,{InPortKey = widgetWorker.InPorts.[0].Key;OutPortKey="";WorkerKey=widgetWorker.Key})
             let (txtPair,textWorker) = makeWidget (AppLib(AppTextBoxWidget(TextBoxWidget.Create)))
             let (chartPair,chartWorker) = makeWidget (AppLib(AppChartWidget(ChartWidget.Create)))
+            let (gaugePair, gaugeWorker) = makeWidget (AppLib(AppGaugeWidget(GaugeWidget.Create)))
             let panelData = [ PanelData.Create panelKey 0.0 0.0 []]
             {appData with Events = [("main",[eventPair])]
-                          Widgets = [("main",panelData,[txtPair;chartPair])]
+                          Widgets = [("main",panelData,[txtPair;chartPair;gaugePair])]
                           Rules = [("main",{RuleContainer =
                                                     [
                                                      {RuleChain = [{InPortKey = eventWorker.InPorts.[0].Key;OutPortKey=eventWorker.OutPorts.[0].Key;WorkerKey=eventWorker.Key}
                                                                    textWorker]}
                                                      {RuleChain = [{InPortKey = eventWorker.InPorts.[0].Key;OutPortKey=eventWorker.OutPorts.[0].Key;WorkerKey=eventWorker.Key}
                                                                    chartWorker]}
+                                                     {RuleChain = [{InPortKey = eventWorker.InPorts.[0].Key;OutPortKey=eventWorker.OutPorts.[0].Key;WorkerKey=eventWorker.Key}
+                                                                   gaugeWorker]}
                                                     ]})]
             }.RecreateOnClientEventsRunning dashboard (App.PanelContainerCreator) (AppModel.ToWorker:AppModel->Worker)
         let loadOnServer (configName)= 

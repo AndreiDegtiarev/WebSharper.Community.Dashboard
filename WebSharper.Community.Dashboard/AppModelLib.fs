@@ -18,6 +18,7 @@ type AppModelLib =
     |AppTextBoxWidget    of TextBoxWidget
     |AppChartWidget      of ChartWidget
     |AppButtonWidget     of ButtonWidget
+    |AppGaugeWidget      of GaugeWidget
     static member ToWorker appModel=
         match appModel with 
         |AppRandomEvent(src) ->      src |> Worker.Create 
@@ -27,6 +28,7 @@ type AppModelLib =
         |AppTextBoxWidget(src)   ->  src |> Worker.Create 
         |AppChartWidget(src)  ->     src |> Worker.Create 
         |AppButtonWidget(src)   ->   src |> Worker.Create 
+        |AppGaugeWidget(src)   ->    src |> Worker.Create 
          
     static member FromWorker (worker:Worker)= 
                             match worker.Data with
@@ -37,6 +39,7 @@ type AppModelLib =
                             | :? TextBoxWidget   as src -> Some(AppTextBoxWidget(TextBoxWidget.FromWorker worker))
                             | :? ChartWidget     as src -> Some(AppChartWidget(ChartWidget.FromWorker worker))
                             | :? ButtonWidget    as src -> Some(AppButtonWidget(ButtonWidget.FromWorker worker))
+                            | :? GaugeWidget     as src -> Some(AppGaugeWidget(GaugeWidget.FromWorker worker))
                             | _ -> None 
 
 
@@ -57,6 +60,7 @@ module App =
         TextBoxWidget.Create                 |> registerWidget
         ChartWidget.Create                   |> registerWidget
         ButtonWidget.Create                  |> registerWidget
+        GaugeWidget.Create                   |> registerWidget
         dashboard
     let PanelContainerCreator=(fun _ -> 
                                 let layoutManager = LayoutManagers.FloatingPanelLayoutManager 5.0

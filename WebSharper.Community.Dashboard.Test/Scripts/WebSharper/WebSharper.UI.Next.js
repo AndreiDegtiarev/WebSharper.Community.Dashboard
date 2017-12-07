@@ -566,7 +566,7 @@
  };
  Trie.MergeMaps=function(merge,maps)
  {
-  var o;
+  var o,x;
   function m(k,vs)
   {
    var o$1;
@@ -579,10 +579,10 @@
   o=Trie.AllSome(Seq.map(function($1)
   {
    return m($1[0],$1[1]);
-  },Map.ToSeq(Seq.fold(function(s,t)
+  },Map.ToSeq((x=Seq.collect(Map.ToSeq,maps),Seq.fold(function(s,t)
   {
    return Trie.MultiAdd(t[0],t[1],s);
-  },new FSharpMap.New([]),Seq.collect(Map.ToSeq,maps)))));
+  },new FSharpMap.New([]),x)))));
   return o==null?null:{
    $:1,
    $0:Map.OfArray(Arrays.ofSeq(o.$0))
@@ -3567,6 +3567,31 @@
   SC$8.$cctor();
   return SC$8.TextHoleRE;
  };
+ Docs$1.LocalTemplatesLoaded=function()
+ {
+  SC$8.$cctor();
+  return SC$8.LocalTemplatesLoaded;
+ };
+ Docs$1.set_LocalTemplatesLoaded=function($1)
+ {
+  SC$8.$cctor();
+  SC$8.LocalTemplatesLoaded=$1;
+ };
+ Docs$1.LoadedTemplateFile=function(name)
+ {
+  var m,o,d;
+  m=(o=null,[Docs$1.LoadedTemplates().TryGetValue(name,{
+   get:function()
+   {
+    return o;
+   },
+   set:function(v)
+   {
+    o=v;
+   }
+  }),o]);
+  return m[0]?m[1]:(d=new Dictionary.New$5(),(Docs$1.LoadedTemplates().set_Item(name,d),d));
+ };
  Docs$1.LoadedTemplates=function()
  {
   SC$8.$cctor();
@@ -4215,14 +4240,14 @@
  };
  Doc.GetOrLoadTemplate=function(baseName,name,els,fillWith)
  {
+  Doc.LoadLocalTemplates$1();
   Doc.PrepareTemplate(baseName,name,els);
   return Doc.NamedTemplate(baseName,name,fillWith);
  };
  Doc.NamedTemplate=function(baseName,name,fillWith)
  {
-  var name$1,m,o;
-  name$1=Doc.ComposeName(baseName,name);
-  m=(o=null,[Docs$1.LoadedTemplates().TryGetValue(name$1,{
+  var m,o;
+  m=(o=null,[Docs$1.LoadedTemplateFile(baseName).TryGetValue(name==null?"":name.$0,{
    get:function()
    {
     return o;
@@ -4232,11 +4257,13 @@
     o=v;
    }
   }),o]);
-  return m[0]?Doc.ChildrenTemplate(m[1].cloneNode(true),fillWith):(console.warn("Local template doesn't exist",name$1),Doc.Empty());
+  return m[0]?Doc.ChildrenTemplate(m[1].cloneNode(true),fillWith):(console.warn("Local template doesn't exist",name),Doc.Empty());
  };
  Doc.LoadLocalTemplates=function(baseName)
  {
-  (function()
+  var existingLocalTpl;
+  existingLocalTpl=Docs$1.LoadedTemplateFile("");
+  existingLocalTpl.count>0?Docs$1.LoadedTemplates().set_Item(baseName,existingLocalTpl):(function()
   {
    var m,m$1,name,name$1;
    while(true)
@@ -4272,12 +4299,20 @@
        },m);
       }
     }
-  }());
+  }(),Docs$1.LoadedTemplates().set_Item("",Docs$1.LoadedTemplateFile(baseName)));
+ };
+ Doc.LoadLocalTemplates$1=function()
+ {
+  if(!Docs$1.LocalTemplatesLoaded())
+   {
+    Docs$1.set_LocalTemplatesLoaded(true);
+    Doc.LoadLocalTemplates("");
+   }
  };
  Doc.PrepareTemplate=function(baseName,name,els)
  {
   var els$1,i,$1,el,m;
-  if(!Docs$1.LoadedTemplates().ContainsKey(Doc.ComposeName(baseName,name)))
+  if(!Docs$1.LoadedTemplateFile(baseName).ContainsKey(name==null?"":name.$0))
    {
     els$1=els();
     for(i=0,$1=els$1.length-1;i<=$1;i++){
@@ -4290,15 +4325,15 @@
  };
  Doc.PrepareTemplateStrict=function(baseName,name,els)
  {
-  var fakeroot;
+  var fakeroot,name$1;
   function convertAttrs(el)
   {
    var attrs,toRemove,events,holedAttrs,i,$1,a,_this;
-   function lowercaseAttr(name$1)
+   function lowercaseAttr(name$2)
    {
     var m;
-    m=el.getAttribute(name$1);
-    m===null?void 0:el.setAttribute(name$1,m.toLowerCase());
+    m=el.getAttribute(name$2);
+    m===null?void 0:el.setAttribute(name$2,m.toLowerCase());
    }
    attrs=el.attributes;
    toRemove=[];
@@ -4417,12 +4452,12 @@
   }
   function fillInstanceAttrs(instance,fillWith)
   {
-   var name$1,m,i,$1,a;
+   var name$2,m,i,$1,a;
    convertAttrs(fillWith);
-   name$1=fillWith.nodeName.toLowerCase();
-   m=instance.querySelector("[ws-attr="+name$1+"]");
+   name$2=fillWith.nodeName.toLowerCase();
+   m=instance.querySelector("[ws-attr="+name$2+"]");
    if(Unchecked.Equals(m,null))
-    return console.warn("Filling non-existent attr hole",name$1);
+    return console.warn("Filling non-existent attr hole",name$2);
    else
     {
      m.removeAttribute("ws-attr");
@@ -4499,7 +4534,7 @@
   }
   function recF(recI,$1,$2)
   {
-   var $3,x,f,name$1,name$2,t,instance,usedHoles,mappings,attrs,i,$4,name$3,m,i$1,$5,n,singleTextFill,i$2,$6,n$1,next;
+   var m,$3,x,f,name$2,p,name$3,baseName$1,d,t,instance,usedHoles,mappings,attrs,i,$4,name$4,m$1,i$1,$5,n,singleTextFill,i$2,$6,n$1,next;
    function g(v)
    {
    }
@@ -4507,76 +4542,90 @@
     switch(recI)
     {
      case 0:
-      name$1=Slice.string($1.nodeName,{
+      name$2=Slice.string($1.nodeName,{
        $:1,
        $0:3
       },null).toLowerCase();
-      name$2=name$1.indexOf(".")===-1?baseName+"/"+name$1:Strings.Replace(name$1,".","/");
-      if(!Docs$1.LoadedTemplates().ContainsKey(name$2))
-       return console.warn("Instantiating non-loaded template",name$2);
+      p=(m=name$2.indexOf("."),m===-1?[baseName,name$2]:[Slice.string(name$2,null,{
+       $:1,
+       $0:m-1
+      }),Slice.string(name$2,{
+       $:1,
+       $0:m+1
+      },null)]);
+      name$3=p[1];
+      baseName$1=p[0];
+      if(!Docs$1.LoadedTemplates().ContainsKey(baseName$1))
+       return console.warn("Instantiating non-loaded template",name$3);
       else
        {
-        t=Docs$1.LoadedTemplates().get_Item(name$2);
-        instance=t.cloneNode(true);
-        usedHoles=new HashSet$1.New$3();
-        mappings=new Dictionary.New$5();
-        attrs=$1.attributes;
-        for(i=0,$4=attrs.length-1;i<=$4;i++){
-         name$3=attrs.item(i).name.toLowerCase();
-         mappings.set_Item(name$3,(m=attrs.item(i).nodeValue,m===""?name$3:m.toLowerCase()));
-         !usedHoles.Add(name$3)?console.warn("Hole mapped twice",name$3):void 0;
-        }
-        for(i$1=0,$5=$1.childNodes.length-1;i$1<=$5;i$1++){
-         n=$1.childNodes[i$1];
-         Unchecked.Equals(n.nodeType,Node.ELEMENT_NODE)?!usedHoles.Add(n.nodeName.toLowerCase())?console.warn("Hole filled twice",name$2):void 0:void 0;
-        }
-        singleTextFill=$1.childNodes.length===1&&Unchecked.Equals($1.firstChild.nodeType,Node.TEXT_NODE);
-        if(singleTextFill)
+        d=Docs$1.LoadedTemplates().get_Item(baseName$1);
+        if(!d.ContainsKey(name$3))
+         return console.warn("Instantiating non-loaded template",name$3);
+        else
          {
-          x=fillTextHole(instance,$1.firstChild.textContent);
-          ((function(a)
-          {
-           return function(o)
-           {
-            if(o!=null)
-             a(o.$0);
-           };
-          }((f=function(usedHoles$1)
-          {
-           return function(a)
-           {
-            return usedHoles$1.Add(a);
-           };
-          }(usedHoles),function(x$1)
-          {
-           return g(f(x$1));
-          })))(x));
-         }
-        removeHolesExcept(instance,usedHoles);
-        if(!singleTextFill)
-         {
-          for(i$2=0,$6=$1.childNodes.length-1;i$2<=$6;i$2++){
-           n$1=$1.childNodes[i$2];
-           Unchecked.Equals(n$1.nodeType,Node.ELEMENT_NODE)?n$1.hasAttributes()?fillInstanceAttrs(instance,n$1):fillDocHole(instance,n$1):void 0;
+          t=d.get_Item(name$3);
+          instance=t.cloneNode(true);
+          usedHoles=new HashSet$1.New$3();
+          mappings=new Dictionary.New$5();
+          attrs=$1.attributes;
+          for(i=0,$4=attrs.length-1;i<=$4;i++){
+           name$4=attrs.item(i).name.toLowerCase();
+           mappings.set_Item(name$4,(m$1=attrs.item(i).nodeValue,m$1===""?name$4:m$1.toLowerCase()));
+           !usedHoles.Add(name$4)?console.warn("Hole mapped twice",name$4):void 0;
           }
-         }
-        mapHoles(instance,mappings);
-        (((function(a)
-        {
-         function c($7,$8)
-         {
-          return fill(a,$7,$8);
-         }
-         return function($7)
-         {
-          return function($8)
+          for(i$1=0,$5=$1.childNodes.length-1;i$1<=$5;i$1++){
+           n=$1.childNodes[i$1];
+           Unchecked.Equals(n.nodeType,Node.ELEMENT_NODE)?!usedHoles.Add(n.nodeName.toLowerCase())?console.warn("Hole filled twice",name$3):void 0:void 0;
+          }
+          singleTextFill=$1.childNodes.length===1&&Unchecked.Equals($1.firstChild.nodeType,Node.TEXT_NODE);
+          if(singleTextFill)
+           {
+            x=fillTextHole(instance,$1.firstChild.textContent);
+            ((function(a)
+            {
+             return function(o)
+             {
+              if(o!=null)
+               a(o.$0);
+             };
+            }((f=function(usedHoles$1)
+            {
+             return function(a)
+             {
+              return usedHoles$1.Add(a);
+             };
+            }(usedHoles),function(x$1)
+            {
+             return g(f(x$1));
+            })))(x));
+           }
+          removeHolesExcept(instance,usedHoles);
+          if(!singleTextFill)
+           {
+            for(i$2=0,$6=$1.childNodes.length-1;i$2<=$6;i$2++){
+             n$1=$1.childNodes[i$2];
+             Unchecked.Equals(n$1.nodeType,Node.ELEMENT_NODE)?n$1.hasAttributes()?fillInstanceAttrs(instance,n$1):fillDocHole(instance,n$1):void 0;
+            }
+           }
+          mapHoles(instance,mappings);
+          (((function(a)
           {
-           return c($7,$8);
-          };
-         };
-        }(instance))($1.parentNode))($1));
-        $1.parentNode.removeChild($1);
-        return;
+           function c($7,$8)
+           {
+            return fill(a,$7,$8);
+           }
+           return function($7)
+           {
+            return function($8)
+            {
+             return c($7,$8);
+            };
+           };
+          }(instance))($1.parentNode))($1));
+          $1.parentNode.removeChild($1);
+          return;
+         }
        }
       break;
      case 1:
@@ -4597,11 +4646,11 @@
   }
   function fillDocHole(instance,fillWith)
   {
-   var m,name$1,m$1;
+   var m,name$2,m$1;
    function fillHole(p,n)
    {
     var parsed,i,$1;
-    if(name$1==="title"&&fillWith.hasChildNodes())
+    if(name$2==="title"&&fillWith.hasChildNodes())
      {
       parsed=$.parseHTML(fillWith.textContent);
       fillWith.removeChild(fillWith.firstChild);
@@ -4612,20 +4661,20 @@
     convertElement(fillWith);
     return fill(fillWith,p,n);
    }
-   name$1=fillWith.nodeName.toLowerCase();
+   name$2=fillWith.nodeName.toLowerCase();
    DomUtility.IterSelector(instance,"[ws-attr-holes]",function(e)
    {
     var holeAttrs,i,$1,attrName,_this;
     holeAttrs=Strings.SplitChars(e.getAttribute("ws-attr-holes"),[" "],1);
     for(i=0,$1=holeAttrs.length-1;i<=$1;i++){
      attrName=Arrays.get(holeAttrs,i);
-     e.setAttribute(attrName,(_this=new Global.RegExp("\\${"+name$1+"}","ig"),e.getAttribute(attrName).replace(_this,fillWith.textContent)));
+     e.setAttribute(attrName,(_this=new Global.RegExp("\\${"+name$2+"}","ig"),e.getAttribute(attrName).replace(_this,fillWith.textContent)));
     }
    });
-   m$1=instance.querySelector("[ws-hole="+name$1+"]");
+   m$1=instance.querySelector("[ws-hole="+name$2+"]");
    if(Unchecked.Equals(m$1,null))
     {
-     m=instance.querySelector("[ws-replace="+name$1+"]");
+     m=instance.querySelector("[ws-replace="+name$2+"]");
      return Unchecked.Equals(m,null)?null:(fillHole(m.parentNode,m),void m.parentNode.removeChild(m));
     }
    else
@@ -4680,7 +4729,8 @@
    return recF(1,p,n);
   }
   fakeroot=Doc.FakeRoot(els);
-  Docs$1.LoadedTemplates().set_Item(Doc.ComposeName(baseName,name),fakeroot);
+  name$1=(name==null?"":name.$0).toLowerCase();
+  Docs$1.LoadedTemplateFile(baseName).set_Item(name$1,fakeroot);
   Arrays.length(els)>0?convert(fakeroot,Arrays.get(els,0)):void 0;
  };
  Doc.ComposeName=function(baseName,name)
@@ -5048,6 +5098,7 @@
  Doc.Run=function(parent,doc)
  {
   var d;
+  Doc.LoadLocalTemplates$1();
   d=doc.docNode;
   Docs$1.LinkElement(parent,d);
   View.Sink(Mailbox.StartProcessor(Docs$1.PerformAnimatedUpdate(Docs$1.CreateRunState(parent,d),d)),doc.updates);
@@ -5435,6 +5486,7 @@
  {
   SC$8.$cctor=Global.ignore;
   SC$8.LoadedTemplates=new Dictionary.New$5();
+  SC$8.LocalTemplatesLoaded=false;
   SC$8.TextHoleRE="\\${([^}]+)}";
  };
  Flow=Next.Flow=Runtime.Class({

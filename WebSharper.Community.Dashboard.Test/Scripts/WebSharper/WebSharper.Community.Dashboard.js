@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,System,Guid,Doc,Enumerator,Key,ListModel,Unchecked,AttrModule,Option,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,Chart,LiveChart,Pervasives;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,GaugeWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,System,Guid,Doc,Enumerator,Key,ListModel,Unchecked,AttrModule,Option,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,Chart,LiveChart,Pervasives,FormatException,AttrProxy;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -53,6 +53,7 @@
  ChartWidgetContext=Widgets.ChartWidgetContext=Widgets.ChartWidgetContext||{};
  ChartWidget=Widgets.ChartWidget=Widgets.ChartWidget||{};
  ButtonWidget=Widgets.ButtonWidget=Widgets.ButtonWidget||{};
+ GaugeWidget=Widgets.GaugeWidget=Widgets.GaugeWidget||{};
  AppModelLib=Dashboard.AppModelLib=Dashboard.AppModelLib||{};
  App=Dashboard.App=Dashboard.App||{};
  SC$3=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib=Global.StartupCode$WebSharper_Community_Dashboard$AppModelLib||{};
@@ -114,6 +115,8 @@
  Chart=Charting&&Charting.Chart;
  LiveChart=Charting&&Charting.LiveChart;
  Pervasives=Charting&&Charting.Pervasives;
+ FormatException=WebSharper&&WebSharper.FormatException;
+ AttrProxy=Next&&Next.AttrProxy;
  Role.Server={
   $:1
  };
@@ -713,11 +716,15 @@
   {
    return new List.T({
     $:1,
-    $0:Properties.string("Name",this.Name),
-    $1:List.map(function(port)
-    {
-     return port.get_Property();
-    },this.InPorts)
+    $0:Properties.group(""),
+    $1:new List.T({
+     $:1,
+     $0:Properties.string("Name",this.Name),
+     $1:List.map(function(port)
+     {
+      return port.get_Property();
+     },this.InPorts)
+    })
    });
   },
   get_Render:function()
@@ -2412,22 +2419,23 @@
   },
   WebSharper_Community_Dashboard_IWorkerData$get_Data:function()
   {
-   var $this,chartBufferSize,resultNumberOfPorts,startIndex,i;
+   var $this,chartBufferSize,resultNumberOfPorts,inPorts,startIndex,i;
    $this=this;
    chartBufferSize=this.ChartWidgetData.InPorts.get_Item(3).Value.Value.get_AsNumber()>>0;
    resultNumberOfPorts=(this.ChartWidgetData.InPorts.get_Item(5).Value.Value.get_AsNumber()>>0)+6;
-   i=this.ChartWidgetData;
-   return WorkerData.New(i.WorkerName,List.mapi(function(ind,port)
-   {
-    return ind===0||ind>5?port.WithCacheSize(chartBufferSize):port;
-   },resultNumberOfPorts<this.ChartWidgetData.InPorts.get_Length()?(List.splitAt(resultNumberOfPorts,this.ChartWidgetData.InPorts))[0]:resultNumberOfPorts>this.ChartWidgetData.InPorts.get_Length()?(startIndex=this.ChartWidgetData.InPorts.get_Length()-6+1,List.append(this.ChartWidgetData.InPorts,List.ofSeq(Seq.delay(function()
+   inPorts=resultNumberOfPorts<this.ChartWidgetData.InPorts.get_Length()?(List.splitAt(resultNumberOfPorts,this.ChartWidgetData.InPorts))[0]:resultNumberOfPorts>this.ChartWidgetData.InPorts.get_Length()?(startIndex=this.ChartWidgetData.InPorts.get_Length()-6+1,List.append(this.ChartWidgetData.InPorts,List.ofSeq(Seq.delay(function()
    {
     return Seq.map(function(i$1)
     {
      var c;
      return InPortData.CreateNumber(" in Value "+(c=startIndex+i$1,Global.String(c)),0).WithCacheSize(chartBufferSize);
     },Operators.range(0,resultNumberOfPorts-$this.ChartWidgetData.InPorts.get_Length()-1));
-   })))):this.ChartWidgetData.InPorts),i.OutPorts);
+   })))):this.ChartWidgetData.InPorts;
+   i=this.ChartWidgetData;
+   return WorkerData.New(i.WorkerName,List.mapi(function(ind,port)
+   {
+    return ind===0||ind>5?port.WithCacheSize(chartBufferSize):port;
+   },inPorts),i.OutPorts);
   }
  },null,ChartWidget);
  ChartWidget.get_FromWorker=function()
@@ -2492,6 +2500,69 @@
    ButtonWidgetData:ButtonWidgetData
   });
  };
+ GaugeWidget=Widgets.GaugeWidget=Runtime.Class({
+  WebSharper_Community_Dashboard_IWorkerData$get_Render:function()
+  {
+   return{
+    $:1,
+    $0:function(worker)
+    {
+     var radius,fixed_values,p,gaugeColorView;
+     function find_coordinates(angle)
+     {
+      var angle_in_radians,c,$1,c$1,$2;
+      angle_in_radians=angle*3.14159265358979/180;
+      return[(c=100+($1=Global.Number(radius),Global.isNaN($1)?new FormatException.New("Input string was not in a correct format."):$1)*Math.cos(angle_in_radians),Global.String(c)),(c$1=100-($2=Global.Number(radius),Global.isNaN($2)?new FormatException.New("Input string was not in a correct format."):$2)*Math.sin(angle_in_radians),Global.String(c$1))];
+     }
+     function variable_param(end_coordinates)
+     {
+      var p$1;
+      p$1=find_coordinates(end_coordinates);
+      return fixed_values+p$1[0]+","+p$1[1];
+     }
+     function setColor(angle)
+     {
+      return angle===90?"yellow":angle<=90?"orange":angle>90?"red":"";
+     }
+     radius="80";
+     fixed_values=(p=find_coordinates(180),"M"+p[0]+","+p[1]+"A"+radius+","+radius+","+"0, 0 , 1,");
+     gaugeColorView=View.Map(function(msg)
+     {
+      return setColor(msg.Value.get_AsNumber());
+     },worker.InPorts.get_Item(0).PortValue.v);
+     return Doc.EmbedView(View.Map(function(msg)
+     {
+      return Doc.SvgElement("svg",List.T.Empty,List.ofArray([Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",variable_param(0)),AttrModule.Style("stroke","whitesmoke"),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty),Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",variable_param(180-msg.Value.get_AsNumber())),AttrModule.DynamicStyle("stroke",gaugeColorView),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty)]));
+     },worker.InPorts.get_Item(0).PortValue.v));
+    }
+   };
+  },
+  WebSharper_Community_Dashboard_IWorkerData$get_Run:function()
+  {
+   return null;
+  },
+  WebSharper_Community_Dashboard_IWorkerData$get_Data:function()
+  {
+   return this.GaugeWidgetData;
+  }
+ },null,GaugeWidget);
+ GaugeWidget.get_FromWorker=function()
+ {
+  return function(worker)
+  {
+   return GaugeWidget.New(worker.get_ToData());
+  };
+ };
+ GaugeWidget.get_Create=function()
+ {
+  return GaugeWidget.New(WorkerData.Create("Gauge",List.ofArray([InPortData.CreateNumber("Angle",0)]),List.T.Empty));
+ };
+ GaugeWidget.New=function(GaugeWidgetData)
+ {
+  return new GaugeWidget({
+   GaugeWidgetData:GaugeWidgetData
+  });
+ };
  AppModelLib.FromWorker=function(worker)
  {
   var m;
@@ -2538,11 +2609,17 @@
     $:6,
     $0:(ButtonWidget.get_FromWorker())(worker)
    }
+  }:m instanceof GaugeWidget?{
+   $:1,
+   $0:{
+    $:7,
+    $0:(GaugeWidget.get_FromWorker())(worker)
+   }
   }:null;
  };
  AppModelLib.ToWorker=function(appModel)
  {
-  return appModel.$==1?Worker.Create(appModel.$0):appModel.$==2?Worker.Create(appModel.$0):appModel.$==3?Worker.Create(appModel.$0):appModel.$==4?Worker.Create(appModel.$0):appModel.$==5?Worker.Create(appModel.$0):appModel.$==6?Worker.Create(appModel.$0):Worker.Create(appModel.$0);
+  return appModel.$==1?Worker.Create(appModel.$0):appModel.$==2?Worker.Create(appModel.$0):appModel.$==3?Worker.Create(appModel.$0):appModel.$==4?Worker.Create(appModel.$0):appModel.$==5?Worker.Create(appModel.$0):appModel.$==6?Worker.Create(appModel.$0):appModel.$==7?Worker.Create(appModel.$0):Worker.Create(appModel.$0);
  };
  App.CreateDashboard=function()
  {
@@ -2570,6 +2647,7 @@
   registerWidget(TextBoxWidget.get_Create());
   registerWidget(ChartWidget.get_Create());
   registerWidget(ButtonWidget.get_Create());
+  registerWidget(GaugeWidget.get_Create());
   return dashboard;
  };
  App.RegisterWidgetGeneral=function(dashboard,data)

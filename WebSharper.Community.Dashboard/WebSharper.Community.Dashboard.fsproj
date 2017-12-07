@@ -67,6 +67,7 @@
     <Compile Include="Widgets\TextBoxWidget.fs" />
     <Compile Include="Widgets\ChartWidget.fs" />
     <Compile Include="Widgets\ButtonWidget.fs" />
+    <Compile Include="Widgets\GaugeWidget.fs" />
     <Compile Include="AppModelLib.fs" />
     <Compile Include="AppData.fs" />
     <EmbeddedResource Include="Content\Dashboard.css" />

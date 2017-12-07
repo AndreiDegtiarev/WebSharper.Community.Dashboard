@@ -4923,9 +4923,10 @@
   return{
    GetEnumerator:function()
    {
-    var first;
+    var e1,first;
+    e1=Enumerator.Get(s1);
     first=[true];
-    return new T.New(Enumerator.Get(s1),null,function(x)
+    return new T.New(e1,null,function(x)
     {
      var x$1;
      return x.s.MoveNext()?(x.c=x.s.Current(),true):(x$1=x.s,!Unchecked.Equals(x$1,null)?x$1.Dispose():void 0,x.s=null,first[0]&&(first[0]=false,x.s=Enumerator.Get(s2),x.s.MoveNext()?(x.c=x.s.Current(),true):(x.s.Dispose(),x.s=null,false)));

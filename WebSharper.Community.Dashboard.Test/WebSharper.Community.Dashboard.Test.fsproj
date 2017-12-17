@@ -99,13 +99,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="WebSharper.Community.Panel">
-      <HintPath>..\packages\WebSharper.Community.Panel.1.0.0-beta-9\lib\net46\WebSharper.Community.Panel.dll</HintPath>
+      <HintPath>..\..\WebSharper.Community.Panel\WebSharper.Community.Panel\bin\Debug\WebSharper.Community.Panel.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WebSharper.Community.Panel" />
     <Reference Include="WebSharper.Community.PropertyGrid">
-      <HintPath>..\packages\WebSharper.Community.PropertyGrid.1.0.0-beta-9\lib\net46\WebSharper.Community.PropertyGrid.dll</HintPath>
+      <HintPath>..\..\WebSharper.Community.PropertyGrid\WebSharper.Community.PropertyGrid\bin\Debug\WebSharper.Community.PropertyGrid.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WebSharper.Community.PropertyGrid" />
     <Reference Include="WebSharper.Control">
       <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Control.dll</HintPath>
       <Private>True</Private>

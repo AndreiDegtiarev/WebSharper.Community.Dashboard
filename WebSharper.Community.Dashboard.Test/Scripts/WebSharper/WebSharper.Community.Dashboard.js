@@ -2081,7 +2081,7 @@
    (Environment.Log())("get key city "+request);
    return Concurrency.TryWith(Concurrency.Delay(function()
    {
-    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\Andrey\\Private\\VS_Projects\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
+    return Concurrency.Bind(TxtRuntime.AsyncMap(IO.asyncReadTextAtRuntime(false,"C:\\Users\\jaipr\\Source\\Repos\\WebSharper.Community.Dashboard\\WebSharper.Community.Dashboard","","JSON","",request),function(t)
     {
      return Unchecked.Equals(typeof t,"string")?JSON.parse(t):t;
     }),function(a)
@@ -2507,32 +2507,40 @@
     $:1,
     $0:function(worker)
     {
-     var radius,fixed_values,p,gaugeColorView;
-     function find_coordinates(angle)
+     var radius,FixedValues,p,gaugeColorView;
+     function FindCoordinates(angle)
      {
       var angle_in_radians,c,$1,c$1,$2;
       angle_in_radians=angle*3.14159265358979/180;
       return[(c=100+($1=Global.Number(radius),Global.isNaN($1)?new FormatException.New("Input string was not in a correct format."):$1)*Math.cos(angle_in_radians),Global.String(c)),(c$1=100-($2=Global.Number(radius),Global.isNaN($2)?new FormatException.New("Input string was not in a correct format."):$2)*Math.sin(angle_in_radians),Global.String(c$1))];
      }
-     function variable_param(end_coordinates)
+     function VariableParam(end_coordinates)
      {
       var p$1;
-      p$1=find_coordinates(end_coordinates);
-      return fixed_values+p$1[0]+","+p$1[1];
+      p$1=FindCoordinates(end_coordinates);
+      return FixedValues+p$1[0]+","+p$1[1];
      }
-     function setColor(angle)
+     function SetColor(angle)
      {
-      return angle===90?"yellow":angle<=90?"orange":angle>90?"red":"";
+      return angle===90?"yellow":angle>90?"red":angle<90&&angle>0?"orange":"whitesmoke";
+     }
+     function CalAngleForMinMaxVal(value)
+     {
+      var minValue,maxValue;
+      minValue=worker.InPorts.get_Item(1).PortValue.c.Value.get_AsNumber();
+      maxValue=worker.InPorts.get_Item(2).PortValue.c.Value.get_AsNumber();
+      return value>=maxValue?180:value<=minValue?0:180*(value/(maxValue+minValue));
      }
      radius="80";
-     fixed_values=(p=find_coordinates(180),"M"+p[0]+","+p[1]+"A"+radius+","+radius+","+"0, 0 , 1,");
+     FixedValues=(p=FindCoordinates(180),"M"+p[0]+","+p[1]+"A"+radius+","+radius+","+"0, 0 , 1,");
      gaugeColorView=View.Map(function(msg)
      {
-      return setColor(msg.Value.get_AsNumber());
+      return SetColor(CalAngleForMinMaxVal(msg.Value.get_AsNumber()));
      },worker.InPorts.get_Item(0).PortValue.v);
      return Doc.EmbedView(View.Map(function(msg)
      {
-      return Doc.SvgElement("svg",List.T.Empty,List.ofArray([Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",variable_param(0)),AttrModule.Style("stroke","whitesmoke"),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty),Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",variable_param(180-msg.Value.get_AsNumber())),AttrModule.DynamicStyle("stroke",gaugeColorView),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty)]));
+      var c,c$1,c$2;
+      return Doc.SvgElement("svg",List.T.Empty,List.ofArray([Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",VariableParam(0)),AttrModule.Style("stroke","whitesmoke"),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty),Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",VariableParam(180-CalAngleForMinMaxVal(msg.Value.get_AsNumber()))),AttrModule.DynamicStyle("stroke",gaugeColorView),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty),Doc.SvgElement("text",List.ofArray([AttrProxy.Create("x","20"),AttrProxy.Create("y","120"),AttrProxy.Create("text-anchor","middle"),AttrModule.Style("Stroke","Whitesmoke")]),List.ofArray([Doc.TextNode((c=worker.InPorts.get_Item(1).PortValue.c.Value.get_AsNumber(),Global.String(c)))])),Doc.SvgElement("text",List.ofArray([AttrProxy.Create("x","180"),AttrProxy.Create("y","120"),AttrProxy.Create("text-anchor","middle"),AttrModule.Style("Stroke","Whitesmoke")]),List.ofArray([Doc.TextNode((c$1=worker.InPorts.get_Item(2).PortValue.c.Value.get_AsNumber(),Global.String(c$1)))])),Doc.SvgElement("text",List.ofArray([AttrProxy.Create("x","100"),AttrProxy.Create("y","80"),AttrProxy.Create("text-anchor","middle"),AttrModule.Style("Stroke","Whitesmoke"),AttrModule.Style("font-size","x-large")]),List.ofArray([Doc.TextNode((c$2=Operators.Truncate(worker.InPorts.get_Item(0).PortValue.c.Value.get_AsNumber()),Global.String(c$2)))]))]));
      },worker.InPorts.get_Item(0).PortValue.v));
     }
    };
@@ -2555,7 +2563,7 @@
  };
  GaugeWidget.get_Create=function()
  {
-  return GaugeWidget.New(WorkerData.Create("Gauge",List.ofArray([InPortData.CreateNumber("Angle",0)]),List.T.Empty));
+  return GaugeWidget.New(WorkerData.Create("Gauge",List.ofArray([InPortData.CreateNumber("Angle",0),InPortData.CreateNumber("Min Temp",0),InPortData.CreateNumber("Max Temp",100)]),List.T.Empty));
  };
  GaugeWidget.New=function(GaugeWidgetData)
  {

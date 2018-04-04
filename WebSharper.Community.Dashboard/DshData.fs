@@ -2,11 +2,11 @@
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
+open WebSharper.UI
+open WebSharper.UI.Client
 open WebSharper.Community.PropertyGrid
 open WebSharper.Community.Panel
-open WebSharper.UI.Next.Html
+open WebSharper.UI.Html
 
 
 [<JavaScript>]
@@ -44,9 +44,9 @@ type EventsGroupItem =
                            Helper.IconSmall "keyboard_arrow_up" (fun _ ->moveItem false item)
                            Helper.IconSmall "clear" (fun _ ->x.EventItems.Remove(item))
                         ]
-            table[
+            table[][
                     ListModel.View x.EventItems
-                    |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [(divAttr (Helper.AttrsClick (fun _ ->item.Worker.Properties |> x.PropertyGrid.Edit))
+                    |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr[] [(div(Helper.AttrsClick (fun _ ->item.Worker.Properties |> x.PropertyGrid.Edit))
                                                                                       [textView item.Worker.Name.View])
                                                                                |> WrapControls.Render (icons item) WrapControlsAligment.Horizontal
                                                                                                                    ])

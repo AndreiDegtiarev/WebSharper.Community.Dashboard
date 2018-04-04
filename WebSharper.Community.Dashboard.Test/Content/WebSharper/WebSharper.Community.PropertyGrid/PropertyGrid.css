@@ -10,13 +10,13 @@
 }
 .td-group
 {
-    background-color: aliceblue;
-    border-top: solid 1px darkgrey;
-    color: black;
+    background-color: #272727;
+    border: solid 1px darkgrey;
     font-weight: bolder;
     font-style: normal;
     font-size: initial;
     width: 350px;
+    height: 25px;
 }
 .form-control{
     padding-left: 0px;

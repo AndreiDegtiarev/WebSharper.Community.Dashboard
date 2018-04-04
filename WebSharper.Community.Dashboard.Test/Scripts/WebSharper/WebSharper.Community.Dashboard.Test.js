@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,WebSharper$Community$Dashboard$Test_JsonDecoder,AppModelLib,RuleEntry,AppData,Panel,Helper,Events,RandomEvent,Widgets,TextBoxWidget,ChartWidget,GaugeWidget,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,UI,Next,Doc,Environment,console,MessageBus,JSON,Strings,Json,Provider;
+ var Global,WebSharper,Community,Dashboard,Test,AppModel,Client,WebSharper$Community$Dashboard$Test_JsonDecoder,AppModelLib,Strings,RuleEntry,AppData,Panel,Helper,Events,RandomEvent,Widgets,TextBoxWidget,ChartWidget,GaugeWidget,List,PanelData,RuleContainer,RuleChain,App,Remoting,AjaxRemotingProvider,UI,Doc,Environment,console,MessageBus,JSON,ClientSideJson,Provider;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -11,6 +11,7 @@
  Client=Test.Client=Test.Client||{};
  WebSharper$Community$Dashboard$Test_JsonDecoder=Global.WebSharper$Community$Dashboard$Test_JsonDecoder=Global.WebSharper$Community$Dashboard$Test_JsonDecoder||{};
  AppModelLib=Dashboard&&Dashboard.AppModelLib;
+ Strings=WebSharper&&WebSharper.Strings;
  RuleEntry=Dashboard&&Dashboard.RuleEntry;
  AppData=Dashboard&&Dashboard.AppData;
  Panel=Community&&Community.Panel;
@@ -29,15 +30,13 @@
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
  UI=WebSharper&&WebSharper.UI;
- Next=UI&&UI.Next;
- Doc=Next&&Next.Doc;
+ Doc=UI&&UI.Doc;
  Environment=Dashboard&&Dashboard.Environment;
  console=Global.console;
  MessageBus=Dashboard&&Dashboard.MessageBus;
  JSON=Global.JSON;
- Strings=WebSharper&&WebSharper.Strings;
- Json=WebSharper&&WebSharper.Json;
- Provider=Json&&Json.Provider;
+ ClientSideJson=WebSharper&&WebSharper.ClientSideJson;
+ Provider=ClientSideJson&&ClientSideJson.Provider;
  AppModel.FromWorker=function(worker)
  {
   var o;
@@ -53,6 +52,20 @@
  AppModel.ToWorker=function(appData)
  {
   return AppModelLib.ToWorker(appData.$0);
+ };
+ Client.Main$97$31=function(config,loadOnServer)
+ {
+  return function()
+  {
+   try
+   {
+    !Strings.IsNullOrWhiteSpace(config.ConfigurationName)?loadOnServer(config.ConfigurationName):null;
+   }
+   catch(m)
+   {
+    null;
+   }
+  };
  };
  Client.Main=function(config)
  {
@@ -106,7 +119,7 @@
   function loadOnServer(configName)
   {
    var data;
-   data=(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:960175932",[configName]);
+   data=(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:861449976",[configName]);
    (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.RecreateOnServer:1430973847",[data]);
    log("Server recreated");
   }
@@ -149,10 +162,10 @@
   {
    var data;
    data=AppData.Create(dashboard,AppModel.FromWorker);
-   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.SaveToFile:-1517660316",["Default",data]);
+   (new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.SaveToFile:-1624398440",["Default",data]);
   })])),tbCellC(List.ofArray([Helper.TxtIconNormal("unarchive","Download  and run on client",function()
   {
-   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:960175932",["Default"]).RecreateOnClientEventsRunning(dashboard,function()
+   (new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard.Test:WebSharper.Community.Dashboard.Test.Server.LoadFromFile:861449976",["Default"]).RecreateOnClientEventsRunning(dashboard,function()
    {
     return App.PanelContainerCreator();
    },AppModel.ToWorker);

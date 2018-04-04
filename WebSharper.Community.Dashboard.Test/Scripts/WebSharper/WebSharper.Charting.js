@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Charting,Pervasives,Color,Seq,Reactive,Charts,DataType,ChartConfig,SeriesChartConfig,ColorConfig,PolarData,LineChart,BarChart,RadarChart,PolarAreaChart,PieChart,DoughnutChart,CompositeChart,Chart,LiveChart,SC$1,Renderers,ChartJsInternal,BatchUpdater,ChartJs,SC$2,IntelliFactory,Runtime,Seq$1,List,Reactive$1,Reactive$2,Util,Control,FSharpEvent,Random,Arrays,Chart$1,Operators,Option,Slice,UI,Next,Doc,AttrProxy,AttrModule;
+ var Global,WebSharper,Charting,Pervasives,Color,Seq,Reactive,Charts,DataType,ChartConfig,SeriesChartConfig,ColorConfig,PolarData,Obj,LineChart,BarChart,RadarChart,PolarAreaChart,PieChart,DoughnutChart,CompositeChart,Chart,LiveChart,SC$1,Renderers,ChartJsInternal,BatchUpdater,ChartJs,SC$2,IntelliFactory,Runtime,Seq$1,List,Reactive$1,Reactive$2,Util,Control,FSharpEvent,Random,Arrays,Chart$1,Operators,Option,Slice,UI,Doc,AttrProxy,AttrModule;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Charting=WebSharper.Charting=WebSharper.Charting||{};
@@ -15,6 +15,7 @@
  SeriesChartConfig=Charts.SeriesChartConfig=Charts.SeriesChartConfig||{};
  ColorConfig=Charts.ColorConfig=Charts.ColorConfig||{};
  PolarData=Charts.PolarData=Charts.PolarData||{};
+ Obj=WebSharper&&WebSharper.Obj;
  LineChart=Charts.LineChart=Charts.LineChart||{};
  BarChart=Charts.BarChart=Charts.BarChart||{};
  RadarChart=Charts.RadarChart=Charts.RadarChart||{};
@@ -46,10 +47,9 @@
  Option=WebSharper&&WebSharper.Option;
  Slice=WebSharper&&WebSharper.Slice;
  UI=WebSharper&&WebSharper.UI;
- Next=UI&&UI.Next;
- Doc=Next&&Next.Doc;
- AttrProxy=Next&&Next.AttrProxy;
- AttrModule=Next&&Next.AttrModule;
+ Doc=UI&&UI.Doc;
+ AttrProxy=UI&&UI.AttrProxy;
+ AttrModule=UI&&UI.AttrModule;
  Color=Pervasives.Color=Runtime.Class({
   toString:function()
   {
@@ -300,7 +300,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },WebSharper.Obj,LineChart);
+ },Obj,LineChart);
  LineChart.New=Runtime.Ctor(function(dataset,cfg,scfg,ccfg)
  {
   this.dataset=dataset;
@@ -387,7 +387,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },WebSharper.Obj,BarChart);
+ },Obj,BarChart);
  BarChart.New=Runtime.Ctor(function(dataset,cfg,scfg)
  {
   this.dataset=dataset;
@@ -516,7 +516,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },WebSharper.Obj,RadarChart);
+ },Obj,RadarChart);
  RadarChart.New=Runtime.Ctor(function(dataset,cfg,scfg,ccfg)
  {
   this.dataset=dataset;
@@ -563,7 +563,7 @@
   {
    this.event.event.Trigger([props,data]);
   }
- },WebSharper.Obj,PolarAreaChart);
+ },Obj,PolarAreaChart);
  PolarAreaChart.New=Runtime.Ctor(function(dataset,cfg)
  {
   this.dataset=dataset;
@@ -608,7 +608,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },WebSharper.Obj,PieChart);
+ },Obj,PieChart);
  PieChart.New=Runtime.Ctor(function(dataset,cfg)
  {
   this.dataset=dataset;
@@ -653,7 +653,7 @@
   {
    this.event.event.Trigger([data,props]);
   }
- },WebSharper.Obj,DoughnutChart);
+ },Obj,DoughnutChart);
  DoughnutChart.New=Runtime.Ctor(function(dataset,cfg)
  {
   this.dataset=dataset;
@@ -665,7 +665,7 @@
   {
    return this.charts;
   }
- },WebSharper.Obj,CompositeChart);
+ },Obj,CompositeChart);
  CompositeChart.New=Runtime.Ctor(function(charts)
  {
   this.charts=charts;
@@ -957,7 +957,7 @@
     $0:Global.setTimeout(doUpdate,this.interval)
    }):doUpdate();
   }
- },WebSharper.Obj,BatchUpdater);
+ },Obj,BatchUpdater);
  BatchUpdater.New=Runtime.Ctor(function(interval,maxCount)
  {
   this.interval=interval==null?75:interval.$0;
@@ -1232,10 +1232,10 @@
   size=[0];
   streams.Subscribe(Util.observer(function(data)
   {
-   var window$2,arr,o;
-   function a(i,a$1)
+   var window$2,arr,o,$1,a;
+   function a$1(i,a$2)
    {
-    Arrays.set(arr,i,a$1[1]);
+    Arrays.set(arr,i,a$2[1]);
    }
    window$1==null?void 0:(window$2=window$1.$0,size[0]>=window$2?remove(window$2,size[0]):void 0);
    arr=Arrays.ofSeq(Seq$1.delay(function()
@@ -1245,15 +1245,12 @@
      return 0;
     },Operators.range(1,l));
    }));
-   Seq$1.iter(function($1)
+   Seq$1.iter(function($2)
    {
-    return a($1[0],$1[1]);
+    return a$1($2[0],$2[1]);
    },data);
    o=Seq.headOption(data);
-   o==null?void 0:(function(a$1,a$2)
-   {
-    add(size[0],[arr,a$2[0]]);
-   }).apply(null,o.$0);
+   o==null?void 0:($1=o.$0,$1[0],a=$1[1],add(size[0],[arr,a[0]]));
    size[0]++;
   }));
  };

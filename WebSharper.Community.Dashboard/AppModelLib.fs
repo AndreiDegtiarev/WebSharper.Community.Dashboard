@@ -2,8 +2,8 @@
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
+open WebSharper.UI
+open WebSharper.UI.Client
 open WebSharper.Community.Dashboard
 open WebSharper.Community.Dashboard.Events
 open WebSharper.Community.Dashboard.Widgets

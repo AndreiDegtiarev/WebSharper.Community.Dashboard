@@ -3,9 +3,9 @@
 open System
 open System.Collections.Generic
 open WebSharper
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Charting
 open WebSharper.Community.Dashboard
 

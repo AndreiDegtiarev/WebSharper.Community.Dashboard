@@ -2,9 +2,9 @@
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Community.Panel
 open WebSharper.Community.PropertyGrid
 
@@ -64,10 +64,10 @@ module RulesEditor =
                 |_ ->()
             } |> Async.Start
         let renderRows=  ListModel.View rowItems
-                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr [item.Render data.WorkItems (fun _ ->reconnectFnc())
+                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> tr[] [item.Render data.WorkItems (fun _ ->reconnectFnc())
                                                                                   |> WrapControls.Render (icons item) WrapControlsAligment.Horizontal
                                                                                  ]) 
-        table[
+        table[][
                renderRows
              ]
 

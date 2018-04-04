@@ -5,7 +5,7 @@ open WebSharper.Community.Dashboard
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
+open WebSharper.UI
 open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
 open System

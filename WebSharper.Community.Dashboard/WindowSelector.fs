@@ -2,9 +2,9 @@
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Community.PropertyGrid
 open WebSharper.Community.Panel
 
@@ -45,7 +45,7 @@ type SelectorGroup =
     member x.Render (selectedItemVar:Var<Option<ISelectorItem>>) = 
         ListModel.View x.SelectorItems
                         |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> 
-                                                      divAttr[Attr.DynamicStyle "display" 
+                                                          div[Attr.DynamicStyle "display" 
                                                                         (View.Map (fun (selectedItemOpt:Option<ISelectorItem>) -> 
                                                                                       match selectedItemOpt with
                                                                                       |Some(selItem) -> if selItem = item then "block" else "none"
@@ -67,21 +67,21 @@ type SelectorGroup =
 
      let plus = 
        match x.ItemCreatator with
-       |Some(creator) -> tr[td[divAttr[Attr.Style "margin-left" "20px"][Helper.IconSmall "add" 
+       |Some(creator) -> tr[][td[][div[Attr.Style "margin-left" "20px"][Helper.IconSmall "add" 
                                                         (fun _ ->let item = creator()
                                                                  //let item = SelectorItem.Create config.Name config.Render
                                                                  x.ItemOnCreated(item)
                                                                  x.SelectorItems.Add (item)
                                                            )]]]
-       |None -> tr[]
-     table[
+       |None -> tr[][]
+     table[][
        ListModel.View x.SelectorItems
        |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> let mapName = item.Name.View |> View.Map (fun name -> offset + name)
-                                                            tr[tdAttr[Attr.DynamicStyle "Color" (View.Map (fun (selItemVar:Option<ISelectorItem>) -> 
+                                                            tr[][td[Attr.DynamicStyle "Color" (View.Map (fun (selItemVar:Option<ISelectorItem>) -> 
                                                                                                                 match selItemVar with 
                                                                                                                 |Some(selItem) -> if selItem.Key = item.Key then "#FB8C00" else "#7D4600" 
                                                                                                                 |None -> "#7D4600")  selectedItemVar.View)                                                                       
-                                                                      ][(divAttr[Attr.Style "margin-left" "10px"
+                                                                      ][(    div[Attr.Style "margin-left" "10px"
                                                                                  Attr.Style "margin-right" "5px"
                                                                                  Attr.Style "cursor" "pointer"
                                                                                  on.click (fun elem _-> x.ItemOnSelected(item)
@@ -142,7 +142,7 @@ type WindowSelector =
     member x.GroupByIndex index = x.SelectorGroups |> List.ofSeq |> List.item index
     member x.Render = 
         //div[x.OptSelectedItem.View |> Doc.BindView (fun value -> match value with |Some(selector) -> selector.Render :> Doc |None -> Doc.Empty)]
-        div[ 
+        div[][ 
                     ListModel.View x.SelectorGroups
                     |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun group -> 
                                                    group.Render x.OptSelectedItem
@@ -152,11 +152,11 @@ type WindowSelector =
           if x.SelectorGroups.Length = 1 then
             (x.SelectorGroups |> List.ofSeq |> List.head).RenderMenu "" x.OptSelectedItem x.IsWithControls
           else
-           div[ 
+           div[][ 
             ListModel.View x.SelectorGroups
             |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun group -> 
-                                        div[
-                                               divAttr[
+                                        div[][
+                                               div[
                                                     Attr.Style "cursor" "pointer"
                                                     on.click (fun elem _-> x.GroupOnClick(group))
                                                 ]

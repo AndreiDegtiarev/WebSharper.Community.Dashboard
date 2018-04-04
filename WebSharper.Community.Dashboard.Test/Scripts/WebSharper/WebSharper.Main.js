@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,JavaScript,JSModule,Pervasives,Json,Obj,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,HtmlContentExtensions,SingleNode,Activator,Collections,EqualityComparer,Comparers,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Operators,Nullable,Utils,Concurrency,CT,AsyncBody,Scheduler,SC$2,Enumerator,T,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,ArgumentNullException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,System,Guid,HashSetUtil,HashSet,LazyExtensionsProxy,LazyRecord,Lazy,T$1,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,String,Date,console,Math;
+ var Global,WebSharper,JavaScript,JSModule,Pervasives,Json,Obj,Remoting,XhrProvider,AjaxRemotingProvider,SC$1,HtmlContentExtensions,SingleNode,Activator,SC$2,Collections,EqualityComparer,Comparers,EquatableEqualityComparer,BaseEqualityComparer,Comparer,ComparableComparer,BaseComparer,Operators,Nullable,Utils,Concurrency,CT,AsyncBody,Scheduler,SC$3,Enumerator,T,Optional,Arrays,Seq,List,Arrays2D,CancellationTokenSource,Char,Util,DateUtil,DateTimeOffset,Delegate,DictionaryUtil,KeyCollection,ValueCollection,Dictionary,MatchFailureException,IndexOutOfRangeException,OperationCanceledException,ArgumentException,ArgumentOutOfRangeException,ArgumentNullException,InvalidOperationException,AggregateException,TimeoutException,FormatException,OverflowException,System,Guid,HashSetUtil,HashSet,LazyExtensionsProxy,LazyRecord,Lazy,T$1,Slice,Option,Queue,Random,Ref,Result,Control,Stack,Strings,Task,Task1,TaskCompletionSource,Unchecked,Numeric,IntelliFactory,Runtime,JSON,String,Date,console,Math;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  JavaScript=WebSharper.JavaScript=WebSharper.JavaScript||{};
@@ -16,6 +16,7 @@
  HtmlContentExtensions=WebSharper.HtmlContentExtensions=WebSharper.HtmlContentExtensions||{};
  SingleNode=HtmlContentExtensions.SingleNode=HtmlContentExtensions.SingleNode||{};
  Activator=WebSharper.Activator=WebSharper.Activator||{};
+ SC$2=Global.StartupCode$WebSharper_Main$Html=Global.StartupCode$WebSharper_Main$Html||{};
  Collections=WebSharper.Collections=WebSharper.Collections||{};
  EqualityComparer=Collections.EqualityComparer=Collections.EqualityComparer||{};
  Comparers=WebSharper.Comparers=WebSharper.Comparers||{};
@@ -31,7 +32,7 @@
  CT=Concurrency.CT=Concurrency.CT||{};
  AsyncBody=Concurrency.AsyncBody=Concurrency.AsyncBody||{};
  Scheduler=Concurrency.Scheduler=Concurrency.Scheduler||{};
- SC$2=Global.StartupCode$WebSharper_Main$Concurrency=Global.StartupCode$WebSharper_Main$Concurrency||{};
+ SC$3=Global.StartupCode$WebSharper_Main$Concurrency=Global.StartupCode$WebSharper_Main$Concurrency||{};
  Enumerator=WebSharper.Enumerator=WebSharper.Enumerator||{};
  T=Enumerator.T=Enumerator.T||{};
  Optional=JavaScript.Optional=JavaScript.Optional||{};
@@ -149,7 +150,7 @@
  };
  Json.Activate=function(json)
  {
-  var types,i,$1;
+  var $1,types,i,$2;
   function decode(x)
   {
    var o,ti,t,r,k;
@@ -164,7 +165,7 @@
       {
        o=Json.shallowMap(decode,x.$V);
        ti=x.$T;
-       if(Unchecked.Equals(typeof ti,"undefined"))
+       if(ti===void 0)
         return o;
        else
         {
@@ -188,9 +189,15 @@
     else
      return x;
   }
-  types=json.$TYPES;
-  for(i=0,$1=Arrays.length(types)-1;i<=$1;i++)Arrays.set(types,i,Json.lookup(Arrays.get(types,i)));
-  return decode(json.$DATA);
+  types=json?json.$TYPES:void 0;
+  if(types===void 0)
+   $1=json;
+  else
+   {
+    for(i=0,$2=Arrays.length(types)-1;i<=$2;i++)Arrays.set(types,i,Json.lookup(Arrays.get(types,i)));
+    $1=json.$DATA;
+   }
+  return decode($1);
  };
  Json.shallowMap=function(f,x)
  {
@@ -438,28 +445,53 @@
  {
   this.node=node;
  },SingleNode);
- Activator.hasDocument=function()
+ Activator.hasDocumentAndJQuery=function()
  {
-  return typeof Global.document!=="undefined";
+  return typeof Global.document!=="undefined"&&typeof Global.jQuery!=="undefined";
  };
  Activator.Activate=function()
  {
   var meta;
-  if(Activator.hasDocument())
+  if(Activator.hasDocumentAndJQuery())
    {
     meta=Global.document.getElementById("websharper-data");
     meta?Global.jQuery(Global.document).ready(function()
     {
+     var obj;
      function a(k,v)
      {
-      v.Body().ReplaceInDom(Global.document.getElementById(k));
+      if("Body"in v)
+       v.Body().ReplaceInDom(Global.document.getElementById(k));
      }
-     return Arrays.iter(function($1)
+     obj=Json.Activate(JSON.parse(meta.getAttribute("content")));
+     Arrays.iter(function($1)
      {
       return a($1[0],$1[1]);
-     },JSModule.GetFields(Json.Activate(JSON.parse(meta.getAttribute("content")))));
+     },JSModule.GetFields(obj));
+     return Activator.set_Instances(obj);
     }):void 0;
    }
+ };
+ Activator.Instances=function()
+ {
+  SC$2.$cctor();
+  return SC$2.Instances;
+ };
+ Activator.set_Instances=function($1)
+ {
+  SC$2.$cctor();
+  SC$2.Instances=$1;
+ };
+ Activator.META_ID=function()
+ {
+  SC$2.$cctor();
+  return SC$2.META_ID;
+ };
+ SC$2.$cctor=function()
+ {
+  SC$2.$cctor=Global.ignore;
+  SC$2.META_ID="websharper-data";
+  SC$2.Instances=null;
  };
  EqualityComparer=Collections.EqualityComparer=Runtime.Class({
   CGetHashCode0:function(x)
@@ -1047,8 +1079,8 @@
  };
  Concurrency.GetCT=function()
  {
-  SC$2.$cctor();
-  return SC$2.GetCT;
+  SC$3.$cctor();
+  return SC$3.GetCT;
  };
  Concurrency.Catch=function(r)
  {
@@ -1197,8 +1229,8 @@
  };
  Concurrency.Zero=function()
  {
-  SC$2.$cctor();
-  return SC$2.Zero;
+  SC$3.$cctor();
+  return SC$3.Zero;
  };
  Concurrency.Return=function(x)
  {
@@ -1229,13 +1261,13 @@
  };
  Concurrency.defCTS=function()
  {
-  SC$2.$cctor();
-  return SC$2.defCTS;
+  SC$3.$cctor();
+  return SC$3.defCTS;
  };
  Concurrency.scheduler=function()
  {
-  SC$2.$cctor();
-  return SC$2.scheduler;
+  SC$3.$cctor();
+  return SC$3.scheduler;
  };
  Concurrency.Register=function(ct,callback)
  {
@@ -1254,17 +1286,17 @@
  };
  Concurrency.noneCT=function()
  {
-  SC$2.$cctor();
-  return SC$2.noneCT;
+  SC$3.$cctor();
+  return SC$3.noneCT;
  };
- SC$2.$cctor=function()
+ SC$3.$cctor=function()
  {
-  SC$2.$cctor=Global.ignore;
-  SC$2.noneCT=CT.New(false,[]);
-  SC$2.scheduler=new Scheduler.New();
-  SC$2.defCTS=[new CancellationTokenSource.New()];
-  SC$2.Zero=Concurrency.Return();
-  SC$2.GetCT=function(c)
+  SC$3.$cctor=Global.ignore;
+  SC$3.noneCT=CT.New(false,[]);
+  SC$3.scheduler=new Scheduler.New();
+  SC$3.defCTS=[new CancellationTokenSource.New()];
+  SC$3.Zero=Concurrency.Return();
+  SC$3.GetCT=function(c)
   {
    c.k({
     $:0,
@@ -2871,20 +2903,19 @@
   e=new Date(d);
   return(new Date(e.getFullYear(),e.getMonth(),e.getDate())).getTime();
  };
- DateTimeOffset=WebSharper.DateTimeOffset=Runtime.Class({
-  ToUniversalTime:function()
-  {
-   return new DateTimeOffset.New(this.d,0);
-  },
-  ToLocalTime:function()
-  {
-   return new DateTimeOffset.New(this.d,(new Date()).getTimezoneOffset());
-  }
- },Obj,DateTimeOffset);
- DateTimeOffset.New=Runtime.Ctor(function(d,o)
+ DateTimeOffset.get_Now=function()
  {
-  this.d=d;
- },DateTimeOffset);
+  var d;
+  d=new Date();
+  return{
+   d:d.getTime(),
+   o:-d.getTimezoneOffset()
+  };
+ };
+ DateTimeOffset.get_DateTime=function($this)
+ {
+  return $this.d;
+ };
  Delegate.InvocationList=function(del)
  {
   return del.$Invokes||[del];
@@ -3345,7 +3376,7 @@
   {
    var i$2,$4,$5,c$2;
    for(i$2=0,$4=35;i$2<=$4;i$2++){
-    i$2===8||(i$2===13||(i$2===18||i$2===23&&true))?s$5[i$2]!=="-"?Guid.ShapeError():void 0:(c$2=s$5[i$2],!("0"<=c$2&&c$2<="9"||"a"<=c$2&&c$2<="f")?Guid.ShapeError():void 0);
+    i$2===8||(i$2===13||(i$2===18||i$2===23))?s$5[i$2]!=="-"?Guid.ShapeError():void 0:(c$2=s$5[i$2],!("0"<=c$2&&c$2<="9"||"a"<=c$2&&c$2<="f")?Guid.ShapeError():void 0);
    }
    return s$5;
   }

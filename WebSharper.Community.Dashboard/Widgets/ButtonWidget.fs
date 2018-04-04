@@ -1,9 +1,9 @@
 ﻿namespace WebSharper.Community.Dashboard.Widgets
 
 open WebSharper
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Community.Dashboard
 
 [<JavaScript>]

@@ -2,9 +2,9 @@ namespace WebSharper.Community.Dashboard.Test
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Community.Panel
 open WebSharper.Community.Dashboard
 open WebSharper.Community.Dashboard.Events
@@ -70,11 +70,10 @@ module Client =
             Server.RecreateOnServer data |> ignore
             "Server recreated" |> log
 
-        let tbCellC content =td content
+        let tbCellC content =td [] content
         let menu =
-           div[
-            tbCellC[Helper.TxtIconNormal "build" "Sample configuration" (fun _ ->  
-                              makeTestConfig())]
+         div[][
+            tbCellC[Helper.TxtIconNormal "build" "Sample configuration" (fun _ -> makeTestConfig())]
             tbCellC[Helper.TxtIconNormal "autorenew" "Refresh" (fun _ ->  
                                           let data = AppData<AppModel>.Create dashboard (AppModel.FromWorker)
                                           data.RecreateOnClientEventsRunning 
@@ -94,8 +93,8 @@ module Client =
                         )]
             tbCellC[Helper.TxtIconNormal "cloud_upload" "Download and run on server" (fun _ ->  loadOnServer("Default"))]
           ]
-        div[dashboard.Render menu
-        ].OnAfterRender (fun _ -> //MessageBus.RunServerRequests()
+        (div[][dashboard.Render menu
+             ]).OnAfterRender (fun _ -> //MessageBus.RunServerRequests()
                                   try
                                     if not (System.String.IsNullOrWhiteSpace(config.ConfigurationName)) then loadOnServer(config.ConfigurationName)
                                   with _ -> ())

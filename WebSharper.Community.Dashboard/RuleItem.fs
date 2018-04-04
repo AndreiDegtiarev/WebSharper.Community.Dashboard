@@ -2,9 +2,9 @@
 
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Community.Panel
 open WebSharper.Community.PropertyGrid
 
@@ -56,27 +56,28 @@ type RulesCellItem =
                                                                      |None -> [None]
                                               )
            let items = workItems.View.Map (fun itemSeq -> None::(itemSeq|>List.ofSeq|>List.map(fun item -> Some(item))))
-           table[tr[
-                  td[Doc.SelectDyn [Attr.Class "form-control"] 
-                       (fun (item) -> item |> Option.fold (fun _ (port:InPort) ->  port.Name) " ")
-                       inPorts
-                       x.OptInPort ]
-                  td[Doc.SelectDyn [Attr.Class "form-control"] 
-                       (fun (item) -> item |> Option.fold (fun _ workerItem ->  workerItem.Worker.Name.Value) " ")
-                       items
-                       x.OptWorker]
-                  td[Doc.SelectDyn [Attr.Class "form-control"] 
-                       (fun (item) -> item |> Option.fold (fun _ (port:OutPort) ->  port.Name) " ")
-                       outPorts
-                       x.OptOutPort ]
+           table[][
+               tr[][
+                  td[][Doc.SelectDyn [Attr.Class "form-control"]
+                            (fun (item) -> item |> Option.fold (fun _ (port:InPort) ->  port.Name) " ")
+                            inPorts
+                            x.OptInPort ]
+                  td[][Doc.SelectDyn [Attr.Class "form-control"] 
+                            (fun (item) -> item |> Option.fold (fun _ workerItem ->  workerItem.Worker.Name.Value) " ")
+                            items
+                            x.OptWorker]
+                  td[][Doc.SelectDyn [Attr.Class "form-control"] 
+                           (fun (item) -> item |> Option.fold (fun _ (port:OutPort) ->  port.Name) " ")
+                           outPorts
+                           x.OptOutPort ]
             ]]
-         tdAttr[Attr.Class "td DshEditorCell"] 
-              [divAttr[Attr.Class "div DshEditorCell"]
+         td[Attr.Class "td DshEditorCell"] 
+              [div[Attr.Class "div DshEditorCell"]
                       [
-                        table
+                        table[]
                          [
-                            tr[//td[Helper.IconNormal "add" (fun _ ->())]
-                               td[workerSelector]
+                            tr[][//td[Helper.IconNormal "add" (fun _ ->())]
+                               td[][workerSelector]
                               ]
                          ]
                       ]
@@ -97,6 +98,7 @@ type RulesRowItem =
     member x.Render data reconnectFnc = 
                       let renderExistentCells= ListModel.View x.CellItems
                                                |> Doc.BindSeqCachedBy (fun m -> m.Key) (fun item -> item.Render data reconnectFnc)
-                      tr[ renderExistentCells
+                      tr[]
+                        [ renderExistentCells
                           Helper.IconNormal "add" (fun _ -> x.CellItems.Add (RulesCellItem.Create) )
                         ]

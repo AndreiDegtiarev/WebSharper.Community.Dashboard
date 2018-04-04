@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,GaugeWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,Next,View,Var,PropertyGrid,Properties,MatchFailureException,System,Guid,Doc,Enumerator,Key,ListModel,Unchecked,AttrModule,Option,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,Chart,LiveChart,Pervasives,FormatException,AttrProxy;
+ var Global,WebSharper,Community,Dashboard,Environment,Role,SC$1,MessageBus,Value,Message,ListenerInfo,SystemStatus,AgentMessage,AgentState,SC$2,InPortData,InPort,OutPort,WorkerData,Worker,Workers,RuleEntry,RuleChain,RuleContainer,WorkerItem,Factory,RulesCellItem,RulesRowItem,SelectorGroup,WindowSelector,WidgetItem,EventsGroupItem,WidgetsGroupItem,RulesGroupItem,DshData,RulesEditor,DshHelper,Dashboard$1,Events,RandomEvent,DatabaseEventContext,DatabaseEvent,OpenWeather,Forecast,OpenWeatherEvent,ClockEvent,Widgets,TextBoxWidget,ChartWidgetContext,ChartWidget,ButtonWidget,GaugeWidget,AppModelLib,App,SC$3,AppDataHelper,AppData,IntelliFactory,Runtime,Operators,Panel,Helper,Date,List,Concurrency,Remoting,AjaxRemotingProvider,Utils,Control,MailboxProcessor,Seq,UI,View,Var,PropertyGrid,Properties,MatchFailureException,System,Guid,Doc,Enumerator,Key,ListModel,Unchecked,AttrModule,Option,AttrProxy,WrapControls,console,PanelContainer,LayoutManagers,Panel$1,TitleButton,Dialog,PropertyGrid$1,Random,Math,Data,TxtRuntime,FSharp,Data$1,Runtime$1,IO,JSON,Arrays,DateUtil,Charting,Renderers,ChartJs,FSharpEvent,Chart,LiveChart,Pervasives,FormatException;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
@@ -74,21 +74,21 @@
  MailboxProcessor=Control&&Control.MailboxProcessor;
  Seq=WebSharper&&WebSharper.Seq;
  UI=WebSharper&&WebSharper.UI;
- Next=UI&&UI.Next;
- View=Next&&Next.View;
- Var=Next&&Next.Var;
+ View=UI&&UI.View;
+ Var=UI&&UI.Var;
  PropertyGrid=Community&&Community.PropertyGrid;
  Properties=PropertyGrid&&PropertyGrid.Properties;
  MatchFailureException=WebSharper&&WebSharper.MatchFailureException;
  System=Global.System;
  Guid=System&&System.Guid;
- Doc=Next&&Next.Doc;
+ Doc=UI&&UI.Doc;
  Enumerator=WebSharper&&WebSharper.Enumerator;
- Key=Next&&Next.Key;
- ListModel=Next&&Next.ListModel;
+ Key=UI&&UI.Key;
+ ListModel=UI&&UI.ListModel;
  Unchecked=WebSharper&&WebSharper.Unchecked;
- AttrModule=Next&&Next.AttrModule;
+ AttrModule=UI&&UI.AttrModule;
  Option=WebSharper&&WebSharper.Option;
+ AttrProxy=UI&&UI.AttrProxy;
  WrapControls=Panel&&Panel.WrapControls;
  console=Global.console;
  PanelContainer=Panel&&Panel.PanelContainer;
@@ -116,7 +116,6 @@
  LiveChart=Charting&&Charting.LiveChart;
  Pervasives=Charting&&Charting.Pervasives;
  FormatException=WebSharper&&WebSharper.FormatException;
- AttrProxy=Next&&Next.AttrProxy;
  Role.Server={
   $:1
  };
@@ -286,7 +285,7 @@
      {
       return Concurrency.TryWith(Concurrency.Delay(function()
       {
-       return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:214660718",[a[0],a[1]]),function(a$1)
+       return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.MessageBus.GetMessages:1403730234",[a[0],a[1]]),function(a$1)
        {
         var x;
         List.iter(function(message)
@@ -530,65 +529,65 @@
    return View.Map(function(value)
    {
     return value.Value.get_AsSelect();
-   },this.PortValue.v);
+   },this.PortValue.get_View());
   },
   get_Select:function()
   {
-   return this.PortValue.c.Value.get_AsSelect();
+   return this.PortValue.Get().Value.get_AsSelect();
   },
   get_BooleanView:function()
   {
    return View.Map(function(value)
    {
     return value.Value.get_AsBoolean();
-   },this.PortValue.v);
+   },this.PortValue.get_View());
   },
   get_Boolean:function()
   {
-   return this.PortValue.c.Value.get_AsBoolean();
+   return this.PortValue.Get().Value.get_AsBoolean();
   },
   get_StringView:function()
   {
    return View.Map(function(value)
    {
     return value.Value.get_AsString();
-   },this.PortValue.v);
+   },this.PortValue.get_View());
   },
   get_String:function()
   {
-   return this.PortValue.c.Value.get_AsString();
+   return this.PortValue.Get().Value.get_AsString();
   },
   get_NumberView:function()
   {
    return View.Map(function(value)
    {
     return value.Value.get_AsNumber();
-   },this.PortValue.v);
+   },this.PortValue.get_View());
   },
   get_Number:function()
   {
-   return this.PortValue.c.Value.get_AsNumber();
+   return this.PortValue.Get().Value.get_AsNumber();
   },
   Receive:function(value)
   {
-   Var.Set(this.PortValue,value);
+   this.PortValue.Set(value);
   },
   get_Property:function()
   {
    var _var,_var$1,_var$2,sel_list,_var$3,$this,m;
    $this=this;
-   m=this.PortValue.c.Value;
+   m=this.PortValue.Get().Value;
    if(m.$==0)
     {
      _var=Var.Create$1(this.get_Number());
      View.Sink(function(entry)
      {
       var i;
-      Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+      $this.PortValue.Set((i=$this.PortValue.Get(),Message.New(i.Key,i.Time,new Value({
        $:0,
        $0:entry
       }))));
-     },_var.v);
+     },_var.get_View());
      return Properties["double"](this.Data.Name,_var);
     }
    else
@@ -598,11 +597,11 @@
       View.Sink(function(entry)
       {
        var i;
-       Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+       $this.PortValue.Set((i=$this.PortValue.Get(),Message.New(i.Key,i.Time,new Value({
         $:1,
         $0:entry
        }))));
-      },_var$1.v);
+      },_var$1.get_View());
       return Properties.string(this.Data.Name,_var$1);
      }
     else
@@ -612,11 +611,11 @@
        View.Sink(function(entry)
        {
         var i;
-        Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+        $this.PortValue.Set((i=$this.PortValue.Get(),Message.New(i.Key,i.Time,new Value({
          $:2,
          $0:entry
         }))));
-       },_var$2.v);
+       },_var$2.get_View());
        return Properties.check(this.Data.Name,_var$2);
       }
      else
@@ -627,14 +626,14 @@
         View.Sink(function(entry)
         {
          var i;
-         Var.Set($this.PortValue,(i=$this.PortValue.c,Message.New(i.Key,i.Time,new Value({
+         $this.PortValue.Set((i=$this.PortValue.Get(),Message.New(i.Key,i.Time,new Value({
           $:3,
           $0:[Seq.findIndex(function(str)
           {
            return str===entry;
           },sel_list),sel_list]
          }))));
-        },_var$3.v);
+        },_var$3.get_View());
         return Properties.select(this.Data.Name,Global.id,sel_list,_var$3);
        }
       else
@@ -652,13 +651,13 @@
  InPort.Clone=function(port)
  {
   var i,c;
-  return InPort.New((i=port.Data,InPortData.New((c=Guid.NewGuid(),Global.String(c)),i.Name,i.Value,i.CacheSize)),Var.Create$1(port.PortValue.c));
+  return InPort.New((i=port.Data,InPortData.New((c=Guid.NewGuid(),Global.String(c)),i.Name,i.Value,i.CacheSize)),Var.Create$1(port.PortValue.Get()));
  };
  InPort.ToData=function(port)
  {
   var i;
   i=port.Data;
-  return InPortData.New(i.Key,i.Name,port.PortValue.c,i.CacheSize);
+  return InPortData.New(i.Key,i.Name,port.PortValue.Get(),i.CacheSize);
  };
  InPort.FromData=function(data)
  {
@@ -735,17 +734,17 @@
   },
   get_Clone:function()
   {
-   return Worker.New(Helper.UniqueKey(),Var.Create$1(this.Name.c),List.map(InPort.Clone,this.InPorts),List.map(OutPort.Clone,this.OutPorts),this.Data,Var.Create$1(null));
+   return Worker.New(Helper.UniqueKey(),Var.Create$1(this.Name.Get()),List.map(InPort.Clone,this.InPorts),List.map(OutPort.Clone,this.OutPorts),this.Data,Var.Create$1(null));
   },
   get_ToData:function()
   {
-   return WorkerData.New(this.Name.c,List.map(InPort.ToData,this.InPorts),this.OutPorts);
+   return WorkerData.New(this.Name.Get(),List.map(InPort.ToData,this.InPorts),this.OutPorts);
   },
   StartRunner:function()
   {
    var m;
    m=this.Data.WebSharper_Community_Dashboard_IWorkerData$get_Run();
-   m==null?void 0:Var.Set(this.RunnerContext,m.$0(this));
+   m==null?void 0:this.RunnerContext.Set(m.$0(this));
   },
   WithKey:function(key)
   {
@@ -831,7 +830,7 @@
          return port.Data.Key===cell2.InPortKey;
         },allInPorts),o$1==null?null:{
          $:1,
-         $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.c.Key!==inPort.Data.Key?Var.Set(inPort.PortValue,inPort.PortValue.c.WithKey(inPort.Data.Key)):void 0,_this=MessageBus.Agent(),_this.mailbox.AddLast({
+         $0:(inPort=o$1.$0,(log("Found inPort"),inPort.PortValue.Get().Key!==inPort.Data.Key?inPort.PortValue.Set(inPort.PortValue.Get().WithKey(inPort.Data.Key)):void 0,_this=MessageBus.Agent(),_this.mailbox.AddLast({
           $:2,
           $0:[ListenerInfo.Create(outPort.Key,outPort.Name+"->"+inPort.get_Name(),inPort.Data.CacheSize),function(a)
           {
@@ -907,27 +906,27 @@
     else
      {
       workerItem=optWorker.$0;
-      m=$this.OptInPort.c;
-      m==null?Var.Set($this.OptInPort,List.tryHead(workerItem.Worker.InPorts)):(port=m.$0,!List.exists(function(entry)
+      m=$this.OptInPort.Get();
+      m==null?$this.OptInPort.Set(List.tryHead(workerItem.Worker.InPorts)):(port=m.$0,!List.exists(function(entry)
       {
        return Unchecked.Equals(entry,port);
-      },workerItem.Worker.InPorts)?Var.Set($this.OptInPort,List.tryHead(workerItem.Worker.InPorts)):void 0);
-      m$1=$this.OptOutPort.c;
-      m$1==null?Var.Set($this.OptOutPort,List.tryHead(workerItem.Worker.OutPorts)):(port$1=m$1.$0,!List.exists(function(entry)
+      },workerItem.Worker.InPorts)?$this.OptInPort.Set(List.tryHead(workerItem.Worker.InPorts)):void 0);
+      m$1=$this.OptOutPort.Get();
+      m$1==null?$this.OptOutPort.Set(List.tryHead(workerItem.Worker.OutPorts)):(port$1=m$1.$0,!List.exists(function(entry)
       {
        return Unchecked.Equals(entry,port$1);
-      },workerItem.Worker.OutPorts)?Var.Set($this.OptOutPort,List.tryHead(workerItem.Worker.OutPorts)):void 0);
+      },workerItem.Worker.OutPorts)?$this.OptOutPort.Set(List.tryHead(workerItem.Worker.OutPorts)):void 0);
       reconnectFnc();
      }
-   },this.OptWorker.v);
+   },this.OptWorker.get_View());
    View.Sink(function()
    {
     reconnectFnc();
-   },this.OptInPort.v);
+   },this.OptInPort.get_View());
    View.Sink(function()
    {
     reconnectFnc();
-   },this.OptOutPort.v);
+   },this.OptOutPort.get_View());
    workerSelector=(inPorts=View.Map(function(workerItemOpt)
    {
     var ports;
@@ -938,7 +937,7 @@
       $0:item
      };
     },workerItemOpt.$0.Worker.InPorts),ports.get_Length()>0?ports:List.ofArray([null]));
-   },this.OptWorker.v),(outPorts=View.Map(function(workerItemOpt)
+   },this.OptWorker.get_View()),(outPorts=View.Map(function(workerItemOpt)
    {
     var ports;
     return workerItemOpt==null?List.ofArray([null]):(ports=List.map(function(item)
@@ -948,7 +947,7 @@
       $0:item
      };
     },workerItemOpt.$0.Worker.OutPorts),ports.get_Length()>0?ports:List.ofArray([null]));
-   },this.OptWorker.v),(items=View.Map(function(itemSeq)
+   },this.OptWorker.get_View()),(items=View.Map(function(itemSeq)
    {
     return new List.T({
      $:1,
@@ -971,7 +970,7 @@
    {
     return Option.fold(function(a,workerItem)
     {
-     return workerItem.Worker.Name.c;
+     return workerItem.Worker.Name.Get();
     }," ",item);
    },items,this.OptWorker)]),Doc.Element("td",[],[Doc.SelectDyn([AttrModule.Class("form-control")],function(item)
    {
@@ -1069,16 +1068,16 @@
     mapName=View.Map(function(name)
     {
      return offset+name;
-    },item.WebSharper_Community_Dashboard_ISelectorItem$get_Name().v);
+    },item.WebSharper_Community_Dashboard_ISelectorItem$get_Name().get_View());
     return Doc.Element("tr",[],[Doc.Element("td",[AttrModule.DynamicStyle("Color",View.Map(function(selItemVar)
     {
      return selItemVar==null?"#7D4600":Unchecked.Equals(selItemVar.$0.WebSharper_Community_Dashboard_ISelectorItem$get_Key(),item.WebSharper_Community_Dashboard_ISelectorItem$get_Key())?"#FB8C00":"#7D4600";
-    },selectedItemVar.v))],[(x=Doc.Element("div",[AttrModule.Style("margin-left","10px"),AttrModule.Style("margin-right","5px"),AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+    },selectedItemVar.get_View()))],[(x=Doc.Element("div",[AttrModule.Style("margin-left","10px"),AttrModule.Style("margin-right","5px"),AttrModule.Style("cursor","pointer"),AttrProxy.HandlerImpl("click",function()
     {
      return function()
      {
       $this.ItemOnSelected(item);
-      return Var.Set(selectedItemVar,{
+      return selectedItemVar.Set({
        $:1,
        $0:item
       });
@@ -1099,10 +1098,24 @@
     return Doc.Element("div",[AttrModule.DynamicStyle("display",View.Map(function(selectedItemOpt)
     {
      return selectedItemOpt==null?"none":Unchecked.Equals(selectedItemOpt.$0,item)?"block":"none";
-    },selectedItemVar.v))],[item.WebSharper_Community_Dashboard_ISelectorItem$get_Render()]);
+    },selectedItemVar.get_View()))],[item.WebSharper_Community_Dashboard_ISelectorItem$get_Render()]);
    },this.SelectorItems.v);
   }
  },null,SelectorGroup);
+ SelectorGroup.RenderMenu$87$91=function(x,item,selectedItemVar)
+ {
+  return function()
+  {
+   return function()
+   {
+    x.ItemOnSelected(item);
+    return selectedItemVar.Set({
+     $:1,
+     $0:item
+    });
+   };
+  };
+ };
  SelectorGroup.Create=function(name,items,itemCreator,itemOnCreated,itemOnSelected,itemOnDelete,itemOnMove)
  {
   var modelItems;
@@ -1135,13 +1148,13 @@
     return m.Key;
    },function(group)
    {
-    return Doc.Element("div",[],[Doc.Element("div",[AttrModule.Style("cursor","pointer"),AttrModule.Handler("click",function()
+    return Doc.Element("div",[],[Doc.Element("div",[AttrModule.Style("cursor","pointer"),AttrProxy.HandlerImpl("click",function()
     {
      return function()
      {
       return $this.GroupOnClick(group);
      };
-    })],[Doc.TextView(group.Name.v)]),group.RenderMenu("    ",$this.OptSelectedItem,$this.IsWithControls)]);
+    })],[Doc.TextView(group.Name.get_View())]),group.RenderMenu("    ",$this.OptSelectedItem,$this.IsWithControls)]);
    },this.SelectorGroups.v)]);
   },
   get_Render:function()
@@ -1213,12 +1226,12 @@
   get_SelectedItem:function()
   {
    var m;
-   m=this.OptSelectedItem.c;
+   m=this.OptSelectedItem.Get();
    return m==null?Operators.FailWith("Something really wrong with WindowSelector"):m.$0;
   },
   ClearGroups:function()
   {
-   Var.Set(this.OptSelectedItem,null);
+   this.OptSelectedItem.Set(null);
    List.iter(function(gr)
    {
     gr.SelectorItems.Clear();
@@ -1249,6 +1262,16 @@
    return WindowSelector.New(this.OptSelectedItem,this.SelectorGroups,onCreatedFnc,this.GroupOnClick,this.ItemOnSelected,this.ItemOnDeleted,this.ItemOnMove,this.IsWithControls);
   }
  },null,WindowSelector);
+ WindowSelector.get_RenderMenu$161$62=function(x,group)
+ {
+  return function()
+  {
+   return function()
+   {
+    return x.GroupOnClick(group);
+   };
+  };
+ };
  WindowSelector.get_Create=function()
  {
   var S;
@@ -1326,7 +1349,7 @@
     return Doc.Element("tr",[],[(x=Doc.Element("div",Helper.AttrsClick(function()
     {
      $this.PropertyGrid.Edit(item.Worker.get_Properties());
-    }),[Doc.TextView(item.Worker.Name.v)]),WrapControls.Render(icons(item),Panel.WrapControlsAligment.Horizontal,x))]);
+    }),[Doc.TextView(item.Worker.Name.get_View())]),WrapControls.Render(icons(item),Panel.WrapControlsAligment.Horizontal,x))]);
    },this.EventItems.v)]);
   },
   WebSharper_Community_Dashboard_ISelectorItem$get_Render:function()
@@ -1548,15 +1571,15 @@
    {
     var cell;
     cell=RulesCellItem.get_Create();
-    Var.Set(cell.OptWorker,Seq.tryFind(function(item)
+    cell.OptWorker.Set(Seq.tryFind(function(item)
     {
      return item.Worker.Key===cellData.WorkerKey;
     },List.ofSeq(data.WorkItems)));
-    Var.Set(cell.OptInPort,Seq.tryFind(function(port)
+    cell.OptInPort.Set(Seq.tryFind(function(port)
     {
      return port.get_Key()===cellData.InPortKey;
     },allInPorts));
-    Var.Set(cell.OptOutPort,Seq.tryFind(function(port)
+    cell.OptOutPort.Set(Seq.tryFind(function(port)
     {
      return port.Key===cellData.OutPortKey;
     },allOutPorts));
@@ -1572,7 +1595,7 @@
    return RuleChain.New(List.map(function(cell)
    {
     var m,m$1,m$2;
-    return RuleEntry.New((m=cell.OptInPort.c,m==null?"":m.$0.get_Key()),(m$1=cell.OptOutPort.c,m$1==null?"":m$1.$0.Key),(m$2=cell.OptWorker.c,m$2==null?"":m$2.$0.Worker.Key));
+    return RuleEntry.New((m=cell.OptInPort.Get(),m==null?"":m.$0.get_Key()),(m$1=cell.OptOutPort.Get(),m$1==null?"":m$1.$0.Key),(m$2=cell.OptWorker.Get(),m$2==null?"":m$2.$0.Worker.Key));
    },List.ofSeq(row.CellItems)));
   },List.ofSeq(rowItems)));
  };
@@ -1609,8 +1632,8 @@
    {
     return mode.$==1?Doc.Element("div",[],[Doc.Element("table",[AttrModule.Style("White-space","nowrap")],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Doc.Element("table",[],Seq.concat([List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[Helper.IconNormal("dehaze",function()
     {
-     Var.Set($this.PanelTitleVisibility,false);
-     Var.Set($this.Mode,{
+     $this.PanelTitleVisibility.Set(false);
+     $this.Mode.Set({
       $:0
      });
     })])])]),List.ofArray([$this.EditorSelectorEdit.get_RenderMenu()]),List.ofArray([Doc.Element("tr",[],[Doc.Element("td",[],[])]),Doc.Element("tr",[],[Doc.Element("td",[],[$this.PropertyGrid.get_Render()])])])]))]),Doc.Element("td",[AttrModule.Style("vertical-align","top")],[menu,Helper.IconNormal("add",function()
@@ -1619,23 +1642,23 @@
      selIndex=$this.EditorSelectorEdit.get_SelectedGroupIndex();
      selIndex===1?(items=List.ofSeq($this.Factory.EventItems),selected=Var.Create$1(List.head(items)),$this.Dialog.ShowDialog("Select source",Doc.Element("div",[],[Doc.Select([AttrModule.Class("form-control")],function(item)
      {
-      return item.Worker.Name.c;
+      return item.Worker.Name.Get();
      },items,selected)]),function()
      {
       var event,a,x$2;
-      event=selected.c.Worker.get_Clone();
+      event=selected.Get().Worker.get_Clone();
       event.StartRunner();
       a=(x$2=List.ofSeq($this.Data.EventGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$2));
       $this.Data.RegisterEvent(Helper.UniqueKey(),a,event);
-     })):selIndex===0?Var.Set($this.CreatePanel((x=List.ofSeq($this.Data.WidgetGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x)),"Panel",null).IsWithInitialAutoLayout,true):selIndex===2?(x$1=List.ofSeq($this.Data.RulesGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$1)).RulesRowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
+     })):selIndex===0?$this.CreatePanel((x=List.ofSeq($this.Data.WidgetGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x)),"Panel",null).IsWithInitialAutoLayout.Set(true):selIndex===2?(x$1=List.ofSeq($this.Data.RulesGroups),Seq.nth($this.EditorSelectorEdit.get_SelectedIndexInGroup(),x$1)).RulesRowItems.Append(RulesRowItem.Create([RulesCellItem.get_Create(),RulesCellItem.get_Create()])):void 0;
     }),$this.EditorSelectorEdit.get_Render()])])]),Doc.Element("div",[],[$this.Dialog.get_Render()])]):Doc.Element("div",[],[Doc.Element("table",[AttrModule.Style("White-space","nowrap")],[Doc.Element("tr",[],[Doc.Element("td",[AttrModule.Style("vertical-align","top")],[Helper.IconNormal("dehaze",function()
     {
-     Var.Set($this.PanelTitleVisibility,true);
-     Var.Set($this.Mode,{
+     $this.PanelTitleVisibility.Set(true);
+     $this.Mode.Set({
       $:1
      });
     }),$this.EditorSelectorRun.get_RenderMenu()]),Doc.Element("td",[],[$this.EditorSelectorRun.get_Render()])])])]);
-   },this.Mode.v));
+   },this.Mode.get_View()));
   },
   Restore:function(panelCreator,events,widgets,rules)
   {
@@ -1667,7 +1690,7 @@
      },List.ofSeq(grItem.PanelContainer.PanelItems)).Children,(widget.StartRunner(),widget));
     }
     item=DshHelper.PanelGroupCreator($this.Data,panelCreator,null);
-    Var.Set(item.WebSharper_Community_Dashboard_ISelectorItem$get_Name(),t[0]);
+    item.WebSharper_Community_Dashboard_ISelectorItem$get_Name().Set(t[0]);
     gSelectorPanelsEdit.SelectorItems.Append(item);
     gSelectorPanelsRun.SelectorItems.Append(item);
     grItem=Seq.nth(ind,List.ofSeq($this.Data.WidgetGroups));
@@ -1678,8 +1701,8 @@
       $:1,
       $0:panelConfig.Key
      });
-     Var.Set(panel.Left,panelConfig.Left);
-     Var.Set(panel.Top,panelConfig.Top);
+     panel.Left.Set(panelConfig.Left);
+     panel.Top.Set(panelConfig.Top);
     },t[1]);
     return List.iter(function($1)
     {
@@ -1695,7 +1718,7 @@
      $this.Data.RegisterEvent(key,grItem,event);
     }
     item=DshHelper.EventsGroupCreator($this.Data,$this.PropertyGrid,null);
-    Var.Set(item.WebSharper_Community_Dashboard_ISelectorItem$get_Name(),t[0]);
+    item.WebSharper_Community_Dashboard_ISelectorItem$get_Name().Set(t[0]);
     gSelectorEvents.SelectorItems.Append(item);
     grItem=Seq.nth(ind,List.ofSeq($this.Data.EventGroups));
     return List.iter(function($1)
@@ -1708,17 +1731,17 @@
    {
     var item;
     item=DshHelper.RulesGroupCreator($this.Data,null);
-    Var.Set(item.WebSharper_Community_Dashboard_ISelectorItem$get_Name(),t[0]);
+    item.WebSharper_Community_Dashboard_ISelectorItem$get_Name().Set(t[0]);
     gSelectorRules.SelectorItems.Append(item);
     return RulesEditor.Restore($this.Data,Seq.nth(ind,List.ofSeq($this.Data.RulesGroups)).RulesRowItems,t[1]);
    },rules);
-   this.Data.WidgetGroups.get_Length()>0?(Var.Set(this.EditorSelectorEdit.OptSelectedItem,{
+   this.Data.WidgetGroups.get_Length()>0?(this.EditorSelectorEdit.OptSelectedItem.Set({
     $:1,
     $0:List.head(List.ofSeq(this.EditorSelectorEdit.GroupByIndex(0).SelectorItems))
-   }),Var.Set(this.EditorSelectorRun.OptSelectedItem,{
+   }),this.EditorSelectorRun.OptSelectedItem.Set({
     $:1,
     $0:List.head(List.ofSeq(this.EditorSelectorRun.GroupByIndex(0).SelectorItems))
-   })):(Var.Set(this.EditorSelectorEdit.OptSelectedItem,null),Var.Set(this.EditorSelectorRun.OptSelectedItem,null));
+   })):(this.EditorSelectorEdit.OptSelectedItem.Set(null),this.EditorSelectorRun.OptSelectedItem.Set(null));
    allWorkers=List.map(function(item)
    {
     return item.Worker;
@@ -1769,22 +1792,24 @@
    }
    return[List.map(function(gr)
    {
-    return[gr.Name.c,List.rev(Seq.fold(function(acc,item)
+    return[gr.Name.Get(),List.rev(Seq.fold(function(acc,item)
     {
      return fncFromWorker(acc,item.Worker);
     },List.T.Empty,List.ofSeq(gr.EventItems)))];
    },List.ofSeq(this.Data.EventGroups)),List.map(function(gr)
    {
-    return[gr.Name.c,List.map(function(panel)
+    var panelData;
+    panelData=List.map(function(panel)
     {
      return panel.get_PanelData();
-    },List.ofSeq(gr.PanelContainer.PanelItems)),List.rev(Seq.fold(function(acc,item)
+    },List.ofSeq(gr.PanelContainer.PanelItems));
+    return[gr.Name.Get(),panelData,List.rev(Seq.fold(function(acc,item)
     {
      return fncFromWidget(acc,item.Panel,item.Widget);
     },List.T.Empty,List.ofSeq(gr.WidgetItems)))];
    },List.ofSeq(this.Data.WidgetGroups)),List.map(function(gr)
    {
-    return[gr.Name.c,RulesEditor.CopyToRules(gr.RulesRowItems)];
+    return[gr.Name.Get(),RulesEditor.CopyToRules(gr.RulesRowItems)];
    },List.ofSeq(this.Data.RulesGroups))];
   },
   CreatePanel:function(group,name,key)
@@ -1793,7 +1818,7 @@
    $this=this;
    Doc.ConvertBy(group.WidgetItems.key,function(item)
    {
-    return Doc.Element("div",[],[Doc.TextView(item.Widget.Name.v)]);
+    return Doc.Element("div",[],[Doc.TextView(item.Widget.Name.get_View())]);
    },group.WidgetItems.v);
    keyDef=(d=(c=Guid.NewGuid(),Global.String(c)),key==null?d:key.$0);
    childContainerContent=PanelContainer.get_Create().WithLayoutManager(LayoutManagers.StackPanelLayoutManager()).WithAttributes([AttrModule.Style("display","flex")]);
@@ -1804,12 +1829,12 @@
     selected=Var.Create$1(List.head(items));
     $this.Dialog.ShowDialog("Select widget",Doc.Element("div",[],[Doc.Select([AttrModule.Class("form-control")],function(item)
     {
-     return item.Worker.Name.c;
+     return item.Worker.Name.Get();
     },items,selected)]),function()
     {
      var widget;
      console.log("Dialog.IsOK");
-     widget=selected.c.Worker.get_Clone();
+     widget=selected.Get().Worker.get_Clone();
      widget.StartRunner();
      $this.RegisterWidget(Helper.UniqueKey(),group,panel$1.Key,panel$1.Children,widget);
     });
@@ -1839,7 +1864,7 @@
    var panel;
    this.Data.RegisterWidget(key,group,panelKey,worker);
    panel=Panel$1.get_Create().WithPanelContent(worker.get_Render());
-   Var.Set(panel.IsWithTitle,false);
+   panel.IsWithTitle.Set(false);
    toPanelContainer.AddPanel(panel);
   }
  },null,Dashboard$1);
@@ -1894,7 +1919,7 @@
   }).WithItemOnMove(Runtime.Curried3(function($1,item,direction)
   {
    var isDown;
-   isDown=direction.$==1&&true;
+   isDown=direction.$==1;
    return item instanceof WidgetsGroupItem?(Helper.MoveItemInModelList(data.WidgetGroups,isDown,item),Helper.MoveItemInModelList(List.head(List.ofSeq(editorSelectorRun.SelectorGroups)).SelectorItems,isDown,item)):item instanceof EventsGroupItem?Helper.MoveItemInModelList(data.EventGroups,isDown,item):item instanceof RulesGroupItem?Helper.MoveItemInModelList(data.RulesGroups,isDown,item):Operators.FailWith("WithItemOnDeleted, type unknown");
   })).WithControls(true);
   firstPanel=panelGroupCreator();
@@ -1911,11 +1936,11 @@
    $:1,
    $0:rulesGroupCreator
   });
-  Var.Set(editorSelectorEdit.OptSelectedItem,{
+  editorSelectorEdit.OptSelectedItem.Set({
    $:1,
    $0:List.head(List.ofSeq(editorSelectorEdit.GroupByIndex(0).SelectorItems))
   });
-  Var.Set(editorSelectorRun.OptSelectedItem,{
+  editorSelectorRun.OptSelectedItem.Set({
    $:1,
    $0:List.head(List.ofSeq(editorSelectorRun.GroupByIndex(0).SelectorItems))
   });
@@ -2015,7 +2040,7 @@
     {
      var isFirstCall,startTime;
      isFirstCall=true;
-     startTime=worker.InPorts.get_Item(0).PortValue.c.Time;
+     startTime=worker.InPorts.get_Item(0).PortValue.Get().Time;
      View.Sink(function(value)
      {
       var file;
@@ -2029,8 +2054,8 @@
         $0:msg
        });
        _this.resume();
-      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:965639103",[file])),isFirstCall=false):value.Time>startTime?(new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-353093100",[file,value]):void 0;
-     },worker.InPorts.get_Item(0).PortValue.v);
+      },(new AjaxRemotingProvider.New()).Sync("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.ReadAllMessages:871221883",[file])),isFirstCall=false):value.Time>startTime?(new AjaxRemotingProvider.New()).Send("WebSharper.Community.Dashboard:WebSharper.Community.Dashboard.Events.ServerDatabase.WriteMessage:-459831224",[file,value]):void 0;
+     },worker.InPorts.get_Item(0).PortValue.get_View());
      return null;
     }
    };
@@ -2223,7 +2248,7 @@
       },Concurrency.Delay(function()
       {
        var sel,time,strTime;
-       sel=(worker.InPorts.get_Item(0).PortValue.c.Value.get_AsSelect())[0];
+       sel=(worker.InPorts.get_Item(0).PortValue.Get().Value.get_AsSelect())[0];
        time=Date.now();
        strTime=sel===0?DateUtil.LongTime(time):sel===1?DateUtil.ShortTime(time):sel===2?DateUtil.LongDate(time):sel===3?(new Date(time)).toLocaleDateString():"";
        worker.OutPorts.get_Item(0).Trigger(new Value({
@@ -2275,23 +2300,23 @@
       var m,c;
       m=msg.Value;
       return m.$==0?(c=m.$0>>0,Global.String(c)):m.$==1?m.$0:m.$==2?Global.String(m.$0):"Wrong port value format";
-     },worker.InPorts.get_Item(0).PortValue.v);
+     },worker.InPorts.get_Item(0).PortValue.get_View());
      widthView=View.Map(function(msg)
      {
       var c;
       return(c=msg.Value.get_AsNumber(),Global.String(c))+"px";
-     },worker.InPorts.get_Item(1).PortValue.v);
+     },worker.InPorts.get_Item(1).PortValue.get_View());
      fontSizeView=View.Map(function(msg)
      {
       var c;
       return(c=msg.Value.get_AsNumber(),Global.String(c))+"px";
-     },worker.InPorts.get_Item(2).PortValue.v);
+     },worker.InPorts.get_Item(2).PortValue.get_View());
      fontFamilyView=View.Map(function(msg)
      {
       var p;
       p=msg.Value.get_AsSelect();
       return p[1].get_Item(p[0]);
-     },worker.InPorts.get_Item(3).PortValue.v);
+     },worker.InPorts.get_Item(3).PortValue.get_View());
      return Doc.Element("div",[AttrModule.Class("bigvalue"),AttrModule.DynamicStyle("width",widthView),AttrModule.DynamicStyle("font-size",fontSizeView),AttrModule.DynamicStyle("font-family",fontFamilyView)],[Doc.TextView(strView)]);
     }
    };
@@ -2339,7 +2364,7 @@
      var chartBufferSize,context,config,r,r$1,r$2,r$3,r$4,r$5;
      (Environment.Log())("Chart Render");
      chartBufferSize=worker.InPorts.get_Item(3).get_Number()>>0;
-     context=worker.RunnerContext.c.$0;
+     context=worker.RunnerContext.Get().$0;
      config=(r={},r.title=(r$1={},r$1.display=false,r$1),r.legend=(r$2={},r$2.display=false,r$2),r.elements=(r$3={},r$3.point=(r$4={},r$4.radius=0,r$4),r$3.line=(r$5={},r$5.borderWidth=1,r$5),r$3),r);
      return ChartJs.Render$2(context.LineChart,{
       $:1,
@@ -2370,7 +2395,7 @@
      function observe(port,msg)
      {
       var sel,x_label,localTime;
-      sel=(worker.InPorts.get_Item(4).PortValue.c.Value.get_AsSelect())[0];
+      sel=(worker.InPorts.get_Item(4).PortValue.Get().Value.get_AsSelect())[0];
       x_label=(localTime=msg.Time,sel===0?DateUtil.LongTime(localTime):sel===1?DateUtil.ShortTime(localTime):sel===2?DateUtil.LongDate(localTime):sel===3?(new Date(localTime)).toLocaleDateString():"");
       (Environment.Log())("Chart observe "+x_label);
       return srcs.get_Item(Seq.findIndex(function(entry)
@@ -2408,7 +2433,7 @@
       View.Sink(function($1)
       {
        return observe(port,$1);
-      },port.PortValue.v);
+      },port.PortValue.get_View());
      },allSrcPorts);
      return{
       $:1,
@@ -2529,11 +2554,11 @@
      gaugeColorView=View.Map(function(msg)
      {
       return setColor(msg.Value.get_AsNumber());
-     },worker.InPorts.get_Item(0).PortValue.v);
+     },worker.InPorts.get_Item(0).PortValue.get_View());
      return Doc.EmbedView(View.Map(function(msg)
      {
       return Doc.SvgElement("svg",List.T.Empty,List.ofArray([Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",variable_param(0)),AttrModule.Style("stroke","whitesmoke"),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty),Doc.SvgElement("path",List.ofArray([AttrProxy.Create("d",variable_param(180-msg.Value.get_AsNumber())),AttrModule.DynamicStyle("stroke",gaugeColorView),AttrModule.Style("stroke-width","30"),AttrModule.Style("fill","none")]),List.T.Empty)]));
-     },worker.InPorts.get_Item(0).PortValue.v));
+     },worker.InPorts.get_Item(0).PortValue.get_View()));
     }
    };
   },

@@ -1,18 +1,20 @@
 (function()
 {
  "use strict";
- var Global,IntelliFactory,Reactive,Disposable,Observer,HotStream,Reactive$1,Reactive$2,SC$1,Runtime,WebSharper,Control,FSharpEvent,Util,List,Collections,Dictionary,Seq;
+ var Global,IntelliFactory,Reactive,Disposable,Observer,Observable,HotStream,WebSharper,Obj,Reactive$1,Reactive$2,SC$1,Runtime,Control,FSharpEvent,Util,List,Collections,Dictionary,Seq;
  Global=window;
  IntelliFactory=Global.IntelliFactory=Global.IntelliFactory||{};
  Reactive=IntelliFactory.Reactive=IntelliFactory.Reactive||{};
  Disposable=Reactive.Disposable=Reactive.Disposable||{};
  Observer=Reactive.Observer=Reactive.Observer||{};
+ Observable=Reactive.Observable=Reactive.Observable||{};
  HotStream=Reactive.HotStream=Reactive.HotStream||{};
+ WebSharper=Global.WebSharper;
+ Obj=WebSharper&&WebSharper.Obj;
  Reactive$1=Reactive.Reactive=Reactive.Reactive||{};
  Reactive$2=Reactive$1.Reactive=Reactive$1.Reactive||{};
  SC$1=Global.StartupCode$IntelliFactory_Reactive$Reactive=Global.StartupCode$IntelliFactory_Reactive$Reactive||{};
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
- WebSharper=Global.WebSharper;
  Control=WebSharper&&WebSharper.Control;
  FSharpEvent=Control&&Control.FSharpEvent;
  Util=WebSharper&&WebSharper.Util;
@@ -20,28 +22,63 @@
  Collections=WebSharper&&WebSharper.Collections;
  Dictionary=Collections&&Collections.Dictionary;
  Seq=WebSharper&&WebSharper.Seq;
- Disposable.New=function(d)
+ Disposable=Reactive.Disposable=Runtime.Class({
+  Dispose:function()
+  {
+   this.Dispose$1();
+  }
+ },null,Disposable);
+ Disposable.New$1=function(d)
  {
-  return{
-   Dispose:function()
-   {
-    return d();
-   }
-  };
+  return Disposable.New(d);
  };
- Observer.New=function(onNext,onComplete)
+ Disposable.New=function(Dispose)
  {
-  return{
-   OnNext:onNext,
-   OnCompleted:function()
-   {
-    return onComplete();
-   },
-   OnError:function()
-   {
-    return null;
-   }
-  };
+  return new Disposable({
+   Dispose:Dispose
+  });
+ };
+ Observer=Reactive.Observer=Runtime.Class({
+  OnError:Global.ignore,
+  OnCompleted:function()
+  {
+   this.OnCompleted$1();
+  },
+  OnNext:function(t)
+  {
+   this.OnNext$1(t);
+  }
+ },null,Observer);
+ Observer.New$1=function(onNext,onComplete)
+ {
+  return Observer.New(onNext,onComplete);
+ };
+ Observer.New=function(OnNext,OnCompleted)
+ {
+  return new Observer({
+   OnNext:OnNext,
+   OnCompleted:OnCompleted
+  });
+ };
+ Observable=Reactive.Observable=Runtime.Class({
+  SubscribeWith:function(onNext,onComplete)
+  {
+   return this.OnSubscribe(Observer.New$1(onNext,onComplete));
+  },
+  Subscribe:function(o)
+  {
+   return this.OnSubscribe(o);
+  }
+ },null,Observable);
+ Observable.New$1=function(f)
+ {
+  return Observable.New(f);
+ };
+ Observable.New=function(OnSubscribe)
+ {
+  return new Observable({
+   OnSubscribe:OnSubscribe
+  });
  };
  HotStream=Reactive.HotStream=Runtime.Class({
   Trigger:function(v)
@@ -143,7 +180,7 @@
   {
    return Reactive$1.Return(x);
   }
- },WebSharper.Obj,Reactive$2);
+ },Obj,Reactive$2);
  Reactive$2.New=Runtime.Ctor(function()
  {
  },Reactive$2);
@@ -179,312 +216,282 @@
  };
  Reactive$1.CollectLatest=function(outer)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var dict,index;
+   dict=new Dictionary.New$5();
+   index=[0];
+   return outer.Subscribe(Util.observer(function(inner)
    {
-    var dict,index;
-    dict=new Dictionary.New$5();
-    index=[0];
-    return outer.Subscribe(Util.observer(function(inner)
+    var currentIndex;
+    index[0]++;
+    currentIndex=index[0];
+    inner.Subscribe(Util.observer(function(value)
     {
-     var currentIndex;
-     index[0]++;
-     currentIndex=index[0];
-     inner.Subscribe(Util.observer(function(value)
+     dict.set_Item(currentIndex,value);
+     o.OnNext(Seq.delay(function()
      {
-      dict.set_Item(currentIndex,value);
-      o.OnNext(Seq.delay(function()
+      return Seq.map(function(pair)
       {
-       return Seq.map(function(pair)
-       {
-        return pair.V;
-       },dict);
-      }));
+       return pair.V;
+      },dict);
      }));
     }));
-   }
-  };
+   }));
+  });
  };
  Reactive$1.Aggregate=function(io,seed,acc)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var state;
+   state=[seed];
+   return io.Subscribe(Util.observer(function(value)
    {
-    var state;
-    state=[seed];
-    return io.Subscribe(Util.observer(function(value)
-    {
-     state[0]=acc(state[0],value);
-     o.OnNext(state[0]);
-    }));
-   }
-  };
+    state[0]=acc(state[0],value);
+    o.OnNext(state[0]);
+   }));
+  });
  };
  Reactive$1.SelectMany=function(io)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var disp,d;
+   disp=[Global.ignore];
+   d=io.Subscribe(Util.observer(function(o1)
    {
-    var disp,d;
-    disp=[Global.ignore];
-    d=io.Subscribe(Util.observer(function(o1)
+    var d$1;
+    d$1=o1.Subscribe(Util.observer(function(a)
     {
-     var d$1;
-     d$1=o1.Subscribe(Util.observer(function(a)
-     {
-      o.OnNext(a);
-     }));
-     disp[0]=function()
-     {
-      disp[0]();
-      d$1.Dispose();
-     };
+     o.OnNext(a);
     }));
-    return Disposable.New(function()
+    disp[0]=function()
     {
      disp[0]();
-     d.Dispose();
-    });
-   }
-  };
+     d$1.Dispose();
+    };
+   }));
+   return Disposable.New$1(function()
+   {
+    disp[0]();
+    d.Dispose();
+   });
+  });
  };
  Reactive$1.Switch=function(io)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var index,disp;
+   index=[0];
+   disp=[null];
+   return io.Subscribe(Util.observer(function(o1)
    {
-    var index,disp;
-    index=[0];
-    disp=[null];
-    return io.Subscribe(Util.observer(function(o1)
-    {
-     var currentIndex;
-     index[0]++;
-     disp[0]!=null?disp[0].$0.Dispose():void 0;
-     currentIndex=index[0];
-     disp[0]={
-      $:1,
-      $0:o1.Subscribe(Util.observer(function(v)
-      {
-       if(currentIndex===index[0])
-        o.OnNext(v);
-      }))
-     };
-    }));
-   }
-  };
+    var currentIndex;
+    index[0]++;
+    disp[0]!=null?disp[0].$0.Dispose():void 0;
+    currentIndex=index[0];
+    disp[0]={
+     $:1,
+     $0:o1.Subscribe(Util.observer(function(v)
+     {
+      if(currentIndex===index[0])
+       o.OnNext(v);
+     }))
+    };
+   }));
+  });
  };
  Reactive$1.CombineLast=function(io1,io2,f)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var lv1s,lv2s,d1,d2;
+   function update()
    {
-    var lv1s,lv2s,d1,d2;
-    function update()
-    {
-     if(lv1s.length>0&&lv2s.length>0)
-      o.OnNext(f(lv1s.shift(),lv2s.shift()));
-    }
-    lv1s=[];
-    lv2s=[];
-    d1=io1.Subscribe(Observer.New(function(x)
-    {
-     lv1s.push(x);
-     update();
-    },Global.ignore));
-    d2=io2.Subscribe(Observer.New(function(y)
-    {
-     lv2s.push(y);
-     update();
-    },Global.ignore));
-    return Disposable.New(function()
-    {
-     d1.Dispose();
-     d2.Dispose();
-    });
+    if(lv1s.length>0&&lv2s.length>0)
+     o.OnNext(f(lv1s.shift(),lv2s.shift()));
    }
-  };
+   lv1s=[];
+   lv2s=[];
+   d1=io1.Subscribe(Observer.New$1(function(x)
+   {
+    lv1s.push(x);
+    update();
+   },Global.ignore));
+   d2=io2.Subscribe(Observer.New$1(function(y)
+   {
+    lv2s.push(y);
+    update();
+   },Global.ignore));
+   return Disposable.New$1(function()
+   {
+    d1.Dispose();
+    d2.Dispose();
+   });
+  });
  };
  Reactive$1.CombineLatest=function(io1,io2,f)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var lv1,lv2,d1,d2;
+   function update()
    {
-    var lv1,lv2,d1,d2;
-    function update()
-    {
-     var $1,$2;
-     $1=lv1[0];
-     $2=lv2[0];
-     $1!=null&&$1.$==1?$2!=null&&$2.$==1?o.OnNext(f($1.$0,$2.$0)):void 0:void 0;
-    }
-    lv1=[null];
-    lv2=[null];
-    d1=io1.Subscribe(Observer.New(function(x)
-    {
-     lv1[0]={
-      $:1,
-      $0:x
-     };
-     update();
-    },Global.ignore));
-    d2=io2.Subscribe(Observer.New(function(y)
-    {
-     lv2[0]={
-      $:1,
-      $0:y
-     };
-     update();
-    },Global.ignore));
-    return Disposable.New(function()
-    {
-     d1.Dispose();
-     d2.Dispose();
-    });
+    var $1,$2;
+    $1=lv1[0];
+    $2=lv2[0];
+    $1!=null&&$1.$==1?$2!=null&&$2.$==1?o.OnNext(f($1.$0,$2.$0)):void 0:void 0;
    }
-  };
+   lv1=[null];
+   lv2=[null];
+   d1=io1.Subscribe(Observer.New$1(function(x)
+   {
+    lv1[0]={
+     $:1,
+     $0:x
+    };
+    update();
+   },Global.ignore));
+   d2=io2.Subscribe(Observer.New$1(function(y)
+   {
+    lv2[0]={
+     $:1,
+     $0:y
+    };
+    update();
+   },Global.ignore));
+   return Disposable.New$1(function()
+   {
+    d1.Dispose();
+    d2.Dispose();
+   });
+  });
  };
  Reactive$1.Range=function(start,count)
  {
-  return{
-   Subscribe:function(o)
-   {
-    var i,$1;
-    for(i=start,$1=start+count;i<=$1;i++)o.OnNext(i);
-    return Disposable.New(Global.ignore);
-   }
-  };
+  return Observable.New$1(function(o)
+  {
+   var i,$1;
+   for(i=start,$1=start+count;i<=$1;i++)o.OnNext(i);
+   return Disposable.New$1(Global.ignore);
+  });
  };
  Reactive$1.Concat=function(io1,io2)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var innerDisp,outerDisp;
+   innerDisp=[null];
+   outerDisp=io1.Subscribe(Observer.New$1(function(a)
    {
-    var innerDisp,outerDisp;
-    innerDisp=[null];
-    outerDisp=io1.Subscribe(Observer.New(function(a)
-    {
-     o.OnNext(a);
-    },function()
-    {
-     innerDisp[0]={
-      $:1,
-      $0:io2.Subscribe(o)
-     };
-    }));
-    return Disposable.New(function()
-    {
-     innerDisp[0]!=null?innerDisp[0].$0.Dispose():void 0;
-     outerDisp.Dispose();
-    });
-   }
-  };
+    o.OnNext(a);
+   },function()
+   {
+    innerDisp[0]={
+     $:1,
+     $0:io2.Subscribe(o)
+    };
+   }));
+   return Disposable.New$1(function()
+   {
+    innerDisp[0]!=null?innerDisp[0].$0.Dispose():void 0;
+    outerDisp.Dispose();
+   });
+  });
  };
  Reactive$1.Merge=function(io1,io2)
  {
-  return{
-   Subscribe:function(o)
+  return Observable.New$1(function(o)
+  {
+   var completed1,completed2,disp1,disp2;
+   completed1=[false];
+   completed2=[false];
+   disp1=io1.Subscribe(Observer.New$1(function(a)
    {
-    var completed1,completed2,disp1,disp2;
-    completed1=[false];
-    completed2=[false];
-    disp1=io1.Subscribe(Observer.New(function(a)
-    {
-     o.OnNext(a);
-    },function()
-    {
-     completed1[0]=true;
-     completed1[0]&&completed2[0]?o.OnCompleted():void 0;
-    }));
-    disp2=io2.Subscribe(Observer.New(function(a)
-    {
-     o.OnNext(a);
-    },function()
-    {
-     completed2[0]=true;
-     completed1[0]&&completed2[0]?o.OnCompleted():void 0;
-    }));
-    return Disposable.New(function()
-    {
-     disp1.Dispose();
-     disp2.Dispose();
-    });
-   }
-  };
+    o.OnNext(a);
+   },function()
+   {
+    completed1[0]=true;
+    completed1[0]&&completed2[0]?o.OnCompleted():void 0;
+   }));
+   disp2=io2.Subscribe(Observer.New$1(function(a)
+   {
+    o.OnNext(a);
+   },function()
+   {
+    completed2[0]=true;
+    completed1[0]&&completed2[0]?o.OnCompleted():void 0;
+   }));
+   return Disposable.New$1(function()
+   {
+    disp1.Dispose();
+    disp2.Dispose();
+   });
+  });
  };
  Reactive$1.Drop=function(io,count)
  {
-  return{
-   Subscribe:function(o1)
+  return Observable.New$1(function(o1)
+  {
+   var index;
+   index=[0];
+   return io.Subscribe(Util.observer(function(v)
    {
-    var index;
-    index=[0];
-    return io.Subscribe(Util.observer(function(v)
-    {
-     index[0]++;
-     index[0]>count?o1.OnNext(v):void 0;
-    }));
-   }
-  };
+    index[0]++;
+    index[0]>count?o1.OnNext(v):void 0;
+   }));
+  });
  };
  Reactive$1.Choose=function(io,f)
  {
-  return{
-   Subscribe:function(o1)
+  return Observable.New$1(function(o1)
+  {
+   return io.Subscribe(Util.observer(function(v)
    {
-    return io.Subscribe(Util.observer(function(v)
-    {
-     var m;
-     m=f(v);
-     m==null?void 0:o1.OnNext(m.$0);
-    }));
-   }
-  };
+    var m;
+    m=f(v);
+    m==null?void 0:o1.OnNext(m.$0);
+   }));
+  });
  };
  Reactive$1.Where=function(io,f)
  {
-  return{
-   Subscribe:function(o1)
+  return Observable.New$1(function(o1)
+  {
+   return io.Subscribe(Util.observer(function(v)
    {
-    return io.Subscribe(Util.observer(function(v)
-    {
-     if(f(v))
-      o1.OnNext(v);
-    }));
-   }
-  };
+    if(f(v))
+     o1.OnNext(v);
+   }));
+  });
  };
  Reactive$1.Select=function(io,f)
  {
-  return{
-   Subscribe:function(o1)
+  return Observable.New$1(function(o1)
+  {
+   return io.Subscribe(Util.observer(function(v)
    {
-    return io.Subscribe(Util.observer(function(v)
-    {
-     o1.OnNext(f(v));
-    }));
-   }
-  };
+    o1.OnNext(f(v));
+   }));
+  });
  };
  Reactive$1.Never=function()
  {
-  return{
-   Subscribe:function()
-   {
-    return Disposable.New(Global.ignore);
-   }
-  };
+  return Observable.New$1(function()
+  {
+   return Disposable.New$1(Global.ignore);
+  });
  };
  Reactive$1.Return=function(x)
  {
-  return{
-   Subscribe:function(o)
-   {
-    o.OnNext(x);
-    o.OnCompleted();
-    return Disposable.New(Global.ignore);
-   }
-  };
+  return Observable.New$1(function(o)
+  {
+   o.OnNext(x);
+   o.OnCompleted();
+   return Disposable.New$1(Global.ignore);
+  });
  };
  SC$1.$cctor=function()
  {

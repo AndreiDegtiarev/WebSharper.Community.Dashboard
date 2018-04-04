@@ -3,9 +3,9 @@
 open System
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Community.Panel
 open WebSharper.Community.PropertyGrid
  
@@ -110,7 +110,7 @@ type Dashboard =
         let renderWidgets= group.WidgetItems.View
                            |> Doc.BindSeqCachedBy group.WidgetItems.Key (fun item-> 
                                                                                 let nameView = item.Widget.Name.View
-                                                                                div[textView nameView])           
+                                                                                div[][textView nameView])           
 
         let keyDef = defaultArg key (System.Guid.NewGuid().ToString())
         let childContainerContent = PanelContainer.Create
@@ -129,7 +129,7 @@ type Dashboard =
                                         {Icon="add";Action=(fun panel->(
                                                                         let items = x.Factory.WidgetItems|>List.ofSeq
                                                                         let selected=Var.Create (items.Head)
-                                                                        x.Dialog.ShowDialog "Select widget" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
+                                                                        x.Dialog.ShowDialog "Select widget" (div[][Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                                              (fun _ -> 
                                                                                                                 Console.Log("Dialog.IsOK")
                                                                                                                 let widget = selected.Value.Worker.Clone
@@ -227,46 +227,46 @@ type Dashboard =
     member x.Render menu=
         x.Mode.View |> View.Map (fun mode -> 
           match mode with 
-          |DashboardRun -> div[tableAttr[Attr.Style "White-space" "nowrap"] 
-                                    [tr[
-                                            tdAttr [Attr.Style "vertical-align" "top"]
+          |DashboardRun -> div[][table[Attr.Style "White-space" "nowrap"] 
+                                    [tr[][
+                                            td [Attr.Style "vertical-align" "top"]
                                                    [Helper.IconNormal "dehaze" (fun _ -> x.PanelTitleVisibility.Value <- true
                                                                                          x.Mode.Value <- DashboardEdit)
                                                     x.EditorSelectorRun.RenderMenu
                                                     //(if (x.EditorSelectorRun.GroupByIndex 0).SelectorItems.Length > 1 then x.EditorSelectorRun.RenderMenu else div[]) 
                                               ]
-                                            td [x.EditorSelectorRun.Render] 
+                                            td [][x.EditorSelectorRun.Render] 
                                         ]
                                      ]
                               ]
           |DashboardEdit -> 
-            div[
-                tableAttr[Attr.Style "White-space" "nowrap"][
-                    tr[
-                        tdAttr [Attr.Style "vertical-align" "top"][
-                            table
+            div[][
+                table[Attr.Style "White-space" "nowrap"][
+                    tr[][
+                        td [Attr.Style "vertical-align" "top"][
+                            table []
                                      (Seq.concat
                                         [
                                            [
-                                                tr[td[Helper.IconNormal "dehaze" (fun _ ->x.PanelTitleVisibility.Value <- false 
-                                                                                          x.Mode.Value <- DashboardRun)]]
+                                                tr[][td[][Helper.IconNormal "dehaze" (fun _ ->x.PanelTitleVisibility.Value <- false 
+                                                                                              x.Mode.Value <- DashboardRun)]]
                                            ]
                                            [x.EditorSelectorEdit.RenderMenu]
                                            [     
-                                                tr[td[]]
-                                                tr[td[x.PropertyGrid.Render]]
+                                                tr[][td[][]]
+                                                tr[][td[][x.PropertyGrid.Render]]
                                            ]
                                         ])
 
                           ]
-                        tdAttr[Attr.Style "vertical-align" "top"][
+                        td[Attr.Style "vertical-align" "top"][
                                menu
                                Helper.IconNormal "add" (fun _ ->
                                            let selIndex = x.EditorSelectorEdit.SelectedGroupIndex
                                            if selIndex = 1 then
                                                let items = x.Factory.EventItems|>List.ofSeq
                                                let selected=Var.Create (items.Head)
-                                               x.Dialog.ShowDialog "Select source" (div[Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
+                                               x.Dialog.ShowDialog "Select source" (div[][Doc.Select [Attr.Class "form-control"] (fun item -> item.Worker.Name.Value) items selected])
                                                                                         (fun _ ->  let event = selected.Value.Worker.Clone
                                                                                                    event.StartRunner()
                                                                                                    let group = x.Data.EventGroups |> List.ofSeq |> List.item (x.EditorSelectorEdit.SelectedIndexInGroup)
@@ -283,6 +283,6 @@ type Dashboard =
                            ] 
                      ]
                 ]
-                div[x.Dialog.Render]
+                div[][x.Dialog.Render]
              ]) |> Doc.EmbedView
 

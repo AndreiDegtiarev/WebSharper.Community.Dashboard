@@ -12,10 +12,11 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
+    <TargetFSharpCoreVersion>4.4.1.0</TargetFSharpCoreVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <LastActiveSolutionConfig>Release|Any CPU</LastActiveSolutionConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -37,7 +38,7 @@
     <Name>WebSharper.Community.Dashboard.Test</Name>
     <RootNamespace>WebSharper.Community.Dashboard.Test</RootNamespace>
     <AssemblyName>WebSharper.Community.Dashboard.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
@@ -60,16 +61,10 @@
   </Target>
   <ItemGroup>
     <Reference Include="FSharp.Data">
-      <HintPath>..\packages\FSharp.Data.2.3.3\lib\net40\FSharp.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\WebSharper.UI.Next.4.0.13.126\lib\net40\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\FSharp.Data.2.4.6\lib\net45\FSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="IntelliFactory.Reactive">
-      <HintPath>..\packages\WebSharper.Reactive.4.0.15.64\lib\net40\IntelliFactory.Reactive.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.Reactive.4.2.0.117\lib\net461\IntelliFactory.Reactive.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -87,84 +82,61 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq.dll" />
     <Reference Include="WebSharper.Charting">
-      <HintPath>..\packages\WebSharper.Charting.4.0.16.91\lib\net40\WebSharper.Charting.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.Charting.4.2.1.196\lib\net461\WebSharper.Charting.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.ChartJs">
-      <HintPath>..\packages\WebSharper.ChartJs.4.0.18.72\lib\net40\WebSharper.ChartJs.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.ChartJs.4.2.2.126\lib\net461\WebSharper.ChartJs.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Collections">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Collections.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.Collections.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Community.Panel">
-      <HintPath>..\packages\WebSharper.Community.Panel.1.0.0-beta-9\lib\net46\WebSharper.Community.Panel.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\WebSharper.Community.Panel\WebSharper.Community.Panel\bin\Release\WebSharper.Community.Panel.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Community.PropertyGrid">
-      <HintPath>..\packages\WebSharper.Community.PropertyGrid.1.0.0-beta-9\lib\net46\WebSharper.Community.PropertyGrid.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\WebSharper.Community.PropertyGrid\WebSharper.Community.PropertyGrid\bin\Release\WebSharper.Community.PropertyGrid.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Control">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Control.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.Control.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Core">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Core.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.Core.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Core.JavaScript">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Core.JavaScript.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.Core.JavaScript.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Data">
-      <HintPath>..\packages\WebSharper.Data.4.0.15.83\lib\net45\WebSharper.Data.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.Data.4.2.1.168\lib\net461\WebSharper.Data.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.InterfaceGenerator">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.InterfaceGenerator.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.InterfaceGenerator.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.JavaScript">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.JavaScript.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.JavaScript.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.JQuery">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.JQuery.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.JQuery.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Main">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Main.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.Main.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Sitelets">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Sitelets.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.Sitelets.dll</HintPath>
     </Reference>
-    <Reference Include="WebSharper.UI.Next">
-      <HintPath>..\packages\WebSharper.UI.Next.4.0.13.126\lib\net40\WebSharper.UI.Next.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WebSharper.UI">
+      <HintPath>..\packages\WebSharper.UI.4.2.4.114\lib\net461\WebSharper.UI.dll</HintPath>
     </Reference>
-    <Reference Include="WebSharper.UI.Next.CSharp">
-      <HintPath>..\packages\WebSharper.UI.Next.4.0.13.126\lib\net40\WebSharper.UI.Next.CSharp.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WebSharper.UI.Templating">
+      <HintPath>..\packages\WebSharper.UI.4.2.4.114\lib\net461\WebSharper.UI.Templating.dll</HintPath>
     </Reference>
-    <Reference Include="WebSharper.UI.Next.Templating">
-      <HintPath>..\packages\WebSharper.UI.Next.4.0.13.126\lib\net40\WebSharper.UI.Next.Templating.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WebSharper.UI.Templating.Common">
+      <HintPath>..\packages\WebSharper.UI.4.2.4.114\lib\net461\WebSharper.UI.Templating.Common.dll</HintPath>
     </Reference>
-    <Reference Include="WebSharper.UI.Next.Templating.Common">
-      <HintPath>..\packages\WebSharper.UI.Next.4.0.13.126\lib\net40\WebSharper.UI.Next.Templating.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="WebSharper.UI.Next.Templating.Runtime">
-      <HintPath>..\packages\WebSharper.UI.Next.4.0.13.126\lib\net40\WebSharper.UI.Next.Templating.Runtime.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WebSharper.UI.Templating.Runtime">
+      <HintPath>..\packages\WebSharper.UI.4.2.4.114\lib\net461\WebSharper.UI.Templating.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="WebSharper.Web">
-      <HintPath>..\packages\WebSharper.4.0.196.147\lib\net40\WebSharper.Web.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\WebSharper.4.2.8.255\lib\net461\WebSharper.Web.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -234,13 +206,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\WebSharper.FSharp.4.0.196.147\build\WebSharper.FSharp.targets" Condition="Exists('..\packages\WebSharper.FSharp.4.0.196.147\build\WebSharper.FSharp.targets')" />
+  <Import Project="..\packages\WebSharper.FSharp.4.2.8.255\build\WebSharper.FSharp.targets" Condition="Exists('..\packages\WebSharper.FSharp.4.2.8.255\build\WebSharper.FSharp.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\WebSharper.FSharp.4.0.196.147\build\WebSharper.FSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WebSharper.FSharp.4.0.196.147\build\WebSharper.FSharp.targets'))" />
-    <Error Condition="!Exists('..\packages\WebSharper.UI.Next.4.0.13.126\build\WebSharper.UI.Next.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WebSharper.UI.Next.4.0.13.126\build\WebSharper.UI.Next.targets'))" />
+    <Error Condition="!Exists('..\packages\WebSharper.FSharp.4.2.8.255\build\WebSharper.FSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WebSharper.FSharp.4.2.8.255\build\WebSharper.FSharp.targets'))" />
   </Target>
-  <Import Project="..\packages\WebSharper.UI.Next.4.0.13.126\build\WebSharper.UI.Next.targets" Condition="Exists('..\packages\WebSharper.UI.Next.4.0.13.126\build\WebSharper.UI.Next.targets')" />
 </Project>

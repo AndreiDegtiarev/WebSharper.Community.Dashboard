@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Strings,System,Guid,Concurrency,$,List,JavaScript,Pervasives$1,Arrays,IntelliFactory,Runtime$1,Operators,Array,Unchecked;
+ var Global,WebSharper,Data,Pervasives,WBRuntime,WorldBankCountry,WorldBankRuntime,Obj,FSharp,Data$1,Runtime,WorldBank,Indicator,JSRuntime,TxtRuntime,IO,Strings,System,Guid,Concurrency,$,List,JavaScript,Pervasives$1,Arrays,IntelliFactory,Runtime$1,Operators,Array,Unchecked;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Data=WebSharper.Data=WebSharper.Data||{};
@@ -9,6 +9,7 @@
  WBRuntime=Data.WBRuntime=Data.WBRuntime||{};
  WorldBankCountry=WBRuntime.WorldBankCountry=WBRuntime.WorldBankCountry||{};
  WorldBankRuntime=WBRuntime.WorldBankRuntime=WBRuntime.WorldBankRuntime||{};
+ Obj=WebSharper&&WebSharper.Obj;
  FSharp=Global.FSharp=Global.FSharp||{};
  Data$1=FSharp.Data=FSharp.Data||{};
  Runtime=Data$1.Runtime=Data$1.Runtime||{};
@@ -94,7 +95,7 @@
     $0:e
    };
   }
- },WebSharper.Obj,Indicator);
+ },Obj,Indicator);
  JSRuntime.GetArrayChildByTypeTag=function(value,cultureStr,tagCode)
  {
   var arr;

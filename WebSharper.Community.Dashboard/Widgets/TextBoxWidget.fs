@@ -1,9 +1,9 @@
 ﻿namespace WebSharper.Community.Dashboard.Widgets
 
 open WebSharper
-open WebSharper.UI.Next
-open WebSharper.UI.Next.Client
-open WebSharper.UI.Next.Html
+open WebSharper.UI
+open WebSharper.UI.Client
+open WebSharper.UI.Html
 open WebSharper.Community.Dashboard
 
 
@@ -37,10 +37,10 @@ type TextBoxWidget =
                             let fontSizeView = worker.InPorts.[2].PortValue.View |> View.Map (fun msg -> msg.Value.AsNumber.ToString() + "px")          
                             let fontFamilyView = worker.InPorts.[3].PortValue.View |> View.Map (fun msg -> let (ind,lst) = msg.Value.AsSelect
                                                                                                            lst.[ind])
-                            divAttr [Attr.Class "bigvalue"
-                                     Attr.DynamicStyle "width" widthView
-                                     Attr.DynamicStyle "font-size" fontSizeView
-                                     Attr.DynamicStyle "font-family" fontFamilyView
-                                    ]
-                                    [textView strView] :> Doc)
+                            div [Attr.Class "bigvalue"
+                                 Attr.DynamicStyle "width" widthView
+                                 Attr.DynamicStyle "font-size" fontSizeView
+                                 Attr.DynamicStyle "font-family" fontFamilyView
+                                ]
+                                [textView strView] :> Doc)
 

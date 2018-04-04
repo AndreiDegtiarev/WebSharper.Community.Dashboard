@@ -3,7 +3,7 @@
 open System
 open WebSharper
 open WebSharper.JavaScript
-open WebSharper.UI.Next
+open WebSharper.UI
 open WebSharper.Community.PropertyGrid
 open WebSharper.Community.Panel
 

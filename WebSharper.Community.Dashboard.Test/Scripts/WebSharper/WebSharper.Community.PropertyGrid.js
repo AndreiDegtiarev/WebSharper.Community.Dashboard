@@ -1,25 +1,25 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Community,PropertyGrid,PropertyItem,IGroupProperty,Properties,PropertyGrid$1,UI,Next,Key,IntelliFactory,Runtime,Doc,AttrModule,AttrProxy,List,ListModel;
+ var Global,WebSharper,Community,PropertyGrid,PropertyItem,Obj,IGroupProperty,Properties,PropertyGrid$1,UI,Key,IntelliFactory,Runtime,Doc,AttrModule,AttrProxy,List,ListModel;
  Global=window;
  WebSharper=Global.WebSharper=Global.WebSharper||{};
  Community=WebSharper.Community=WebSharper.Community||{};
  PropertyGrid=Community.PropertyGrid=Community.PropertyGrid||{};
  PropertyItem=PropertyGrid.PropertyItem=PropertyGrid.PropertyItem||{};
+ Obj=WebSharper&&WebSharper.Obj;
  IGroupProperty=PropertyGrid.IGroupProperty=PropertyGrid.IGroupProperty||{};
  Properties=PropertyGrid.Properties=PropertyGrid.Properties||{};
  PropertyGrid$1=PropertyGrid.PropertyGrid=PropertyGrid.PropertyGrid||{};
  UI=WebSharper&&WebSharper.UI;
- Next=UI&&UI.Next;
- Key=Next&&Next.Key;
+ Key=UI&&UI.Key;
  IntelliFactory=Global.IntelliFactory;
  Runtime=IntelliFactory&&IntelliFactory.Runtime;
- Doc=Next&&Next.Doc;
- AttrModule=Next&&Next.AttrModule;
- AttrProxy=Next&&Next.AttrProxy;
+ Doc=UI&&UI.Doc;
+ AttrModule=UI&&UI.AttrModule;
+ AttrProxy=UI&&UI.AttrProxy;
  List=WebSharper&&WebSharper.List;
- ListModel=Next&&Next.ListModel;
+ ListModel=UI&&UI.ListModel;
  PropertyItem.Create=function(param)
  {
   return PropertyItem.New(Key.Fresh(),param);
@@ -40,7 +40,7 @@
   {
    return this.name;
   }
- },WebSharper.Obj,IGroupProperty);
+ },Obj,IGroupProperty);
  IGroupProperty.New=Runtime.Ctor(function(name)
  {
   this.name=name;
